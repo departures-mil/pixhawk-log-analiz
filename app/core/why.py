@@ -152,7 +152,7 @@ def build(A):
     if info.get('airspeed') == 'no' and c == 'stall': notes.append(('n_no_aspd_stall', {}))
     if ap:
         b = info.get('autopilot')
-        if 'pixhawk 1' in ap or 'fmuv2' in ap or 'pixracer' in ap or 'omnibus' in ap:
+        if 'pixhawk 1' in ap or '2.4.8' in ap or 'fmuv2' in ap or 'pixracer' in ap or 'omnibus' in ap:
             if c in ('power', 'vibration', 'ekf', 'unknown'): notes.append(('n_board_old', {'b': b}))
         elif 'cube' in ap:
             if c == 'vibration': notes.append(('n_board_cube', {'b': b}))
