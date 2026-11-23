@@ -4,7 +4,7 @@ import os, time
 from PySide6.QtCore import Qt, QUrl
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QGroupBox, QFormLayout, QComboBox, QLineEdit, QCheckBox,
-                               QScrollArea, QSpinBox, QFileDialog, QPlainTextEdit, QInputDialog, QColorDialog)
+                               QScrollArea, QSpinBox, QFileDialog, QPlainTextEdit, QInputDialog, QColorDialog, QLabel)
 from .i18n import t, lang
 from .common import label, button, run_bg, error, info, open_path
 from .pages_a import Page
@@ -34,17 +34,17 @@ class SettingsPage(Page):
         # Yapay zekâ (Gemini ücretsiz / Claude) — kolay kurulum
         g = QGroupBox(t('s_ai')); f = QFormLayout(g)
         f.addRow(label(t('ai_intro'), 'muted', wrap=True))
-        self.prov = QComboBox(); self.prov.addItem(t('ai_gemini'), 'gemini'); self.prov.addItem(t('ai_claude'), 'anthropic')
+        self.prov = QComboBox(); self.prov.addItem(t('ai_gemini'), 'gemini'); self.prov.addItem(t('ai_free'), 'free'); self.prov.addItem(t('ai_claude'), 'anthropic')
         self.prov.setCurrentIndex(max(0, self.prov.findData(s.get('ai_provider') or 'gemini')))
         self.prov.currentIndexChanged.connect(self._prov_changed); f.addRow(t('s_provider'), self.prov)
-        kh = QHBoxLayout()
+        self.key_w = QWidget(); kh = QHBoxLayout(self.key_w); kh.setContentsMargins(0, 0, 0, 0)
         self.key = QLineEdit(); self.key.setEchoMode(QLineEdit.Password)
         self.key.editingFinished.connect(self._key_edited); kh.addWidget(self.key, 1)
         kh.addWidget(button('👁', lambda: self.key.setEchoMode(QLineEdit.Normal if self.key.echoMode() == QLineEdit.Password else QLineEdit.Password)))
         kh.addWidget(button(t('ai_paste'), self._paste))
         kh.addWidget(button(t('ai_wizard'), self.key_wizard, primary=True))
         kh.addWidget(button(t('s_test'), self.test_key))
-        f.addRow(t('s_key'), kh)
+        self.key_lab = QLabel(t('s_key')); f.addRow(self.key_lab, self.key_w)
         self.ai_st = label('', 'muted', wrap=True); f.addRow(self.ai_st)
         mh = QHBoxLayout()
         self.model = QComboBox(); self.model.setEditable(True); self.model.setMinimumWidth(280)
@@ -52,6 +52,8 @@ class SettingsPage(Page):
         mh.addWidget(button(t('ai_refresh'), self.test_key)); f.addRow(t('s_model'), mh)
         self.effort = QComboBox(); self.effort.addItems(['low', 'medium', 'high', 'max']); self.effort.setCurrentText(s.get('effort', 'medium'))
         self.effort.currentTextChanged.connect(lambda x: self._set('effort', x)); f.addRow(t('s_effort'), self.effort)
+        self.free_cb = QCheckBox(t('ai_free_use')); self.free_cb.setChecked(s.get('free_ai', True))
+        self.free_cb.toggled.connect(lambda x: (self._set('free_ai', x), self._prov_changed())); f.addRow(self.free_cb)
         f.addRow(label(t('s_usage'), 'h2'))
         self.usage = label('', wrap=True, sel=True); f.addRow(self.usage)
         v.addWidget(g)
@@ -222,11 +224,11 @@ class SettingsPage(Page):
     # ---- AI
     def _pkey(self, prov=None):
         prov = prov or self.prov.currentData()
-        return 'gemini_key' if prov == 'gemini' else 'api_key'
+        return {'gemini': 'gemini_key', 'free': 'free_key_unused'}.get(prov, 'api_key')
 
     def _mkey(self, prov=None):
         prov = prov or self.prov.currentData()
-        return 'gemini_model' if prov == 'gemini' else 'model'
+        return {'gemini': 'gemini_model', 'free': 'free_model'}.get(prov, 'model')
 
     def _prov_changed(self, *_, init=False):
         from ..core import ai as AI
@@ -234,13 +236,31 @@ class SettingsPage(Page):
         if not init: self._set('ai_provider', prov)
         self.key.blockSignals(True); self.key.setText(s.get(self._pkey(), '') or '')
         self.key.setPlaceholderText('AIza… / AQ.…' if prov == 'gemini' else 'sk-ant-…'); self.key.blockSignals(False)
+        self.key_lab.setText(t('s_key_gem') if prov == 'gemini' else t('s_key_cl'))
+        for x in (self.key_lab, self.key_w): x.setVisible(prov != 'free')
         self._fill_models()
-        self.ai_st.setText(t('ai_none') if not self.key.text().strip() else '')
+        self._ai_status()
         self._usage()
+
+    def _ai_status(self):
+        """Hangi yapay zekânın gerçekte kullanılacağını söyler (anahtar yoksa ücretsiz anahtarsız model)."""
+        from ..core import ai as AI
+        s = self.win.settings
+        if not s.get('online', True): self.ai_st.setText(t('ai_none')); return
+        p, k, m = AI.current(s)
+        if not AI.available(s): self.ai_st.setText(t('ai_none')); return
+        nm = {'gemini': 'Google Gemini', 'anthropic': 'Anthropic Claude', 'free': t('ai_free')}[p]
+        txt = t('ai_using', p=nm, m=m)
+        if p == 'free': txt += '\n' + t('ai_free_on')
+        self.ai_st.setText(txt)
 
     def _fill_models(self, models=None):
         from ..core import ai as AI
         s = self.win.settings; prov = self.prov.currentData()
+        if prov == 'free':
+            from ..core import ai as AI
+            self.model.blockSignals(True); self.model.clear(); self.model.addItems(AI.PROVIDERS['free']['fallback'])
+            self.model.setCurrentText(s.get('free_model') or 'openai'); self.model.blockSignals(False); return
         lk = 'gemini_models' if prov == 'gemini' else 'claude_models'
         if models is not None: s[lk] = models; s.save()
         ms = s.get(lk) or []
@@ -308,8 +328,15 @@ class SettingsPage(Page):
     def test_key(self):
         from ..core import ai as AI
         prov = self.prov.currentData(); key = self.key.text().strip()
+        if prov == 'free':
+            self.ai_st.setText('⏳ ' + t('ai_testing'))
+            def okf(r):
+                self.ai_st.setText(t('ai_ok', n=len(r[0]), m=r[1]) + '\n' + t('ai_free_on')); self._usage()
+            def failf(e):
+                self.ai_st.setText(t('ai_bad', e=str(e)[:260])); self._usage()
+            run_bg(AI.test, 'free', '', self.model.currentText().strip(), self.win.usage, on_done=okf, on_fail=failf); return
         self._set(self._pkey(), key)
-        if not key: self.ai_st.setText(t('ai_none')); return
+        if not key: self._ai_status(); return
         model = self.model.currentText().strip(); usage = self.win.usage
         self.ai_st.setText('⏳ ' + t('ai_testing'))
 
@@ -325,9 +352,9 @@ class SettingsPage(Page):
     def _usage(self):
         d = self.win.usage.data; day = time.strftime('%Y-%m-%d')
         lines = []
-        names = {'gemini': 'Gemini', 'anthropic': 'Claude'}
+        names = {'gemini': 'Gemini', 'anthropic': 'Claude', 'free': t('ai_free')}
         bp = d.get('by_provider') or {}
-        for p in ('gemini', 'anthropic'):
+        for p in ('gemini', 'free', 'anthropic'):
             x = bp.get(p)
             if not x: continue
             td = x.get('today') or {}
@@ -341,7 +368,9 @@ class SettingsPage(Page):
         lines.append(t('ai_30d', c=c, tk=f'{tk:,}'))
         pl = d.get('plimits') or {}
         prov = self.prov.currentData()
-        if prov == 'gemini':
+        if prov == 'free':
+            lines.append(''); lines.append(t('ai_free_lim'))
+        elif prov == 'gemini':
             lines.append(''); lines.append(t('ai_gem_lim'))
             q = pl.get('gemini') or {}
             if q.get('quota_hit'): lines.append(t('ai_quota_hit', t=q['quota_hit'], d='; '.join(q.get('details') or [])[:300]))

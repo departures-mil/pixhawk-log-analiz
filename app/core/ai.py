@@ -14,6 +14,10 @@ PROVIDERS = {
                   'default': 'claude-sonnet-5-5', 'fallback': ['claude-sonnet-5-5', 'claude-opus-5-5', 'claude-haiku-5-5', 'claude-fable-5-2']},
 }
 GEM = 'https://generativelanguage.googleapis.com/v1beta'
+# Anahtarsız ücretsiz yedek: kimsenin kişisel limitinden yemez; hız sınırı vardır. Anahtar girilince otomatik olarak Gemini/Claude kullanılır.
+PROVIDERS['free'] = {'name': 'Ücretsiz (anahtarsız)', 'key_url': '', 'prefix': (), 'default': 'openai',
+                     'fallback': ['openai', 'openai-fast', 'mistral'],
+                     'urls': ['https://text.pollinations.ai/openai']}
 
 
 def detect_provider(key: str):
@@ -107,6 +111,14 @@ def _gem_ping(key, m):
 
 def test(provider, key, model, usage=None):
     """Anahtarı dener; (model listesi, çalışan model) döner. Model yoğun/kotası dolu ise sıradakini dener."""
+    if provider == 'free':
+        ms = PROVIDERS['free']['fallback']; last = None
+        for m in [model] + [x for x in ms if x != model] if model else ms:
+            try:
+                FreeAdvisor(None, m, 'en', usage).chat('Reply with one word.', 'ping', 16); return ms, m
+            except Exception as e:
+                last = e
+        raise last or RuntimeError('free AI unavailable')
     models = list_models(provider, key)
     if provider == 'gemini':
         last = None
@@ -228,33 +240,193 @@ class GeminiAdvisor:
         return ''.join(p.get('text', '') for p in c.get('parts', []) if not p.get('thought')).strip()
 
 
+# --------------------------------------------------- ücretsiz (anahtarsız) danışman
+def _free_post(body, timeout=120):
+    """OpenAI uyumlu anahtarsız uç noktaya istek; yoğunlukta kısa bekleyip yeniden dener."""
+    body = dict(body, referrer='pixhawk-log-analiz', private=True)
+    last = None
+    for url in PROVIDERS['free']['urls']:
+        for i in range(3):
+            req = urllib.request.Request(url, data=json.dumps(body).encode(), method='POST',
+                                         headers={'Content-Type': 'application/json', 'User-Agent': 'PixhawkLogAnaliz'})
+            try:
+                with urllib.request.urlopen(req, timeout=timeout) as r:
+                    return json.loads(r.read().decode() or '{}')
+            except urllib.error.HTTPError as e:
+                last = RuntimeError(f"{e.code}: {e.read().decode('utf-8', 'replace')[:200]}"); last.status = e.code
+                if e.code in (429, 500, 502, 503, 504): time.sleep((4, 10, 16)[i]); continue
+                break
+            except (TimeoutError, OSError) as e:
+                last = e; time.sleep((2, 5, 10)[i])
+    raise last or RuntimeError('free AI unavailable')
+
+
+_AD = re.compile(r'\n+\s*(?:-{3,}|\*{3,})\s*\n[^\n]*(?:pollinations|sponsor|\bad\b)[\s\S]*$', re.I)
+
+
+def _free_text(d):
+    m = ((d.get('choices') or [{}])[0].get('message') or {})
+    txt = _AD.sub('', (m.get('content') or '')).strip()   # servis cevabın sonuna reklam/destek notu eklerse temizle
+    return txt, m
+
+
+class FreeAdvisor:
+    """Anahtarsız ücretsiz model: önce log araçlarıyla (function calling), desteklenmezse logun özetini bağlam olarak vererek."""
+    def __init__(self, A, model='openai', lang='tr', usage=None):
+        from .advisor import LogTools, TOOLS
+        self.A = A; self.model = model or 'openai'; self.lang = lang; self.usage = usage
+        self.tools = LogTools(A) if A is not None else None
+        self.decl = [{'type': 'function', 'function': {'name': t['name'], 'description': t['description'], 'parameters': t['input_schema']}}
+                     for t in TOOLS]
+        self.messages = []; self.no_tools = False
+
+    def _note(self, d):
+        u = d.get('usage') or {}
+        if self.usage:
+            try: self.usage.add_generic('free', u.get('prompt_tokens', 0), u.get('completion_tokens', 0), {})
+            except Exception: pass
+
+    def chat(self, system, prompt, max_tokens=4000):
+        d = _free_post({'model': self.model, 'messages': [{'role': 'system', 'content': system}, {'role': 'user', 'content': prompt}],
+                        'max_tokens': max_tokens, 'temperature': 0.3})
+        self._note(d); return _free_text(d)[0]
+
+    def ask(self, question, on_status=None, max_rounds=6):
+        from .advisor import SYSTEM, LANG_NAME
+        system = SYSTEM.replace('{lang}', LANG_NAME.get(self.lang, 'Turkish'))
+        if not self.no_tools:
+            try:
+                return self._ask_tools(system, question, on_status, max_rounds)
+            except Exception:
+                self.no_tools = True; self.messages = []
+        # araçsız: logun özeti bağlam olarak
+        ctx = json.dumps(self.tools.overview(), ensure_ascii=False, default=float)[:24000] if self.tools else ''
+        hist = ''.join(f"\n\nQ: {q}\nA: {a}" for q, a in self.messages[-4:])
+        ans = self.chat(system, f"LOG OVERVIEW (JSON):\n{ctx}{hist}\n\nQUESTION: {question}")
+        self.messages.append((question, ans[:2000]))
+        return ans
+
+    def _ask_tools(self, system, question, on_status, max_rounds):
+        msgs = [{'role': 'system', 'content': system}] + [m for m in self.messages if isinstance(m, dict)] + [{'role': 'user', 'content': question}]
+        for rnd in range(max_rounds):
+            body = {'model': self.model, 'messages': msgs, 'max_tokens': 4000, 'temperature': 0.3}
+            if rnd < max_rounds - 1: body['tools'] = self.decl
+            d = _free_post(body); self._note(d)
+            txt, m = _free_text(d)
+            calls = m.get('tool_calls') or []
+            if not calls:
+                if not txt: raise RuntimeError('empty answer')
+                self.messages += [{'role': 'user', 'content': question}, {'role': 'assistant', 'content': txt}]
+                return txt
+            msgs.append({'role': 'assistant', 'content': m.get('content') or '', 'tool_calls': calls})
+            for c in calls:
+                fn = (c.get('function') or {}); name = fn.get('name')
+                if on_status: on_status(name)
+                try:
+                    inp = json.loads(fn.get('arguments') or '{}')
+                    if name == 'events': inp = dict(inp, lang='en')
+                    res = getattr(self.tools, name)(**inp)
+                except Exception as e:
+                    res = {'error': str(e)}
+                msgs.append({'role': 'tool', 'tool_call_id': c.get('id'), 'content': json.dumps(res, ensure_ascii=False, default=float)[:12000]})
+        raise RuntimeError('too many steps')
+
+    def translate(self, text, target):
+        from .advisor import LANG_NAME
+        return self.chat('You are a professional aviation/UAV technical translator. Translate faithfully, keep ArduPilot parameter names, units and numbers unchanged. Output only the translation. ' + _gl(target),
+                         f'Translate into {LANG_NAME[target]}:\n\n{text}')
+
+
 # ------------------------------------------------------------------ fabrika
+def _keys(settings):
+    return {'gemini': (settings.get('gemini_key') or '').strip(), 'anthropic': (settings.get('api_key') or '').strip()}
+
+
 def current(settings):
-    """(sağlayıcı, anahtar, model) — ayarlardan."""
+    """(sağlayıcı, anahtar, model). Seçili sağlayıcının anahtarı yoksa diğerinin anahtarı, o da yoksa anahtarsız ücretsiz model."""
     prov = settings.get('ai_provider') or 'gemini'
-    key = (settings.get('gemini_key') if prov == 'gemini' else settings.get('api_key')) or ''
-    model = settings.get('gemini_model') if prov == 'gemini' else settings.get('model')
-    return prov, key.strip(), (model or PROVIDERS[prov]['default'])
+    keys = _keys(settings)
+    if prov != 'free' and not keys.get(prov):
+        other = 'gemini' if prov == 'anthropic' else 'anthropic'
+        prov = other if keys.get(other) else 'free'
+    key = keys.get(prov, '')
+    model = {'gemini': settings.get('gemini_model'), 'anthropic': settings.get('model'), 'free': settings.get('free_model')}[prov]
+    return prov, key, (model or PROVIDERS[prov]['default'])
 
 
 def available(settings):
+    """Çevrimiçi ise her zaman: anahtar yoksa ücretsiz model kullanılır (ayarlardan kapatılabilir)."""
+    if not settings.get('online', True): return False
     prov, key, _ = current(settings)
-    return bool(key) and settings.get('online', True)
+    return bool(key) or (prov == 'free' and settings.get('free_ai', True))
+
+
+def _fallback(settings, e):
+    """Claude/Gemini her türlü hata verirse (kredi yok, anahtar geçersiz, kota, bağlantı) sıradaki sağlayıcıya geçilir."""
+    return True
+
+
+class _Chain:
+    """Danışman zinciri: birincisi hata verirse (ör. Claude kredisi yok) otomatik olarak Gemini, sonra ücretsiz model."""
+    def __init__(self, items, lang):
+        self.items = items; self.lang = lang; self.i = 0
+
+    @property
+    def messages(self):
+        a = self.items[self.i]; return getattr(a, 'messages', None) or getattr(a, 'contents', None)
+
+    def ask(self, q, on_status=None):
+        last = None
+        while self.i < len(self.items):
+            try:
+                return self.items[self.i].ask(q, on_status=on_status)
+            except Exception as e:
+                last = e
+                if not _fallback({}, e) or self.i + 1 >= len(self.items): raise
+                self.i += 1
+        raise last
+
+    def translate(self, text, target):
+        return self.items[self.i].translate(text, target)
+
+
+def _order(settings):
+    prov, _, _ = current(settings)
+    keys = _keys(settings); out = [prov]
+    for p in ('gemini', 'anthropic'):
+        if keys.get(p) and p not in out: out.append(p)
+    if settings.get('free_ai', True) and 'free' not in out: out.append('free')
+    return out
+
+
+def _one(A, settings, prov, lang, usage, effort=None):
+    keys = _keys(settings); eff = effort or settings.get('effort', 'medium')
+    if prov == 'gemini':
+        return GeminiAdvisor(A, keys['gemini'], settings.get('gemini_model') or PROVIDERS['gemini']['default'], lang, usage, eff)
+    if prov == 'free':
+        return FreeAdvisor(A, settings.get('free_model') or 'openai', lang, usage)
+    from .advisor import OnlineAdvisor
+    return OnlineAdvisor(A, keys['anthropic'], settings.get('model') or PROVIDERS['anthropic']['default'], lang, usage, eff)
 
 
 def make_advisor(A, settings, lang, usage):
-    prov, key, model = current(settings)
-    if not key: raise RuntimeError('no key')
-    if prov == 'gemini':
-        return GeminiAdvisor(A, key, model, lang, usage, settings.get('effort', 'medium'))
-    from .advisor import OnlineAdvisor
-    return OnlineAdvisor(A, key, model, lang, usage, settings.get('effort', 'medium'))
+    if not available(settings): raise RuntimeError('no key')
+    return _Chain([_one(A, settings, p, lang, usage) for p in _order(settings)], lang)
 
 
 def translate(settings, usage, text, target):
-    prov, key, model = current(settings)
-    if prov == 'gemini':
-        return GeminiAdvisor(None, key, model, 'en', usage, 'low').translate(text, target)
+    last = None
+    for p in _order(settings):
+        try:
+            if p == 'anthropic': return _claude_translate(settings, usage, text, target)
+            return _one(None, settings, p, 'en', usage, 'low').translate(text, target)
+        except Exception as e:
+            last = e
+    raise last or RuntimeError('no AI')
+
+
+def _claude_translate(settings, usage, text, target):
+    prov, key, model = 'anthropic', _keys(settings)['anthropic'], settings.get('model') or PROVIDERS['anthropic']['default']
     from .advisor import OnlineAdvisor
     a = OnlineAdvisor.__new__(OnlineAdvisor)
     import anthropic
@@ -263,9 +435,22 @@ def translate(settings, usage, text, target):
 
 
 def chat(settings, usage, system, prompt, max_tokens=6000):
-    """Araçsız tek soru-cevap (Parametre Merkezi, ders kitabı vb.). Kullanıcının kendi anahtarıyla."""
-    prov, key, model = current(settings)
-    if not key: raise RuntimeError('no key')
+    """Araçsız tek soru-cevap (Parametre Merkezi, ders kitabı vb.). Sıra: seçili sağlayıcı → diğer anahtar → ücretsiz model."""
+    if not available(settings): raise RuntimeError('no key')
+    last = None
+    for p in _order(settings):
+        try:
+            return _chat1(settings, usage, p, system, prompt, max_tokens)
+        except Exception as e:
+            last = e
+    raise last
+
+
+def _chat1(settings, usage, prov, system, prompt, max_tokens):
+    key = _keys(settings).get(prov, '')
+    model = {'gemini': settings.get('gemini_model'), 'anthropic': settings.get('model')}.get(prov) or PROVIDERS[prov]['default']
+    if prov == 'free':
+        return FreeAdvisor(None, settings.get('free_model') or 'openai', 'en', usage).chat(system, prompt, max_tokens)
     if prov == 'gemini':
         g = GeminiAdvisor(None, key, model, 'en', usage, settings.get('effort', 'medium'))
         d = g._gen({'systemInstruction': {'parts': [{'text': system}]}, 'contents': [{'role': 'user', 'parts': [{'text': prompt}]}],
