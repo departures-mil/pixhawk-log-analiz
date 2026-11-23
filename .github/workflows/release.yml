@@ -48,14 +48,43 @@ jobs:
           PYTHONUTF8: '1'
         run: python tools_ci/selftest.py
 
-      - name: Build exe
+      - name: Build exe (portable)
         run: pyinstaller --noconfirm --clean PixhawkLogAnaliz.spec
+
+      - name: Build folder (for Setup)
+        run: pyinstaller --noconfirm PixhawkLogAnaliz_dir.spec
+
+      - name: Build Setup (Inno Setup)
+        shell: pwsh
+        run: |
+          $iscc = (Get-Command iscc.exe -ErrorAction SilentlyContinue).Source
+          if (-not $iscc) { $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" }
+          if (-not (Test-Path $iscc)) { choco install innosetup -y --no-progress | Out-Null; $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" }
+          & $iscc "/DAppVersion=${{ steps.ver.outputs.version }}" installer\setup.iss
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          Get-ChildItem dist\*.exe | Format-Table Name, Length
+
+      - name: Smoke test (silent install + uninstall)
+        shell: pwsh
+        run: |
+          $s = "dist\PixhawkLogAnaliz-Setup-${{ steps.ver.outputs.version }}.exe"
+          Start-Process $s -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/SP-' -Wait
+          $d = "$env:LOCALAPPDATA\Programs\Pixhawk Log Analiz"
+          if (-not (Test-Path "$d\PixhawkLogAnaliz.exe")) { Write-Error 'install failed'; exit 1 }
+          if (-not (Test-Path "$d\_internal\app\data\letterheads\mod_fixed_wing.jpg")) { Write-Error 'letterhead missing'; exit 1 }
+          Start-Process $s -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/SP-' -Wait
+          Start-Process "$d\unins000.exe" -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART' -Wait
+          Start-Sleep 3
+          Write-Host "install/upgrade/uninstall OK"
 
       - uses: actions/upload-artifact@v4
         with:
           name: PixhawkLogAnaliz-v${{ steps.ver.outputs.version }}
-          path: dist/PixhawkLogAnaliz.exe
+          path: |
+            dist/PixhawkLogAnaliz.exe
+            dist/PixhawkLogAnaliz-Setup-*.exe
 
+      # Taşınabilir exe önce yüklenir: v1.0.0'daki eski güncelleyici listedeki ilk .exe'yi alır.
       - name: Publish release
         if: github.ref == 'refs/heads/main' && steps.ver.outputs.exists != 'True'
         uses: softprops/action-gh-release@v2
@@ -65,3 +94,10 @@ jobs:
           files: dist/PixhawkLogAnaliz.exe
           generate_release_notes: true
           make_latest: true
+
+      - name: Attach Setup
+        if: github.ref == 'refs/heads/main' && steps.ver.outputs.exists != 'True'
+        shell: pwsh
+        run: gh release upload "v${{ steps.ver.outputs.version }}" "dist/PixhawkLogAnaliz-Setup-${{ steps.ver.outputs.version }}.exe" --repo "${{ github.repository }}" --clobber
+        env:
+          GH_TOKEN: ${{ github.token }}

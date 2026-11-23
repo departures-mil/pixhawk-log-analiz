@@ -239,7 +239,7 @@ class MainWindow(QMainWindow):
                 return
             if r[0] == 'avail':
                 self.set_status(t('u_avail', v=r[1]['version'])); self.titlebar.b_upd.setStyleSheet('background:#16A34A'); return
-            self.set_status(t('u_apply'))
+            self.set_status(t('u_install') if 'setup' in os.path.basename(r[1]).lower() else t('u_apply'))
             if updater.apply_and_restart(r[1]):
                 QTimer.singleShot(600, QApplication.instance().quit)
             else:
