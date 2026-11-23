@@ -412,6 +412,10 @@ def _prefixes(db, vehicle):
     return db._blob[k]
 
 
+_TOK_ALIAS = {'fs': 'failsafe', 'thr': 'throttle', 'batt': 'battery', 'rtl': 'return', 'alt': 'altitude', 'spd': 'speed',
+              'gcs': 'gcs', 'ekf': 'ekf', 'mag': 'compass', 'compass': 'compass', 'gps': 'gps', 'arming': 'arm', 'rc': 'rc'}
+
+
 def search(q, vehicle, limit=40):
     """Sorguya en uygun parametreler [(ad, skor)]. Kavram grupları (ör. batarya + eve dönüş) birlikte geçerse ödüllendirilir."""
     db = PDB.get(); q = (q or '').strip()
@@ -419,6 +423,11 @@ def search(q, vehicle, limit=40):
     Q = q.upper().replace(' ', '_')
     words, extra, groups = _terms(q)
     pfx = _prefixes(db, vehicle)
+    try:
+        from . import pcritical as PCR
+        crit = {c[1] for c in PCR.CRIT}
+    except Exception:
+        crit = set()
     out = []
     for k in db.names(vehicle):
         sc = 0.0
@@ -429,16 +438,20 @@ def search(q, vehicle, limit=40):
         for w in words:
             if w in b: sc += 4 + (8 if w in kl else 0)
         ng = 0
+        toks = set(kl.split('_')); toks |= {_TOK_ALIAS[x] for x in toks if x in _TOK_ALIAS}
         for g in groups:
             best = 0
             for w in g:
-                if w in kl.split('_'): best = max(best, 12)
+                if w in toks: best = max(best, 12)
                 elif re.search(r'\b' + re.escape(w), b): best = max(best, 5)
             if best: ng += 1; sc += best
         if ng > 1: sc *= 1 + 0.7 * (ng - 1)
         if sc > 0:
             m = db.meta(k, vehicle) or {}
             if m.get('usr') == 'Standard': sc *= 1.25
+            if k in crit: sc *= 1.3
+            if vehicle != 'Plane' and ('quadplan' in b or ' q failsafe' in b): sc *= 0.3   # QuadPlane'e özgü
+            if len(b) > 3000: sc *= 0.6    # uzun seçenek listeleri (RC/BTN fonksiyonları) her kelimeyi içerir
             tok = k.split('_')[0]
             if len(tok) > 3 and (tok[-1].isdigit() or tok[:-1] in pfx) and tok[:-1] in pfx | {tok.rstrip('0123456789')}:
                 sc *= 0.45    # BATT2_, BATTA_, SERVO9_ … tekrar örnekleri geri plana
