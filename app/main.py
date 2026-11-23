@@ -7,6 +7,9 @@ if __package__ in (None, ''):
 
 
 def main():
+    # Pencereli exe'de konsol yok: print/traceback çökmesin
+    for n in ('stdout', 'stderr'):
+        if getattr(sys, n) is None: setattr(sys, n, open(os.devnull, 'w', encoding='utf-8'))
     from PySide6.QtWidgets import QApplication
     from PySide6.QtCore import Qt
     from app.ui.common import STYLE, app_icon
