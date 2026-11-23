@@ -37,9 +37,9 @@ WN = {
     'st_ground': ('yerdeydi', 'on the ground', 'على الأرض'), 'st_air': ('havadaydı', 'airborne', 'في الجو'),
 }
 CAUSE_DOM = {'gps': 'gps', 'ekf': 'ekf', 'battery': 'power', 'radio': 'rc', 'stall': 'airspeed', 'vibration': 'vibration',
-             'compass': 'ekf', 'power': 'power', 'control': 'control'}
+             'compass': 'ekf', 'power': 'power', 'control': 'control', 'motor': 'motors'}
 CAUSE_CHART = {'gps': 'c_gps', 'ekf': 'c_ekf', 'battery': 'c_bat', 'radio': 'c_rcou', 'stall': 'c_alt', 'vibration': 'c_vibe',
-               'compass': 'c_mag', 'power': 'c_bat', 'control': 'c_att'}
+               'compass': 'c_mag', 'power': 'c_bat', 'control': 'c_att', 'motor': 'c_rcou'}
 DOM_CHART = {'gps': 'c_gps', 'vibration': 'c_vibe', 'power': 'c_bat', 'ekf': 'c_ekf', 'control': 'c_att', 'servo': 'c_rcou',
              'rc': 'c_rcou', 'airspeed': 'c_alt', 'cpu': 'c_timeline', 'motors': 'c_rcou', 'vtol': 'c_alt'}
 
@@ -102,7 +102,7 @@ def generate(A=None, lang='tr', n=10, seed=None):
                     'wexp': [_w('verdict', lang, x=x, wd=T('v_desc_' + inv.get(x, 'normal'), lang), cd=T('v_desc_' + vk, lang)) for x in o]})
         cause = (A.root or {}).get('cause')
         if cause and vk in ('crash', 'incident'):
-            allc = ['gps', 'ekf', 'battery', 'radio', 'stall', 'vibration', 'compass', 'power', 'control']
+            allc = ['gps', 'ekf', 'battery', 'radio', 'stall', 'vibration', 'compass', 'power', 'control', 'motor']
             o, i = _shuffle(T('cause_' + cause, lang), [T('cause_' + x, lang) for x in rnd.sample(allc, 5)], rnd)
             invc = {T('cause_' + x, lang): x for x in allc}
             def wc(x):

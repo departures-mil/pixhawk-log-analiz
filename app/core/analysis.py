@@ -156,6 +156,9 @@ class Analysis(ExtMixin):
             spd[1:] = np.where(dt > 0, d / np.maximum(dt, 1e-3), 0)
             m = (tr['rel'] > 3) | (spd > self.th['fly_speed'])
             flights = self._runs(tr['t'], m, 5.0)
+        self.flip = None
+        if not flights:
+            flights = self._flying_fallback()
         # Birleştir (kısa kesintiler)
         merged = []
         for f in flights:
@@ -164,6 +167,54 @@ class Analysis(ExtMixin):
             else:
                 merged.append(f)
         self.flights = merged
+
+    def crash_time(self):
+        """Otopilotun kendi kırım tespiti (STAT.Crash, ERR 12, 'Crash' mesajı) zamanı."""
+        L = self.L; ts = []
+        st = L.s('STAT')
+        if st.has('Crash') and len(st['t']) and np.nanmax(st['Crash']) > 0:
+            ts.append(float(st['t'][np.argmax(st['Crash'] > 0)]))
+        ts += [t for t, s, c in L.errors if s == 12 and c != 0][:1]
+        ts += [t for t, x in L.texts if 'crash' in x.lower()][:1]
+        return min(ts) if ts else None
+
+    def _flying_fallback(self):
+        """isFlying/konum izi uçuş göstermezse: barometre yükselişi, yer hızı,
+        otopilotun kırım tespiti veya devrilme ile kısa (kalkışta düşen) uçuşları yakala."""
+        L = self.L; out = []
+        b = L.s('BARO'); g = L.s('GPS'); att = L.s('ATT')
+        tc = self.crash_time()
+        for a0, a1 in self.armed:
+            if a1 - a0 < 1.0: continue
+            got = []
+            if b.has('Alt'):
+                m = (b['t'] >= a0) & (b['t'] <= a1)
+                if m.sum() > 10:
+                    bt = b['t'][m]; al = b['Alt'][m]
+                    ref = np.nanmedian(al[bt <= a0 + 2.0]) if (bt <= a0 + 2.0).sum() else al[0]
+                    got += self._runs(bt, (al - ref) > 1.5, 1.5)
+            if g.has('Spd'):
+                m = (g['t'] >= a0) & (g['t'] <= a1)
+                if g.has('Status'): m &= g['Status'] >= 3
+                if m.sum() > 3:
+                    got += self._runs(g['t'][m], g['Spd'][m] > max(2.5, self.th['fly_speed']), 2.0)
+            if tc is not None and a0 <= tc <= a1 + 1:
+                got.append((a0 + min(2.0, (tc - a0) / 2), min(tc, a1)))
+            # devrilme: kurulumda düz, kurulum sonunda büyük yatış/yunuslama
+            if att.has('Roll') and a1 - a0 > 3:
+                m = (att['t'] >= a0) & (att['t'] <= a1)
+                if m.sum() > 10:
+                    at = att['t'][m]; ang = np.maximum(np.abs(att['Roll'][m]), np.abs(att['Pitch'][m]))
+                    lim = max(self.th['roll_crash'], 50)
+                    early = ang[at <= a0 + 2.0]
+                    late = at >= a1 - 3.0
+                    if len(early) and np.nanmax(early) < 25 and late.any() and np.nanmax(ang[late]) > lim:
+                        k = int(np.argmax(ang > lim)); tf = float(at[k])
+                        self.flip = (tf, float(np.nanmax(ang[late])))
+                        got.append((a0 + min(2.0, (tf - a0) / 2), a1))
+            if got:
+                out.append((min(x[0] for x in got), max(x[1] for x in got)))
+        return out
 
     def cruise_mask(self, t):
         t = np.asarray(t); m = np.zeros(len(t), bool)
@@ -494,7 +545,15 @@ class Analysis(ExtMixin):
                 w3 = (v['t'] > last_f[1] - 2) & (v['t'] <= last_f[1] + 3)
                 if w3.any() and np.nanmax(v['VibeZ'][w3]) > self.th['vibe_crash']:
                     score += 15; ev.append(F('cr_impact', v=round(float(np.nanmax(v['VibeZ'][w3])))))
-            if landed: score -= 25; ev.append(F('cr_landed'))
+            hard = any(x.get('k') in ('cr_stat', 'cr_err', 'cr_msg') for x in ev) or getattr(self, 'flip', None)
+            if landed and not hard: score -= 25; ev.append(F('cr_landed'))
+        if self.flights and getattr(self, 'flip', None):
+            score += 45; ev.append(F('cr_flip', t=self.flip[0], a=round(self.flip[1])))
+        if self.flights and self.armed and L.duration - self.armed[-1][1] < 1.0 and \
+                L.duration - self.flights[-1][1] < 2.0 and not any(x.get('k') == 'cr_log_end' for x in ev) and \
+                not any(i == 11 for _, i in L.events):
+            # kurulu ve uçuşta iken log kesildi (güç kaybı / ani düşüş)
+            score += 30; ev.append(F('cr_log_cut', t=float(L.duration)))
         if not self.flights:
             kind = 'noflight'
         elif score >= 60:
@@ -565,6 +624,26 @@ class Analysis(ExtMixin):
             err = np.abs(a['DesRoll'] - a['Roll'])
             m = (a['t'] >= win0) & (a['t'] <= end) & (err > 30)
             if m.sum() > 3: cands.append(('control', float(a['t'][np.argmax(m)])))
+        # Motor / ESC / pervane (çok rotorlu): bir motor tavana dayanırken diğerleri düşük kalır
+        # ya da araç kalkıştan hemen sonra devrilir (yanlış motor sırası/yönü, pervane)
+        tm = None
+        if self.profile in ('copter', 'heli') or self.vehicle == 'Copter':
+            o = L.s('RCOU'); mx = float(P.get('MOT_PWM_MAX', 0) or 0) or 1950.0
+            fr = int(P.get('FRAME_CLASS', 1) or 1)
+            nm = {1: 4, 2: 6, 3: 8, 4: 3, 5: 6, 7: 3, 10: 4, 12: 4, 14: 4}.get(fr, 4)
+            ch = [f'C{i}' for i in range(1, nm + 1) if o.has(f'C{i}')]
+            if len(ch) >= 3:
+                w = (o['t'] >= max(win0, end - 15)) & (o['t'] <= end)
+                if w.sum() > 5:
+                    M = np.vstack([o[c][w] for c in ch]); tt = o['t'][w]
+                    hi = M.max(axis=0); lo = np.median(M, axis=0)
+                    sat = (hi >= mx - 40) & (hi - lo > 250)
+                    for i0, i1 in self._runs(tt, sat, 0.4)[:1]:
+                        tm = float(i0)
+            if self.flip and self.flights and self.flip[0] - self.flights[-1][0] < 6:
+                tm = min(tm, self.flip[0]) if tm is not None else self.flip[0]
+            if tm is not None:
+                cands.append(('motor', tm))
         if not cands:
             self.root = {'cause': 'unknown', 'chain': [], 'prevent': 'unknown', 't': end}; return
         cands.sort(key=lambda c: c[1])
@@ -572,6 +651,8 @@ class Analysis(ExtMixin):
         primary = cands[0]
         if primary[0] == 'ekf' and len(cands) > 1:
             primary = next((c for c in cands if c[0] != 'ekf'), primary)
+        if primary[0] == 'control' and tm is not None and tm - primary[1] < 3:
+            primary = ('motor', tm)   # tutum hatası motor doygunluğunun sonucu
         chain = []
         for name, t in cands:
             chain.append({'t': t, 'step': name})
@@ -649,7 +730,7 @@ class Analysis(ExtMixin):
         if fa:
             k = int(np.nanargmax(src[fa])); f['max_as'] = float(src[fa][k]); f['max_as_t'] = float(src['t'][k])
         b = L.s('BAT')
-        if b.has('Volt'):
+        if b.has("Volt") and np.any(b["Volt"] > 1):
             k = int(np.nanargmin(np.where(b['Volt'] > 1, b['Volt'], np.nan))); f['min_volt'] = float(b['Volt'][k]); f['min_volt_t'] = float(b['t'][k])
         if b.has('CurrTot'): f['used_mah'] = float(np.nanmax(b['CurrTot']))
         f['modes'] = [(t, K.mode_name(self.vehicle, n), r) for t, n, _, r in L.modes]

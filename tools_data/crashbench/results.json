@@ -1,17 +1,19 @@
 {
  "score": {
-  "n": 64,
-  "errors": 1,
-  "tp": 26,
-  "fn": 19,
-  "fp": 9,
+  "n": 65,
+  "errors": 0,
+  "tp": 40,
+  "fn": 7,
+  "fp": 8,
   "tn": 10,
-  "accuracy": 0.562,
-  "recall_crash": 0.578,
-  "specificity": 0.526,
-  "cause_n": 32,
-  "cause_match": 3,
-  "cause_acc": 0.094
+  "crash_verdict": 19,
+  "false_crash": 0,
+  "accuracy": 0.769,
+  "recall_crash": 0.851,
+  "specificity": 0.556,
+  "cause_n": 33,
+  "cause_match": 7,
+  "cause_acc": 0.212
  },
  "history": [
   {
@@ -30,19 +32,21 @@
    "cause_acc": 0.094
   },
   {
-   "date": "2026-11-23 11:26",
-   "n": 64,
-   "errors": 1,
-   "tp": 26,
-   "fn": 19,
-   "fp": 9,
+   "date": "2026-11-23 11:35",
+   "n": 65,
+   "errors": 0,
+   "tp": 40,
+   "fn": 7,
+   "fp": 8,
    "tn": 10,
-   "accuracy": 0.562,
-   "recall_crash": 0.578,
-   "specificity": 0.526,
-   "cause_n": 32,
-   "cause_match": 3,
-   "cause_acc": 0.094
+   "crash_verdict": 19,
+   "false_crash": 0,
+   "accuracy": 0.769,
+   "recall_crash": 0.851,
+   "specificity": 0.556,
+   "cause_n": 33,
+   "cause_match": 7,
+   "cause_acc": 0.212
   }
  ],
  "results": [
@@ -57,20 +61,34 @@
    "category_id": 36,
    "created": "2016-07-04",
    "vehicle": "Plane",
-   "got": "noflight",
-   "got_cause": null,
-   "others": null,
-   "overall": 51,
+   "got": "crash",
+   "got_cause": "control",
+   "others": [],
+   "overall": 50,
    "dur": 89,
-   "sec": 1.0,
+   "sec": 0.4,
    "verdict": {
-    "kind": "noflight",
-    "score": 50,
+    "kind": "crash",
+    "score": 100,
     "evidence": [
      {
       "k": "cr_err",
       "a": {
        "t": 89.154518
+      }
+     },
+     {
+      "k": "cr_attitude",
+      "a": {
+       "r": 181,
+       "p": 38
+      }
+     },
+     {
+      "k": "cr_flip",
+      "a": {
+       "t": 85.576146,
+       "a": 181
       }
      }
     ]
@@ -79,6 +97,10 @@
     "duration": 89.13475,
     "vehicle": "Plane",
     "version": "",
+    "takeoff_t": 76.802426,
+    "land_t": 89.15458,
+    "flight_time": 12.352153999999999,
+    "n_flights": 1,
     "arm_t": 1.178108,
     "disarm_t": 89.15458,
     "max_alt": 2.6300048828125,
@@ -101,7 +123,7 @@
      "status": "good",
      "metrics": {
       "min_sats": 7.0,
-      "mean_sats": 7.9375,
+      "mean_sats": 7.935483870967742,
       "max_hdop": 1.06,
       "bad_pct": 0.0,
       "glitches": 0
@@ -109,15 +131,21 @@
      "findings": []
     },
     "vibration": {
-     "score": 96,
+     "score": 85,
      "status": "good",
      "metrics": {
-      "p95": 9.075595521926878,
+      "p95": 22.348596572875927,
       "max": 87.47296905517578,
-      "z_mean": 4.213884765978932,
+      "z_mean": 10.496809717116317,
       "clip": 36.0
      },
      "findings": [
+      {
+       "k": "vibe_mid",
+       "a": {
+        "v": 22.3
+       }
+      },
       {
        "k": "vibe_clip",
        "a": {
@@ -154,8 +182,8 @@
      "score": 0,
      "status": "bad",
      "metrics": {
-      "roll_rms": 42.99143215090452,
-      "pitch_rms": 5.666124663364494,
+      "roll_rms": 87.36366774739041,
+      "pitch_rms": 11.41010153649698,
       "roll_max": 180.6,
       "pitch_max": 38.39
      },
@@ -163,13 +191,13 @@
       {
        "k": "att_roll_err",
        "a": {
-        "v": 43.0
+        "v": 87.4
        }
       },
       {
        "k": "att_pitch_err",
        "a": {
-        "v": 5.7
+        "v": 11.4
        }
       },
       {
@@ -225,7 +253,7 @@
    ],
    "overall": 81,
    "dur": 2681,
-   "sec": 1.1,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -605,7 +633,7 @@
    ],
    "overall": 63,
    "dur": 567,
-   "sec": 0.7,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -712,7 +740,7 @@
       "SH": 0.33,
       "SM": 2.93,
       "mag_var_pct": 40.381776375509,
-      "mag_thr_corr": -0.08524303502582165
+      "mag_thr_corr": -0.08524303502582166
      },
      "findings": [
       {
@@ -830,21 +858,22 @@
    "title": "Arducopter initial tuning and setup - Oscillation issue",
    "url": "https://discuss.ardupilot.org/t/arducopter-initial-tuning-and-setup-oscillation-issue/103213",
    "log_url": "https://drive.google.com/file/d/1JwqQbwn2o5DMM8jwrljjba6CGbO9lXAp/view?usp=sharing",
-   "label": "normal",
+   "label": "crash",
    "cause_hint": "motor",
    "mb": 3.6,
    "category_id": 6,
    "created": "2023-07-03",
+   "label_src": "autopilot",
    "vehicle": "Copter",
-   "got": "incident",
+   "got": "crash",
    "got_cause": "unknown",
    "others": null,
    "overall": 86,
    "dur": 332,
-   "sec": 0.6,
+   "sec": 0.4,
    "verdict": {
-    "kind": "incident",
-    "score": 55,
+    "kind": "crash",
+    "score": 80,
     "evidence": [
      {
       "k": "cr_err",
@@ -858,10 +887,6 @@
        "t": 39.319019,
        "msg": "Crash: Disarming: AngErr=135>30, Accel=0.5<3.0"
       }
-     },
-     {
-      "k": "cr_landed",
-      "a": {}
      }
     ]
    },
@@ -1054,7 +1079,7 @@
    "others": null,
    "overall": 69,
    "dur": 118,
-   "sec": 0.6,
+   "sec": 0.4,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -1214,13 +1239,329 @@
    "title": "Coptor automatically begins hovering in a roughly elliptical orbit around the takeoff location in Loiter Mode",
    "url": "https://discuss.ardupilot.org/t/coptor-automatically-begins-hovering-in-a-roughly-elliptical-orbit-around-the-takeoff-location-in-loiter-mode/107868",
    "log_url": "http://drive.google.com/file/d/19qEqw1Tves8nJjeGsfGUnPkF9sRGt5Y-/view?usp=sharing",
-   "label": "normal",
+   "label": "crash",
    "cause_hint": null,
    "mb": 0.9,
    "category_id": 6,
    "created": "2023-10-16",
-   "got": "error",
-   "err": "Command '['/opt/hostedtoolcache/Python/3.12.16/x64/bin/python', '/home/runner/work/pixhawk-log-analiz/pixhawk-log-analiz/run.py', '--analyze', '/tmp/bench/107868.bin', '--json', '/tmp/bench/107868.json']' returned non-zero exit status 1."
+   "label_src": "autopilot",
+   "vehicle": "Copter",
+   "got": "crash",
+   "got_cause": "control",
+   "others": [
+    "gps"
+   ],
+   "overall": 31,
+   "dur": 36,
+   "sec": 0.4,
+   "verdict": {
+    "kind": "crash",
+    "score": 100,
+    "evidence": [
+     {
+      "k": "cr_err",
+      "a": {
+       "t": 21.556218
+      }
+     },
+     {
+      "k": "cr_msg",
+      "a": {
+       "t": 21.556281,
+       "msg": "Crash: Disarming: AngErr=166>30, Accel=0.6<3.0"
+      }
+     },
+     {
+      "k": "cr_attitude",
+      "a": {
+       "r": 180,
+       "p": 83
+      }
+     }
+    ]
+   },
+   "facts": {
+    "duration": 36.300902,
+    "vehicle": "Copter",
+    "version": "ArduCopter V4.4.1 (e010f979)",
+    "takeoff_t": 17.701184,
+    "land_t": 24.001125,
+    "flight_time": 6.299940999999997,
+    "n_flights": 1,
+    "max_alt": 0.7246132493019104,
+    "max_alt_t": 15.301299,
+    "max_dist": 12.903825289906614,
+    "max_dist_t": 21.90125,
+    "distance": 25.328535831267867,
+    "max_gs": 3.5553107261657715,
+    "max_gs_t": 18.356296,
+    "used_mah": 10.835531234741211,
+    "profile": "copter",
+    "serial": "002500273131510D31363832",
+    "wind_mean": 0.0,
+    "wind_max": 0.0,
+    "wind_from": 180.0,
+    "anomaly_index": 0
+   },
+   "health": {
+    "gps": {
+     "score": 92,
+     "status": "good",
+     "metrics": {
+      "min_sats": 12.0,
+      "mean_sats": 13.875,
+      "max_hdop": 0.8300000000000001,
+      "bad_pct": 0.0,
+      "glitches": 1
+     },
+     "findings": [
+      {
+       "k": "gps_glitch",
+       "a": {
+        "n": 1
+       }
+      }
+     ]
+    },
+    "vibration": {
+     "score": 36,
+     "status": "bad",
+     "metrics": {
+      "p95": 41.76494903564452,
+      "max": 63.219417572021484,
+      "z_mean": 14.594379628461505,
+      "clip": 128.0
+     },
+     "findings": [
+      {
+       "k": "vibe_high",
+       "a": {
+        "v": 41.8
+       }
+      },
+      {
+       "k": "vibe_clip",
+       "a": {
+        "n": 128
+       }
+      }
+     ]
+    },
+    "power": {
+     "score": 40,
+     "status": "bad",
+     "metrics": {
+      "vmin": 0.6373336315155029,
+      "vmax": 0.6525255441665649,
+      "cells": 1,
+      "per_cell_min": 0.6373336315155029,
+      "current_sensor": false,
+      "used_mah": 10.835531234741211,
+      "capacity": 44000.0,
+      "vcc_min": 5.14013671875,
+      "max_curr": null
+     },
+     "findings": [
+      {
+       "k": "bat_low_cell",
+       "a": {
+        "v": 0.64,
+        "n": 1
+       }
+      },
+      {
+       "k": "bat_no_current",
+       "a": {}
+      }
+     ]
+    },
+    "ekf": {
+     "score": 37,
+     "status": "bad",
+     "metrics": {
+      "SV": 1.6,
+      "SP": 0.4,
+      "SH": 0.39,
+      "SM": 1.2,
+      "mag_var_pct": 75.98537465674323
+     },
+     "findings": [
+      {
+       "k": "ekf_bad",
+       "a": {
+        "k": "SV",
+        "v": 1.6
+       }
+      },
+      {
+       "k": "ekf_bad",
+       "a": {
+        "k": "SM",
+        "v": 1.2
+       }
+      },
+      {
+       "k": "mag_var",
+       "a": {
+        "v": 76.0
+       }
+      },
+      {
+       "k": "ekf_err",
+       "a": {}
+      }
+     ]
+    },
+    "control": {
+     "score": 0,
+     "status": "bad",
+     "metrics": {
+      "roll_rms": 155.63111389150663,
+      "pitch_rms": 18.63844418365711,
+      "roll_max": 179.62,
+      "pitch_max": 83.01
+     },
+     "findings": [
+      {
+       "k": "att_roll_err",
+       "a": {
+        "v": 155.6
+       }
+      },
+      {
+       "k": "att_pitch_err",
+       "a": {
+        "v": 18.6
+       }
+      },
+      {
+       "k": "att_roll_exceed",
+       "a": {
+        "v": 180,
+        "lim": 45
+       }
+      }
+     ]
+    },
+    "servo": {
+     "score": 0,
+     "status": "bad",
+     "metrics": {
+      "C1": 46.03174603174603,
+      "C2": 77.77777777777779,
+      "C4": 38.095238095238095,
+      "thr_full_pct": 0.0,
+      "thr_mean": 4.241089967379631
+     },
+     "findings": [
+      {
+       "k": "servo_sat",
+       "a": {
+        "ch": "C2",
+        "v": 77.8
+       }
+      }
+     ]
+    },
+    "rc": {
+     "score": 100,
+     "status": "good",
+     "metrics": {
+      "below_fs_pct": 0.0,
+      "radio_failsafes": 0
+     },
+     "findings": []
+    },
+    "cpu": {
+     "score": 100,
+     "status": "good",
+     "metrics": {
+      "load_max": 35.6,
+      "long_loops": 1.0
+     },
+     "findings": []
+    },
+    "motors": {
+     "score": 70,
+     "status": "warn",
+     "metrics": {
+      "motor_pwm_mean": 1430.3862433862432,
+      "motor_imbalance_us": 100.11640211640201,
+      "motor_headroom_us": 498.5873015873017,
+      "hover_thr": 0.2831963002681732
+     },
+     "findings": [
+      {
+       "k": "mot_imbalance",
+       "a": {
+        "ch": "C3",
+        "v": 100
+       }
+      }
+     ]
+    }
+   },
+   "events": [
+    {
+     "t": 20.598795,
+     "cat": "err",
+     "sev": 2,
+     "text": {
+      "k": "ev_err",
+      "a": {
+       "sub": 29,
+       "code": 1
+      }
+     }
+    },
+    {
+     "t": 20.79883,
+     "cat": "err",
+     "sev": 2,
+     "text": {
+      "k": "ev_err",
+      "a": {
+       "sub": 11,
+       "code": 2
+      }
+     }
+    },
+    {
+     "t": 21.556218,
+     "cat": "err",
+     "sev": 2,
+     "text": {
+      "k": "ev_err",
+      "a": {
+       "sub": 12,
+       "code": 1
+      }
+     }
+    },
+    {
+     "t": 21.556281,
+     "cat": "msg",
+     "sev": 2,
+     "text": {
+      "k": "ev_msg",
+      "a": {
+       "msg": "Crash: Disarming: AngErr=166>30, Accel=0.6<3.0"
+      }
+     }
+    },
+    {
+     "t": 21.558843,
+     "cat": "err",
+     "sev": 2,
+     "text": {
+      "k": "ev_err",
+      "a": {
+       "sub": 24,
+       "code": 1
+      }
+     }
+    }
+   ]
   },
   {
    "id": "108349",
@@ -1398,7 +1739,7 @@
    "others": null,
    "overall": 52,
    "dur": 507,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -1582,7 +1923,7 @@
    "others": [],
    "overall": 83,
    "dur": 575,
-   "sec": 0.6,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -1809,7 +2150,7 @@
    ],
    "overall": 50,
    "dur": 694,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -1910,7 +2251,7 @@
       "SH": 0.23,
       "SM": 0.74,
       "mag_var_pct": 14.781474264117374,
-      "mag_thr_corr": 0.19592942876617303
+      "mag_thr_corr": 0.19592942876617292
      },
      "findings": []
     },
@@ -2007,15 +2348,17 @@
    "category_id": 174,
    "created": "2024-07-31",
    "vehicle": "Copter",
-   "got": "noflight",
-   "got_cause": null,
-   "others": null,
-   "overall": 37,
+   "got": "crash",
+   "got_cause": "control",
+   "others": [
+    "radio"
+   ],
+   "overall": 36,
    "dur": 1658,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
-    "kind": "noflight",
-    "score": 80,
+    "kind": "crash",
+    "score": 100,
     "evidence": [
      {
       "k": "cr_err",
@@ -2029,6 +2372,20 @@
        "t": 1641.919033,
        "msg": "Crash: Disarming: AngErr=165>30, Accel=0.4<3.0"
       }
+     },
+     {
+      "k": "cr_attitude",
+      "a": {
+       "r": 169,
+       "p": 33
+      }
+     },
+     {
+      "k": "cr_flip",
+      "a": {
+       "t": 1639.388665,
+       "a": 169
+      }
      }
     ]
    },
@@ -2036,6 +2393,10 @@
     "duration": 1658.468661,
     "vehicle": "Copter",
     "version": "ArduCopter V4.5.4 (fd1bcc61)",
+    "takeoff_t": 1620.504913,
+    "land_t": 1641.919063,
+    "flight_time": 21.414150000000063,
+    "n_flights": 1,
     "arm_t": 1618.504913,
     "disarm_t": 1641.919063,
     "max_alt": 3.161933660507202,
@@ -2060,9 +2421,9 @@
      "score": 100,
      "status": "good",
      "metrics": {
-      "min_sats": 8.0,
-      "mean_sats": 13.341040462427745,
-      "max_hdop": 1.3800000000000001,
+      "min_sats": 12.0,
+      "mean_sats": 13.242990654205608,
+      "max_hdop": 0.96,
       "bad_pct": 0.0,
       "glitches": 0
      },
@@ -2072,9 +2433,9 @@
      "score": 100,
      "status": "good",
      "metrics": {
-      "p95": 3.3265922784805233,
+      "p95": 8.18914642333985,
       "max": 52.256893157958984,
-      "z_mean": 0.8321762438101029,
+      "z_mean": 2.5628111441947623,
       "clip": 4.0
      },
      "findings": [
@@ -2116,7 +2477,7 @@
      "metrics": {
       "SV": 1.48,
       "SP": 0.27,
-      "SH": 0.23,
+      "SH": 0.12,
       "SM": 1.99,
       "mag_var_pct": 80.65346650817746
      },
@@ -2147,49 +2508,49 @@
      "score": 0,
      "status": "bad",
      "metrics": {
-      "roll_rms": 89.54642209442284,
-      "pitch_rms": 6.960629652578125,
-      "roll_max": 171.38,
+      "roll_rms": 58.00111157264119,
+      "pitch_rms": 6.048021365811678,
+      "roll_max": 169.42000000000002,
       "pitch_max": 32.63
      },
      "findings": [
       {
        "k": "att_roll_err",
        "a": {
-        "v": 89.5
+        "v": 58.0
        }
       },
       {
        "k": "att_pitch_err",
        "a": {
-        "v": 7.0
+        "v": 6.0
        }
       },
       {
        "k": "att_roll_exceed",
        "a": {
-        "v": 171,
+        "v": 169,
         "lim": 45
        }
       }
      ]
     },
     "servo": {
-     "score": 0,
+     "score": 7,
      "status": "bad",
      "metrics": {
-      "C1": 80.4093567251462,
-      "C2": 74.12280701754386,
-      "C4": 73.24561403508771,
-      "thr_full_pct": 2.478134110787172,
-      "thr_mean": 14.435804215740436
+      "C1": 37.08920187793427,
+      "C2": 16.901408450704224,
+      "C4": 14.084507042253522,
+      "thr_full_pct": 7.981220657276995,
+      "thr_mean": 46.49277789670395
      },
      "findings": [
       {
        "k": "servo_sat",
        "a": {
         "ch": "C1",
-        "v": 80.4
+        "v": 37.1
        }
       }
      ]
@@ -2220,15 +2581,23 @@
      "findings": []
     },
     "motors": {
-     "score": 100,
-     "status": "good",
+     "score": 70,
+     "status": "warn",
      "metrics": {
-      "motor_pwm_mean": 1187.967105263158,
-      "motor_imbalance_us": 28.29751461988303,
-      "motor_headroom_us": 784.0453216374269,
+      "motor_pwm_mean": 1603.6126760563377,
+      "motor_imbalance_us": 90.87089201877893,
+      "motor_headroom_us": 306.5117370892019,
       "hover_thr": 0.3270905613899231
      },
-     "findings": []
+     "findings": [
+      {
+       "k": "mot_imbalance",
+       "a": {
+        "ch": "C5",
+        "v": 91
+       }
+      }
+     ]
     }
    },
    "events": [
@@ -2319,7 +2688,7 @@
    "others": null,
    "overall": 44,
    "dur": 92,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -2536,10 +2905,10 @@
    ],
    "overall": 36,
    "dur": 1708,
-   "sec": 0.9,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
-    "score": 75,
+    "score": 100,
     "evidence": [
      {
       "k": "cr_err",
@@ -2560,10 +2929,6 @@
        "r": 175,
        "p": 68
       }
-     },
-     {
-      "k": "cr_landed",
-      "a": {}
      }
     ]
    },
@@ -3102,11 +3467,18 @@
    ],
    "overall": 45,
    "dur": 261,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
-    "score": 0,
-    "evidence": []
+    "score": 30,
+    "evidence": [
+     {
+      "k": "cr_log_cut",
+      "a": {
+       "t": 260.530563
+      }
+     }
+    ]
    },
    "facts": {
     "duration": 260.530563,
@@ -3288,7 +3660,7 @@
    "others": null,
    "overall": 99,
    "dur": 87,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -3573,21 +3945,30 @@
    "category_id": 104,
    "created": "2016-11-17",
    "vehicle": "Plane",
-   "got": "noflight",
+   "got": "normal",
    "got_cause": null,
    "others": null,
    "overall": 95,
    "dur": 173,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
-    "kind": "noflight",
+    "kind": "normal",
     "score": 0,
-    "evidence": []
+    "evidence": [
+     {
+      "k": "cr_landed",
+      "a": {}
+     }
+    ]
    },
    "facts": {
     "duration": 173.196772,
     "vehicle": "Plane",
     "version": "",
+    "takeoff_t": 98.862435,
+    "land_t": 164.979199,
+    "flight_time": 66.11676399999999,
+    "n_flights": 1,
     "arm_t": 2.607157,
     "disarm_t": 173.196787,
     "max_alt": 2.5699996948242188,
@@ -3610,9 +3991,9 @@
      "score": 100,
      "status": "good",
      "metrics": {
-      "min_sats": 18.0,
-      "mean_sats": 19.760233918128655,
-      "max_hdop": 0.62,
+      "min_sats": 19.0,
+      "mean_sats": 19.975757575757576,
+      "max_hdop": 0.59,
       "bad_pct": 0.0,
       "glitches": 0
      },
@@ -3622,16 +4003,16 @@
      "score": 90,
      "status": "good",
      "metrics": {
-      "p95": 21.044908523559567,
-      "max": 34.23944854736328,
-      "z_mean": 15.034185013259108,
+      "p95": 21.144977569580075,
+      "max": 31.597259521484375,
+      "z_mean": 17.041571579500467,
       "clip": 0.0
      },
      "findings": [
       {
        "k": "vibe_mid",
        "a": {
-        "v": 21.0
+        "v": 21.1
        }
       }
      ]
@@ -3640,10 +4021,10 @@
      "score": 100,
      "status": "good",
      "metrics": {
-      "vmin": 1525.0,
+      "vmin": 1528.0,
       "vmax": 1651.0,
       "cells": 393,
-      "per_cell_min": 3.880407124681934,
+      "per_cell_min": 3.8880407124681935,
       "current_sensor": true,
       "used_mah": 521.3634643554688,
       "capacity": 4500.0,
@@ -3664,10 +4045,10 @@
      "score": 100,
      "status": "good",
      "metrics": {
-      "roll_rms": 0.7911874711919374,
-      "pitch_rms": 0.9508899288951723,
-      "roll_max": 5.21,
-      "pitch_max": 8.96
+      "roll_rms": 0.6426711539513907,
+      "pitch_rms": 0.6791068108965338,
+      "roll_max": 5.0600000000000005,
+      "pitch_max": 5.11
      },
      "findings": []
     },
@@ -3699,7 +4080,7 @@
    "others": null,
    "overall": 77,
    "dur": 200,
-   "sec": 0.6,
+   "sec": 0.4,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -3922,7 +4303,7 @@
    "others": [],
    "overall": 79,
    "dur": 7133983284583,
-   "sec": 1.3,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -4143,10 +4524,10 @@
    "others": [],
    "overall": 46,
    "dur": 82,
-   "sec": 0.6,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
-    "score": 20,
+    "score": 50,
     "evidence": [
      {
       "k": "cr_sink",
@@ -4165,6 +4546,12 @@
      {
       "k": "cr_landed",
       "a": {}
+     },
+     {
+      "k": "cr_log_cut",
+      "a": {
+       "t": 81.592838
+      }
      }
     ]
    },
@@ -4656,7 +5043,7 @@
    ],
    "overall": 33,
    "dur": 27,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -4909,7 +5296,7 @@
    "others": null,
    "overall": 38,
    "dur": 46,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -5094,7 +5481,7 @@
    "others": [],
    "overall": 80,
    "dur": 185,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -5329,15 +5716,17 @@
    "category_id": 6,
    "created": "2026-02-25",
    "vehicle": "Copter",
-   "got": "noflight",
-   "got_cause": null,
-   "others": null,
-   "overall": 37,
+   "got": "crash",
+   "got_cause": "control",
+   "others": [
+    "ekf"
+   ],
+   "overall": 36,
    "dur": 536,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
-    "kind": "noflight",
-    "score": 80,
+    "kind": "crash",
+    "score": 100,
     "evidence": [
      {
       "k": "cr_err",
@@ -5351,6 +5740,20 @@
        "t": 440.480092,
        "msg": "Crash: Disarming: AngErr=160>30, Accel=0.2<3.0"
       }
+     },
+     {
+      "k": "cr_attitude",
+      "a": {
+       "r": 180,
+       "p": 79
+      }
+     },
+     {
+      "k": "cr_flip",
+      "a": {
+       "t": 436.187589,
+       "a": 180
+      }
      }
     ]
    },
@@ -5358,6 +5761,10 @@
     "duration": 536.287464,
     "vehicle": "Copter",
     "version": "ArduCopter V4.4.0 (502702df)",
+    "takeoff_t": 429.48767,
+    "land_t": 440.480099,
+    "flight_time": 10.992429000000016,
+    "n_flights": 1,
     "arm_t": 427.48767,
     "disarm_t": 440.480099,
     "max_alt": 1.0141284465789795,
@@ -5382,24 +5789,30 @@
      "score": 100,
      "status": "good",
      "metrics": {
-      "min_sats": 10.0,
-      "mean_sats": 14.70384185005595,
-      "max_hdop": 0.91,
+      "min_sats": 13.0,
+      "mean_sats": 14.836363636363636,
+      "max_hdop": 0.8300000000000001,
       "bad_pct": 0.0,
       "glitches": 0
      },
      "findings": []
     },
     "vibration": {
-     "score": 70,
-     "status": "warn",
+     "score": 0,
+     "status": "bad",
      "metrics": {
-      "p95": 0.2897220551967621,
+      "p95": 55.879979705810584,
       "max": 113.82418823242188,
-      "z_mean": 0.36131645119354733,
+      "z_mean": 14.014845732091503,
       "clip": 887.0
      },
      "findings": [
+      {
+       "k": "vibe_high",
+       "a": {
+        "v": 55.9
+       }
+      },
       {
        "k": "vibe_clip",
        "a": {
@@ -5409,36 +5822,28 @@
      ]
     },
     "power": {
-     "score": 55,
-     "status": "warn",
+     "score": 100,
+     "status": "good",
      "metrics": {
-      "vmin": 11.809088706970215,
+      "vmin": 22.00086784362793,
       "vmax": 27.262950897216797,
       "cells": 6,
-      "per_cell_min": 1.9681814511617024,
+      "per_cell_min": 3.6668113072713218,
       "current_sensor": true,
       "used_mah": 1210.839599609375,
       "capacity": 30000.0,
       "vcc_min": 5.008108615875244,
       "max_curr": 126.24267578125
      },
-     "findings": [
-      {
-       "k": "bat_low_cell",
-       "a": {
-        "v": 1.97,
-        "n": 6
-       }
-      }
-     ]
+     "findings": []
     },
     "ekf": {
      "score": 49,
      "status": "bad",
      "metrics": {
       "SV": 1.46,
-      "SP": 0.1,
-      "SH": 0.38,
+      "SP": 0.05,
+      "SH": 0.26,
       "SM": 2.05,
       "mag_var_pct": 3.0641140524056287
      },
@@ -5467,22 +5872,22 @@
      "score": 0,
      "status": "bad",
      "metrics": {
-      "roll_rms": 72.23436695030657,
-      "pitch_rms": 4.607781353582657,
+      "roll_rms": 83.65400599103802,
+      "pitch_rms": 16.37398098236984,
       "roll_max": 179.69,
-      "pitch_max": 87.8
+      "pitch_max": 79.18
      },
      "findings": [
       {
        "k": "att_roll_err",
        "a": {
-        "v": 72.2
+        "v": 83.7
        }
       },
       {
        "k": "att_pitch_err",
        "a": {
-        "v": 4.6
+        "v": 16.4
        }
       },
       {
@@ -5501,8 +5906,8 @@
       "C1": 100.0,
       "C2": 100.0,
       "C4": 100.0,
-      "thr_full_pct": 0.037292560134253215,
-      "thr_mean": 0.3451657190959485
+      "thr_full_pct": 1.834862385321101,
+      "thr_mean": 16.982786711115338
      },
      "findings": [
       {
@@ -5633,7 +6038,7 @@
    ],
    "overall": 50,
    "dur": 998,
-   "sec": 0.8,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -5928,7 +6333,7 @@
    ],
    "overall": 79,
    "dur": 1618,
-   "sec": 0.8,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -6219,15 +6624,15 @@
    "category_id": 179,
    "created": "2026-04-08",
    "vehicle": "Copter",
-   "got": "noflight",
-   "got_cause": null,
-   "others": null,
-   "overall": 44,
+   "got": "crash",
+   "got_cause": "control",
+   "others": [],
+   "overall": 51,
    "dur": 235,
-   "sec": 0.6,
+   "sec": 0.4,
    "verdict": {
-    "kind": "noflight",
-    "score": 80,
+    "kind": "crash",
+    "score": 100,
     "evidence": [
      {
       "k": "cr_err",
@@ -6241,6 +6646,20 @@
        "t": 199.066842,
        "msg": "Crash: Disarming: AngErr=175>30, Accel=0.3<3.0"
       }
+     },
+     {
+      "k": "cr_attitude",
+      "a": {
+       "r": 180,
+       "p": 12
+      }
+     },
+     {
+      "k": "cr_flip",
+      "a": {
+       "t": 196.002036,
+       "a": 180
+      }
      }
     ]
    },
@@ -6248,6 +6667,10 @@
     "duration": 234.902228,
     "vehicle": "Copter",
     "version": "ArduCopter V4.6.2 (22d97d70)",
+    "takeoff_t": 137.299876,
+    "land_t": 199.06685,
+    "flight_time": 61.766973999999976,
+    "n_flights": 1,
     "arm_t": 101.599761,
     "disarm_t": 199.06685,
     "max_alt": 0.5036978125572205,
@@ -6272,21 +6695,21 @@
      "score": 100,
      "status": "good",
      "metrics": {
-      "min_sats": 24.0,
-      "mean_sats": 29.002608695652174,
-      "max_hdop": 0.62,
+      "min_sats": 28.0,
+      "mean_sats": 29.093851132686083,
+      "max_hdop": 0.56,
       "bad_pct": 0.0,
       "glitches": 0
      },
      "findings": []
     },
     "vibration": {
-     "score": 97,
+     "score": 92,
      "status": "good",
      "metrics": {
-      "p95": 9.028373718261719,
+      "p95": 12.949085617065421,
       "max": 103.22709655761719,
-      "z_mean": 4.129638853675324,
+      "z_mean": 6.96439765936252,
       "clip": 34.0
      },
      "findings": [
@@ -6299,13 +6722,13 @@
      ]
     },
     "power": {
-     "score": 40,
-     "status": "bad",
+     "score": 85,
+     "status": "good",
      "metrics": {
-      "vmin": 18.731395721435547,
+      "vmin": 24.000244140625,
       "vmax": 24.960840225219727,
       "cells": 6,
-      "per_cell_min": 3.1218992869059243,
+      "per_cell_min": 4.000040690104167,
       "current_sensor": true,
       "used_mah": 75.4394302368164,
       "capacity": 3300.0,
@@ -6313,13 +6736,6 @@
       "max_curr": 24.858970642089844
      },
      "findings": [
-      {
-       "k": "bat_low_cell",
-       "a": {
-        "v": 3.12,
-        "n": 6
-       }
-      },
       {
        "k": "vcc_low",
        "a": {
@@ -6344,22 +6760,22 @@
      "score": 0,
      "status": "bad",
      "metrics": {
-      "roll_rms": 43.56435153899985,
-      "pitch_rms": 7.898047217788391,
+      "roll_rms": 38.767719987102005,
+      "pitch_rms": 8.000913072333447,
       "roll_max": 180.48873901367188,
-      "pitch_max": 84.81893157958984
+      "pitch_max": 11.930453300476074
      },
      "findings": [
       {
        "k": "att_roll_err",
        "a": {
-        "v": 43.6
+        "v": 38.8
        }
       },
       {
        "k": "att_pitch_err",
        "a": {
-        "v": 7.9
+        "v": 8.0
        }
       },
       {
@@ -6372,24 +6788,16 @@
      ]
     },
     "servo": {
-     "score": 26,
-     "status": "bad",
+     "score": 99,
+     "status": "good",
      "metrics": {
-      "C1": 29.534580252283604,
-      "C2": 29.578077424967375,
-      "C4": 29.534580252283604,
+      "C1": 0.16181229773462785,
+      "C2": 0.3236245954692557,
+      "C4": 0.16181229773462785,
       "thr_full_pct": 0.0,
-      "thr_mean": 0.08946392571796542
+      "thr_mean": 0.3329563578500331
      },
-     "findings": [
-      {
-       "k": "servo_sat",
-       "a": {
-        "ch": "C2",
-        "v": 29.6
-       }
-      }
-     ]
+     "findings": []
     },
     "rc": {
      "score": 100,
@@ -6413,9 +6821,9 @@
      "score": 100,
      "status": "good",
      "metrics": {
-      "motor_pwm_mean": 1208.5258808177468,
-      "motor_imbalance_us": 1.8294910830795743,
-      "motor_headroom_us": 729.6446280991736,
+      "motor_pwm_mean": 1263.2710355987056,
+      "motor_imbalance_us": 1.0008090614887806,
+      "motor_headroom_us": 675.8883495145631,
       "hover_thr": 0.14450129866600037
      },
      "findings": []
@@ -6487,7 +6895,7 @@
    ],
    "overall": 47,
    "dur": 600,
-   "sec": 0.7,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 55,
@@ -6712,7 +7120,7 @@
    ],
    "overall": 41,
    "dur": 489,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -7102,10 +7510,10 @@
    "others": [],
    "overall": 53,
    "dur": 314,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
-    "score": 75,
+    "score": 100,
     "evidence": [
      {
       "k": "cr_err",
@@ -7126,10 +7534,6 @@
        "r": 180,
        "p": 74
       }
-     },
-     {
-      "k": "cr_landed",
-      "a": {}
      }
     ]
    },
@@ -7337,15 +7741,21 @@
    "others": null,
    "overall": 46,
    "dur": 273810,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
-    "score": 25,
+    "score": 55,
     "evidence": [
      {
       "k": "cr_sink",
       "a": {
        "v": 26.4,
+       "t": 273809.8
+      }
+     },
+     {
+      "k": "cr_log_cut",
+      "a": {
        "t": 273809.8
       }
      }
@@ -7490,7 +7900,7 @@
    "others": null,
    "overall": 100,
    "dur": 2023,
-   "sec": 0.6,
+   "sec": 0.4,
    "verdict": {
     "kind": "normal",
     "score": 10,
@@ -7641,7 +8051,7 @@
    ],
    "overall": 34,
    "dur": 139,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 45,
@@ -7920,7 +8330,7 @@
    "category_id": 7,
    "created": "2018-10-27",
    "vehicle": "Plane",
-   "got": "incident",
+   "got": "crash",
    "got_cause": "control",
    "others": [
     "stall"
@@ -7929,8 +8339,8 @@
    "dur": 17,
    "sec": 0.5,
    "verdict": {
-    "kind": "incident",
-    "score": 45,
+    "kind": "crash",
+    "score": 75,
     "evidence": [
      {
       "k": "cr_sink",
@@ -7944,6 +8354,12 @@
       "a": {
        "r": 162,
        "p": 88
+      }
+     },
+     {
+      "k": "cr_log_cut",
+      "a": {
+       "t": 17.433718
       }
      }
     ]
@@ -8271,21 +8687,32 @@
    "category_id": 41,
    "created": "2019-01-26",
    "vehicle": "Copter",
-   "got": "noflight",
-   "got_cause": null,
-   "others": null,
-   "overall": 46,
+   "got": "incident",
+   "got_cause": "gps",
+   "others": [
+    "ekf"
+   ],
+   "overall": 71,
    "dur": 175,
    "sec": 0.5,
    "verdict": {
-    "kind": "noflight",
+    "kind": "incident",
     "score": 0,
-    "evidence": []
+    "evidence": [
+     {
+      "k": "cr_landed",
+      "a": {}
+     }
+    ]
    },
    "facts": {
     "duration": 175.177899,
     "vehicle": "Copter",
     "version": "ArduCopter V3.7.0-dev (24dbc67b)",
+    "takeoff_t": 12.877726,
+    "land_t": 175.177749,
+    "flight_time": 12.79999200000001,
+    "n_flights": 2,
     "arm_t": 0.0,
     "disarm_t": 175.177899,
     "max_alt": 6.2686991691589355,
@@ -8304,28 +8731,16 @@
    },
    "health": {
     "gps": {
-     "score": 78,
-     "status": "warn",
+     "score": 92,
+     "status": "good",
      "metrics": {
-      "min_sats": 7.0,
-      "mean_sats": 10.673267326732674,
-      "max_hdop": 1.28,
-      "bad_pct": 6.138613861386139,
+      "min_sats": 9.0,
+      "mean_sats": 11.153846153846153,
+      "max_hdop": 0.92,
+      "bad_pct": 0.0,
       "glitches": 1
      },
      "findings": [
-      {
-       "k": "gps_bad_pct",
-       "a": {
-        "pct": 6.1
-       }
-      },
-      {
-       "k": "gps_min_sats",
-       "a": {
-        "n": 7
-       }
-      },
       {
        "k": "gps_glitch",
        "a": {
@@ -8335,19 +8750,19 @@
      ]
     },
     "vibration": {
-     "score": 87,
+     "score": 80,
      "status": "good",
      "metrics": {
-      "p95": 17.434183406829835,
-      "max": 44.35956573486328,
-      "z_mean": 4.483328049835485,
+      "p95": 21.66644983291626,
+      "max": 28.586299896240234,
+      "z_mean": 9.409097105264664,
       "clip": 16.0
      },
      "findings": [
       {
        "k": "vibe_mid",
        "a": {
-        "v": 17.4
+        "v": 21.7
        }
       },
       {
@@ -8390,35 +8805,27 @@
      ]
     },
     "control": {
-     "score": 100,
+     "score": 98,
      "status": "good",
      "metrics": {
-      "roll_rms": 2.0774348179631468,
-      "pitch_rms": 1.9769996363654332,
+      "roll_rms": 2.3016444528858058,
+      "pitch_rms": 1.7302456472998278,
       "roll_max": 12.49,
       "pitch_max": 20.330000000000002
      },
      "findings": []
     },
     "servo": {
-     "score": 0,
-     "status": "bad",
+     "score": 100,
+     "status": "good",
      "metrics": {
-      "C1": 43.12749003984064,
-      "C2": 43.12749003984064,
-      "C4": 43.12749003984064,
+      "C1": 0.0,
+      "C2": 0.0,
+      "C4": 0.0,
       "thr_full_pct": 0.0,
-      "thr_mean": 7.568277711968461
+      "thr_mean": 24.538311711512506
      },
-     "findings": [
-      {
-       "k": "servo_sat",
-       "a": {
-        "ch": "C1",
-        "v": 43.1
-       }
-      }
-     ]
+     "findings": []
     },
     "rc": {
      "score": 100,
@@ -8439,15 +8846,23 @@
      "findings": []
     },
     "motors": {
-     "score": 100,
+     "score": 88,
      "status": "good",
      "metrics": {
-      "motor_pwm_mean": 1230.3025398406376,
-      "motor_imbalance_us": 41.68550796812747,
-      "motor_headroom_us": 678.011952191235,
+      "motor_pwm_mean": 1458.384765625,
+      "motor_imbalance_us": 71.794921875,
+      "motor_headroom_us": 419.8203125,
       "hover_thr": 0.3328704535961151
      },
-     "findings": []
+     "findings": [
+      {
+       "k": "mot_imbalance",
+       "a": {
+        "ch": "C4",
+        "v": 72
+       }
+      }
+     ]
     }
    },
    "events": [
@@ -8500,15 +8915,19 @@
    "category_id": 140,
    "created": "2019-05-18",
    "vehicle": "Copter",
-   "got": "noflight",
-   "got_cause": null,
-   "others": null,
-   "overall": 41,
+   "got": "crash",
+   "got_cause": "motor",
+   "others": [
+    "control",
+    "gps",
+    "ekf"
+   ],
+   "overall": 42,
    "dur": 80,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
-    "kind": "noflight",
-    "score": 80,
+    "kind": "crash",
+    "score": 100,
     "evidence": [
      {
       "k": "cr_err",
@@ -8522,6 +8941,20 @@
        "t": 67.989322,
        "msg": "Crash: Disarming"
       }
+     },
+     {
+      "k": "cr_attitude",
+      "a": {
+       "r": 178,
+       "p": 73
+      }
+     },
+     {
+      "k": "cr_flip",
+      "a": {
+       "t": 64.460068,
+       "a": 178
+      }
      }
     ]
    },
@@ -8529,6 +8962,10 @@
     "duration": 80.15943,
     "vehicle": "Copter",
     "version": "ArduCopter V3.6.8 (2f409678)",
+    "takeoff_t": 2.0,
+    "land_t": 67.989424,
+    "flight_time": 65.989424,
+    "n_flights": 1,
     "arm_t": 0.0,
     "disarm_t": 67.989424,
     "max_alt": 3.4247429370880127,
@@ -8572,16 +9009,16 @@
      "score": 88,
      "status": "good",
      "metrics": {
-      "p95": 16.006214427947995,
+      "p95": 16.070526885986325,
       "max": 60.773231506347656,
-      "z_mean": 10.089651255256678,
+      "z_mean": 10.331875026677594,
       "clip": 22.0
      },
      "findings": [
       {
        "k": "vibe_mid",
        "a": {
-        "v": 16.0
+        "v": 16.1
        }
       },
       {
@@ -8657,8 +9094,8 @@
      "score": 0,
      "status": "bad",
      "metrics": {
-      "roll_rms": 35.21074686544558,
-      "pitch_rms": 6.13652021307221,
+      "roll_rms": 35.634988035254445,
+      "pitch_rms": 6.210456846514936,
       "roll_max": 177.94,
       "pitch_max": 73.3
      },
@@ -8666,13 +9103,13 @@
       {
        "k": "att_roll_err",
        "a": {
-        "v": 35.2
+        "v": 35.6
        }
       },
       {
        "k": "att_pitch_err",
        "a": {
-        "v": 6.1
+        "v": 6.2
        }
       },
       {
@@ -8685,21 +9122,21 @@
      ]
     },
     "servo": {
-     "score": 74,
-     "status": "warn",
+     "score": 80,
+     "status": "good",
      "metrics": {
-      "C1": 10.207100591715976,
-      "C2": 9.023668639053255,
-      "C4": 9.023668639053255,
-      "thr_full_pct": 0.14792899408284024,
-      "thr_mean": 6.8107168795823005
+      "C1": 8.030303030303031,
+      "C2": 6.8181818181818175,
+      "C4": 6.8181818181818175,
+      "thr_full_pct": 0.15151515151515152,
+      "thr_mean": 6.975825167572174
      },
      "findings": [
       {
        "k": "servo_sat",
        "a": {
         "ch": "C1",
-        "v": 10.2
+        "v": 8.0
        }
       }
      ]
@@ -8727,9 +9164,9 @@
      "score": 100,
      "status": "good",
      "metrics": {
-      "motor_pwm_mean": 1266.882026627219,
-      "motor_imbalance_us": 12.365014792899501,
-      "motor_headroom_us": 670.7529585798816,
+      "motor_pwm_mean": 1273.7882575757576,
+      "motor_imbalance_us": 12.664772727272748,
+      "motor_headroom_us": 663.5469696969697,
       "hover_thr": 0.2715917229652405
      },
      "findings": []
@@ -8808,21 +9245,32 @@
    "category_id": 142,
    "created": "2019-05-25",
    "vehicle": "Plane",
-   "got": "noflight",
-   "got_cause": null,
+   "got": "incident",
+   "got_cause": "unknown",
    "others": null,
-   "overall": 36,
+   "overall": 42,
    "dur": 1146,
-   "sec": 0.8,
+   "sec": 0.6,
    "verdict": {
-    "kind": "noflight",
-    "score": 0,
-    "evidence": []
+    "kind": "incident",
+    "score": 30,
+    "evidence": [
+     {
+      "k": "cr_log_cut",
+      "a": {
+       "t": 1145.892036
+      }
+     }
+    ]
    },
    "facts": {
     "duration": 1145.892036,
     "vehicle": "Plane",
     "version": "ArduPlane V3.9.8 (c713eafa)",
+    "takeoff_t": 1143.660434,
+    "land_t": 1145.863187,
+    "flight_time": 2.2027530000000297,
+    "n_flights": 1,
     "arm_t": 970.900468,
     "disarm_t": 1145.892036,
     "max_alt": 1.7872745990753174,
@@ -8840,7 +9288,7 @@
     "first_error": null,
     "profile": "plane",
     "serial": "004B00373237511633323538",
-    "wind_mean": 0.009210551841553226,
+    "wind_mean": 5.259225101526892,
     "wind_max": 5.922516357090118,
     "wind_from": 329.41010947985575,
     "anomaly_index": 0
@@ -8850,9 +9298,9 @@
      "score": 100,
      "status": "good",
      "metrics": {
-      "min_sats": 16.0,
-      "mean_sats": 18.883107751801724,
-      "max_hdop": 1.29,
+      "min_sats": 20.0,
+      "mean_sats": 20.0,
+      "max_hdop": 1.04,
       "bad_pct": 0.0,
       "glitches": 0
      },
@@ -8862,9 +9310,9 @@
      "score": 100,
      "status": "good",
      "metrics": {
-      "p95": 0.33742500096559525,
-      "max": 6.191481113433838,
-      "z_mean": 0.11432290465189693,
+      "p95": 2.3274107575416565,
+      "max": 2.7530558109283447,
+      "z_mean": 1.819572015242143,
       "clip": 0.0
      },
      "findings": []
@@ -8873,10 +9321,10 @@
      "score": 55,
      "status": "warn",
      "metrics": {
-      "vmin": 15.387445449829102,
+      "vmin": 16.064559936523438,
       "vmax": 21.04964828491211,
       "cells": 5,
-      "per_cell_min": 3.0774890899658205,
+      "per_cell_min": 3.2129119873046874,
       "current_sensor": true,
       "used_mah": 405.76922607421875,
       "capacity": 64000.0,
@@ -8887,7 +9335,7 @@
       {
        "k": "bat_low_cell",
        "a": {
-        "v": 3.08,
+        "v": 3.21,
         "n": 5
        }
       }
@@ -8897,8 +9345,8 @@
      "score": 88,
      "status": "good",
      "metrics": {
-      "SV": 0.21,
-      "SP": 0.11,
+      "SV": 0.08,
+      "SP": 0.04,
       "SH": 0.48,
       "SM": 0.1,
       "mag_var_pct": 52.82168244952281
@@ -8913,32 +9361,19 @@
      ]
     },
     "control": {
-     "score": 0,
+     "score": 34,
      "status": "bad",
      "metrics": {
-      "roll_rms": 144.68564668287559,
-      "pitch_rms": 11.144357225581983,
-      "roll_max": 182.01,
-      "pitch_max": 84.21000000000001
+      "roll_rms": 4.049472917441343,
+      "pitch_rms": 13.081792273649246,
+      "roll_max": 7.04,
+      "pitch_max": 15.4
      },
      "findings": [
       {
-       "k": "att_roll_err",
-       "a": {
-        "v": 144.7
-       }
-      },
-      {
        "k": "att_pitch_err",
        "a": {
-        "v": 11.1
-       }
-      },
-      {
-       "k": "att_roll_exceed",
-       "a": {
-        "v": 182,
-        "lim": 26
+        "v": 13.1
        }
       }
      ]
@@ -8971,19 +9406,19 @@
      "findings": []
     },
     "airspeed": {
-     "score": 0,
+     "score": 45,
      "status": "bad",
      "metrics": {
-      "as_mean": 2.133458181505082,
-      "as_min": 0.055038243532180786,
-      "below_min_pct": 99.83298171589311,
-      "as_minus_gs": 2.0216514193583213
+      "as_mean": 22.882166168906473,
+      "as_min": 4.0966033935546875,
+      "below_min_pct": 18.181818181818183,
+      "as_minus_gs": 3.8324220365388766
      },
      "findings": [
       {
        "k": "as_low",
        "a": {
-        "v": 99.8,
+        "v": 18.2,
         "min": 18.0
        }
       }
@@ -9012,15 +9447,15 @@
    "category_id": 140,
    "created": "2019-07-17",
    "vehicle": "Copter",
-   "got": "incident",
+   "got": "crash",
    "got_cause": "control",
    "others": [],
    "overall": 70,
    "dur": 369,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
-    "kind": "incident",
-    "score": 45,
+    "kind": "crash",
+    "score": 75,
     "evidence": [
      {
       "k": "cr_sink",
@@ -9034,6 +9469,12 @@
       "a": {
        "r": 110,
        "p": 52
+      }
+     },
+     {
+      "k": "cr_log_cut",
+      "a": {
+       "t": 368.657016
       }
      }
     ]
@@ -9251,10 +9692,10 @@
    ],
    "overall": 42,
    "dur": 735,
-   "sec": 0.6,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
-    "score": 75,
+    "score": 100,
     "evidence": [
      {
       "k": "cr_err",
@@ -9275,10 +9716,6 @@
        "r": 176,
        "p": 85
       }
-     },
-     {
-      "k": "cr_landed",
-      "a": {}
      }
     ]
    },
@@ -9600,7 +10037,7 @@
    ],
    "overall": 30,
    "dur": 690,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -10147,10 +10584,10 @@
    "others": null,
    "overall": 68,
    "dur": 301851,
-   "sec": 0.6,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
-    "score": 0,
+    "score": 30,
     "evidence": [
      {
       "k": "cr_sink",
@@ -10162,6 +10599,12 @@
      {
       "k": "cr_landed",
       "a": {}
+     },
+     {
+      "k": "cr_log_cut",
+      "a": {
+       "t": 301850.6
+      }
      }
     ]
    },
@@ -10418,7 +10861,7 @@
    "others": [],
    "overall": 89,
    "dur": 111,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -10595,7 +11038,7 @@
    "others": null,
    "overall": 46,
    "dur": 47,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -10773,11 +11216,12 @@
    "got_cause": "control",
    "others": [
     "vibration",
+    "motor",
     "gps"
    ],
    "overall": 69,
    "dur": 801,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -11021,7 +11465,7 @@
    "others": null,
    "overall": 85,
    "dur": 241,
-   "sec": 0.6,
+   "sec": 0.4,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -11186,15 +11630,17 @@
    "category_id": 155,
    "created": "2021-03-29",
    "vehicle": "Copter",
-   "got": "noflight",
-   "got_cause": null,
-   "others": null,
-   "overall": 36,
+   "got": "crash",
+   "got_cause": "motor",
+   "others": [
+    "control"
+   ],
+   "overall": 40,
    "dur": 33,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
-    "kind": "noflight",
-    "score": 80,
+    "kind": "crash",
+    "score": 100,
     "evidence": [
      {
       "k": "cr_err",
@@ -11208,6 +11654,13 @@
        "t": 9.895678,
        "msg": "Crash: Disarming"
       }
+     },
+     {
+      "k": "cr_flip",
+      "a": {
+       "t": 6.403466,
+       "a": 180
+      }
      }
     ]
    },
@@ -11215,6 +11668,10 @@
     "duration": 33.303588,
     "vehicle": "Copter",
     "version": "ArduCopter V4.0.7 (0bb18a15)",
+    "takeoff_t": 2.003017,
+    "land_t": 9.895694,
+    "flight_time": 7.892677000000001,
+    "n_flights": 1,
     "arm_t": 0.003017,
     "disarm_t": 9.895694,
     "max_gs": 0.0,
@@ -11256,15 +11713,21 @@
      ]
     },
     "vibration": {
-     "score": 95,
-     "status": "good",
+     "score": 77,
+     "status": "warn",
      "metrics": {
-      "p95": 2.523006415367125,
+      "p95": 21.665636444091795,
       "max": 49.76100540161133,
-      "z_mean": 1.2413865389923255,
+      "z_mean": 4.0422912822399715,
       "clip": 47.0
      },
      "findings": [
+      {
+       "k": "vibe_mid",
+       "a": {
+        "v": 21.7
+       }
+      },
       {
        "k": "vibe_clip",
        "a": {
@@ -11302,7 +11765,7 @@
      "status": "good",
      "metrics": {
       "SV": 0.0,
-      "SP": 0.16,
+      "SP": 0.04,
       "SH": 1.55,
       "SM": 0.33,
       "mag_var_pct": 13.162392085123
@@ -11321,22 +11784,22 @@
      "score": 0,
      "status": "bad",
      "metrics": {
-      "roll_rms": 129.88375679421574,
-      "pitch_rms": 16.775645733914082,
-      "roll_max": 179.82,
+      "roll_rms": 98.55498794125677,
+      "pitch_rms": 17.90912503428548,
+      "roll_max": 179.70000000000002,
       "pitch_max": 68.02
      },
      "findings": [
       {
        "k": "att_roll_err",
        "a": {
-        "v": 129.9
+        "v": 98.6
        }
       },
       {
        "k": "att_pitch_err",
        "a": {
-        "v": 16.8
+        "v": 17.9
        }
       },
       {
@@ -11349,21 +11812,21 @@
      ]
     },
     "servo": {
-     "score": 0,
-     "status": "bad",
+     "score": 87,
+     "status": "good",
      "metrics": {
-      "C1": 77.47747747747748,
-      "C2": 77.47747747747748,
-      "C4": 77.47747747747748,
+      "C1": 5.063291139240507,
+      "C2": 5.063291139240507,
+      "C4": 5.063291139240507,
       "thr_full_pct": 0.0,
-      "thr_mean": 1.6717012861167435
+      "thr_mean": 7.046538332618678
      },
      "findings": [
       {
        "k": "servo_sat",
        "a": {
         "ch": "C1",
-        "v": 77.5
+        "v": 5.1
        }
       }
      ]
@@ -11390,9 +11853,9 @@
      "score": 100,
      "status": "good",
      "metrics": {
-      "motor_pwm_mean": 1059.1824324324325,
-      "motor_imbalance_us": 6.870120120120191,
-      "motor_headroom_us": 884.1921921921921,
+      "motor_pwm_mean": 1220.5284810126582,
+      "motor_imbalance_us": 28.95886075949352,
+      "motor_headroom_us": 701.5443037974683,
       "hover_thr": 0.3835648000240326
      },
      "findings": []
@@ -11459,15 +11922,15 @@
    "category_id": 155,
    "created": "2021-08-07",
    "vehicle": "Copter",
-   "got": "incident",
+   "got": "crash",
    "got_cause": "gps",
    "others": [],
    "overall": 50,
    "dur": 98,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
-    "kind": "incident",
-    "score": 55,
+    "kind": "crash",
+    "score": 80,
     "evidence": [
      {
       "k": "cr_err",
@@ -11481,10 +11944,6 @@
        "t": 88.863648,
        "msg": "Crash: Disarming"
       }
-     },
-     {
-      "k": "cr_landed",
-      "a": {}
      }
     ]
    },
@@ -11704,21 +12163,30 @@
    "category_id": 155,
    "created": "2021-09-24",
    "vehicle": "Copter",
-   "got": "noflight",
+   "got": "normal",
    "got_cause": null,
    "others": null,
-   "overall": 72,
+   "overall": 92,
    "dur": 657,
-   "sec": 0.6,
+   "sec": 0.4,
    "verdict": {
-    "kind": "noflight",
+    "kind": "normal",
     "score": 0,
-    "evidence": []
+    "evidence": [
+     {
+      "k": "cr_landed",
+      "a": {}
+     }
+    ]
    },
    "facts": {
     "duration": 657.478307,
     "vehicle": "Copter",
     "version": "ArduCopter V4.0.7 (0bb18a15)",
+    "takeoff_t": 36.620499,
+    "land_t": 636.97905,
+    "flight_time": 274.31935699999997,
+    "n_flights": 3,
     "arm_t": 0.01342,
     "disarm_t": 642.479027,
     "max_alt": 2.6892900466918945,
@@ -11744,9 +12212,9 @@
      "score": 100,
      "status": "good",
      "metrics": {
-      "min_sats": 8.0,
-      "mean_sats": 10.89806025588114,
-      "max_hdop": 1.05,
+      "min_sats": 9.0,
+      "mean_sats": 11.226112326768781,
+      "max_hdop": 0.9500000000000001,
       "bad_pct": 0.0,
       "glitches": 0
      },
@@ -11756,9 +12224,9 @@
      "score": 99,
      "status": "good",
      "metrics": {
-      "p95": 2.679471969604492,
-      "max": 34.6910514831543,
-      "z_mean": 1.350687629320934,
+      "p95": 2.692272400856018,
+      "max": 3.3090944290161133,
+      "z_mean": 1.743821568113722,
       "clip": 13.0
      },
      "findings": [
@@ -11771,13 +12239,13 @@
      ]
     },
     "power": {
-     "score": 65,
-     "status": "warn",
+     "score": 85,
+     "status": "good",
      "metrics": {
-      "vmin": 20.977462768554688,
+      "vmin": 21.470617294311523,
       "vmax": 25.10838508605957,
       "cells": 6,
-      "per_cell_min": 3.4962437947591147,
+      "per_cell_min": 3.5784362157185874,
       "current_sensor": false,
       "used_mah": 0.0,
       "capacity": 3300.0,
@@ -11785,13 +12253,6 @@
       "max_curr": null
      },
      "findings": [
-      {
-       "k": "bat_mid_cell",
-       "a": {
-        "v": 3.5,
-        "n": 6
-       }
-      },
       {
        "k": "bat_no_current",
        "a": {}
@@ -11802,51 +12263,36 @@
      "score": 100,
      "status": "good",
      "metrics": {
-      "SV": 0.6,
-      "SP": 0.03,
+      "SV": 0.06,
+      "SP": 0.01,
       "SH": 0.05,
-      "SM": 0.46,
+      "SM": 0.21,
       "mag_var_pct": 13.221446563346289
      },
      "findings": []
     },
     "control": {
-     "score": 88,
+     "score": 100,
      "status": "good",
      "metrics": {
-      "roll_rms": 2.2618117628341774,
-      "pitch_rms": 4.1479671648483505,
-      "roll_max": 34.6,
-      "pitch_max": 38.53
+      "roll_rms": 0.5154527604636346,
+      "pitch_rms": 0.6762205048801764,
+      "roll_max": 8.86,
+      "pitch_max": 4.72
      },
-     "findings": [
-      {
-       "k": "att_pitch_err",
-       "a": {
-        "v": 4.1
-       }
-      }
-     ]
+     "findings": []
     },
     "servo": {
-     "score": 47,
-     "status": "bad",
+     "score": 100,
+     "status": "good",
      "metrics": {
-      "C1": 21.064576026408087,
-      "C2": 21.064576026408087,
-      "C4": 21.064576026408087,
+      "C1": 0.0,
+      "C2": 0.0,
+      "C4": 0.0,
       "thr_full_pct": 0.0,
-      "thr_mean": 15.7437056284517
+      "thr_mean": 22.970300513175765
      },
-     "findings": [
-      {
-       "k": "servo_sat",
-       "a": {
-        "ch": "C1",
-        "v": 21.1
-       }
-      }
-     ]
+     "findings": []
     },
     "rc": {
      "score": 100,
@@ -11867,15 +12313,23 @@
      "findings": []
     },
     "motors": {
-     "score": 100,
+     "score": 88,
      "status": "good",
      "metrics": {
-      "motor_pwm_mean": 1403.2530946977513,
-      "motor_imbalance_us": 39.89431607179699,
-      "motor_headroom_us": 516.4576026408088,
+      "motor_pwm_mean": 1524.5427295918369,
+      "motor_imbalance_us": 62.17611151603501,
+      "motor_headroom_us": 375.65196793002906,
       "hover_thr": 0.23396585881710052
      },
-     "findings": []
+     "findings": [
+      {
+       "k": "mot_imbalance",
+       "a": {
+        "ch": "C1",
+        "v": 62
+       }
+      }
+     ]
     }
    },
    "events": []
@@ -11896,7 +12350,7 @@
    "others": null,
    "overall": 55,
    "dur": 87,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -12038,21 +12492,46 @@
    "category_id": 132,
    "created": "2022-02-13",
    "vehicle": "Copter",
-   "got": "noflight",
-   "got_cause": null,
-   "others": null,
+   "got": "crash",
+   "got_cause": "control",
+   "others": [],
    "overall": 44,
    "dur": 34,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
-    "kind": "noflight",
-    "score": 0,
-    "evidence": []
+    "kind": "crash",
+    "score": 95,
+    "evidence": [
+     {
+      "k": "cr_attitude",
+      "a": {
+       "r": 87,
+       "p": 78
+      }
+     },
+     {
+      "k": "cr_flip",
+      "a": {
+       "t": 32.897632,
+       "a": 87
+      }
+     },
+     {
+      "k": "cr_log_cut",
+      "a": {
+       "t": 33.795315
+      }
+     }
+    ]
    },
    "facts": {
     "duration": 33.795315,
     "vehicle": "Copter",
     "version": "ArduCopter V3.6.11 (f0d59294)",
+    "takeoff_t": 2.0,
+    "land_t": 33.795315,
+    "flight_time": 31.795315000000002,
+    "n_flights": 1,
     "arm_t": 0.0,
     "disarm_t": 33.795315,
     "max_alt": 2.5233168601989746,
@@ -12079,7 +12558,7 @@
      "status": "good",
      "metrics": {
       "min_sats": 15.0,
-      "mean_sats": 16.076923076923077,
+      "mean_sats": 16.08176100628931,
       "max_hdop": 0.85,
       "bad_pct": 0.0,
       "glitches": 0
@@ -12090,16 +12569,16 @@
      "score": 45,
      "status": "bad",
      "metrics": {
-      "p95": 25.375381278991696,
+      "p95": 25.461118698120117,
       "max": 49.429561614990234,
-      "z_mean": 13.142024115359943,
+      "z_mean": 13.92585838757667,
       "clip": 339.0
      },
      "findings": [
       {
        "k": "vibe_mid",
        "a": {
-        "v": 25.4
+        "v": 25.5
        }
       },
       {
@@ -12156,8 +12635,8 @@
      "score": 0,
      "status": "bad",
      "metrics": {
-      "roll_rms": 12.401477794524943,
-      "pitch_rms": 10.335694521898372,
+      "roll_rms": 12.767268296218816,
+      "pitch_rms": 10.620911401124495,
       "roll_max": 87.31,
       "pitch_max": 77.9
      },
@@ -12165,13 +12644,13 @@
       {
        "k": "att_roll_err",
        "a": {
-        "v": 12.4
+        "v": 12.8
        }
       },
       {
        "k": "att_pitch_err",
        "a": {
-        "v": 10.3
+        "v": 10.6
        }
       },
       {
@@ -12184,21 +12663,21 @@
      ]
     },
     "servo": {
-     "score": 72,
+     "score": 70,
      "status": "warn",
      "metrics": {
-      "C1": 11.30952380952381,
-      "C2": 5.654761904761905,
-      "C4": 6.547619047619048,
-      "thr_full_pct": 1.7857142857142856,
-      "thr_mean": 17.8601932246238
+      "C1": 11.987381703470032,
+      "C2": 5.993690851735016,
+      "C4": 6.940063091482649,
+      "thr_full_pct": 1.8867924528301887,
+      "thr_mean": 18.87114755809307
      },
      "findings": [
       {
        "k": "servo_sat",
        "a": {
         "ch": "C1",
-        "v": 11.3
+        "v": 12.0
        }
       }
      ]
@@ -12225,9 +12704,9 @@
      "score": 88,
      "status": "good",
      "metrics": {
-      "motor_pwm_mean": 1479.3229166666665,
-      "motor_imbalance_us": 71.73065476190459,
-      "motor_headroom_us": 432.44642857142867,
+      "motor_pwm_mean": 1479.7066246056781,
+      "motor_imbalance_us": 74.71293375394316,
+      "motor_headroom_us": 428.9968454258676,
       "hover_thr": 0.5448192358016968
      },
      "findings": [
@@ -12235,7 +12714,7 @@
        "k": "mot_imbalance",
        "a": {
         "ch": "C1",
-        "v": 72
+        "v": 75
        }
       }
      ]
@@ -12259,7 +12738,7 @@
    "others": [],
    "overall": 55,
    "dur": 339,
-   "sec": 0.6,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -12469,7 +12948,7 @@
    "others": [],
    "overall": 44,
    "dur": 1041,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 45,
@@ -12783,21 +13262,48 @@
    "category_id": 40,
    "created": "2022-08-29",
    "vehicle": "Copter",
-   "got": "noflight",
-   "got_cause": null,
-   "others": null,
+   "got": "crash",
+   "got_cause": "vibration",
+   "others": [
+    "gps"
+   ],
    "overall": 38,
    "dur": 138,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
-    "kind": "noflight",
-    "score": 0,
-    "evidence": []
+    "kind": "crash",
+    "score": 80,
+    "evidence": [
+     {
+      "k": "cr_attitude",
+      "a": {
+       "r": 61,
+       "p": 41
+      }
+     },
+     {
+      "k": "cr_impact",
+      "a": {
+       "v": 114
+      }
+     },
+     {
+      "k": "cr_flip",
+      "a": {
+       "t": 137.827927,
+       "a": 61
+      }
+     }
+    ]
    },
    "facts": {
     "duration": 137.927932,
     "vehicle": "Copter",
     "version": "ArduCopter V4.2.2 (4fcfa4b2)",
+    "takeoff_t": 100.225561,
+    "land_t": 137.927932,
+    "flight_time": 37.702371,
+    "n_flights": 1,
     "arm_t": 98.225561,
     "disarm_t": 137.927932,
     "max_alt": 2.0485734939575195,
@@ -12819,9 +13325,9 @@
      "score": 84,
      "status": "good",
      "metrics": {
-      "min_sats": 12.0,
-      "mean_sats": 18.468354430379748,
-      "max_hdop": 0.85,
+      "min_sats": 18.0,
+      "mean_sats": 20.20744680851064,
+      "max_hdop": 0.71,
       "bad_pct": 0.0,
       "glitches": 2
      },
@@ -12838,16 +13344,16 @@
      "score": 0,
      "status": "bad",
      "metrics": {
-      "p95": 96.58517723083496,
+      "p95": 97.21828842163086,
       "max": 118.79035186767578,
-      "z_mean": 52.44219102782648,
+      "z_mean": 67.53804481133265,
       "clip": 430.0
      },
      "findings": [
       {
        "k": "vibe_high",
        "a": {
-        "v": 96.6
+        "v": 97.2
        }
       },
       {
@@ -12897,11 +13403,11 @@
      ]
     },
     "control": {
-     "score": 59,
+     "score": 56,
      "status": "warn",
      "metrics": {
-      "roll_rms": 4.474890464287438,
-      "pitch_rms": 4.7111260499930285,
+      "roll_rms": 5.361847486231632,
+      "pitch_rms": 4.353188912016535,
       "roll_max": 61.17,
       "pitch_max": 41.06
      },
@@ -12909,13 +13415,13 @@
       {
        "k": "att_roll_err",
        "a": {
-        "v": 4.5
+        "v": 5.4
        }
       },
       {
        "k": "att_pitch_err",
        "a": {
-        "v": 4.7
+        "v": 4.4
        }
       },
       {
@@ -12933,9 +13439,9 @@
      "metrics": {
       "C1": 0.0,
       "C2": 0.0,
-      "C4": 1.3742071881606766,
+      "C4": 1.3262599469496021,
       "thr_full_pct": 0.0,
-      "thr_mean": 14.561774267558373
+      "thr_mean": 21.828572050466267
      },
      "findings": []
     },
@@ -13025,7 +13531,7 @@
    "others": null,
    "overall": 79,
    "dur": 1034,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 25,
@@ -13428,10 +13934,10 @@
    "others": [],
    "overall": 48,
    "dur": 117,
-   "sec": 0.9,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
-    "score": 75,
+    "score": 100,
     "evidence": [
      {
       "k": "cr_err",
@@ -13452,10 +13958,6 @@
        "r": 172,
        "p": 81
       }
-     },
-     {
-      "k": "cr_landed",
-      "a": {}
      }
     ]
    },
@@ -13662,7 +14164,7 @@
    "others": null,
    "overall": 55,
    "dur": 96,
-   "sec": 0.6,
+   "sec": 0.4,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -13823,7 +14325,7 @@
    "others": null,
    "overall": 100,
    "dur": 56,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -13863,15 +14365,17 @@
    "category_id": 6,
    "created": "2023-03-27",
    "vehicle": "Copter",
-   "got": "noflight",
-   "got_cause": null,
-   "others": null,
-   "overall": 39,
+   "got": "crash",
+   "got_cause": "motor",
+   "others": [
+    "control"
+   ],
+   "overall": 32,
    "dur": 70,
-   "sec": 0.6,
+   "sec": 0.4,
    "verdict": {
-    "kind": "noflight",
-    "score": 80,
+    "kind": "crash",
+    "score": 100,
     "evidence": [
      {
       "k": "cr_err",
@@ -13885,6 +14389,26 @@
        "t": 35.166696,
        "msg": "Crash: Disarming: AngErr=160>30, Accel=1.6<3.0"
       }
+     },
+     {
+      "k": "cr_attitude",
+      "a": {
+       "r": 181,
+       "p": 49
+      }
+     },
+     {
+      "k": "cr_impact",
+      "a": {
+       "v": 92
+      }
+     },
+     {
+      "k": "cr_flip",
+      "a": {
+       "t": 31.329351,
+       "a": 181
+      }
      }
     ]
    },
@@ -13892,6 +14416,10 @@
     "duration": 70.32965,
     "vehicle": "Copter",
     "version": "ArduCopter V4.3.5 (02ff7ea3)",
+    "takeoff_t": 29.229455,
+    "land_t": 35.166704,
+    "flight_time": 5.937249000000001,
+    "n_flights": 1,
     "arm_t": 27.229455,
     "disarm_t": 35.166704,
     "max_alt": 4.057538032531738,
@@ -13913,24 +14441,30 @@
      "score": 100,
      "status": "good",
      "metrics": {
-      "min_sats": 9.0,
-      "mean_sats": 10.664634146341463,
-      "max_hdop": 1.25,
+      "min_sats": 11.0,
+      "mean_sats": 11.933333333333334,
+      "max_hdop": 0.91,
       "bad_pct": 0.0,
       "glitches": 0
      },
      "findings": []
     },
     "vibration": {
-     "score": 86,
-     "status": "good",
+     "score": 2,
+     "status": "bad",
      "metrics": {
-      "p95": 6.878005170822138,
+      "p95": 62.65592346191405,
       "max": 92.23043823242188,
-      "z_mean": 2.091378389482475,
+      "z_mean": 20.561910611515245,
       "clip": 135.0
      },
      "findings": [
+      {
+       "k": "vibe_high",
+       "a": {
+        "v": 62.7
+       }
+      },
       {
        "k": "vibe_clip",
        "a": {
@@ -13980,22 +14514,22 @@
      "score": 0,
      "status": "bad",
      "metrics": {
-      "roll_rms": 98.6992896971278,
-      "pitch_rms": 7.115356471036688,
-      "roll_max": 181.38,
+      "roll_rms": 132.51232691619964,
+      "pitch_rms": 17.369082750485713,
+      "roll_max": 181.17000000000002,
       "pitch_max": 49.27
      },
      "findings": [
       {
        "k": "att_roll_err",
        "a": {
-        "v": 98.7
+        "v": 132.5
        }
       },
       {
        "k": "att_pitch_err",
        "a": {
-        "v": 7.1
+        "v": 17.4
        }
       },
       {
@@ -14014,8 +14548,8 @@
       "C1": 100.0,
       "C2": 100.0,
       "C4": 100.0,
-      "thr_full_pct": 0.3053435114503817,
-      "thr_mean": 0.5238058619940554
+      "thr_full_pct": 3.389830508474576,
+      "thr_mean": 5.815132874679768
      },
      "findings": [
       {
@@ -14106,21 +14640,48 @@
    "category_id": 155,
    "created": "2023-04-20",
    "vehicle": "Copter",
-   "got": "noflight",
-   "got_cause": null,
-   "others": null,
-   "overall": 50,
+   "got": "crash",
+   "got_cause": "battery",
+   "others": [
+    "control"
+   ],
+   "overall": 48,
    "dur": 20,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
-    "kind": "noflight",
-    "score": 0,
-    "evidence": []
+    "kind": "crash",
+    "score": 95,
+    "evidence": [
+     {
+      "k": "cr_attitude",
+      "a": {
+       "r": 101,
+       "p": 36
+      }
+     },
+     {
+      "k": "cr_flip",
+      "a": {
+       "t": 19.527495,
+       "a": 101
+      }
+     },
+     {
+      "k": "cr_log_cut",
+      "a": {
+       "t": 19.916367
+      }
+     }
+    ]
    },
    "facts": {
     "duration": 19.916367,
     "vehicle": "Copter",
     "version": "ArduCopter V4.3.5 (02ff7ea3)",
+    "takeoff_t": 3.575771,
+    "land_t": 19.916367,
+    "flight_time": 16.340596,
+    "n_flights": 1,
     "arm_t": 1.575771,
     "disarm_t": 19.916367,
     "max_alt": 2.6489815711975098,
@@ -14146,7 +14707,7 @@
      "status": "good",
      "metrics": {
       "min_sats": 15.0,
-      "mean_sats": 16.72,
+      "mean_sats": 16.658536585365855,
       "max_hdop": 0.71,
       "bad_pct": 0.0,
       "glitches": 0
@@ -14154,19 +14715,19 @@
      "findings": []
     },
     "vibration": {
-     "score": 71,
+     "score": 69,
      "status": "warn",
      "metrics": {
-      "p95": 28.306090354919434,
+      "p95": 29.10619831085205,
       "max": 49.14669418334961,
-      "z_mean": 3.178294722350116,
+      "z_mean": 3.8587071462591855,
       "clip": 0.0
      },
      "findings": [
       {
        "k": "vibe_mid",
        "a": {
-        "v": 28.3
+        "v": 29.1
        }
       }
      ]
@@ -14222,11 +14783,11 @@
      ]
     },
     "control": {
-     "score": 19,
+     "score": 11,
      "status": "bad",
      "metrics": {
-      "roll_rms": 13.34187041202884,
-      "pitch_rms": 3.7616315042284594,
+      "roll_rms": 14.679420548997191,
+      "pitch_rms": 4.121199483789299,
       "roll_max": 100.92,
       "pitch_max": 36.09
      },
@@ -14234,7 +14795,13 @@
       {
        "k": "att_roll_err",
        "a": {
-        "v": 13.3
+        "v": 14.7
+       }
+      },
+      {
+       "k": "att_pitch_err",
+       "a": {
+        "v": 4.1
        }
       },
       {
@@ -14247,21 +14814,21 @@
      ]
     },
     "servo": {
-     "score": 42,
-     "status": "bad",
+     "score": 83,
+     "status": "good",
      "metrics": {
-      "C1": 23.3502538071066,
-      "C2": 20.812182741116754,
-      "C4": 20.812182741116754,
-      "thr_full_pct": 1.015228426395939,
-      "thr_mean": 15.83449511983445
+      "C1": 6.790123456790123,
+      "C2": 3.7037037037037033,
+      "C4": 3.7037037037037033,
+      "thr_full_pct": 1.2345679012345678,
+      "thr_mean": 19.25552801609498
      },
      "findings": [
       {
        "k": "servo_sat",
        "a": {
         "ch": "C1",
-        "v": 23.4
+        "v": 6.8
        }
       }
      ]
@@ -14288,9 +14855,9 @@
      "score": 100,
      "status": "good",
      "metrics": {
-      "motor_pwm_mean": 1353.8972081218276,
-      "motor_imbalance_us": 34.95304568527945,
-      "motor_headroom_us": 613.5279187817259,
+      "motor_pwm_mean": 1430.3564814814815,
+      "motor_imbalance_us": 42.50462962962956,
+      "motor_headroom_us": 530.030864197531,
       "hover_thr": 0.28849732875823975
      },
      "findings": []
@@ -14375,7 +14942,7 @@
    ],
    "overall": 30,
    "dur": 17,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -14608,7 +15175,7 @@
    "others": null,
    "overall": 76,
    "dur": 175,
-   "sec": 0.6,
+   "sec": 0.4,
    "verdict": {
     "kind": "noflight",
     "score": 0,

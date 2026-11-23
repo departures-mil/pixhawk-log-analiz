@@ -1,5 +1,5 @@
 """CI öz-testi: 7 sentetik senaryo doğru teşhis edilmeli, raporlar üretilebilmeli."""
-import os, sys, tempfile
+import os, sys, tempfile, time
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from app.core import synth, loader, analysis, report, advisor
 
@@ -90,6 +90,43 @@ try:
     except ValueError: pass
     assert security.unprotect(security.protect('secret-key')) == 'secret-key'
     print('fleet/pilot/search/exam/certificate/security OK')
+except Exception:
+    import traceback; traceback.print_exc(); bad += 1
+
+# ---- v1.0.3: Parametre Merkezi, ders kitabı, video, gerçek kaza kütüphanesi
+try:
+    from app.core import pcenter as PCm, pcritical, textbook, video, crashlib
+    db = PCm.PDB.get()
+    print('params:', 'full' if db.full else 'fallback', {v: db.count(v) for v in db.vehicles}, 'tx:', {k: len(v) for k, v in db.tx.items()})
+    if db.full:
+        for v in ('Plane', 'Copter', 'Rover', 'Sub'):
+            assert db.count(v) > 1500, (v, db.count(v))
+    top = [k for k, _ in PCm.search('batarya azalınca eve dönsün', 'Copter', 4)]
+    assert 'BATT_FS_LOW_ACT' in top, top
+    assert any(k.startswith('FS_THR') for k, _ in PCm.search('kumanda kaybında iniş yapsın', 'Copter', 6))
+    P_ = PCm.parse_text('# c\nARMING_CHECK,0\n1 1 RTL_ALT 1500 9\nFS_THR_ENABLE\t0\nBATT_MONITOR 4\nBATT_FS_LOW_ACT,0')
+    assert P_ == {'ARMING_CHECK': 0, 'RTL_ALT': 1500, 'FS_THR_ENABLE': 0, 'BATT_MONITOR': 4, 'BATT_FS_LOW_ACT': 0}, P_
+    for fm in ('mp', 'qgc', 'csv'):
+        fp = os.path.join(d, 'p.' + fm); PCm.write_file(P_, fp, fm); assert PCm.read_file(fp) == P_, fm
+    rk = PCm.risks(P_, 'Copter', 'ar'); assert {r['param'] for r in rk} >= {'ARMING_CHECK', 'FS_THR_ENABLE', 'BATT_FS_LOW_ACT'}, rk
+    assert PCm.detect_vehicle({'WPNAV_SPEED': 1, 'MOT_THST_HOVER': .3}) == 'Copter'
+    assert [b for b, _, on in PCm.decode_bits(5, {'0': 'a', '1': 'b', '2': 'c'}) if on] == [0, 2]
+    assert 'BATT_FS_LOW_ACT' in PCm.offline_answer('batarya azalınca eve dönsün', 'Copter', 'tr')
+    arc2 = Archive(os.path.join(d, 'arch2.db'))
+    PCm.set_mark(arc2, 'RTL_ALT', star=True, note='n'); assert PCm.marks(arc2)['RTL_ALT']['star']
+    rid = PCm.save_pset(arc2, P_, 'set1', 'Copter', 'not'); assert PCm.psets(arc2)[0]['params']['RTL_ALT'] == 1500
+    assert len(pcritical.critical('Plane')) > 40
+    for lg in ('tr', 'ar'):
+        textbook.param_report(P_, 'Copter', 'ci.param', lg, os.path.join(d, f'prep_{lg}.pdf'), LHM.PRESET)
+    t0 = time.time(); bp = os.path.join(d, 'book_ar.pdf'); textbook.build_book(bp, 'ar', LHM.PRESET)
+    assert os.path.getsize(bp) > 300_000; print('textbook ar', os.path.getsize(bp) // 1024, 'KB', round(time.time() - t0, 1), 's')
+    textbook.build_book(os.path.join(d, 'book_tr.pdf'), 'tr', None, ['intro', 'causes', 'params'])
+    Av = analysis.Analysis(loader.load(os.path.join(d, 'gps_loss.BIN')))
+    vp = os.path.join(d, 'v.mp4'); r = video.export(Av, vp, 'ar', target_s=25, voice='none', size=(640, 360), fps=8)
+    assert os.path.getsize(vp) > 50_000 and os.path.exists(r['srt']), r
+    print('video OK', r)
+    cl = crashlib.load(); print('crashlib cases:', len(cl.get('cases') or []))
+    print('v1.0.3 param center / textbook / video OK')
 except Exception:
     import traceback; traceback.print_exc(); bad += 1
 sys.exit(1 if bad else 0)

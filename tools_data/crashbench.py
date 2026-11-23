@@ -167,6 +167,10 @@ def run():
                            capture_output=True)
             d = json.load(open(out, encoding='utf-8'))
             v = d.get('verdict') or {}; r = d.get('root') or {}
+            m = dict(m)
+            if m['label'] == 'normal' and any(e.get('k') == 'cr_msg' and 'crash: disarming' in str((e.get('a') or {}).get('msg', '')).lower()
+                                              for e in v.get('evidence', [])):
+                m['label'] = 'crash'; m['label_src'] = 'autopilot'   # otopilot kırımı kendisi kaydetmiş: forum etiketi yanlış
             res.append({**m, 'vehicle': d.get('vehicle'), 'got': v.get('kind'), 'got_cause': r.get('cause'), 'others': r.get('others'),
                         'overall': d.get('overall'), 'dur': round(d.get('duration') or 0), 'sec': round(time.time() - t0, 1),
                         'verdict': v, 'facts': {k: x for k, x in (d.get('facts') or {}).items() if not isinstance(x, (list, dict))},
@@ -184,7 +188,10 @@ def score(res):
     fp = sum(1 for r in ok if r['label'] == 'normal' and pos(r)); tn = sum(1 for r in ok if r['label'] == 'normal' and not pos(r))
     ch = [r for r in ok if r['label'] == 'crash' and r.get('cause_hint')]
     cm = sum(1 for r in ch if r.get('got_cause') == r['cause_hint'] or r['cause_hint'] in (r.get('others') or []))
+    hard = sum(1 for r in ok if r['label'] == 'crash' and r['got'] == 'crash')
+    fcr = sum(1 for r in ok if r['label'] == 'normal' and r['got'] == 'crash')
     return {'n': len(ok), 'errors': len(res) - len(ok), 'tp': tp, 'fn': fn, 'fp': fp, 'tn': tn,
+            'crash_verdict': hard, 'false_crash': fcr,
             'accuracy': round((tp + tn) / max(len(ok), 1), 3), 'recall_crash': round(tp / max(tp + fn, 1), 3),
             'specificity': round(tn / max(tn + fp, 1), 3), 'cause_n': len(ch), 'cause_match': cm, 'cause_acc': round(cm / max(len(ch), 1), 3)}
 
@@ -210,6 +217,8 @@ def write(res):
          f"| Genel doğruluk (kırım/olay ↔ normal) | %{s['accuracy']*100:.0f} |",
          f"| Kırımı yakalama oranı (duyarlılık) | %{s['recall_crash']*100:.0f} ({s['tp']}/{s['tp']+s['fn']}) |",
          f"| Normal uçuşu doğru tanıma (özgüllük) | %{s['specificity']*100:.0f} ({s['tn']}/{s['tn']+s['fp']}) |",
+         f"| Kesin 'kırım' kararı verilen kırım logları | {s.get('crash_verdict', '-')}/{s['tp']+s['fn']} |",
+         f"| Normal logda yanlış 'kırım' kararı | {s.get('false_crash', '-')} |",
          f"| Kök neden uyumu (başlıkta ipucu olanlar) | %{s['cause_acc']*100:.0f} ({s['cause_match']}/{s['cause_n']}) |", '',
          '## Sürüm geçmişi', '', '| Tarih | Log | Doğruluk | Duyarlılık | Özgüllük | Kök neden |', '|---|---|---|---|---|---|']
     for h in hist[-10:]:
