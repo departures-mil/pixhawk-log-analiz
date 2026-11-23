@@ -45,12 +45,16 @@ def hav(lat1, lon1, lat2, lon2):
 
 
 class Analysis(ExtMixin):
-    def __init__(self, L: LogData, profile=None, extras=True):
+    def __init__(self, L: LogData, profile=None, extras=True, info=None):
+        from . import flightinfo as FI
         self.L = L
         self.vehicle = L.vehicle
+        self.info = dict(info or {})     # kullanıcının uçuş bilgileri formu
         p = profile or PROFILE_OVERRIDE.get('v') or 'auto'
+        if p == 'auto' and FI.profile_for(self.info): p = FI.profile_for(self.info)
         self.profile = PR.detect(L) if p == 'auto' else p
-        self.th = PR.get(self.profile)
+        self.th = FI.adjust_thresholds(PR.get(self.profile), self.info)
+        self.why = {}
         self.extras = extras
         self.anomalies = []      # ML anomali pencereleri
         self.pilot = {}          # pilot performans ölçütleri
@@ -86,6 +90,11 @@ class Analysis(ExtMixin):
         self._root_cause()
         self._params()
         self._facts()
+        try:
+            from . import why
+            self.why = why.build(self)
+        except Exception:
+            import traceback; traceback.print_exc(); self.why = {}
         self._serial()
         self._wind()
         if self.extras:
@@ -357,6 +366,10 @@ class Analysis(ExtMixin):
             vv = b['Volt'][m] if m.any() else b['Volt']
             vmin = float(np.nanmin(vv)); vmax = float(np.nanmax(b['Volt']))
             cells = max(1, round(vmax / 4.2)) if vmax > 5 else 1
+            try:
+                uc = int(str(self.info.get('cells') or '').rstrip('sS'))
+                if uc > 0: cells = uc
+            except ValueError: pass
             per = vmin / cells
             curr = b['Curr'] if b.has('Curr') else np.array([])
             cur_ok = len(_fin(curr)) > 0 and np.nanmax(np.abs(curr)) > 0.5
@@ -366,7 +379,9 @@ class Analysis(ExtMixin):
             sc = 100
             if per < self.th['cell_bad']: sc -= 45; fnd.append(F('bat_low_cell', v=round(per, 2), n=cells))
             elif per < self.th['cell_warn']: sc -= 20; fnd.append(F('bat_mid_cell', v=round(per, 2), n=cells))
-            if not cur_ok: sc -= 15; fnd.append(F('bat_no_current'))
+            ice = self.info.get('power') in ('gas', 'glow', 'turbine')
+            if not cur_ok and not ice: sc -= 15; fnd.append(F('bat_no_current'))
+            if ice: fnd.append(F('fi_ice_power'))
             if cur_ok and used and cap and used > cap * 0.8: sc -= 15; fnd.append(F('bat_used', used=int(used), cap=int(cap)))
             for _, s, c in L.errors:
                 if s == 6 and c != 0: sc -= 20; fnd.append(F('bat_fs', code=c)); break
@@ -564,6 +579,19 @@ class Analysis(ExtMixin):
             kind = 'incident'
         else:
             kind = 'normal'
+        # kullanıcının cevabı (uçuş bilgileri formu)
+        uc = self.info.get('crashed')
+        hard_ev = any(x.get('k') in ('cr_stat', 'cr_err', 'cr_msg', 'cr_flip') for x in ev)
+        if uc == 'yes':
+            ev.append(F('cr_user'))
+            if kind != 'crash': kind = 'crash'; score = max(score, 60)
+            if not hard_ev and score < 60: ev.append(F('cr_user_weak'))
+        elif uc == 'hard':
+            ev.append(F('cr_user_hard'))
+            if kind in ('normal', 'noflight') and self.flights: kind = 'incident'
+        elif uc == 'no' and kind == 'crash':
+            if hard_ev: ev.append(F('cr_user_conflict'))
+            else: kind = 'incident'; ev.append(F('cr_user_no'))
         self.verdict = {'kind': kind, 'score': max(0, min(100, score)), 'evidence': ev}
 
     # ----------------------------------------------------------- kök neden

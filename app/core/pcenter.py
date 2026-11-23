@@ -11,6 +11,7 @@ anahtar/yıldız işaretleri ve notlar, offline "nasıl yaparım" arama motoru, 
 from __future__ import annotations
 import gzip, json, math, os, re, threading, time
 from .paths import res
+from . import glossary as GL
 
 VEHICLES = ['Plane', 'Copter', 'Heli', 'Rover', 'Sub', 'Blimp', 'Tracker', 'Periph']
 VNAME = {'Plane': ('ArduPlane (sabit kanat / QuadPlane)', 'ArduPlane (fixed wing / QuadPlane)', 'ArduPlane (جناح ثابت / QuadPlane)'),
@@ -140,7 +141,14 @@ class PDB:
     def lbl(self, text, lang):
         """Seçenek / bit adlarının çevirisi."""
         if lang == 'en' or not text: return text
-        return self.tx.get(lang, {}).get(text) or text
+        x = self.tx.get(lang, {}).get(text)
+        return GL.fix(x, lang) if x else text
+
+    def mt(self, en, lang):
+        """Herhangi bir İngilizce metnin makine çevirisi (sözlükle düzeltilmiş) ya da None."""
+        if lang == 'en' or not en: return None
+        x = self.tx.get(lang, {}).get(en)
+        return GL.fix(x, lang) if x else None
 
     def text(self, name, vehicle, lang):
         """(görünen ad, açıklama, kaynak) — kaynak: 'curated' | 'ai' | 'mt' | 'en'"""
@@ -151,7 +159,7 @@ class PDB:
         if m.get(lang): return m[lang][0], m[lang][1], 'curated'
         T = self.tx.get(lang, {})
         tdn = T.get(dn); td = T.get(d)
-        if tdn or td: return tdn or dn, td or d, 'mt'
+        if tdn or td: return GL.fix(tdn, lang) or dn, GL.fix(td, lang) or d, 'mt'
         return dn, d, 'en'
 
     def default(self, name, vehicle):
