@@ -1,0 +1,88 @@
+name: data-params
+
+# ArduPilot'un resmî parametre listelerini (tüm araç sınıfları) indirir, varsayılanları kaynak koddan çıkarır,
+# TR/AR makine çevirisini (NLLB-200, offline) yapar ve sonucu aynı dala geri yazar.
+# Tetik: tools_data/request_params.txt değişince ya da elle.
+on:
+  push:
+    paths: ['tools_data/request_params.txt']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: data-params-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  params:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: ArduPilot source (only read, for defaults)
+        run: git clone -q --depth 1 https://github.com/ArduPilot/ardupilot.git /tmp/ardupilot
+      - name: Build params_full.json.gz
+        env: { ARDUPILOT_SRC: /tmp/ardupilot, RAW_DIR: /tmp/raw }
+        run: python tools_data/build_params.py
+      - uses: actions/upload-artifact@v4
+        with: { name: params_full, path: app/data/params_full.json.gz }
+
+  model:
+    runs-on: ubuntu-latest
+    steps:
+      - id: cache
+        uses: actions/cache@v4
+        with: { path: nllb, key: nllb-1.3b-int8-v1 }
+      - name: Convert NLLB-200 1.3B to CTranslate2 int8
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc || true
+          pip install -q --index-url https://download.pytorch.org/whl/cpu torch
+          pip install -q ctranslate2 transformers sentencepiece protobuf
+          ct2-transformers-converter --model facebook/nllb-200-distilled-1.3B --output_dir nllb --quantization int8 --low_cpu_mem_usage
+          rm -rf ~/.cache/huggingface/hub/models--facebook--nllb-200-distilled-1.3B/blobs/*.bin || true
+          du -sh nllb
+
+  translate:
+    needs: [params, model]
+    runs-on: ubuntu-latest
+    timeout-minutes: 345
+    strategy:
+      fail-fast: false
+      matrix: { lang: [tr, ar] }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { name: params_full, path: app/data }
+      - uses: actions/cache/restore@v4
+        with: { path: nllb, key: nllb-1.3b-int8-v1, fail-on-cache-miss: true }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install -q ctranslate2 transformers sentencepiece protobuf
+      - name: Translate (${{ matrix.lang }})
+        env: { NLLB_DIR: nllb, MAX_MIN: '320' }
+        run: python tools_data/translate.py ${{ matrix.lang }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: tx_${{ matrix.lang }}, path: app/data/params_tx_${{ matrix.lang }}.json.gz, if-no-files-found: ignore }
+
+  commit:
+    needs: [params, translate]
+    if: always() && needs.params.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: '${{ github.ref_name }}' }
+      - uses: actions/download-artifact@v4
+        with: { path: /tmp/art }
+      - name: Commit data back to branch
+        run: |
+          cp /tmp/art/params_full/params_full.json.gz app/data/
+          for l in tr ar; do [ -f /tmp/art/tx_$l/params_tx_$l.json.gz ] && cp /tmp/art/tx_$l/params_tx_$l.json.gz app/data/ || true; done
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app/data/params_full.json.gz app/data/params_tx_*.json.gz
+          git commit -m "data: ArduPilot tam parametre listesi + TR/AR çeviri (otomatik)" || exit 0
+          for i in 1 2 3 4; do git pull --rebase -q origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && break; sleep $((i*10)); done
