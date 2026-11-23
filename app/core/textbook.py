@@ -50,7 +50,7 @@ INTRO = [
      'Each chapter has a counterpart in the program: Charts & Lessons, Map & 3D Replay (step-by-step lesson guide and MP4 video), Event Timeline, AI Advisor, Practice, Exam & Certificate, Parameter Center (full parameter list for every vehicle class) and Real Crash Logs.',
      'لكل فصل ما يقابله في البرنامج: الرسوم والدروس، والخريطة والإعادة ثلاثية الأبعاد (دليل درس خطوة بخطوة وفيديو MP4)، والخط الزمني للأحداث، والمستشار الذكي، والتدريب، والاختبار والشهادة، ومركز المعاملات (القائمة الكاملة لكل فئات المركبات)، وسجلات الحوادث الحقيقية.'),
 ]
-CAUSES = ['gps', 'ekf', 'battery', 'radio', 'stall', 'vibration', 'compass', 'power', 'control']
+CAUSES = ['gps', 'ekf', 'battery', 'radio', 'stall', 'vibration', 'compass', 'power', 'control', 'motor']
 
 
 def _x(k, lg, **a):

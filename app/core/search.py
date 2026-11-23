@@ -17,7 +17,7 @@ TOPICS = {
     'ekf': (['ekf', 'varyans', 'variance'], ['ekf_', 'cause_ekf']),
     'stall': (['stall', 'hız kayb', 'hava hızı', 'airspeed', 'انهيار', 'السرعة الجوية'], ['as_', 'cause_stall']),
     'anomaly': (['anomali', 'alışılmadık', 'anomaly', 'unusual', 'شذوذ'], ['anomaly']),
-    'motor': (['motor', 'esc', 'محرك'], ['mot_', 'pa_hover']),
+    'motor': (['motor', 'esc', 'pervane', 'propeller', 'محرك'], ['mot_', 'pa_hover', 'cause_motor']),
     'wind': (['rüzgar', 'rüzgâr', 'wind', 'رياح'], ['wind_']),
     'control': (['tutum', 'kontrol kayb', 'attitude', 'control', 'الوضعية'], ['att_', 'cause_control']),
 }
