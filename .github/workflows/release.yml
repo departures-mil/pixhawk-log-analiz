@@ -84,20 +84,37 @@ jobs:
             dist/PixhawkLogAnaliz.exe
             dist/PixhawkLogAnaliz-Setup-*.exe
 
-      # Taşınabilir exe önce yüklenir: v1.0.0'daki eski güncelleyici listedeki ilk .exe'yi alır.
+      # GitHub, varlıkları en yeniden eskiye listeler; v1.0.0'daki eski güncelleyici listedeki ilk .exe'yi alır.
+      # Bu yüzden Setup önce, taşınabilir exe en son yüklenir (listede ilk sırada taşınabilir exe olur).
       - name: Publish release
         if: github.ref == 'refs/heads/main' && steps.ver.outputs.exists != 'True'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.ver.outputs.version }}
           name: Pixhawk Log Analiz v${{ steps.ver.outputs.version }}
-          files: dist/PixhawkLogAnaliz.exe
+          files: dist/PixhawkLogAnaliz-Setup-${{ steps.ver.outputs.version }}.exe
           generate_release_notes: true
           make_latest: true
 
-      - name: Attach Setup
+      - name: Attach portable exe (listed first)
         if: github.ref == 'refs/heads/main' && steps.ver.outputs.exists != 'True'
         shell: pwsh
-        run: gh release upload "v${{ steps.ver.outputs.version }}" "dist/PixhawkLogAnaliz-Setup-${{ steps.ver.outputs.version }}.exe" --repo "${{ github.repository }}" --clobber
+        run: |
+          Start-Sleep 2
+          gh release upload "v${{ steps.ver.outputs.version }}" "dist/PixhawkLogAnaliz.exe" --repo "${{ github.repository }}" --clobber
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      # Mevcut sürümde sıralama yanlışsa (Setup ilk sıradaysa) yalnızca taşınabilir exe'yi yeniden yükleyerek düzelt.
+      - name: Fix asset order of existing release
+        if: github.ref == 'refs/heads/main' && steps.ver.outputs.exists == 'True'
+        shell: pwsh
+        run: |
+          $first = gh api "repos/${{ github.repository }}/releases/tags/v${{ steps.ver.outputs.version }}" --jq '[.assets[] | select(.name | endswith(".exe"))][0].name'
+          Write-Host "first exe asset: $first"
+          if ($first -like '*Setup*') {
+            gh release upload "v${{ steps.ver.outputs.version }}" "dist/PixhawkLogAnaliz.exe" --repo "${{ github.repository }}" --clobber
+            gh api "repos/${{ github.repository }}/releases/tags/v${{ steps.ver.outputs.version }}" --jq '.assets[].name'
+          }
         env:
           GH_TOKEN: ${{ github.token }}
