@@ -9,6 +9,7 @@ from PySide6.QtGui import QColor
 from .i18n import t, lang
 from .common import label, button, run_bg, error, info, ImageView, open_path, VERDICT_COL
 from .pages_a import Page
+from ..core import glossary as GL
 from ..core import texts
 from ..core.analysis import fmt_t
 from ..core.paths import res, data_dir
@@ -321,9 +322,9 @@ class MsgLibPage(Page):
             m = self.M[k]
             if self.core.isChecked() and not m.get('core') and not q: continue
             if self.inlog.isChecked() and k not in seen: continue
-            d = m['desc'].get(lg) or m['desc'].get('en') or ''
+            d = GL.lt(m['desc'], lg)
             if q:
-                blob = (k + ' ' + d + ' ' + ' '.join(f + ' ' + (x.get(lg) or x.get('en') or '') for f, x in m.get('fields', {}).items())).lower()
+                blob = (k + ' ' + d + ' ' + ' '.join(f + ' ' + GL.lt(x, lg) for f, x in m.get('fields', {}).items())).lower()
                 if q not in blob: continue
             it = QListWidgetItem(f'{k}  —  {d[:60]}'); it.setData(Qt.UserRole, k)
             if k in seen: it.setForeground(QColor('#4ADE80'))
@@ -334,14 +335,14 @@ class MsgLibPage(Page):
     def _show(self, it, *_):
         if not it: return
         k = it.data(Qt.UserRole); m = self.M[k]; lg = lang(); d = 'rtl' if lg == 'ar' else 'ltr'
-        desc = m['desc'].get(lg) or m['desc'].get('en', '')
+        desc = GL.lt(m['desc'], lg)
         h = [f'<div dir="{d}"><h2 style="color:#93C5FD">{E(k)}</h2><p style="font-size:11pt">{E(desc)}</p>']
         if lg != 'en' and m['desc'].get('en'): h.append(f'<p style="color:#94A3B8">EN: {E(m["desc"]["en"])}</p>')
         h.append(f'<h3>{E(t("msg_fields"))}</h3><table width="100%" cellpadding="5" cellspacing="0">')
         for i, (f, x) in enumerate(m.get('fields', {}).items()):
             bg = '#111C33' if i % 2 else '#0F1A30'
-            tx = x.get(lg) or x.get('en') or ''
-            extra = f'<br><span style="color:#64748B">{E(x.get("en", ""))}</span>' if lg != 'en' and x.get('en') and x.get(lg) else ''
+            tx = GL.lt(x, lg)
+            extra = f'<br><span style="color:#64748B">{E(x.get("en", ""))}</span>' if lg != 'en' and x.get('en') and GL.lt(x, lg) != x.get('en') else ''
             h.append(f'<tr bgcolor="{bg}"><td nowrap><b>{E(f)}</b></td><td>{E(tx)}{extra}</td></tr>')
         h.append('</table>')
         A = self.win.A

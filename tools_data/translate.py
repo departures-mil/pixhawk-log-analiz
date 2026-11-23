@@ -9,6 +9,8 @@ from __future__ import annotations
 import gzip, json, os, re, sys, time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, ROOT)
+from app.core import glossary as GL   # havacılık terim sözlüğü
 CODES = {'tr': 'tur_Latn', 'ar': 'arb_Arab'}
 SENT = re.compile(r'(?<=[.!?])\s+(?=[A-Z0-9(])')
 # Makinenin "kol / silah" diye çevirmemesi için önce yer tutucuya alınan terimler
@@ -31,29 +33,44 @@ def strings(D):
             if e.get('d') and 'tr' not in p: out[e['d']] = min(out.get(e['d'], 9), 2 + std)
     for g, x in D['groups'].items():
         if 'tr' not in x and x.get('en'): out.setdefault(x['en'], 0)
+    # log mesajları kütüphanesi (elle çevrilmemiş açıklama ve alanlar)
+    try:
+        M = json.load(open(os.path.join(ROOT, 'app', 'data', 'logmsgs.json'), encoding='utf-8'))
+        for m in M.values():
+            ds = [m.get('desc') or {}] + list((m.get('fields') or {}).values())
+            for d in ds:
+                if d.get('en') and not d.get('tr'): out.setdefault(d['en'], 1 if m.get('core') else 3)
+    except Exception as e:
+        print('logmsgs', e)
     return sorted(out, key=lambda s: (out[s], len(s)))
 
 
-def main(lang):
+def main(lang, shard=0, nshard=1):
     D = json.load(gzip.open(os.path.join(ROOT, 'app', 'data', 'params_full.json.gz'), 'rt', encoding='utf-8'))
-    dst = os.path.join(ROOT, 'app', 'data', f'params_tx_{lang}.json.gz')
-    have = json.load(gzip.open(dst, 'rt', encoding='utf-8')) if os.path.exists(dst) else {}
+    src = os.path.join(ROOT, 'app', 'data', f'params_tx_{lang}.json.gz')
+    dst = os.environ.get('OUT') or src
+    have = json.load(gzip.open(src, 'rt', encoding='utf-8')) if os.path.exists(src) else {}
+    if have.get('__gv') != str(GL.GV):
+        have = {'__gv': str(GL.GV)}   # sözlük değişti: hepsi sözlükle yeniden çevrilir
     todo = [s for s in strings(D) if s not in have and re.search('[A-Za-z]{2}', s)]
-    print(lang, 'total', len(todo), 'have', len(have))
+    todo = [s for i, s in enumerate(todo) if i % nshard == shard]
+    print(lang, 'shard', shard, '/', nshard, 'todo', len(todo), 'have', len(have))
     import ctranslate2, transformers
     mdir = os.environ.get('NLLB_DIR', 'nllb')
-    tok = transformers.AutoTokenizer.from_pretrained(os.environ.get('NLLB_HF', 'facebook/nllb-200-distilled-1.3B'), src_lang='eng_Latn')
+    tok = transformers.AutoTokenizer.from_pretrained(os.environ.get('NLLB_HF', 'facebook/nllb-200-3.3B'), src_lang='eng_Latn')
     tr = ctranslate2.Translator(mdir, device='cpu', compute_type='int8', inter_threads=1, intra_threads=os.cpu_count() or 4)
     tgt = CODES[lang]
     deadline = time.time() + float(os.environ.get('MAX_MIN', '320')) * 60
     t0 = time.time(); done = 0; B = 64
     for i in range(0, len(todo), B):
         if time.time() > deadline: print('deadline reached'); break
+        if i and (i // B) % 20 == 0:
+            with gzip.open(dst, 'wt', encoding='utf-8') as f: json.dump(have, f, ensure_ascii=False, separators=(',', ':'))
         chunk = todo[i:i + B]
         segs = []; idx = []
+        toks_of = []
         for j, s in enumerate(chunk):
-            x = s
-            for rx, rep in PRE: x = rx.sub(rep, x)
+            x, tk = GL.protect(s); toks_of.append(tk)
             parts = [p for p in SENT.split(x) if p.strip()] or [x]
             for p in parts: segs.append(p); idx.append(j)
         toks = [tok.convert_ids_to_tokens(tok.encode(p))[:400] for p in segs]
@@ -64,9 +81,20 @@ def main(lang):
             hyp = r.hypotheses[0][1:] if r.hypotheses[0] and r.hypotheses[0][0] == tgt else r.hypotheses[0]
             txt = tok.decode(tok.convert_tokens_to_ids(hyp), skip_special_tokens=True).strip()
             outs[j] = (outs[j] + ' ' + txt).strip()
-        for s, o in zip(chunk, outs):
-            for a, b in POST[lang]: o = re.sub(a, b, o)
-            have[s] = o
+        retry = []
+        for s, o, tk in zip(chunk, outs, toks_of):
+            r = GL.restore(o, tk, lang)
+            if r is None: retry.append(s)
+            else: have[s] = r
+        # yer tutucu kaybolduysa: korumasız çevir, sonra sözlük düzeltmesi uygula
+        if retry:
+            tt = [tok.convert_ids_to_tokens(tok.encode(x))[:400] for x in retry]
+            rr = tr.translate_batch(tt, target_prefix=[[tgt]] * len(tt), beam_size=3, max_batch_size=32, max_decoding_length=400,
+                                    repetition_penalty=1.1)
+            for s, r in zip(retry, rr):
+                hyp = r.hypotheses[0][1:] if r.hypotheses[0] and r.hypotheses[0][0] == tgt else r.hypotheses[0]
+                o = tok.decode(tok.convert_tokens_to_ids(hyp), skip_special_tokens=True).strip()
+                have[s] = GL.fix(o, lang)
         done += len(chunk)
         if (i // B) % 20 == 0:
             el = time.time() - t0
@@ -78,4 +106,4 @@ def main(lang):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1])
+    main(sys.argv[1], int(sys.argv[2]) if len(sys.argv) > 2 else 0, int(sys.argv[3]) if len(sys.argv) > 3 else 1)

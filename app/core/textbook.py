@@ -4,6 +4,7 @@ Besmele (açıksa) yalnızca ilk sayfadadır. Ayrıca Parametre Merkezi için an
 """
 from __future__ import annotations
 import io, json, os, tempfile, time
+from . import glossary as GL
 from . import report as RP, texts, pcritical as CR
 from .paths import res
 
@@ -163,8 +164,8 @@ def build_book(path, lang='tr', lh=None, sections=None, progress=None):
             elif s == 'msgs':
                 core = sorted(k for k, m in msgs.items() if m.get('core'))
                 for k in core:
-                    m = msgs[k]; d = m['desc'].get(lg) or m['desc'].get('en', '')
-                    rows = [[f, (fd.get(lg) or fd.get('en') or '')] for f, fd in list((m.get('fields') or {}).items())[:24]]
+                    m = msgs[k]; d = GL.lt(m['desc'], lg)
+                    rows = [[f, GL.lt(fd, lg)] for f, fd in list((m.get('fields') or {}).items())[:24]]
                     blk = [P(f'{k} — {d}', H2)]
                     if rows: blk.append(tbl(rows, [_x('field', lg), _x('meaning', lg)], [W_ * 0.2, W_ * 0.8], fs=7.6))
                     st += [KeepTogether(blk[:2]) if len(rows) < 14 else blk[0]] + ([] if len(rows) < 14 else blk[1:]) + [Spacer(1, 5)]

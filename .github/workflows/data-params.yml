@@ -42,15 +42,16 @@ jobs:
         uses: actions/cache@v4
         with:
           path: nllb
-          key: nllb-1.3b-int8-v1
+          key: nllb-3.3b-int8-v1
       - name: Convert NLLB-200 1.3B to CTranslate2 int8
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc || true
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost || true
+          df -h /
           pip install -q --index-url https://download.pytorch.org/whl/cpu torch
           pip install -q ctranslate2 transformers sentencepiece protobuf
-          ct2-transformers-converter --model facebook/nllb-200-distilled-1.3B --output_dir nllb --quantization int8 --low_cpu_mem_usage
-          rm -rf ~/.cache/huggingface/hub/models--facebook--nllb-200-distilled-1.3B/blobs/*.bin || true
+          ct2-transformers-converter --model facebook/nllb-200-3.3B --output_dir nllb --quantization int8 --low_cpu_mem_usage
+          rm -rf ~/.cache/huggingface/hub/models--facebook--nllb-200-3.3B/blobs/* || true
           du -sh nllb
 
   translate:
@@ -59,7 +60,10 @@ jobs:
     timeout-minutes: 345
     strategy:
       fail-fast: false
-      matrix: { lang: [tr, ar] }
+      max-parallel: 16
+      matrix:
+        lang: [tr, ar]
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -69,22 +73,23 @@ jobs:
       - uses: actions/cache/restore@v4
         with:
           path: nllb
-          key: nllb-1.3b-int8-v1
+          key: nllb-3.3b-int8-v1
           fail-on-cache-miss: true
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - run: pip install -q ctranslate2 transformers sentencepiece protobuf
-      - name: Translate (${{ matrix.lang }})
+      - name: Translate (${{ matrix.lang }} / ${{ matrix.shard }})
         env:
           NLLB_DIR: nllb
           MAX_MIN: '320'
-        run: python tools_data/translate.py ${{ matrix.lang }}
+          OUT: /tmp/tx_${{ matrix.lang }}_${{ matrix.shard }}.json.gz
+        run: python tools_data/translate.py ${{ matrix.lang }} ${{ matrix.shard }} 8
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: tx_${{ matrix.lang }}
-          path: app/data/params_tx_${{ matrix.lang }}.json.gz
+          name: tx_${{ matrix.lang }}_${{ matrix.shard }}
+          path: /tmp/tx_${{ matrix.lang }}_${{ matrix.shard }}.json.gz
           if-no-files-found: ignore
 
   commit:
@@ -101,7 +106,7 @@ jobs:
       - name: Commit data back to branch
         run: |
           cp /tmp/art/params_full/params_full.json.gz app/data/
-          for l in tr ar; do [ -f /tmp/art/tx_$l/params_tx_$l.json.gz ] && cp /tmp/art/tx_$l/params_tx_$l.json.gz app/data/ || true; done
+          python tools_data/merge_tx.py /tmp/art
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add app/data/params_full.json.gz app/data/params_tx_*.json.gz
           git commit -m "data: ArduPilot tam parametre listesi + TR/AR çeviri (otomatik)" || exit 0

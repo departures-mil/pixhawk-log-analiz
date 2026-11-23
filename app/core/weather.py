@@ -68,6 +68,21 @@ def for_analysis(A):
         A.weather = fetch(home[0], home[1], u)
     except Exception:
         A.weather = None
+    # kırım / olay anı ve konumundaki hava (uçuş uzunsa saat ve yer değişmiş olabilir)
+    try:
+        y = getattr(A, 'why', None) or {}
+        tr = A.track
+        if y and tr is not None and len(tr['t']):
+            import numpy as np
+            i = int(min(len(tr['t']) - 1, max(0, np.searchsorted(tr['t'], y['te']))))
+            lat, lon = float(tr['lat'][i]), float(tr['lon'][i]); u2 = A.L.unix_at(y['te'])
+            if u2:
+                A.weather_event = fetch(lat, lon, u2)
+                if A.weather_event: A.weather_event['t'] = float(y['te'])
+        from . import why
+        A.why = why.build(A)
+    except Exception:
+        pass
     return A.weather
 
 
