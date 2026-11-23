@@ -65,7 +65,7 @@ QUESTIONS = [
               ('sub', ('Denizaltı (ArduSub)', 'Submarine (ArduSub)', 'غواصة')),
               ('unknown', U)]},
     {'id': 'autopilot', 'kind': 'edit', 'icon': '🧠', 'label': ('Otopilot (marka / model)', 'Autopilot (brand / model)', 'الطيار الآلي (الماركة / الطراز)'),
-     'opts': [(x, x) for x in ('Pixhawk 1 (FMUv2)', 'Pixhawk 1 2MB (FMUv3)', 'Pixhawk 2.1 / Cube Black', 'Cube Purple', 'Cube Yellow',
+     'opts': [(x, x) for x in ('Pixhawk 1 (FMUv2)', 'Pixhawk 1 2MB (FMUv3)', 'Pixhawk 2.4.8 (klon / clone)', 'Pixhawk 2.1 / Cube Black', 'Cube Purple', 'Cube Yellow',
                                'Cube Orange', 'Cube Orange+', 'Cube Blue', 'Cube Red', 'Pixhawk 4', 'Pixhawk 4 Mini', 'Pixhawk 5X',
                                'Pixhawk 6C', 'Pixhawk 6C Mini', 'Pixhawk 6X', 'Pixhawk 6X Pro', 'Holybro Durandal', 'Holybro Kakute H7',
                                'CUAV V5+', 'CUAV V5 Nano', 'CUAV X7 / X7+', 'CUAV Nora', 'CUAV Pixhack', 'mRo Pixracer', 'mRo Control Zero',

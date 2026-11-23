@@ -16,6 +16,11 @@ Türkçe · English · العربية (sağdan sola).
 - **Ders kitabı (PDF)**: kütüphane, senaryolar ve alıştırmalardan otomatik, antetli eğitim kitabı (TR/EN/AR, içindekiler, cevap anahtarı)
 - **Gerçek kaza logları**: ArduPilot forumundaki gerçek kırım loglarıyla teşhis doğruluğu ölçülür (bkz. [sonuçlar](docs/kirim_test_sonuclari.md)); logu indirip programda açma
 - **Anlatımlı video (MP4)**: 3B tekrarı ders adımları, altyazı ve sesli anlatımla sınıfta oynatmak için dışa aktarma
+- **Uçuş bilgileri formu** (log açılırken): kırım yaşandı mı, motor tipi (elektrikli hücre sayısı / benzinli cc ve zamanı), gövde tipi (normal, V-tail, elevon/uçan kanat, VTOL, tail-sitter, çok rotorlu…), otopilot marka/model (Pixhawk 1/2.4.8, Cube Black/Orange/Orange+, Pixhawk 4/5X/6C/6X, Matek, Kakute…), GPS, hava hızı sensörü vb. Logdan okunabilenler otomatik dolar, boşlar isteğe bağlı yapay zekâ ile önerilir; teşhis eşikleri cevaplara göre ayarlanır. Seçenekler Ayarlar > *Log soruları* bölümünden eklenip çıkarılır
+- **"Neden düştü?"**: kırım loglarında tek cümlelik kesin hüküm, güven yüzdesi, kanıtlar, saniye saniye olay zinciri, kırım anı ve konumundaki hava durumu, ne yapılmalı
+- **Problem Çözücü**: belirtileri işaretleyin ya da kendi cümlenizle yazın; 23 çapraz test (IMU'lar arası, GPS↔barometre, istenen↔gerçek tutum, frekans analizi, servo doygunluğu, ESC telemetrisi, hava…) kanıtla sıralanır, parametre bazında adım adım çözüm verilir
+- **Arşivde kırım işareti** ve filtre; **üst çubukta** log bilgisi, hızlı işlemler ve dil seçimi
+- **Havacılık terim sözlüğü**: arm/disarm, pre-arm, failsafe, yatış/yunuslama/sapma gibi terimler bütün TR/AR çevirilerde literatüre uygun
 - **Eşitleme**: GitHub (kendi gizli gist'iniz) ve internetsiz **aynı modem (LAN)**; kayıtlar silinmeden birleştirilir
 - **Tek tuşla güncelleme** (yüzde, MB, kalan, hız), ayarların sonunda **admin ile iletişim**
 

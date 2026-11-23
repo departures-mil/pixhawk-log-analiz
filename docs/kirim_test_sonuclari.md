@@ -1,6 +1,6 @@
 # Gerçek kırım logları ile teşhis doğruluğu
 
-Kaynak: discuss.ardupilot.org kamuya açık konular · Tarih: 2026-11-23 11:35 · Log sayısı: 65 (+0 okunamayan)
+Kaynak: discuss.ardupilot.org kamuya açık konular · Tarih: 2026-11-23 17:08 · Log sayısı: 65 (+0 okunamayan)
 
 | Ölçüt | Değer |
 |---|---|
@@ -17,6 +17,8 @@ Kaynak: discuss.ardupilot.org kamuya açık konular · Tarih: 2026-11-23 11:35 �
 |---|---|---|---|---|---|
 | 2026-11-23 11:17 | 64 | %56 | %58 | %53 | %9 |
 | 2026-11-23 11:35 | 65 | %77 | %85 | %56 | %21 |
+| 2026-11-23 17:06 | 65 | %77 | %85 | %56 | %21 |
+| 2026-11-23 17:08 | 65 | %77 | %85 | %56 | %21 |
 
 ## Log listesi
 

@@ -165,7 +165,7 @@ class Analysis(ExtMixin):
             spd[1:] = np.where(dt > 0, d / np.maximum(dt, 1e-3), 0)
             m = (tr['rel'] > 3) | (spd > self.th['fly_speed'])
             flights = self._runs(tr['t'], m, 5.0)
-        self.flip = None
+        self.flip = None; self.esc_stop = None
         if not flights:
             flights = self._flying_fallback()
         # Birleştir (kısa kesintiler)
@@ -668,6 +668,11 @@ class Analysis(ExtMixin):
                     sat = (hi >= mx - 40) & (hi - lo > 250)
                     for i0, i1 in self._runs(tt, sat, 0.4)[:1]:
                         tm = float(i0)
+            # ESC telemetrisi: bir motorun devri diğerleri dönerken birden sıfıra iner (motor/ESC durması, pervane kopması)
+            te_ = self._esc_stop(max(win0, end - 15), end - 0.2)
+            if te_ is not None:
+                self.esc_stop = te_
+                tm = min(tm, te_[0]) if tm is not None else te_[0]
             if self.flip and self.flights and self.flip[0] - self.flights[-1][0] < 6:
                 tm = min(tm, self.flip[0]) if tm is not None else self.flip[0]
             if tm is not None:
@@ -679,7 +684,7 @@ class Analysis(ExtMixin):
         primary = cands[0]
         if primary[0] == 'ekf' and len(cands) > 1:
             primary = next((c for c in cands if c[0] != 'ekf'), primary)
-        if primary[0] == 'control' and tm is not None and tm - primary[1] < 3:
+        if primary[0] == 'control' and tm is not None and tm - primary[1] < (0.5 if getattr(self, 'esc_stop', None) and tm == self.esc_stop[0] else 3):
             primary = ('motor', tm)   # tutum hatası motor doygunluğunun sonucu
         chain = []
         for name, t in cands:
@@ -692,6 +697,30 @@ class Analysis(ExtMixin):
         chain.sort(key=lambda c: c['t'])
         self.root = {'cause': primary[0], 't': primary[1], 'chain': chain, 'prevent': primary[0],
                      'others': [c[0] for c in cands if c[0] != primary[0]]}
+
+    def _esc_stop(self, t0, t1):
+        """(zaman, motor no) — diğer motorlar >1500 rpm dönerken bir motor ≥0.5 s boyunca ortancanın %15'inin altına düşerse.
+        Uçuşun önceki kısmında o ESC'nin normal devir bildirdiği doğrulanır (bildirmeyen ESC yanlış alarm vermesin)."""
+        L = self.L
+        E = [L.s(f'ESC[{i}]') for i in range(12)]
+        E = [(i, e) for i, e in enumerate(E) if e.has('RPM') and len(e['t']) > 20]
+        if len(E) < 3 or t1 - t0 < 1: return None
+        g = np.arange(t0, t1, 0.1)
+        if len(g) < 10: return None
+        R = np.vstack([np.interp(g, e['t'], e['RPM']) for _, e in E])
+        med = np.median(R, axis=0)
+        f0 = self.flights[-1][0] if self.flights else 0
+        best = None
+        for j, (i, e) in enumerate(E):
+            pm = (e['t'] > f0 + 5) & (e['t'] < t0)
+            if pm.sum() > 10:
+                allm = np.median(np.vstack([np.interp(e['t'][pm], x['t'], x['RPM']) for _, x in E]), axis=0)
+                ok = np.nanmedian(e['RPM'][pm] / np.maximum(allm, 1))
+                if not (0.5 < ok < 2.0): continue
+            bad = (R[j] < 0.15 * med) & (med > 1500)
+            for a, b in self._runs(g, bad, 0.5)[:1]:
+                if best is None or a < best[0]: best = (float(a), i + 1)
+        return best
 
     # ------------------------------------------------------ parametre denetimi
     def _params(self):

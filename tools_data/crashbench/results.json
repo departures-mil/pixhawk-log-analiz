@@ -47,6 +47,40 @@
    "cause_n": 33,
    "cause_match": 7,
    "cause_acc": 0.212
+  },
+  {
+   "date": "2026-11-23 17:06",
+   "n": 65,
+   "errors": 0,
+   "tp": 40,
+   "fn": 7,
+   "fp": 8,
+   "tn": 10,
+   "crash_verdict": 19,
+   "false_crash": 0,
+   "accuracy": 0.769,
+   "recall_crash": 0.851,
+   "specificity": 0.556,
+   "cause_n": 33,
+   "cause_match": 7,
+   "cause_acc": 0.212
+  },
+  {
+   "date": "2026-11-23 17:08",
+   "n": 65,
+   "errors": 0,
+   "tp": 40,
+   "fn": 7,
+   "fp": 8,
+   "tn": 10,
+   "crash_verdict": 19,
+   "false_crash": 0,
+   "accuracy": 0.769,
+   "recall_crash": 0.851,
+   "specificity": 0.556,
+   "cause_n": 33,
+   "cause_match": 7,
+   "cause_acc": 0.212
   }
  ],
  "results": [
@@ -1579,7 +1613,7 @@
    "others": null,
    "overall": 43,
    "dur": 27,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -1739,7 +1773,7 @@
    "others": null,
    "overall": 52,
    "dur": 507,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -2688,7 +2722,7 @@
    "others": null,
    "overall": 44,
    "dur": 92,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -2905,7 +2939,7 @@
    ],
    "overall": 36,
    "dur": 1708,
-   "sec": 0.6,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -3467,7 +3501,7 @@
    ],
    "overall": 45,
    "dur": 261,
-   "sec": 0.5,
+   "sec": 0.3,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -3660,7 +3694,7 @@
    "others": null,
    "overall": 99,
    "dur": 87,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -3820,7 +3854,7 @@
    "others": null,
    "overall": 100,
    "dur": 87,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "normal",
     "score": 10,
@@ -4080,7 +4114,7 @@
    "others": null,
    "overall": 77,
    "dur": 200,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -4303,7 +4337,7 @@
    "others": [],
    "overall": 79,
    "dur": 7133983284583,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -4524,7 +4558,7 @@
    "others": [],
    "overall": 46,
    "dur": 82,
-   "sec": 0.4,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 50,
@@ -5043,7 +5077,7 @@
    ],
    "overall": 33,
    "dur": 27,
-   "sec": 0.4,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -5296,7 +5330,7 @@
    "others": null,
    "overall": 38,
    "dur": 46,
-   "sec": 0.6,
+   "sec": 0.4,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -5481,7 +5515,7 @@
    "others": [],
    "overall": 80,
    "dur": 185,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -5723,7 +5757,7 @@
    ],
    "overall": 36,
    "dur": 536,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -6333,7 +6367,7 @@
    ],
    "overall": 79,
    "dur": 1618,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -7347,7 +7381,7 @@
    "others": [],
    "overall": 47,
    "dur": 642,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -7510,7 +7544,7 @@
    "others": [],
    "overall": 53,
    "dur": 314,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -7741,7 +7775,7 @@
    "others": null,
    "overall": 46,
    "dur": 273810,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 55,
@@ -8337,7 +8371,7 @@
    ],
    "overall": 40,
    "dur": 17,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 75,
@@ -8563,7 +8597,7 @@
    "others": null,
    "overall": 87,
    "dur": 424325,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 25,
@@ -8694,7 +8728,7 @@
    ],
    "overall": 71,
    "dur": 175,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -9250,7 +9284,7 @@
    "others": null,
    "overall": 42,
    "dur": 1146,
-   "sec": 0.6,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -10861,7 +10895,7 @@
    "others": [],
    "overall": 89,
    "dur": 111,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -11038,7 +11072,7 @@
    "others": null,
    "overall": 46,
    "dur": 47,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -11221,7 +11255,7 @@
    ],
    "overall": 69,
    "dur": 801,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -12350,7 +12384,7 @@
    "others": null,
    "overall": 55,
    "dur": 87,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -12948,7 +12982,7 @@
    "others": [],
    "overall": 44,
    "dur": 1041,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 45,
@@ -13764,7 +13798,7 @@
    "others": null,
    "overall": 50,
    "dur": 113,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -13934,7 +13968,7 @@
    "others": [],
    "overall": 48,
    "dur": 117,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -14325,7 +14359,7 @@
    "others": null,
    "overall": 100,
    "dur": 56,
-   "sec": 0.6,
+   "sec": 0.4,
    "verdict": {
     "kind": "noflight",
     "score": 0,
