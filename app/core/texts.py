@@ -127,6 +127,17 @@ S = {
     'pa_gps_off': ('GPS_TYPE = 0: GPS kapalı.', 'GPS_TYPE = 0: GPS disabled.', 'GPS_TYPE = 0: GPS معطل.'),
     'pa_rtl_autoland': ('RTL_AUTOLAND = 0: Eve dönünce otomatik iniş yapılmaz, araç evin üzerinde döner (bilgi).', 'RTL_AUTOLAND = 0: no automatic landing after RTL; the plane loiters over home (info).', 'RTL_AUTOLAND = 0: لا هبوط آلي بعد العودة؛ تحوم الطائرة فوق نقطة الإقلاع (معلومة).'),
     'pa_notch_off': ('Harmonik çentik filtresi kapalı; titreşim kontrolü zayıf olabilir (bilgi).', 'Harmonic notch filter disabled; noise rejection may be weak (info).', 'مرشح الشق التوافقي معطل؛ قد يكون كبت الضجيج ضعيفاً (معلومة).'),
+    # v1.0.2: profiller, anomali, rüzgâr, pilot
+    'dom_motors': ('Motorlar (multikopter)', 'Motors (multicopter)', 'المحركات (متعدد المراوح)'),
+    'dom_vtol': ('VTOL / geçişler', 'VTOL / transitions', 'VTOL / الانتقالات'),
+    'mot_imbalance': ('Motor dengesizliği: {ch} ortalamadan {v} µs farklı (ağırlık merkezi, bükük kol veya zayıf motor/ESC).', 'Motor imbalance: {ch} differs {v} µs from the average (CG, twisted arm or weak motor/ESC).', 'عدم توازن المحركات: {ch} يختلف {v} µs عن المتوسط (مركز الثقل أو ذراع ملتوية أو محرك/ESC ضعيف).'),
+    'mot_headroom': ('Motor payı düşük: en yüksek motor çıkışı MOT_PWM_MAX değerine {v} µs yakın; araç ağır veya güçsüz.', 'Low motor headroom: highest motor output is within {v} µs of MOT_PWM_MAX; vehicle is heavy or underpowered.', 'هامش المحرك منخفض: أعلى خرج ضمن {v} µs من MOT_PWM_MAX؛ المركبة ثقيلة أو ضعيفة.'),
+    'vtol_summary': ('{n} VTOL⇄uçak geçişi, VTOL modlarında {t} dk.', '{n} VTOL⇄plane transitions, {t} min in VTOL modes.', '{n} انتقال VTOL⇄طائرة، {t} دقيقة في أوضاع VTOL.'),
+    'vtol_assist_off': ('Q_ASSIST_SPEED = 0: Düşük hızda VTOL motor desteği kapalı; stall riskine karşı açılması önerilir.', 'Q_ASSIST_SPEED = 0: VTOL assist at low airspeed is disabled; enabling it protects against stalls.', 'Q_ASSIST_SPEED = 0: دعم محركات VTOL عند السرعة المنخفضة معطل؛ يُنصح بتفعيله.'),
+    'vtol_trans_short': ('Q_TRANSITION_MS = {v}: Geçiş süresi çok kısa.', 'Q_TRANSITION_MS = {v}: transition time is very short.', 'Q_TRANSITION_MS = {v}: زمن الانتقال قصير جداً.'),
+    'vtol_thr_full': ('VTOL gazı uçuşun %{v} kadarında tam; kaldırma gücü sınırda.', 'VTOL throttle at maximum for {v}% of hover; lift margin is marginal.', 'خانق VTOL في الحد الأقصى {v}% من الوقت؛ هامش الرفع حرج.'),
+    'wind_high': ('Logdan kestirilen ortalama rüzgâr {v} m/s (profil sınırı {lim} m/s): uçuş rüzgâr limitine yakın/üstünde yapılmış.', 'Estimated mean wind from the log {v} m/s (profile limit {lim} m/s): the flight was at/over the wind limit.', 'متوسط الرياح المقدر من السجل {v} م/ث (حد الملف {lim} م/ث).'),
+    'anom_ev': ('Yapay zekâ anomali: alışılmadık {f} (puan {s})', 'AI anomaly: unusual {f} (score {s})', 'شذوذ ذكاء اصطناعي: {f} غير معتاد (الدرجة {s})'),
 }
 
 
@@ -156,6 +167,9 @@ def render(f, lang='tr', tfmt=None):
         return K.ev_text(a['id'], lang)
     if k == 'ev_msg':
         return a['msg']
+    if k == 'anom_ev':
+        from .anomaly import fname
+        a['f'] = fname(a.get('f'), lang)
     return T(k, lang, **a)
 
 

@@ -4,7 +4,7 @@ datas = [('app/data', 'app/data')]
 datas += collect_data_files('arabic_reshaper') + collect_data_files('docx') + collect_data_files('certifi')
 hidden = ['pymavlink.dialects.v20.ardupilotmega', 'pymavlink.dialects.v20.common', 'pymavlink.DFReader',
           'matplotlib.backends.backend_qtagg', 'matplotlib.backends.backend_agg', 'mpl_toolkits.mplot3d',
-          'reportlab.graphics.barcode.common', 'bidi.algorithm']
+          'reportlab.graphics.barcode.common', 'bidi.algorithm', 'PySide6.QtNetwork', 'cryptography.hazmat.primitives.ciphers.aead']
 hidden += collect_submodules('reportlab.pdfbase')
 excl = ['tkinter', 'PySide6.QtWebEngineCore', 'PySide6.QtWebEngineWidgets', 'PySide6.QtQuick', 'PySide6.QtQml',
         'PySide6.Qt3DCore', 'PySide6.QtMultimedia', 'PySide6.QtPdf', 'PyQt5', 'PyQt6', 'IPython', 'scipy', 'pandas', 'pytest']

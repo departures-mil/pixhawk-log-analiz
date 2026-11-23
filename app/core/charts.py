@@ -45,7 +45,15 @@ def _style(ax, lang):
     ax.xaxis.set_major_formatter(FuncFormatter(lambda x, _: fmt_t(x)[:-2]))
 
 
+MARK = {'t': None, 'span': None}
+
+
 def _png(fig):
+    if MARK['t'] is not None or MARK['span']:
+        for ax in fig.axes:
+            if getattr(ax, 'name', '') != 'rectilinear' or not isinstance(ax.xaxis.get_major_formatter(), FuncFormatter): continue
+            if MARK['span']: ax.axvspan(MARK['span'][0], MARK['span'][1], color='#F59E0B', alpha=0.22, zorder=5)
+            if MARK['t'] is not None: ax.axvline(MARK['t'], color='#F59E0B', lw=2.4, zorder=6)
     b = io.BytesIO(); fig.tight_layout(); fig.savefig(b, format='png', dpi=150); return b.getvalue()
 
 
@@ -264,3 +272,14 @@ def chart_timeline(A, lang):
 
 ALL = [('c_alt', chart_alt), ('c_att', chart_att), ('c_gps', chart_gps), ('c_vibe', chart_vibe), ('c_bat', chart_bat),
        ('c_rcou', chart_rcou), ('c_ekf', chart_ekf), ('c_mag', chart_mag)]
+
+
+def render_marked(key, A, lang, t=None, span=None):
+    """Belirtilen grafiği, ilgili an/aralık turuncu işaretli olarak üretir (alıştırma ve ders rehberi)."""
+    fn = dict(ALL + [('c_health', chart_health), ('c_timeline', chart_timeline)]).get(key)
+    if not fn: return None
+    MARK['t'] = t; MARK['span'] = span
+    try:
+        return fn(A, lang)
+    finally:
+        MARK['t'] = None; MARK['span'] = None

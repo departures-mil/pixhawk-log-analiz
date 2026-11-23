@@ -9,3 +9,4 @@ pillow>=10
 arabic-reshaper>=3.0
 python-bidi>=0.4.2
 anthropic>=0.75
+cryptography>=42

@@ -250,6 +250,9 @@ U = {
     'saved_archive': ('Arşive kaydedildi.', 'Saved to archive.', 'حُفظ في الأرشيف.'),
 }
 
+from .i18n2 import U2 as _U2  # noqa: E402
+for _k, _v in _U2.items(): U.setdefault(_k, _v)
+
 
 def t(key, **a):
     v = U[key][LI[LANG['v']]]

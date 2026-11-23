@@ -14,7 +14,7 @@ WANT = {
     'MAG': 10, 'RCIN': 10, 'RCOU': 10, 'RSSI': 2, 'POWR': 2, 'PM': 0, 'STAT': 0, 'XKF4': 5, 'NKF4': 5,
     'XKF1': 5, 'XKF3': 5, 'XKFS': 0, 'MODE': 0, 'MSG': 0, 'ERR': 0, 'EV': 0, 'ARM': 0, 'PARM': 0,
     'VER': 0, 'CMD': 0, 'ORGN': 0, 'RPM': 5, 'ESC': 5, 'DSF': 0, 'PIDR': 10, 'PIDP': 10, 'PIDY': 10,
-    'RAD': 2, 'MAV': 2,
+    'RAD': 2, 'MAV': 2, 'XKF2': 2, 'NKF2': 2, 'QTUN': 10, 'TSYN': 0,
 }
 
 
@@ -95,11 +95,146 @@ def _vehicle_from(text):
     return None
 
 
-def load(path: str, progress=None, cancel=None) -> LogData:
+NONE_KEY = ('ATT', 'POS', 'CTUN', 'NTUN', 'TECS', 'AETR', 'RCIN', 'RCOU', 'PM', 'STAT', 'AHR2', 'AOA', 'POWR', 'RSSI', 'DSF', 'ORGN',
+            'CMD', 'PIDR', 'PIDP', 'PIDY', 'RAD', 'MAV')
+LOADER_VER = 3
+
+
+def load(path: str, progress=None, cancel=None, use_cache=True) -> LogData:
+    """Logu okur. Aynı dosya ikinci kez açıldığında önbellekten (saniyenin altında) gelir."""
     ext = os.path.splitext(path)[1].lower()
+    if use_cache:
+        try:
+            from . import cache
+            L = cache.get(path)
+            if L is not None:
+                if progress: progress(1.0)
+                return L
+        except Exception:
+            pass
     if ext in ('.tlog',):
-        return _load_tlog(path, progress, cancel)
-    return _load_bin(path, progress, cancel)
+        L = _load_tlog(path, progress, cancel)
+    elif ext == '.log':
+        L = _load_bin(path, progress, cancel)
+    else:
+        try:
+            L = _load_bin_fast(path, progress, cancel)
+        except InterruptedError:
+            raise
+        except Exception:
+            import traceback; traceback.print_exc()
+            L = _load_bin(path, progress, cancel)
+    if use_cache:
+        try:
+            from . import cache
+            cache.put(path, L)
+        except Exception:
+            pass
+    return L
+
+
+def _load_bin_fast(path, progress=None, cancel=None) -> LogData:
+    from . import fastbin as FB
+    L = LogData(); L.path = path; L.size = os.path.getsize(path); L.kind = 'bin'
+    rd = FB.Reader(path, WANT, NONE_KEY, progress=(lambda f: progress(f * 0.97)) if progress else None, cancel=cancel).run()
+    arrs = rd.arrays()
+    if not arrs:
+        raise ValueError('no messages')
+    L.types_seen = dict(rd.counts)
+    # Zaman başlangıcı: ilk sıfırdan büyük TimeUS
+    t0 = None
+    for n, (f, a) in arrs.items():
+        if 'TimeUS' in a.dtype.names and len(a):
+            tt = a['TimeUS']; tt = tt[tt > 0]
+            if len(tt):
+                v = int(tt.min()); t0 = v if t0 is None else min(t0, v)
+    t0 = t0 or 0
+
+    def tsec(f, a):
+        if 'TimeUS' in a.dtype.names: return (a['TimeUS'].astype(np.float64) - t0) / 1e6
+        if 'TimeMS' in a.dtype.names: return (a['TimeMS'].astype(np.float64) * 1000 - t0) / 1e6
+        return np.zeros(len(a))
+
+    def S(b):
+        return b.split(b'\0', 1)[0].decode('utf-8', 'replace') if isinstance(b, bytes) else str(b)
+    special = {}
+    for n in ('PARM', 'MSG', 'VER', 'MODE', 'ERR', 'EV', 'ARM'):
+        if n in arrs: special[n] = arrs.pop(n)
+    if 'PARM' in special:
+        f, a = special['PARM']
+        for nm, v in zip(a['Name'], FB.col(f, a, 'Value')):
+            L.params[S(nm)] = float(v)
+    if 'MSG' in special:
+        f, a = special['MSG']
+        for t, m in zip(tsec(f, a), a['Message']):
+            txt = S(m).strip(); L.texts.append((float(t), txt))
+            v = _vehicle_from(txt)
+            if v and not L.version: L.version = txt; L.vehicle = v
+    if 'VER' in special:
+        f, a = special['VER']
+        if len(a):
+            r = a[-1]
+            L.board = str(int(r['BU'])) if 'BU' in a.dtype.names else (str(int(r['APJ'])) if 'APJ' in a.dtype.names else '')
+            if 'FWS' in a.dtype.names:
+                fw = S(r['FWS'])
+                if fw:
+                    L.version = fw; v = _vehicle_from(fw)
+                    if v: L.vehicle = v
+    if 'MODE' in special:
+        f, a = special['MODE']; nm = a.dtype.names
+        mn = a['ModeNum'] if 'ModeNum' in nm else a['Mode']
+        rs = a['Rsn'] if 'Rsn' in nm else np.full(len(a), -1)
+        L.modes = [(float(t), int(m), '', int(r)) for t, m, r in zip(tsec(f, a), mn, rs)]
+    if 'ERR' in special:
+        f, a = special['ERR']
+        L.errors = [(float(t), int(s_), int(c)) for t, s_, c in zip(tsec(f, a), a['Subsys'], a['ECode'])]
+    if 'EV' in special:
+        f, a = special['EV']
+        L.events = [(float(t), int(i)) for t, i in zip(tsec(f, a), a['Id'])]
+    if 'ARM' in special:
+        f, a = special['ARM']
+        if 'ArmState' in a.dtype.names:
+            L.arm = [(float(t), bool(x)) for t, x in zip(tsec(f, a), a['ArmState'])]
+    out = {}
+    for n, (f, a) in arrs.items():
+        t = tsec(f, a)
+        cols = [c for c in a.dtype.names if c not in ('TimeUS', 'TimeMS')]
+        kf = None if n in NONE_KEY else next((k for k in ('I', 'C', 'Instance') if k in a.dtype.names and a.dtype[k].kind in 'iuf'), None)
+        keys = np.unique(a[kf]) if kf else [None]
+        for k in keys:
+            m = (a[kf] == k) if kf else slice(None)
+            s = Series(); s['t'] = t[m]
+            for c in cols:
+                v = FB.col(f, a, c)
+                if v is not None: s[c] = v[m]
+            kk = None if k is None else (int(k) if a.dtype[kf].kind in 'iu' else float(k))
+            nm = n if kk is None else f'{n}[{kk}]'
+            out[nm] = s
+            if kk is not None and n not in out: out[n] = s
+        if n == 'GPS' and 'GWk' in a.dtype.names and L.gps_time0 is None:
+            ok = np.flatnonzero((a['Status'] >= 3) & (a['GWk'] > 0))
+            if len(ok):
+                i = ok[0]
+                L.gps_time0 = (float(t[i]), 315964800 + float(a['GWk'][i]) * 604800 + float(a['GMS'][i]) / 1000.0 - 18)
+    L.msgs = out
+    _post(L, t0)
+    if progress: progress(1.0)
+    return L
+
+
+def _post(L, t0):
+    for base in ('GPS', 'BAT', 'VIBE', 'IMU', 'MAG', 'BARO', 'ARSP', 'XKF4', 'XKF1', 'XKF3', 'GPA', 'RPM', 'ESC', 'CURR', 'NKF4'):
+        if base not in L.msgs:
+            for k in ('[0]', '[0.0]'):
+                if base + k in L.msgs:
+                    L.msgs[base] = L.msgs[base + k]
+                    break
+    if 'BAT' not in L.msgs and 'CURR' in L.msgs:
+        L.msgs['BAT'] = L.msgs['CURR']
+    L.duration = max((s['t'][-1] for s in L.msgs.values() if len(s.get('t', [])) > 0), default=0.0)
+    for t, _ in L.texts[-1:]:
+        L.duration = max(L.duration, t)
+    L.t0_us = t0 or 0
 
 
 def _load_bin(path, progress=None, cancel=None) -> LogData:
@@ -189,7 +324,7 @@ def _load_bin(path, progress=None, cancel=None) -> LogData:
                 pass
         rate = WANT.get(name, 0)
         key = d.get('I', d.get('C', d.get('Instance', None)))
-        if name in ('ATT', 'POS', 'CTUN', 'NTUN', 'TECS', 'AETR', 'RCIN', 'RCOU', 'PM', 'STAT', 'AHR2', 'AOA', 'POWR', 'RSSI', 'DSF', 'ORGN', 'CMD', 'PIDR', 'PIDP', 'PIDY', 'RAD', 'MAV'):
+        if name in NONE_KEY:
             key = None
         if rate:
             lk = (name, key)
@@ -215,19 +350,7 @@ def _load_bin(path, progress=None, cancel=None) -> LogData:
             if len(lst) < ln:
                 lst.extend([math.nan] * (ln - len(lst)))
     L.msgs = _finish(acc)
-    # Birincil örnekler: GPS[0], BAT[0], VIBE[0] vb. düz adla da erişilebilir olsun
-    for base in ('GPS', 'BAT', 'VIBE', 'IMU', 'MAG', 'BARO', 'ARSP', 'XKF4', 'XKF1', 'XKF3', 'GPA', 'RPM', 'ESC', 'CURR', 'NKF4'):
-        if base not in L.msgs:
-            for k in ('[0]', '[0.0]'):
-                if base + k in L.msgs:
-                    L.msgs[base] = L.msgs[base + k]
-                    break
-    if 'BAT' not in L.msgs and 'CURR' in L.msgs:
-        L.msgs['BAT'] = L.msgs['CURR']
-    L.duration = max((s['t'][-1] for s in L.msgs.values() if len(s.get('t', [])) > 0), default=0.0)
-    for t, _ in L.texts[-1:]:
-        L.duration = max(L.duration, t)
-    L.t0_us = t0 or 0
+    _post(L, t0)
     if progress: progress(1.0)
     return L
 

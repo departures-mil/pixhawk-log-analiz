@@ -66,6 +66,25 @@ RT = {
     'l_clip': ('Kırpılma', 'Clipping', 'القص'), 'l_volt': ('Gerilim', 'Voltage', 'الجهد'), 'l_curr': ('Akım', 'Current', 'التيار'),
     'l_thr': ('Gaz', 'Throttle', 'الخانق'), 'l_crash': ('Kırım noktası', 'Crash point', 'نقطة التحطم'), 'l_home': ('Ev', 'Home', 'نقطة الإقلاع'),
     'l_limit': ('sınır', 'limit', 'الحد'),
+    # v1.0.2
+    'f_profile': ('Hava aracı profili', 'Aircraft profile', 'ملف الطائرة'), 'f_serial': ('Kart seri no', 'Board serial', 'الرقم التسلسلي للوحة'),
+    'f_aircraft': ('Hava aracı', 'Aircraft', 'الطائرة'), 'f_pilot': ('Pilot', 'Pilot', 'الطيار'),
+    'anomaly': ('Yapay zekâ anomali tespiti', 'AI anomaly detection', 'كشف الشذوذ بالذكاء الاصطناعي'),
+    'anom_intro': ('Uçuş 10 sn\'lik pencerelere bölünüp {n} pencere, normal uçuşlardan öğrenilmiş model ({k} uçuş) ve uçuşun kendi akışıyla karşılaştırıldı. Anomali endeksi: {i}/100.',
+                   'The flight was split into {n} windows of 10 s and compared with a model learned from normal flights ({k} flights) and with its own trend. Anomaly index: {i}/100.',
+                   'قُسمت الرحلة إلى {n} نافذة من 10 ثوانٍ وقورنت بنموذج متعلم من رحلات طبيعية ({k} رحلة) وباتجاهها الذاتي. مؤشر الشذوذ: {i}/100.'),
+    'anom_none': ('Alışılmadık bir bölüm bulunmadı.', 'No unusual segment was found.', 'لم يُعثر على مقطع غير معتاد.'),
+    'a_time': ('Zaman aralığı', 'Time range', 'المدى الزمني'), 'a_score': ('Puan', 'Score', 'الدرجة'), 'a_feats': ('Alışılmadık ölçümler (değer / beklenen)', 'Unusual measurements (value / expected)', 'قياسات غير معتادة (القيمة / المتوقع)'),
+    'pilot': ('Pilot performansı', 'Pilot performance', 'أداء الطيار'),
+    'pilot_note': ('Puanlar bu uçuşun log verisinden hesaplanır; Pilotlar sayfasında aynı pilotun tüm uçuşları karşılaştırılır.', 'Scores are computed from this flight\'s log data; the Pilots page compares all flights of the same pilot.', 'تُحسب الدرجات من بيانات سجل هذه الرحلة؛ صفحة الطيارين تقارن جميع رحلات الطيار نفسه.'),
+    'weather': ('Hava durumu', 'Weather', 'الطقس'),
+    'sec_summary': ('Özet ve sonuç', 'Summary & verdict', 'الملخص والنتيجة'), 'sec_facts': ('Temel bilgiler ve kanıtlar', 'Key facts & evidence', 'المعلومات الأساسية والأدلة'),
+    'sec_root': ('Kök neden', 'Root cause', 'السبب الجذري'), 'sec_ai': ('Yapay zekâ yorumu', 'AI commentary', 'تعليق الذكاء الاصطناعي'),
+    'sec_health': ('Sağlık ayrıntıları', 'Health details', 'تفاصيل الصحة'), 'sec_anomaly': ('Anomali tespiti', 'Anomaly detection', 'كشف الشذوذ'),
+    'sec_pilot': ('Pilot performansı', 'Pilot performance', 'أداء الطيار'), 'sec_weather': ('Hava durumu', 'Weather', 'الطقس'),
+    'sec_phases': ('Uçuş aşamaları', 'Flight phases', 'مراحل الطيران'), 'sec_charts': ('Grafikler ve ders notları', 'Charts & lesson notes', 'الرسوم وملاحظات الدرس'),
+    'sec_timeline': ('Olay zaman çizelgesi', 'Event timeline', 'الخط الزمني'), 'sec_params': ('Parametre denetimi', 'Parameter audit', 'تدقيق المعاملات'),
+    'sec_thresholds': ('Eğitim eki: eşikler', 'Training annex: thresholds', 'ملحق تدريبي: العتبات'), 'sec_verify': ('Doğrulama (QR)', 'Verification (QR)', 'التحقق (QR)'),
 }
 
 LESSON = {

@@ -9,6 +9,10 @@ import math
 import numpy as np
 from .loader import LogData, Series
 from . import knowledge as K
+from . import profiles as PR
+from .analysis_ext import ExtMixin
+
+PROFILE_OVERRIDE = {'v': 'auto'}   # Ayarlar'dan: auto / plane / vtol / copter / heli / rover
 
 
 def F(key, **kw):
@@ -40,10 +44,19 @@ def hav(lat1, lon1, lat2, lon2):
     return 2 * R * np.arcsin(np.sqrt(np.clip(a, 0, 1)))
 
 
-class Analysis:
-    def __init__(self, L: LogData):
+class Analysis(ExtMixin):
+    def __init__(self, L: LogData, profile=None, extras=True):
         self.L = L
         self.vehicle = L.vehicle
+        p = profile or PROFILE_OVERRIDE.get('v') or 'auto'
+        self.profile = PR.detect(L) if p == 'auto' else p
+        self.th = PR.get(self.profile)
+        self.extras = extras
+        self.anomalies = []      # ML anomali pencereleri
+        self.pilot = {}          # pilot performans ölçütleri
+        self.wind = {}           # logdan kestirilen rüzgâr
+        self.weather = None      # çevrimiçi hava durumu (sonradan eklenir)
+        self.serial = ''         # kart seri numarası (filo takibi)
         self.summary = {}
         self.flights = []        # [(takeoff_t, land_t)]
         self.armed = []          # [(arm_t, disarm_t)]
@@ -67,10 +80,19 @@ class Analysis:
         self._phases()
         self._events()
         self._health()
+        self._profile_checks()
+        self._overall()
         self._crash()
         self._root_cause()
         self._params()
         self._facts()
+        self._serial()
+        self._wind()
+        if self.extras:
+            for fn in (self._pilot_metrics, self._anomaly):
+                try: fn()
+                except Exception:
+                    import traceback; traceback.print_exc()
 
     def _track(self):
         L = self.L
@@ -132,7 +154,7 @@ class Analysis:
             spd = np.zeros(len(tr['t']))
             dt = np.diff(tr['t']); d = hav(tr['lat'][:-1], tr['lon'][:-1], tr['lat'][1:], tr['lon'][1:])
             spd[1:] = np.where(dt > 0, d / np.maximum(dt, 1e-3), 0)
-            m = (tr['rel'] > 3) | (spd > (6 if self.vehicle == 'Plane' else 1.5))
+            m = (tr['rel'] > 3) | (spd > self.th['fly_speed'])
             flights = self._runs(tr['t'], m, 5.0)
         # Birleştir (kısa kesintiler)
         merged = []
@@ -250,13 +272,14 @@ class Analysis:
             m = fmask(g)
             ns = g['NSats'][m] if m.any() else g['NSats']; hd = g['HDop'][m] if g.has('HDop') and m.any() else (g['HDop'] if g.has('HDop') else np.array([]))
             stt = g['Status'][m] if g.has('Status') and m.any() else (g['Status'] if g.has('Status') else np.array([]))
-            bad = ((ns < 6) | ((hd > 2.0) if len(hd) == len(ns) else False) | ((stt < 3) if len(stt) == len(ns) else False))
+            TH = self.th
+            bad = ((ns < TH['sat_min']) | ((hd > TH['hdop_max']) if len(hd) == len(ns) else False) | ((stt < 3) if len(stt) == len(ns) else False))
             pct = float(bad.mean() * 100) if len(ns) else 0
             glitches = sum(1 for _, s, c in L.errors if s in (7, 11) and c != 0)
             sc = 100 - pct * 2.2 - glitches * 8
             fnd = []
             if pct > 2: fnd.append(F('gps_bad_pct', pct=round(pct, 1)))
-            if len(ns) and np.nanmin(ns) < 6: fnd.append(F('gps_min_sats', n=int(np.nanmin(ns))))
+            if len(ns) and np.nanmin(ns) < self.th['sat_min']: fnd.append(F('gps_min_sats', n=int(np.nanmin(ns))))
             if glitches: fnd.append(F('gps_glitch', n=glitches))
             self._dom('gps', sc, {'min_sats': float(np.nanmin(ns)) if len(ns) else None, 'mean_sats': float(np.nanmean(ns)) if len(ns) else None,
                                   'max_hdop': float(np.nanmax(hd)) if len(hd) else None, 'bad_pct': pct, 'glitches': glitches}, fnd)
@@ -269,10 +292,11 @@ class Analysis:
             p95 = float(np.nanpercentile(np.concatenate([vx, vy, vz]), 95))
             clipk = [k for k in ('Clip', 'Clip0', 'Clip1', 'Clip2') if v.has(k)]
             clip = float(np.nanmax(v[clipk[0]]) - np.nanmin(v[clipk[0]])) if clipk else 0.0
-            sc = 100 - max(0, p95 - 15) * 1.6 - min(30, clip / 10)
+            vw, vb = self.th['vibe_warn'], self.th['vibe_bad']
+            sc = 100 - max(0, p95 - (vw - 5)) * 1.6 - min(30, clip / 10)
             fnd = []
-            if p95 > 30: fnd.append(F('vibe_high', v=round(p95, 1)))
-            elif p95 > 20: fnd.append(F('vibe_mid', v=round(p95, 1)))
+            if p95 > vb: fnd.append(F('vibe_high', v=round(p95, 1)))
+            elif p95 > vw: fnd.append(F('vibe_mid', v=round(p95, 1)))
             if clip > 0: fnd.append(F('vibe_clip', n=int(clip)))
             self._dom('vibration', sc, {'p95': p95, 'max': mxv, 'z_mean': float(np.nanmean(vz)), 'clip': clip}, fnd)
         # Güç
@@ -289,8 +313,8 @@ class Analysis:
             cap = P.get('BATT_CAPACITY')
             fnd = []
             sc = 100
-            if per < 3.3: sc -= 45; fnd.append(F('bat_low_cell', v=round(per, 2), n=cells))
-            elif per < 3.5: sc -= 20; fnd.append(F('bat_mid_cell', v=round(per, 2), n=cells))
+            if per < self.th['cell_bad']: sc -= 45; fnd.append(F('bat_low_cell', v=round(per, 2), n=cells))
+            elif per < self.th['cell_warn']: sc -= 20; fnd.append(F('bat_mid_cell', v=round(per, 2), n=cells))
             if not cur_ok: sc -= 15; fnd.append(F('bat_no_current'))
             if cur_ok and used and cap and used > cap * 0.8: sc -= 15; fnd.append(F('bat_used', used=int(used), cap=int(cap)))
             for _, s, c in L.errors:
@@ -313,8 +337,8 @@ class Analysis:
             for k in ('SV', 'SP', 'SH', 'SM'):
                 if x.has(k):
                     a = x[k][m] if m.any() else x[k]; mx_ = float(np.nanmax(a)); met[k] = mx_
-                    if mx_ > 1.0: sc -= 18; fnd.append(F('ekf_bad', k=k, v=round(mx_, 2)))
-                    elif mx_ > 0.8: sc -= 7; fnd.append(F('ekf_warn', k=k, v=round(mx_, 2)))
+                    if mx_ > self.th['ekf_bad']: sc -= 18; fnd.append(F('ekf_bad', k=k, v=round(mx_, 2)))
+                    elif mx_ > self.th['ekf_warn']: sc -= 7; fnd.append(F('ekf_warn', k=k, v=round(mx_, 2)))
         mg = L.s('MAG')
         if mg.has('MagX'):
             fieldm = np.sqrt(mg['MagX'] ** 2 + mg['MagY'] ** 2 + mg['MagZ'] ** 2)
@@ -344,8 +368,8 @@ class Analysis:
             mp = float(np.nanmax(np.abs(a['Pitch'][m]))) if m.any() else float(np.nanmax(np.abs(a['Pitch'])))
             sc = 100 - max(0, rr - 2) * 5 - max(0, rp - 2) * 5
             fnd = []
-            if rr > 5: fnd.append(F('att_roll_err', v=round(rr, 1)))
-            if rp > 5: fnd.append(F('att_pitch_err', v=round(rp, 1)))
+            if rr > self.th['att_err_warn']: fnd.append(F('att_roll_err', v=round(rr, 1)))
+            if rp > self.th['att_err_warn']: fnd.append(F('att_pitch_err', v=round(rp, 1)))
             lim = P.get('ROLL_LIMIT_DEG', P.get('LIM_ROLL_CD', 4500) / 100)
             if mr > lim + 15: sc -= 15; fnd.append(F('att_roll_exceed', v=round(mr), lim=round(lim)))
             self._dom('control', sc, {'roll_rms': rr, 'pitch_rms': rp, 'roll_max': mr, 'pitch_max': mp}, fnd)
@@ -373,9 +397,10 @@ class Analysis:
             if ct.has('ThO'):
                 th = ct['ThO'][fmask(ct)] if fl else ct['ThO']
                 th = _fin(th)
+                if len(th) and np.nanmax(th) <= 1.05: th = th * 100   # Copter: ThO 0..1
                 if len(th):
                     p_full = float((th >= 98).mean() * 100)
-                    if p_full > 25: sc -= 15; fnd.append(F('thr_full', v=round(p_full, 1)))
+                    if p_full > self.th['thr_full_pct']: sc -= 15; fnd.append(F('thr_full', v=round(p_full, 1)))
                     sat['thr_full_pct'] = p_full; sat['thr_mean'] = float(th.mean())
             self._dom('servo', sc, sat, fnd)
         # RC bağlantısı
@@ -420,6 +445,7 @@ class Analysis:
             sc = 100 - max(0, load - 60) * 1.5
             fnd = [F('cpu_high', v=round(load))] if load > 80 else []
             self._dom('cpu', sc, {'load_max': load, 'long_loops': nl}, fnd)
+    def _overall(self):
         # Genel puan: zayıf alanlar ağır bassın
         if self.health:
             ws = {'gps': 1.2, 'vibration': 1.0, 'power': 1.3, 'ekf': 1.2, 'control': 1.0, 'servo': 0.8, 'rc': 1.0, 'airspeed': 1.0, 'cpu': 0.5}
@@ -449,7 +475,7 @@ class Analysis:
             w = (t > last_f[1] - 6) & (t <= last_f[1])
             if w.sum() > 3:
                 vz = np.gradient(rel[w], t[w]); min_vz = float(np.nanmin(vz))
-                if min_vz < -12: score += 25; ev.append(F('cr_sink', v=round(-min_vz, 1), t=float(last_f[1])))
+                if min_vz < -self.th['sink_crash']: score += 25; ev.append(F('cr_sink', v=round(-min_vz, 1), t=float(last_f[1])))
             # log uçuş halinde bitti mi
             if L.duration - last_f[1] < 3 and rel[-1] > 15:
                 score += 35; ev.append(F('cr_log_end', alt=round(float(rel[-1])), t=float(L.duration)))
@@ -461,12 +487,12 @@ class Analysis:
                 w2 = (att['t'] > last_f[1] - 8) & (att['t'] <= last_f[1] + 2)
                 if w2.any():
                     mr = float(np.nanmax(np.abs(att['Roll'][w2]))); mp = float(np.nanmax(np.abs(att['Pitch'][w2])))
-                    if mr > 70 or mp > 50:
+                    if mr > self.th['roll_crash'] or mp > self.th['pitch_crash']:
                         score += 20; ev.append(F('cr_attitude', r=round(mr), p=round(mp)))
             v = L.s('VIBE')
             if v.has('VibeZ'):
                 w3 = (v['t'] > last_f[1] - 2) & (v['t'] <= last_f[1] + 3)
-                if w3.any() and np.nanmax(v['VibeZ'][w3]) > 90:
+                if w3.any() and np.nanmax(v['VibeZ'][w3]) > self.th['vibe_crash']:
                     score += 15; ev.append(F('cr_impact', v=round(float(np.nanmax(v['VibeZ'][w3])))))
             if landed: score -= 25; ev.append(F('cr_landed'))
         if not self.flights:
@@ -628,6 +654,7 @@ class Analysis:
         if b.has('CurrTot'): f['used_mah'] = float(np.nanmax(b['CurrTot']))
         f['modes'] = [(t, K.mode_name(self.vehicle, n), r) for t, n, _, r in L.modes]
         f['first_error'] = next(((t, s, c) for t, s, c in L.errors if c != 0), None)
+        f['profile'] = self.profile
         self.facts = f
         self.summary = {'overall': self.overall, 'verdict': self.verdict.get('kind'), **{k: v for k, v in f.items() if not isinstance(v, list)}}
 
@@ -644,5 +671,6 @@ class Analysis:
         return clean({'vehicle': self.vehicle, 'version': self.L.version, 'duration': self.L.duration,
                       'overall': self.overall, 'verdict': self.verdict, 'root': self.root, 'health': self.health,
                       'phases': self.phases, 'flights': self.flights, 'armed': self.armed,
-                      'params': self.param_findings, 'facts': self.facts,
+                      'params': self.param_findings, 'facts': self.facts, 'profile': self.profile,
+                      'anomalies': self.anomalies, 'pilot': self.pilot, 'wind': self.wind, 'weather': self.weather,
                       'events': [e for e in self.events if e['sev'] > 0 or e['cat'] in ('mode', 'flight')][:300]})

@@ -22,28 +22,62 @@ def _strip_md(s):
     return re.sub(r'\*\*(.+?)\*\*', r'\1', s).replace('`', '')
 
 
+SECTIONS = ['summary', 'facts', 'root', 'ai', 'health', 'anomaly', 'pilot', 'weather', 'phases', 'charts', 'timeline', 'params', 'thresholds', 'verify']
+SHORT = ['summary', 'facts', 'root', 'ai', 'health', 'anomaly', 'weather', 'params', 'verify']
+
+
+def resolve_sections(cfg=None, mode='long'):
+    """cfg: [[anahtar, açık], …] (Ayarlar > Rapor şablon düzenleyici). Kısa modda yalnızca SHORT bölümleri."""
+    order = [k for k, _ in (cfg or [])] if cfg else list(SECTIONS)
+    order += [k for k in SECTIONS if k not in order]
+    on = {k: v for k, v in (cfg or [])} if cfg else {k: True for k in SECTIONS}
+    out = [k for k in order if k in SECTIONS and on.get(k, True)]
+    if mode == 'short': out = [k for k in out if k in SHORT]
+    return out
+
+
 class ReportData:
     """Rapor için hazırlanmış, dile göre çevrilmiş içerik."""
-    def __init__(self, A: Analysis, lang='tr', ai_text=None, online_map=True, map_src='osm', charts_on=None):
+    def __init__(self, A: Analysis, lang='tr', ai_text=None, online_map=True, map_src='osm', charts_on=None, sections=None, mode='long'):
         self.A = A; self.lang = lang; self.ai_text = ai_text
+        self.mode = mode
+        if sections and isinstance(sections[0], (list, tuple)): sections = resolve_sections(sections, mode)   # şablon düzenleyici biçimi
+        elif sections and mode == 'short': sections = [k for k in sections if k in SHORT]
+        self.sections = sections or resolve_sections(None, mode)
         self.id = time.strftime('%Y%m%d') + '-' + uuid.uuid4().hex[:8].upper()
         self.generated = time.strftime('%Y-%m-%d %H:%M')
         L = A.L
         u = L.unix_at(A.flights[0][0] if A.flights else 0)
-        self.flight_date = time.strftime('%Y-%m-%d %H:%M', time.localtime(u)) if u and L.kind == 'bin' else (time.strftime('%Y-%m-%d %H:%M', time.localtime(u)) if u else '-')
+        self.flight_date = time.strftime('%Y-%m-%d %H:%M', time.localtime(u)) if u else '-'
         self.imgs = []
-        for key, fn in charts.ALL:
-            if charts_on and key not in charts_on: continue
-            try:
-                b = fn(A, lang)
-            except Exception:
-                b = None
-            if b: self.imgs.append((key, b))
+        if 'charts' in self.sections:
+            for key, fn in charts.ALL:
+                if charts_on and key not in charts_on: continue
+                try:
+                    b = fn(A, lang)
+                except Exception:
+                    b = None
+                if b: self.imgs.append((key, b))
         self.map = None
-        try: self.map = charts.chart_map(A, lang, online=online_map, src=map_src)
-        except Exception: pass
-        self.health_img = charts.chart_health(A, lang)
-        self.timeline_img = charts.chart_timeline(A, lang)
+        if 'charts' in self.sections:
+            try: self.map = charts.chart_map(A, lang, online=online_map, src=map_src)
+            except Exception: pass
+        self.health_img = charts.chart_health(A, lang) if mode == 'long' else None
+        self.timeline_img = charts.chart_timeline(A, lang) if 'timeline' in self.sections else None
+        if 'weather' in self.sections and getattr(A, 'weather', None) is None and online_map:
+            try:
+                from . import weather
+                weather.for_analysis(A)
+            except Exception:
+                pass
+        self.pilot_img = None
+        if 'pilot' in self.sections and (getattr(A, 'pilot', None) or {}).get('scores'):
+            try:
+                from .fleet import radar_png
+                self.pilot_img = radar_png(A.pilot['scores'], lang)
+            except Exception:
+                pass
+        self.aircraft_name = ''; self.pilot_name = ''
 
     def t(self, key, **a):
         return texts.T(key, self.lang, **a)
@@ -65,6 +99,11 @@ class ReportData:
             (R('f_batt', lg), (f"{f['min_volt']:.2f} V" if 'min_volt' in f else '-') + (f" / {f['used_mah']:.0f} mAh" if f.get('used_mah') else '')),
         ]
         if L.board: rows.append((R('f_board', lg), str(L.board)))
+        from . import profiles
+        rows.insert(2, (R('f_profile', lg), profiles.name(getattr(A, 'profile', 'plane'), lg)))
+        if getattr(A, 'serial', ''): rows.append((R('f_serial', lg), A.serial))
+        if getattr(self, 'aircraft_name', ''): rows.append((R('f_aircraft', lg), self.aircraft_name))
+        if getattr(self, 'pilot_name', ''): rows.append((R('f_pilot', lg), self.pilot_name))
         return rows
 
     def verify_payload(self):
@@ -164,7 +203,6 @@ def build_docx(rd: ReportData, path, lh=None):
         p.paragraph_format.space_after = Pt(2)
 
     # ---- Antet (başlık/altbilgi + arka plan)
-    hdr = sec.header; hp = hdr.paragraphs[0]
     _letterhead_docx(doc, sec, lh, rd, rtl, para, set_rtl, run_rtl)
 
     # ---- Besmele: yalnızca ilk sayfanın başında (gövdede olduğu için sonraki sayfalarda görünmez)
@@ -173,117 +211,164 @@ def build_docx(rd: ReportData, path, lh=None):
         bp.paragraph_format.space_before = Pt(0); bp.paragraph_format.space_after = Pt(6)
         bp.add_run().add_picture(LHM.besmele_path(), width=Cm(6.5))
 
-    # ---- Başlık ve özet kartı
     para(R('title', lg), bold=True, size=20, col=lh['color'].lstrip('#').upper(), align=WD_ALIGN_PARAGRAPH.CENTER, space=0)
     para(f"{R('subtitle', lg)} · {os.path.basename(A.L.path)}", size=9, col='6B7280', align=WD_ALIGN_PARAGRAPH.CENTER, space=10)
     v = A.verdict.get('kind', 'normal')
-    tb = doc.add_table(rows=1, cols=2); tb.alignment = WD_TABLE_ALIGNMENT.CENTER
-    if rtl: tb._tbl.tblPr.append(OxmlElement('w:bidiVisual'))
-    c0, c1 = tb.rows[0].cells
-    shade(c0, V_COL[v]); c0.width = Cm(11); c1.width = Cm(6)
-    p = c0.paragraphs[0]; set_rtl(p); r = p.add_run(R('verdict', lg) + ': ' + rd.t('v_' + v)); r.bold = True; r.font.size = Pt(15); r.font.color.rgb = RGBColor(255, 255, 255); run_rtl(r)
-    p2 = c0.add_paragraph(); set_rtl(p2); r = p2.add_run(rd.t('v_desc_' + v)); r.font.size = Pt(9.5); r.font.color.rgb = RGBColor(255, 255, 255); run_rtl(r)
-    sc = A.overall; scol = ST_COL['good' if sc >= 80 else ('warn' if sc >= 55 else 'bad')]
-    shade(c1, 'F8FAFC')
-    p = c1.paragraphs[0]; p.alignment = WD_ALIGN_PARAGRAPH.CENTER; r = p.add_run(f'{sc}'); r.bold = True; r.font.size = Pt(30); r.font.color.rgb = RGBColor.from_string(scol)
-    p = c1.add_paragraph(); p.alignment = WD_ALIGN_PARAGRAPH.CENTER; r = p.add_run('/100 · ' + R('overall', lg)); r.font.size = Pt(8); run_rtl(r)
-    doc.add_paragraph()
-    # Trafik ışıkları
-    if A.health:
-        items = list(A.health.items())
-        rows = [[('● ' if True else '') + rd.t('dom_' + k), str(h['score']), rd.t('st_' + h['status'])] for k, h in items]
-        cols = [[None, None, ST_COL[h['status']].replace('16A34A', 'DCFCE7').replace('D97706', 'FEF3C7').replace('DC2626', 'FEE2E2')] for _, h in items]
-        heading(R('summary', lg), 2)
-        table(rows, [R('h_area', lg), R('h_score', lg), R('h_status', lg)], [8, 3, 4], cols)
-    heading(R('facts', lg), 2)
-    table([list(r) for r in rd.facts_rows()], None, [6, 11])
-    if v == 'crash' or A.verdict.get('evidence'):
-        heading(R('evidence', lg), 2)
-        for e in A.verdict.get('evidence', []):
-            para('• ' + texts.render(e, lg, fmt_t), size=9.5, space=2)
+    long_ = rd.mode != 'short'
 
-    # ---- Kök neden
-    if A.root:
+    def s_summary():
+        tb = doc.add_table(rows=1, cols=2); tb.alignment = WD_TABLE_ALIGNMENT.CENTER
+        if rtl: tb._tbl.tblPr.append(OxmlElement('w:bidiVisual'))
+        c0, c1 = tb.rows[0].cells
+        shade(c0, V_COL[v]); c0.width = Cm(11); c1.width = Cm(6)
+        p = c0.paragraphs[0]; set_rtl(p); r = p.add_run(R('verdict', lg) + ': ' + rd.t('v_' + v)); r.bold = True; r.font.size = Pt(15); r.font.color.rgb = RGBColor(255, 255, 255); run_rtl(r)
+        p2 = c0.add_paragraph(); set_rtl(p2); r = p2.add_run(rd.t('v_desc_' + v)); r.font.size = Pt(9.5); r.font.color.rgb = RGBColor(255, 255, 255); run_rtl(r)
+        sc = A.overall; scol = ST_COL['good' if sc >= 80 else ('warn' if sc >= 55 else 'bad')]
+        shade(c1, 'F8FAFC')
+        p = c1.paragraphs[0]; p.alignment = WD_ALIGN_PARAGRAPH.CENTER; r = p.add_run(f'{sc}'); r.bold = True; r.font.size = Pt(30); r.font.color.rgb = RGBColor.from_string(scol)
+        p = c1.add_paragraph(); p.alignment = WD_ALIGN_PARAGRAPH.CENTER; r = p.add_run('/100 · ' + R('overall', lg)); r.font.size = Pt(8); run_rtl(r)
+        doc.add_paragraph()
+        if A.health:
+            items = list(A.health.items())
+            rows = [['● ' + rd.t('dom_' + k), str(h['score']), rd.t('st_' + h['status'])] for k, h in items]
+            cols = [[None, None, {'good': 'DCFCE7', 'warn': 'FEF3C7', 'bad': 'FEE2E2'}[h['status']]] for _, h in items]
+            heading(R('summary', lg), 2)
+            table(rows, [R('h_area', lg), R('h_score', lg), R('h_status', lg)], [8, 3, 4], cols)
+
+    def s_facts():
+        heading(R('facts', lg), 2)
+        table([list(r) for r in rd.facts_rows()], None, [6, 11])
+        if v == 'crash' or A.verdict.get('evidence'):
+            heading(R('evidence', lg), 2)
+            for e in A.verdict.get('evidence', []):
+                para('• ' + texts.render(e, lg, fmt_t), size=9.5, space=2)
+
+    def s_root():
+        if not A.root: return
         heading(R('root', lg))
         c = A.root['cause']
         para(f"{R('root_cause', lg)}: {rd.t('cause_' + c)}  ({fmt_t(A.root.get('t', 0))})", bold=True, size=11.5, col='DC2626' if v == 'crash' else 'D97706')
         heading(R('root_what', lg), 2); para(rd.t('why_' + c))
         heading(R('root_chain', lg), 2)
-        rows = [[fmt_t(s['t']), texts.chain_step(s, lg, fmt_t)] for s in A.root.get('chain', [])]
+        rows = [[fmt_t(s_['t']), texts.chain_step(s_, lg, fmt_t)] for s_ in A.root.get('chain', [])]
         if rows: table(rows, [R('e_time', lg), R('e_text', lg)], [3, 14])
         heading(R('root_prev', lg), 2); para(rd.t('prevent_' + c))
         oth = A.root.get('others') or []
         if oth: para(R('root_others', lg) + ': ' + ', '.join(rd.t('cause_' + o) for o in oth), italic=True, size=9.5)
 
-    # ---- AI
-    if rd.ai_text:
+    def s_ai():
+        if not rd.ai_text: return
         heading(R('ai', lg)); para(R('ai_note', lg), italic=True, size=8.5, col='6B7280')
         for line in rd.ai_text.splitlines():
-            s = _strip_md(line).strip()
-            if not s: continue
-            if s.startswith('#'): para(s.lstrip('# '), bold=True, size=11)
-            else: para(s, size=9.5, space=3)
+            s_ = _strip_md(line).strip()
+            if not s_: continue
+            if s_.startswith('#'): para(s_.lstrip('# '), bold=True, size=11)
+            else: para(s_, size=9.5, space=3)
 
-    # ---- Sağlık ayrıntıları
-    heading(R('health', lg))
-    if rd.health_img: image(rd.health_img, 15)
-    rows = []; cols = []
-    for k, h in A.health.items():
-        fnd = '\n'.join('• ' + texts.render(f, lg) for f in h['findings']) or R('no_find', lg)
-        rows.append([rd.t('dom_' + k), str(h['score']), fnd]); cols.append([None, {'good': 'DCFCE7', 'warn': 'FEF3C7', 'bad': 'FEE2E2'}[h['status']], None])
-    if rows: table(rows, [R('h_area', lg), R('h_score', lg), R('h_find', lg)], [4, 2, 11], cols)
+    def s_health():
+        heading(R('health', lg))
+        if rd.health_img and long_: image(rd.health_img, 15)
+        rows = []; cols = []
+        for k, h in A.health.items():
+            fnd = '\n'.join('• ' + texts.render(f, lg) for f in h['findings']) or R('no_find', lg)
+            rows.append([rd.t('dom_' + k), str(h['score']), fnd]); cols.append([None, {'good': 'DCFCE7', 'warn': 'FEF3C7', 'bad': 'FEE2E2'}[h['status']], None])
+        if rows: table(rows, [R('h_area', lg), R('h_score', lg), R('h_find', lg)], [4, 2, 11], cols)
 
-    # ---- Aşamalar
-    if A.phases:
+    def s_anomaly():
+        info_ = getattr(A, 'anomaly_info', None)
+        if not info_: return
+        heading(R('anomaly', lg))
+        para(R('anom_intro', lg).format(n=info_['windows'], k=info_['learned_flights'], i=info_['index']), size=9.5)
+        rows = anomaly_rows(A, lg)
+        if rows: table(rows, [R('a_time', lg), R('a_score', lg), R('a_feats', lg)], [3.4, 1.8, 11.8])
+        else: para(R('anom_none', lg), italic=True, size=9.5)
+
+    def s_pilot():
+        pl = A.pilot or {}
+        if not pl.get('scores'): return
+        heading(R('pilot', lg)); para(R('pilot_note', lg), italic=True, size=8.5, col='6B7280')
+        if rd.pilot_img: image(rd.pilot_img, 8.5)
+        from .fleet import sname
+        table([[sname(k, lg), str(v_)] for k, v_ in pl['scores'].items()] + [[R('overall', lg), str(pl.get('overall'))]], None, [8, 3])
+
+    def s_weather():
+        from . import weather as W_
+        heading(R('weather', lg))
+        table([[a_, b_] for a_, b_ in W_.rows(A, lg)], None, [6, 11])
+
+    def s_phases():
+        if not A.phases: return
         heading(R('phases', lg))
         rows = []
+        f1 = lambda x, u='': f'{x:.0f}{u}' if isinstance(x, (int, float)) else '-'
         for p_ in A.phases:
-            s = p_.get('stats', {})
-            f1 = lambda x, u='': f'{x:.0f}{u}' if isinstance(x, (int, float)) else '-'
-            rows.append([rd.t('ph_' + p_['name']), f"{fmt_t(p_['t0'])}–{fmt_t(p_['t1'])}", fmt_t(s.get('dur', 0)),
-                         f"{f1(s.get('alt_mean'))}/{f1(s.get('alt_max'))} m", f1(s.get('as_mean') if s.get('as_mean') is not None else s.get('gs_mean'), ' m/s'),
-                         f1(s.get('thr_mean'), '%'), f"{f1(s.get('roll_max'))}°/{f1(s.get('pitch_max'))}°"])
+            s_ = p_.get('stats', {})
+            rows.append([rd.t('ph_' + p_['name']), f"{fmt_t(p_['t0'])}–{fmt_t(p_['t1'])}", fmt_t(s_.get('dur', 0)),
+                         f"{f1(s_.get('alt_mean'))}/{f1(s_.get('alt_max'))} m", f1(s_.get('as_mean') if s_.get('as_mean') is not None else s_.get('gs_mean'), ' m/s'),
+                         f1(s_.get('thr_mean'), '%'), f"{f1(s_.get('roll_max'))}°/{f1(s_.get('pitch_max'))}°"])
         table(rows, [R(k, lg) for k in ('p_phase', 'p_time', 'p_dur', 'p_alt', 'p_spd', 'p_thr', 'p_att')], [2.4, 3.4, 1.8, 2.6, 2.2, 2, 2.6])
 
-    # ---- Grafikler + ders notları
-    heading(R('charts', lg))
-    if rd.map:
-        image(rd.map, 16); _lesson_docx(rd, 'c_map', para, table, heading, lg)
-    for key, b in rd.imgs:
-        image(b); _lesson_docx(rd, key, para, table, heading, lg)
+    def s_charts():
+        heading(R('charts', lg))
+        if rd.map:
+            image(rd.map, 16)
+            if long_: _lesson_docx(rd, 'c_map', para, table, heading, lg)
+        for key, b_ in rd.imgs:
+            image(b_)
+            if long_: _lesson_docx(rd, key, para, table, heading, lg)
 
-    # ---- Zaman çizelgesi
-    heading(R('timeline', lg))
-    if rd.timeline_img: image(rd.timeline_img)
-    ev = [e for e in A.events if e['sev'] > 0 or e['cat'] in ('mode', 'flight')][:150]
-    rows = [[fmt_t(e['t']), R('cat_' + e['cat'], lg), texts.render(e['text'], lg)] for e in ev]
-    cols = [[None, None, {0: None, 1: 'FEF3C7', 2: 'FEE2E2'}[e['sev']]] for e in ev]
-    if rows: table(rows, [R('e_time', lg), R('e_type', lg), R('e_text', lg)], [2.6, 2.4, 12], cols)
+    def s_timeline():
+        heading(R('timeline', lg))
+        if rd.timeline_img: image(rd.timeline_img)
+        ev = [e for e in A.events if e['sev'] > 0 or e['cat'] in ('mode', 'flight')][:150]
+        rows = [[fmt_t(e['t']), R('cat_' + e['cat'], lg), texts.render(e['text'], lg)] for e in ev]
+        cols = [[None, None, {0: None, 1: 'FEF3C7', 2: 'FEE2E2'}[e['sev']]] for e in ev]
+        if rows: table(rows, [R('e_time', lg), R('e_type', lg), R('e_text', lg)], [2.6, 2.4, 12], cols)
 
-    # ---- Parametre denetimi
-    heading(R('params', lg))
-    rows = [[R('sev' + str(f['sev']), lg), texts.render(f['text'], lg)] for f in A.param_findings]
-    cols = [[{0: 'DBEAFE', 1: 'FEF3C7', 2: 'FEE2E2'}[f['sev']], None] for f in A.param_findings]
-    table(rows, None, [2.6, 14.4], cols)
+    def s_params():
+        heading(R('params', lg))
+        rows = [[R('sev' + str(f['sev']), lg), texts.render(f['text'], lg)] for f in A.param_findings]
+        cols = [[{0: 'DBEAFE', 1: 'FEF3C7', 2: 'FEE2E2'}[f['sev']], None] for f in A.param_findings]
+        table(rows, None, [2.6, 14.4], cols)
 
-    # ---- Eğitim eki
-    heading(R('thresholds', lg))
-    rows = []
-    for key in ('c_gps', 'c_vibe', 'c_bat', 'c_ekf', 'c_att', 'c_mag'):
-        Ls = LESSON[key]; i = ('tr', 'en', 'ar').index(lg)
-        rows.append([R(key, lg), Ls['normal'][i], Ls['warn'][i], Ls['danger'][i]])
-    table(rows, ['', R('th_normal', lg), R('th_warn', lg), R('th_danger', lg)], [3.2, 4.6, 4.6, 4.6],
-          [[None, 'DCFCE7', 'FEF3C7', 'FEE2E2'] for _ in rows])
-    para(R('offline_note', lg) if not rd.ai_text else R('ai_note', lg), italic=True, size=8, col='6B7280')
+    def s_thresholds():
+        heading(R('thresholds', lg))
+        rows = []
+        for key in ('c_gps', 'c_vibe', 'c_bat', 'c_ekf', 'c_att', 'c_mag'):
+            Ls = LESSON[key]; i = ('tr', 'en', 'ar').index(lg)
+            rows.append([R(key, lg), Ls['normal'][i], Ls['warn'][i], Ls['danger'][i]])
+        table(rows, ['', R('th_normal', lg), R('th_warn', lg), R('th_danger', lg)], [3.2, 4.6, 4.6, 4.6],
+              [[None, 'DCFCE7', 'FEF3C7', 'FEE2E2'] for _ in rows])
+        para(R('offline_note', lg) if not rd.ai_text else R('ai_note', lg), italic=True, size=8, col='6B7280')
 
-    # ---- Doğrulama
-    heading(R('verify', lg), 2)
-    tb = doc.add_table(rows=1, cols=2)
-    c0, c1 = tb.rows[0].cells; c0.width = Cm(4); c1.width = Cm(13)
-    c0.paragraphs[0].add_run().add_picture(io.BytesIO(rd.qr_png()), width=Cm(3.2))
-    p = c1.paragraphs[0]; set_rtl(p); r = p.add_run(f"{R('report_id', lg)}: {rd.id}\n{R('generated', lg)}: {rd.generated}\n\n{R('verify_txt', lg)}"); r.font.size = Pt(9); run_rtl(r)
+    def s_verify():
+        heading(R('verify', lg), 2)
+        tb = doc.add_table(rows=1, cols=2)
+        c0, c1 = tb.rows[0].cells; c0.width = Cm(4); c1.width = Cm(13)
+        c0.paragraphs[0].add_run().add_picture(io.BytesIO(rd.qr_png()), width=Cm(3.2))
+        p = c1.paragraphs[0]; set_rtl(p); r = p.add_run(f"{R('report_id', lg)}: {rd.id}\n{R('generated', lg)}: {rd.generated}\n\n{R('verify_txt', lg)}"); r.font.size = Pt(9); run_rtl(r)
+
+    fns = {k: f for k, f in locals().items() if k.startswith('s_')}
+    for k in rd.sections:
+        fn = fns.get('s_' + k)
+        if fn:
+            try: fn()
+            except Exception:
+                import traceback; traceback.print_exc()
     doc.save(path)
     return path
+
+
+def anomaly_rows(A, lg):
+    from .anomaly import fname
+    rows = []
+    for it in (getattr(A, 'anomalies', None) or [])[:8]:
+        parts = []
+        for f in it['feats']:
+            val = '-' if f['v'] is None else f"{f['v']:.2f}"
+            parts.append(f"{fname(f['k'], lg)}: {val} / {f['exp']:.2f} (z={f['z']})")
+        rows.append([f"{fmt_t(it['t0'])}–{fmt_t(it['t1'])}", f"{it['score']:.1f}", '; '.join(parts)])
+    return rows
 
 
 def _lesson_docx(rd, key, para, table, heading, lg):
@@ -400,18 +485,20 @@ def _fonts():
     addMapping('DJ', 0, 0, 'DJ'); addMapping('DJ', 1, 0, 'DJB'); addMapping('DJ', 0, 1, 'DJ'); addMapping('DJ', 1, 1, 'DJB')
 
 
-def build_pdf(rd: ReportData, path, lh=None):
+def pdf_kit(lg, lh=None, rid='', footer_extra=''):
+    """Antetli PDF yapı taşları (rapor, pilot kartı, sertifika aynı görünümü paylaşır)."""
     from reportlab.lib.pagesizes import A4
     from reportlab.lib.units import cm
     from reportlab.lib import colors
     from reportlab.lib.styles import ParagraphStyle
     from reportlab.lib.enums import TA_RIGHT, TA_LEFT, TA_CENTER
-    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image, KeepTogether, PageBreak
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Image
     from reportlab.pdfbase.pdfmetrics import stringWidth
+    from reportlab.lib.utils import ImageReader
     from xml.sax.saxutils import escape
     _fonts()
     lh = {**DEFAULT_LH, **(lh or {})}
-    lg = rd.lang; rtl = lg == 'ar'; A = rd.A
+    rtl = lg == 'ar'
     main = colors.HexColor(lh['color'] if lh['color'].startswith('#') else '#' + lh['color'])
     al = TA_RIGHT if rtl else TA_LEFT
     base = ParagraphStyle('b', fontName='DJ', fontSize=9, leading=12.5, alignment=al, textColor=colors.HexColor('#111827'))
@@ -470,101 +557,15 @@ def build_pdf(rd: ReportData, path, lh=None):
         im = PI.open(io.BytesIO(b)); r = im.height / im.width
         return Image(io.BytesIO(b), width=w, height=w * r)
 
-    story = []
-    if lh.get('besmele') and os.path.exists(LHM.besmele_path()):
-        from PIL import Image as _PI
-        bw_, bh_ = _PI.open(LHM.besmele_path()).size
-        bi = Image(LHM.besmele_path(), width=6.5 * cm, height=6.5 * cm * bh_ / bw_); bi.hAlign = 'CENTER'
-        story += [bi, Spacer(1, 6)]
-    story += [P(R('title', lg), TT), Spacer(1, 2), P(f"{R('subtitle', lg)} · {os.path.basename(A.L.path)}", ParagraphStyle('c', parent=small, alignment=TA_CENTER, textColor=colors.HexColor('#6B7280'))), Spacer(1, 8)]
-    v = A.verdict.get('kind', 'normal')
-    vs = ParagraphStyle('v', parent=base, fontName='DJB', fontSize=14, leading=18, textColor=colors.white)
-    vd = ParagraphStyle('vd', parent=base, fontSize=8.8, leading=12, textColor=colors.white)
-    sc = A.overall; scol = colors.HexColor('#' + ST_COL['good' if sc >= 80 else ('warn' if sc >= 55 else 'bad')])
-    big = ParagraphStyle('big', parent=base, fontName='DJB', fontSize=28, leading=32, alignment=TA_CENTER, textColor=scol)
-    cap = ParagraphStyle('cap', parent=small, alignment=TA_CENTER)
-    left = [P(R('verdict', lg) + ': ' + rd.t('v_' + v), vs, 11.3 * cm), P(rd.t('v_desc_' + v), vd, 11.3 * cm)]
-    right = [Paragraph(str(sc), big), P('/100 · ' + R('overall', lg), cap, 5.5 * cm)]
-    row = [left, right] if not rtl else [right, left]
-    card = Table([row], colWidths=[11.8 * cm, W_ - 11.8 * cm] if not rtl else [W_ - 11.8 * cm, 11.8 * cm])
-    card.setStyle(TableStyle([('BACKGROUND', (0 if not rtl else 1, 0), (0 if not rtl else 1, 0), colors.HexColor('#' + V_COL[v])),
-                              ('BACKGROUND', (1 if not rtl else 0, 0), (1 if not rtl else 0, 0), colors.HexColor('#F8FAFC')),
-                              ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'), ('TOPPADDING', (0, 0), (-1, -1), 8), ('BOTTOMPADDING', (0, 0), (-1, -1), 8)]))
-    story += [card, Spacer(1, 8)]
-    if A.health:
-        story.append(P(R('summary', lg), H2))
-        items = list(A.health.items())
-        story.append(tbl([[rd.t('dom_' + k), str(h['score']), rd.t('st_' + h['status'])] for k, h in items], [R('h_area', lg), R('h_score', lg), R('h_status', lg)],
-                         [9 * cm, 3 * cm, W_ - 12 * cm], [[None, None, {'good': 'DCFCE7', 'warn': 'FEF3C7', 'bad': 'FEE2E2'}[h['status']]] for _, h in items]))
-    story.append(P(R('facts', lg), H2))
-    story.append(tbl([list(r) for r in rd.facts_rows()], None, [5.5 * cm, W_ - 5.5 * cm]))
-    if A.verdict.get('evidence'):
-        story.append(P(R('evidence', lg), H2))
-        for e in A.verdict['evidence']: story.append(P('• ' + texts.render(e, lg, fmt_t)))
-    if A.root:
-        story.append(PageBreak()); story.append(P(R('root', lg), H1))
-        c = A.root['cause']
-        story.append(P(f"{R('root_cause', lg)}: {rd.t('cause_' + c)} ({fmt_t(A.root.get('t', 0))})", ParagraphStyle('rc', parent=H2, textColor=colors.HexColor('#DC2626' if v == 'crash' else '#D97706'))))
-        story += [P(R('root_what', lg), H2), P(rd.t('why_' + c)), P(R('root_chain', lg), H2)]
-        rows = [[fmt_t(s['t']), texts.chain_step(s, lg, fmt_t)] for s in A.root.get('chain', [])]
-        if rows: story.append(tbl(rows, [R('e_time', lg), R('e_text', lg)], [3 * cm, W_ - 3 * cm]))
-        story += [P(R('root_prev', lg), H2), P(rd.t('prevent_' + c))]
-        if A.root.get('others'): story.append(P(R('root_others', lg) + ': ' + ', '.join(rd.t('cause_' + o) for o in A.root['others']), small))
-    if rd.ai_text:
-        story += [P(R('ai', lg), H1), P(R('ai_note', lg), small), Spacer(1, 4)]
-        for line in rd.ai_text.splitlines():
-            s = _strip_md(line).strip()
-            if s: story.append(P(s.lstrip('# '), H2 if s.startswith('#') else base))
-    story += [PageBreak(), P(R('health', lg), H1)]
-    if rd.health_img: story.append(img(rd.health_img, W_ * 0.85))
-    rows = []; bgs = []
-    for k, h in A.health.items():
-        rows.append([rd.t('dom_' + k), str(h['score']), '\n'.join('• ' + texts.render(f, lg) for f in h['findings']) or R('no_find', lg)])
-        bgs.append([None, {'good': 'DCFCE7', 'warn': 'FEF3C7', 'bad': 'FEE2E2'}[h['status']], None])
-    if rows: story.append(tbl(rows, [R('h_area', lg), R('h_score', lg), R('h_find', lg)], [4 * cm, 1.8 * cm, W_ - 5.8 * cm], bgs))
-    if A.phases:
-        story.append(P(R('phases', lg), H1))
-        f1 = lambda x, u='': f'{x:.0f}{u}' if isinstance(x, (int, float)) else '-'
-        rows = [[rd.t('ph_' + p_['name']), f"{fmt_t(p_['t0'])}–{fmt_t(p_['t1'])}", fmt_t(p_['stats'].get('dur', 0)),
-                 f"{f1(p_['stats'].get('alt_mean'))}/{f1(p_['stats'].get('alt_max'))} m", f1(p_['stats'].get('as_mean') if p_['stats'].get('as_mean') is not None else p_['stats'].get('gs_mean'), ' m/s'),
-                 f1(p_['stats'].get('thr_mean'), '%'), f"{f1(p_['stats'].get('roll_max'))}°/{f1(p_['stats'].get('pitch_max'))}°"] for p_ in A.phases]
-        story.append(tbl(rows, [R(k, lg) for k in ('p_phase', 'p_time', 'p_dur', 'p_alt', 'p_spd', 'p_thr', 'p_att')], [2.2 * cm, 3.4 * cm, 1.8 * cm, 2.5 * cm, 2.2 * cm, 2 * cm, W_ - 14.1 * cm], fs=7.5))
-    story += [PageBreak(), P(R('charts', lg), H1)]
-    def lesson(key):
-        Ls = LESSON.get(key)
-        if not Ls: return []
-        i = ('tr', 'en', 'ar').index(lg)
-        return [P('ⓘ ' + R('why_see', lg) + ' ' + Ls['what'][i], ParagraphStyle('l', parent=small, textColor=colors.HexColor('#1F2937'))),
-                tbl([[Ls['normal'][i], Ls['warn'][i], Ls['danger'][i]]], [R('th_normal', lg), R('th_warn', lg), R('th_danger', lg)], [W_ / 3] * 3, [['DCFCE7', 'FEF3C7', 'FEE2E2']], fs=7.2), Spacer(1, 6)]
-    if rd.map: story.append(KeepTogether([img(rd.map, W_ * 0.9)] + lesson('c_map')))
-    for key, b in rd.imgs: story.append(KeepTogether([img(b)] + lesson(key)))
-    story += [PageBreak(), P(R('timeline', lg), H1)]
-    if rd.timeline_img: story.append(img(rd.timeline_img))
-    ev = [e for e in A.events if e['sev'] > 0 or e['cat'] in ('mode', 'flight')][:150]
-    if ev:
-        story.append(tbl([[fmt_t(e['t']), R('cat_' + e['cat'], lg), texts.render(e['text'], lg)] for e in ev], [R('e_time', lg), R('e_type', lg), R('e_text', lg)],
-                         [2.4 * cm, 2.2 * cm, W_ - 4.6 * cm], [[None, None, {0: None, 1: 'FEF3C7', 2: 'FEE2E2'}[e['sev']]] for e in ev], fs=7.5))
-    story.append(P(R('params', lg), H1))
-    story.append(tbl([[R('sev' + str(f['sev']), lg), texts.render(f['text'], lg)] for f in A.param_findings], None, [2.4 * cm, W_ - 2.4 * cm],
-                     [[{0: 'DBEAFE', 1: 'FEF3C7', 2: 'FEE2E2'}[f['sev']], None] for f in A.param_findings]))
-    story.append(P(R('thresholds', lg), H1))
-    i = ('tr', 'en', 'ar').index(lg)
-    rows = [[R(k, lg), LESSON[k]['normal'][i], LESSON[k]['warn'][i], LESSON[k]['danger'][i]] for k in ('c_gps', 'c_vibe', 'c_bat', 'c_ekf', 'c_att', 'c_mag')]
-    story.append(tbl(rows, ['', R('th_normal', lg), R('th_warn', lg), R('th_danger', lg)], [3 * cm] + [(W_ - 3 * cm) / 3] * 3, [[None, 'DCFCE7', 'FEF3C7', 'FEE2E2'] for _ in rows], fs=7.2))
-    story.append(P(R('offline_note', lg) if not rd.ai_text else R('ai_note', lg), small))
-    qr = Image(io.BytesIO(rd.qr_png()), width=3 * cm, height=3 * cm)
-    vt = [P(f"{R('report_id', lg)}: {rd.id}", H2, W_ - 4 * cm), P(f"{R('generated', lg)}: {rd.generated}", base, W_ - 4 * cm), P(R('verify_txt', lg), small, W_ - 4 * cm)]
-    vr = [qr, vt] if not rtl else [vt, qr]
-    t = Table([vr], colWidths=[3.6 * cm, W_ - 3.6 * cm] if not rtl else [W_ - 3.6 * cm, 3.6 * cm]); t.setStyle(TableStyle([('VALIGN', (0, 0), (-1, -1), 'MIDDLE')]))
-    story += [Spacer(1, 8), P(R('verify', lg), H2), t]
-
     top_cm, bot_cm, bg_src = LHM.margins(lh)
     bg_img = LHM.prepared_bg(bg_src) if bg_src else None
-    wm = None if bg_img else _wm_png(lh, rd)
+
+    class _RD:  # _wm_png yalnızca dil bilgisini kullanır
+        lang = lg
+    wm = None if bg_img else _wm_png(lh, _RD)
     wm_bytes = None
     if wm:
         b = io.BytesIO(); wm.save(b, format='PNG'); wm_bytes = b.getvalue()
-    from reportlab.lib.utils import ImageReader
 
     def on_page(c, d):
         c.saveState()
@@ -593,15 +594,190 @@ def build_pdf(rd: ReportData, path, lh=None):
                 else: c.drawString(x, Hp - 1.85 * cm, s)
             c.setStrokeColor(main); c.setLineWidth(0.6); c.line(1.8 * cm, Hp - 2.5 * cm, Wp - 1.8 * cm, Hp - 2.5 * cm)
         c.setFont('DJ', 7); c.setFillColor(colors.HexColor('#6B7280'))
-        ft = (lh.get('footer') + ' · ' if lh.get('footer') else '') + f"{R('report_id', lg)}: {rd.id}" + (f" · {R('prepared_by', lg)}: {lh['prepared_by']}" if lh.get('prepared_by') else '') + f" · {R('page', lg)} {d.page}"
+        ft = (lh.get('footer') + ' · ' if lh.get('footer') else '') + (f"{R('report_id', lg)}: {rid}" if rid else footer_extra) + \
+            (f" · {R('prepared_by', lg)}: {lh['prepared_by']}" if lh.get('prepared_by') else '') + f" · {d.page}"
         fy = 0.75 * cm if not (bg_img and bot_cm and bot_cm > 1.7) else (bot_cm - 0.75) * cm
         c.drawCentredString(Wp / 2, fy, charts.shape(ft, lg))
         c.restoreState()
 
-    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=1.8 * cm, rightMargin=1.8 * cm, topMargin=(top_cm if bg_img else 2.9) * cm, bottomMargin=(bot_cm if bg_img else 1.6) * cm,
-                            title=R('title', lg), author=lh.get('prepared_by') or lh.get('org') or 'Pixhawk Log Analiz', subject=rd.id)
-    doc.build(story, onFirstPage=on_page, onLaterPages=on_page)
-    return path
+    def build(path, story, title, encrypt=None):
+        kw = {}
+        if encrypt:
+            from reportlab.lib import pdfencrypt
+            kw['encrypt'] = pdfencrypt.StandardEncryption(encrypt, ownerPassword=encrypt + '#owner', canPrint=1, canModify=0, canCopy=1, strength=128)
+        doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=1.8 * cm, rightMargin=1.8 * cm, topMargin=(top_cm if bg_img else 2.9) * cm,
+                                bottomMargin=(bot_cm if bg_img else 1.6) * cm, title=title, author=lh.get('prepared_by') or lh.get('org') or 'Pixhawk Log Analiz',
+                                subject=rid or title, **kw)
+        doc.build(story, onFirstPage=on_page, onLaterPages=on_page)
+        return path
+
+    def besmele():
+        if lh.get('besmele') and os.path.exists(LHM.besmele_path()):
+            from PIL import Image as _PI
+            from reportlab.platypus import Spacer
+            bw_, bh_ = _PI.open(LHM.besmele_path()).size
+            bi = Image(LHM.besmele_path(), width=6.5 * cm, height=6.5 * cm * bh_ / bw_); bi.hAlign = 'CENTER'
+            return [bi, Spacer(1, 6)]
+        return []
+
+    return dict(P=P, tbl=tbl, img=img, base=base, small=small, H1=H1, H2=H2, TT=TT, W=W_, main=main, rtl=rtl, build=build,
+                besmele=besmele, colors=colors, cm=cm, lh=lh)
+
+
+def build_pdf(rd: ReportData, path, lh=None, encrypt=None):
+    from reportlab.lib.units import cm
+    from reportlab.lib import colors
+    from reportlab.lib.styles import ParagraphStyle
+    from reportlab.lib.enums import TA_CENTER
+    from reportlab.platypus import Paragraph, Spacer, Table, TableStyle, Image, KeepTogether, PageBreak
+    lg = rd.lang; A = rd.A
+    K_ = pdf_kit(lg, lh, rd.id)
+    P, tbl, img, base, small, H1, H2, TT, W_, rtl = (K_[k] for k in ('P', 'tbl', 'img', 'base', 'small', 'H1', 'H2', 'TT', 'W', 'rtl'))
+    long_ = rd.mode != 'short'
+    story = K_['besmele']()
+    story += [P(R('title', lg), TT), Spacer(1, 2), P(f"{R('subtitle', lg)} · {os.path.basename(A.L.path)}", ParagraphStyle('c', parent=small, alignment=TA_CENTER, textColor=colors.HexColor('#6B7280'))), Spacer(1, 8)]
+    v = A.verdict.get('kind', 'normal')
+
+    def s_summary():
+        vs = ParagraphStyle('v', parent=base, fontName='DJB', fontSize=14, leading=18, textColor=colors.white)
+        vd = ParagraphStyle('vd', parent=base, fontSize=8.8, leading=12, textColor=colors.white)
+        sc = A.overall; scol = colors.HexColor('#' + ST_COL['good' if sc >= 80 else ('warn' if sc >= 55 else 'bad')])
+        big = ParagraphStyle('big', parent=base, fontName='DJB', fontSize=28, leading=32, alignment=TA_CENTER, textColor=scol)
+        cap = ParagraphStyle('cap', parent=small, alignment=TA_CENTER)
+        left = [P(R('verdict', lg) + ': ' + rd.t('v_' + v), vs, 11.3 * cm), P(rd.t('v_desc_' + v), vd, 11.3 * cm)]
+        right = [Paragraph(str(sc), big), P('/100 · ' + R('overall', lg), cap, 5.5 * cm)]
+        row = [left, right] if not rtl else [right, left]
+        card = Table([row], colWidths=[11.8 * cm, W_ - 11.8 * cm] if not rtl else [W_ - 11.8 * cm, 11.8 * cm])
+        card.setStyle(TableStyle([('BACKGROUND', (0 if not rtl else 1, 0), (0 if not rtl else 1, 0), colors.HexColor('#' + V_COL[v])),
+                                  ('BACKGROUND', (1 if not rtl else 0, 0), (1 if not rtl else 0, 0), colors.HexColor('#F8FAFC')),
+                                  ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'), ('TOPPADDING', (0, 0), (-1, -1), 8), ('BOTTOMPADDING', (0, 0), (-1, -1), 8)]))
+        story.extend([card, Spacer(1, 8)])
+        if A.health:
+            story.append(P(R('summary', lg), H2))
+            items = list(A.health.items())
+            story.append(tbl([[rd.t('dom_' + k), str(h['score']), rd.t('st_' + h['status'])] for k, h in items], [R('h_area', lg), R('h_score', lg), R('h_status', lg)],
+                             [9 * cm, 3 * cm, W_ - 12 * cm], [[None, None, {'good': 'DCFCE7', 'warn': 'FEF3C7', 'bad': 'FEE2E2'}[h['status']]] for _, h in items]))
+
+    def s_facts():
+        story.append(P(R('facts', lg), H2))
+        story.append(tbl([list(r) for r in rd.facts_rows()], None, [5.5 * cm, W_ - 5.5 * cm]))
+        if A.verdict.get('evidence'):
+            story.append(P(R('evidence', lg), H2))
+            for e in A.verdict['evidence']: story.append(P('• ' + texts.render(e, lg, fmt_t)))
+
+    def s_root():
+        if not A.root: return
+        if long_: story.append(PageBreak())
+        story.append(P(R('root', lg), H1))
+        c = A.root['cause']
+        story.append(P(f"{R('root_cause', lg)}: {rd.t('cause_' + c)} ({fmt_t(A.root.get('t', 0))})", ParagraphStyle('rc', parent=H2, textColor=colors.HexColor('#DC2626' if v == 'crash' else '#D97706'))))
+        story.extend([P(R('root_what', lg), H2), P(rd.t('why_' + c)), P(R('root_chain', lg), H2)])
+        rows = [[fmt_t(s_['t']), texts.chain_step(s_, lg, fmt_t)] for s_ in A.root.get('chain', [])]
+        if rows: story.append(tbl(rows, [R('e_time', lg), R('e_text', lg)], [3 * cm, W_ - 3 * cm]))
+        story.extend([P(R('root_prev', lg), H2), P(rd.t('prevent_' + c))])
+        if A.root.get('others'): story.append(P(R('root_others', lg) + ': ' + ', '.join(rd.t('cause_' + o) for o in A.root['others']), small))
+
+    def s_ai():
+        if not rd.ai_text: return
+        story.extend([P(R('ai', lg), H1), P(R('ai_note', lg), small), Spacer(1, 4)])
+        for line in rd.ai_text.splitlines():
+            s_ = _strip_md(line).strip()
+            if s_: story.append(P(s_.lstrip('# '), H2 if s_.startswith('#') else base))
+
+    def s_health():
+        if long_: story.append(PageBreak())
+        story.append(P(R('health', lg), H1))
+        if rd.health_img and long_: story.append(img(rd.health_img, W_ * 0.85))
+        rows = []; bgs = []
+        for k, h in A.health.items():
+            rows.append([rd.t('dom_' + k), str(h['score']), '\n'.join('• ' + texts.render(f, lg) for f in h['findings']) or R('no_find', lg)])
+            bgs.append([None, {'good': 'DCFCE7', 'warn': 'FEF3C7', 'bad': 'FEE2E2'}[h['status']], None])
+        if rows: story.append(tbl(rows, [R('h_area', lg), R('h_score', lg), R('h_find', lg)], [4 * cm, 1.8 * cm, W_ - 5.8 * cm], bgs))
+
+    def s_anomaly():
+        info_ = getattr(A, 'anomaly_info', None)
+        if not info_: return
+        story.append(P(R('anomaly', lg), H1))
+        story.append(P(R('anom_intro', lg).format(n=info_['windows'], k=info_['learned_flights'], i=info_['index'])))
+        rows = anomaly_rows(A, lg)
+        if rows: story.append(tbl(rows, [R('a_time', lg), R('a_score', lg), R('a_feats', lg)], [3.2 * cm, 1.6 * cm, W_ - 4.8 * cm], fs=7.6))
+        else: story.append(P(R('anom_none', lg), small))
+
+    def s_pilot():
+        pl = A.pilot or {}
+        if not pl.get('scores'): return
+        from .fleet import sname
+        story.extend([P(R('pilot', lg), H1), P(R('pilot_note', lg), small)])
+        t_ = tbl([[sname(k, lg), str(v_)] for k, v_ in pl['scores'].items()] + [[R('overall', lg), str(pl.get('overall'))]], None, [5.5 * cm, 2 * cm])
+        if rd.pilot_img:
+            im = img(rd.pilot_img, 7.5 * cm)
+            row = [t_, im] if not rtl else [im, t_]
+            tt = Table([row], colWidths=[8 * cm, W_ - 8 * cm] if not rtl else [W_ - 8 * cm, 8 * cm]); tt.setStyle(TableStyle([('VALIGN', (0, 0), (-1, -1), 'MIDDLE')]))
+            story.append(tt)
+        else:
+            story.append(t_)
+
+    def s_weather():
+        from . import weather as W
+        story.append(P(R('weather', lg), H1))
+        story.append(tbl([[a_, b_] for a_, b_ in W.rows(A, lg)], None, [5.5 * cm, W_ - 5.5 * cm]))
+
+    def s_phases():
+        if not A.phases: return
+        story.append(P(R('phases', lg), H1))
+        f1 = lambda x, u='': f'{x:.0f}{u}' if isinstance(x, (int, float)) else '-'
+        rows = [[rd.t('ph_' + p_['name']), f"{fmt_t(p_['t0'])}–{fmt_t(p_['t1'])}", fmt_t(p_['stats'].get('dur', 0)),
+                 f"{f1(p_['stats'].get('alt_mean'))}/{f1(p_['stats'].get('alt_max'))} m", f1(p_['stats'].get('as_mean') if p_['stats'].get('as_mean') is not None else p_['stats'].get('gs_mean'), ' m/s'),
+                 f1(p_['stats'].get('thr_mean'), '%'), f"{f1(p_['stats'].get('roll_max'))}°/{f1(p_['stats'].get('pitch_max'))}°"] for p_ in A.phases]
+        story.append(tbl(rows, [R(k, lg) for k in ('p_phase', 'p_time', 'p_dur', 'p_alt', 'p_spd', 'p_thr', 'p_att')], [2.2 * cm, 3.4 * cm, 1.8 * cm, 2.5 * cm, 2.2 * cm, 2 * cm, W_ - 14.1 * cm], fs=7.5))
+
+    def lesson(key):
+        Ls = LESSON.get(key)
+        if not Ls or not long_: return []
+        i = ('tr', 'en', 'ar').index(lg)
+        return [P('ⓘ ' + R('why_see', lg) + ' ' + Ls['what'][i], ParagraphStyle('l', parent=small, textColor=colors.HexColor('#1F2937'))),
+                tbl([[Ls['normal'][i], Ls['warn'][i], Ls['danger'][i]]], [R('th_normal', lg), R('th_warn', lg), R('th_danger', lg)], [W_ / 3] * 3, [['DCFCE7', 'FEF3C7', 'FEE2E2']], fs=7.2), Spacer(1, 8)]
+
+    def s_charts():
+        story.extend([PageBreak(), P(R('charts', lg), H1)])
+        if rd.map: story.append(KeepTogether([img(rd.map, W_ * 0.9)] + lesson('c_map')))
+        for key, b in rd.imgs: story.append(KeepTogether([img(b)] + lesson(key)))
+
+    def s_timeline():
+        story.extend([PageBreak(), P(R('timeline', lg), H1)])
+        if rd.timeline_img: story.append(img(rd.timeline_img))
+        ev = [e for e in A.events if e['sev'] > 0 or e['cat'] in ('mode', 'flight')][:150]
+        if ev:
+            story.append(tbl([[fmt_t(e['t']), R('cat_' + e['cat'], lg), texts.render(e['text'], lg)] for e in ev], [R('e_time', lg), R('e_type', lg), R('e_text', lg)],
+                             [2.4 * cm, 2.2 * cm, W_ - 4.6 * cm], [[None, None, {0: None, 1: 'FEF3C7', 2: 'FEE2E2'}[e['sev']]] for e in ev], fs=7.5))
+
+    def s_params():
+        story.append(P(R('params', lg), H1))
+        story.append(tbl([[R('sev' + str(f['sev']), lg), texts.render(f['text'], lg)] for f in A.param_findings], None, [2.4 * cm, W_ - 2.4 * cm],
+                         [[{0: 'DBEAFE', 1: 'FEF3C7', 2: 'FEE2E2'}[f['sev']], None] for f in A.param_findings]))
+
+    def s_thresholds():
+        story.append(P(R('thresholds', lg), H1))
+        i = ('tr', 'en', 'ar').index(lg)
+        rows = [[R(k, lg), LESSON[k]['normal'][i], LESSON[k]['warn'][i], LESSON[k]['danger'][i]] for k in ('c_gps', 'c_vibe', 'c_bat', 'c_ekf', 'c_att', 'c_mag')]
+        story.append(tbl(rows, ['', R('th_normal', lg), R('th_warn', lg), R('th_danger', lg)], [3 * cm] + [(W_ - 3 * cm) / 3] * 3, [[None, 'DCFCE7', 'FEF3C7', 'FEE2E2'] for _ in rows], fs=7.2))
+        story.append(P(R('offline_note', lg) if not rd.ai_text else R('ai_note', lg), small))
+
+    def s_verify():
+        qr = Image(io.BytesIO(rd.qr_png()), width=3 * cm, height=3 * cm)
+        vt = [P(f"{R('report_id', lg)}: {rd.id}", H2, W_ - 4 * cm), P(f"{R('generated', lg)}: {rd.generated}", base, W_ - 4 * cm), P(R('verify_txt', lg), small, W_ - 4 * cm)]
+        vr = [qr, vt] if not rtl else [vt, qr]
+        t = Table([vr], colWidths=[3.6 * cm, W_ - 3.6 * cm] if not rtl else [W_ - 3.6 * cm, 3.6 * cm]); t.setStyle(TableStyle([('VALIGN', (0, 0), (-1, -1), 'MIDDLE')]))
+        story.extend([Spacer(1, 8), P(R('verify', lg), H2), t])
+
+    fns = {k: f for k, f in locals().items() if k.startswith('s_')}
+    for k in rd.sections:
+        fn = fns.get('s_' + k)
+        if fn:
+            try: fn()
+            except Exception:
+                import traceback; traceback.print_exc()
+    return K_['build'](path, story, R('title', lg), encrypt=encrypt)
 
 
 def file_sha256(path):

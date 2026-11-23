@@ -1,4 +1,4 @@
-; Pixhawk Log Analiz — Windows kurulum paketi (Inno Setup 6)
+﻿; Pixhawk Log Analiz — Windows kurulum paketi (Inno Setup 6)
 ; Kullanıcı başına kurulum (yönetici izni gerekmez) → program içinden sessiz, tek tık güncelleme.
 #ifndef AppVersion
   #define AppVersion "1.0.0"
@@ -38,6 +38,7 @@ VersionInfoVersion={#AppVersion}.0
 ShowLanguageDialog=auto
 UsePreviousAppDir=yes
 UsePreviousTasks=yes
+ChangesAssociations=yes
 
 [Languages]
 Name: "tr"; MessagesFile: "compiler:Languages\Turkish.isl"
@@ -46,8 +47,25 @@ Name: "en"; MessagesFile: "compiler:Default.isl"
 Name: "ar"; MessagesFile: "compiler:Languages\Arabic.isl"
 #endif
 
+[CustomMessages]
+tr.AssocTask=.BIN ve .tlog log dosyalarını çift tıklayınca bu programla aç
+en.AssocTask=Open .BIN and .tlog log files with this program on double-click
+#ifexist "compiler:Languages\Arabic.isl"
+ar.AssocTask=فتح ملفات السجل .BIN و.tlog بهذا البرنامج عند النقر المزدوج
+#endif
+
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
+Name: "assoc"; Description: "{cm:AssocTask}"
+
+[Registry]
+Root: HKA; Subkey: "Software\Classes\PixhawkLogAnaliz.Log"; ValueType: string; ValueName: ""; ValueData: "Pixhawk / ArduPilot Log"; Flags: uninsdeletekey; Tasks: assoc
+Root: HKA; Subkey: "Software\Classes\PixhawkLogAnaliz.Log\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: """{app}\{#AppExe}"",0"; Tasks: assoc
+Root: HKA; Subkey: "Software\Classes\PixhawkLogAnaliz.Log\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#AppExe}"" ""%1"""; Tasks: assoc
+Root: HKA; Subkey: "Software\Classes\.bin"; ValueType: string; ValueName: ""; ValueData: "PixhawkLogAnaliz.Log"; Flags: uninsdeletevalue; Tasks: assoc
+Root: HKA; Subkey: "Software\Classes\.bin\OpenWithProgids"; ValueType: none; ValueName: "PixhawkLogAnaliz.Log"; Flags: uninsdeletevalue; Tasks: assoc
+Root: HKA; Subkey: "Software\Classes\.tlog"; ValueType: string; ValueName: ""; ValueData: "PixhawkLogAnaliz.Log"; Flags: uninsdeletevalue; Tasks: assoc
+Root: HKA; Subkey: "Software\Classes\.tlog\OpenWithProgids"; ValueType: none; ValueName: "PixhawkLogAnaliz.Log"; Flags: uninsdeletevalue; Tasks: assoc
 
 [InstallDelete]
 ; Eski sürümden kalan kütüphaneler yenileriyle karışmasın (kullanıcı verisi %APPDATA%'da, silinmez)

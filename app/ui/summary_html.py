@@ -78,6 +78,35 @@ def build(A, lg):
                      f'<td>{f1(s.get("alt_mean"))}/{f1(s.get("alt_max"))} m</td><td>{f1(spd, " m/s")}</td><td>{f1(s.get("thr_mean"), "%")}</td>'
                      f'<td>{f1(s.get("roll_max"))}°/{f1(s.get("pitch_max"))}°</td></tr>')
         h.append('</table>')
+    # Yapay zekâ anomali tespiti
+    info_ = getattr(A, 'anomaly_info', None)
+    if info_:
+        from ..core.report import anomaly_rows
+        h.append(f'<h3 style="color:#93C5FD">🧠 {E(R("anomaly", lg))}</h3><p style="color:#CBD5E1">{E(R("anom_intro", lg).format(n=info_["windows"], k=info_["learned_flights"], i=info_["index"]))}</p>')
+        rows = anomaly_rows(A, lg)
+        if rows:
+            h.append('<table width="100%" cellpadding="4" cellspacing="0">')
+            for i, (a, b, c) in enumerate(rows):
+                h.append(f'<tr bgcolor="{"#111C33" if i % 2 else "#0F1A30"}"><td width="18%" style="color:#FBBF24"><a href="t:{A.anomalies[i]["t0"]:.1f}" style="color:#FBBF24">{E(a)}</a></td><td width="8%">{E(b)}</td><td>{E(c)}</td></tr>')
+            h.append('</table>')
+        else:
+            h.append(f'<p style="color:#4ADE80">✔ {E(R("anom_none", lg))}</p>')
+    # Pilot performansı
+    pl = getattr(A, 'pilot', None) or {}
+    if pl.get('scores'):
+        from ..core.fleet import sname
+        h.append(f'<h3 style="color:#93C5FD">👨‍✈️ {E(R("pilot", lg))} · {pl.get("overall")}/100</h3><table width="100%" cellpadding="3">')
+        for k, v_ in pl['scores'].items():
+            c = STATUS_COL['good' if v_ >= 80 else ('warn' if v_ >= 55 else 'bad')]
+            h.append(f'<tr><td width="28%">{E(sname(k, lg))}</td><td width="8%"><b style="color:{c}">{v_}</b></td><td><table width="{max(2, v_)}%" cellspacing="0" cellpadding="0"><tr><td bgcolor="{c}" height="8"></td></tr></table></td></tr>')
+        h.append(f'</table><p style="color:#94A3B8">{E(R("pilot_note", lg))}</p>')
+    # Hava durumu
+    from ..core import weather as W
+    wr = W.rows(A, lg)
+    h.append(f'<h3 style="color:#93C5FD">🌦 {E(R("weather", lg))}</h3><table width="100%" cellpadding="3">')
+    for a, b in wr:
+        h.append(f'<tr><td width="35%" style="color:#94A3B8">{E(a)}</td><td>{E(b)}</td></tr>')
+    h.append('</table>')
     if A.param_findings:
         h.append(f'<h3 style="color:#93C5FD">{E(R("params", lg))}</h3>')
         for f in A.param_findings:

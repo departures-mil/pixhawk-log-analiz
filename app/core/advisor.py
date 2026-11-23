@@ -131,6 +131,7 @@ SYSTEM = """You are a senior ArduPilot flight-test engineer, accident investigat
 You answer questions about ONE flight log that you can query with the provided tools.
 Rules:
 - Never guess numbers. Get every value, time and fact from the tools. Call `overview` first if you have not yet.
+- Be efficient: `overview` and `events` usually contain the answer; use at most 4-5 tool calls, then answer.
 - Times: tools use seconds from log start. Always show times as mm:ss (and the seconds value), e.g. 05:12.4 (T+312.4 s).
 - Be precise and practical like a consultant: give the direct answer first, then the evidence (values, times), then what it means and what to do.
 - Explain technical terms briefly so a student can learn. Use ArduPilot parameter and message names exactly.
@@ -147,10 +148,45 @@ class Usage:
             with open(path, encoding='utf-8') as f: self.data.update(json.load(f))
         except Exception: pass
 
+    def add_generic(self, provider, it, ot, limits):
+        d = self.data
+        d['calls'] += 1; d['input_tokens'] += it or 0; d['output_tokens'] += ot or 0
+        day = time.strftime('%Y-%m-%d')
+        bd = d['by_day'].setdefault(day, {'calls': 0, 'in': 0, 'out': 0}); bd['calls'] += 1; bd['in'] += it or 0; bd['out'] += ot or 0
+        bp = d.setdefault('by_provider', {}).setdefault(provider, {'calls': 0, 'in': 0, 'out': 0, 'today': {}})
+        bp['calls'] += 1; bp['in'] += it or 0; bp['out'] += ot or 0
+        td = bp['today'] if bp['today'].get('day') == day else {'day': day, 'calls': 0, 'tokens': 0}
+        td['calls'] += 1; td['tokens'] += (it or 0) + (ot or 0); bp['today'] = td
+        if limits: d.setdefault('plimits', {})[provider] = limits
+        d['last'] = time.strftime('%Y-%m-%d %H:%M:%S')
+        self._save()
+
+    def note_quota(self, provider, details):
+        q = []
+        for dt in details or []:
+            for v in dt.get('violations', []) or []:
+                q.append(f"{v.get('quotaMetric', '').split('/')[-1]}: {v.get('quotaValue', '?')} ({v.get('quotaId', '')})")
+            if dt.get('retryDelay'): q.append('retry ' + dt['retryDelay'])
+        self.data.setdefault('plimits', {})[provider] = {'quota_hit': time.strftime('%Y-%m-%d %H:%M'), 'details': q[:6]}
+        self._save()
+
+    def month_tokens(self, days=30):
+        import datetime
+        lim = (datetime.date.today() - datetime.timedelta(days=days)).isoformat()
+        return sum(v['in'] + v['out'] for k, v in self.data['by_day'].items() if k >= lim), sum(v['calls'] for k, v in self.data['by_day'].items() if k >= lim)
+
+    def _save(self):
+        try:
+            os.makedirs(os.path.dirname(self.path), exist_ok=True)
+            with open(self.path, 'w', encoding='utf-8') as f: json.dump(self.data, f)
+        except Exception: pass
+
     def add(self, usage, headers):
         d = self.data
         d['calls'] += 1
         it = getattr(usage, 'input_tokens', 0) or 0; ot = getattr(usage, 'output_tokens', 0) or 0
+        bp = d.setdefault('by_provider', {}).setdefault('anthropic', {'calls': 0, 'in': 0, 'out': 0, 'today': {}})
+        bp['calls'] += 1; bp['in'] += it; bp['out'] += ot
         d['input_tokens'] += it; d['output_tokens'] += ot
         d['cache_read'] += getattr(usage, 'cache_read_input_tokens', 0) or 0
         day = time.strftime('%Y-%m-%d')
@@ -161,12 +197,9 @@ class Usage:
                   'tokens-limit', 'tokens-remaining', 'tokens-reset'):
             v = headers.get('anthropic-ratelimit-' + k) if headers else None
             if v is not None: lim[k] = v
-        if lim: d['limits'] = lim
+        if lim: d['limits'] = lim; d.setdefault('plimits', {})['anthropic'] = lim
         d['last'] = time.strftime('%Y-%m-%d %H:%M:%S')
-        try:
-            os.makedirs(os.path.dirname(self.path), exist_ok=True)
-            with open(self.path, 'w', encoding='utf-8') as f: json.dump(d, f)
-        except Exception: pass
+        self._save()
 
 
 class OnlineAdvisor:
@@ -189,8 +222,9 @@ class OnlineAdvisor:
     def ask(self, question, on_status=None, max_rounds=12):
         self.messages.append({'role': 'user', 'content': question})
         system = SYSTEM.replace('{lang}', LANG_NAME.get(self.lang, 'Turkish'))
-        for _ in range(max_rounds):
+        for rnd in range(max_rounds):
             kw = dict(model=self.model, max_tokens=16000, system=system, tools=TOOLS, messages=self.messages)
+            if rnd >= max_rounds - 1: kw['tool_choice'] = {'type': 'none'}
             if self.model.startswith(('claude-opus-5', 'claude-sonnet-5', 'claude-fable', 'claude-haiku-5')):
                 kw['thinking'] = {'type': 'adaptive'}
                 kw['output_config'] = {'effort': self.effort}
