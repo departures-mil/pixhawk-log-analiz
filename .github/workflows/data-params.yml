@@ -21,21 +21,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with: { python-version: '3.12' }
+        with:
+          python-version: '3.12'
       - name: ArduPilot source (only read, for defaults)
         run: git clone -q --depth 1 https://github.com/ArduPilot/ardupilot.git /tmp/ardupilot
       - name: Build params_full.json.gz
-        env: { ARDUPILOT_SRC: /tmp/ardupilot, RAW_DIR: /tmp/raw }
+        env:
+          ARDUPILOT_SRC: /tmp/ardupilot
+          RAW_DIR: /tmp/raw
         run: python tools_data/build_params.py
       - uses: actions/upload-artifact@v4
-        with: { name: params_full, path: app/data/params_full.json.gz }
+        with:
+          name: params_full
+          path: app/data/params_full.json.gz
 
   model:
     runs-on: ubuntu-latest
     steps:
       - id: cache
         uses: actions/cache@v4
-        with: { path: nllb, key: nllb-1.3b-int8-v1 }
+        with:
+          path: nllb
+          key: nllb-1.3b-int8-v1
       - name: Convert NLLB-200 1.3B to CTranslate2 int8
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
@@ -56,18 +63,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
-        with: { name: params_full, path: app/data }
+        with:
+          name: params_full
+          path: app/data
       - uses: actions/cache/restore@v4
-        with: { path: nllb, key: nllb-1.3b-int8-v1, fail-on-cache-miss: true }
+        with:
+          path: nllb
+          key: nllb-1.3b-int8-v1
+          fail-on-cache-miss: true
       - uses: actions/setup-python@v5
-        with: { python-version: '3.12' }
+        with:
+          python-version: '3.12'
       - run: pip install -q ctranslate2 transformers sentencepiece protobuf
       - name: Translate (${{ matrix.lang }})
-        env: { NLLB_DIR: nllb, MAX_MIN: '320' }
+        env:
+          NLLB_DIR: nllb
+          MAX_MIN: '320'
         run: python tools_data/translate.py ${{ matrix.lang }}
       - uses: actions/upload-artifact@v4
         if: always()
-        with: { name: tx_${{ matrix.lang }}, path: app/data/params_tx_${{ matrix.lang }}.json.gz, if-no-files-found: ignore }
+        with:
+          name: tx_${{ matrix.lang }}
+          path: app/data/params_tx_${{ matrix.lang }}.json.gz
+          if-no-files-found: ignore
 
   commit:
     needs: [params, translate]
@@ -75,9 +93,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with: { ref: '${{ github.ref_name }}' }
+        with:
+          ref: '${{ github.ref_name }}'
       - uses: actions/download-artifact@v4
-        with: { path: /tmp/art }
+        with:
+          path: /tmp/art
       - name: Commit data back to branch
         run: |
           cp /tmp/art/params_full/params_full.json.gz app/data/

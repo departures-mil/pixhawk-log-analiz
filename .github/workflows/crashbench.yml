@@ -1,0 +1,59 @@
+name: crashbench
+
+# Gerçek kırım logları test seti: forumdan log topla (önbellekli), teşhisi çalıştır, sonuç tablosunu dala yaz.
+# Tetik: tools_data/request_bench.txt değişince ya da elle.
+on:
+  push:
+    paths: ['tools_data/request_bench.txt']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: crashbench-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  bench:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Restore log cache
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/bench
+          key: crashbench-logs-v1-${{ github.run_id }}
+          restore-keys: crashbench-logs-v1-
+      - run: pip install -q numpy matplotlib pymavlink python-docx reportlab qrcode pillow arabic-reshaper python-bidi cryptography
+      - name: Harvest logs (discuss.ardupilot.org)
+        run: python tools_data/crashbench.py harvest
+      - name: Save log cache
+        uses: actions/cache/save@v4
+        with:
+          path: /tmp/bench
+          key: crashbench-logs-v1-${{ github.run_id }}
+      - name: Run diagnosis
+        env:
+          PYTHONIOENCODING: utf-8
+          MPLBACKEND: Agg
+        run: python tools_data/crashbench.py run
+      - name: Pack logs for review
+        run: cd /tmp/bench && tar czf /tmp/crashlogs.tgz *.bin manifest.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: crashlogs
+          path: /tmp/crashlogs.tgz
+          retention-days: 10
+          compression-level: 0
+      - name: Commit results
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools_data/crashbench docs/kirim_test_sonuclari.md app/data/crashlib.json
+          git commit -m "crashbench: gerçek kırım logları doğruluk sonuçları (otomatik)" || exit 0
+          for i in 1 2 3 4; do git pull --rebase -q origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && break; sleep $((i*10)); done
