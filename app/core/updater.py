@@ -1,0 +1,78 @@
+"""GitHub Releases üzerinden tek tuşla güncelleme (yüzde, MB, kalan, hız)."""
+from __future__ import annotations
+import json, os, subprocess, sys, tempfile, time, urllib.request
+from ..version import VERSION, REPO, APP_ID
+
+UA = f'{APP_ID}/{VERSION}'
+
+
+def _v(s):
+    s = (s or '').lstrip('vV').split('-')[0]
+    try: return tuple(int(x) for x in s.split('.'))
+    except Exception: return (0,)
+
+
+def check(timeout=12):
+    """Yeni sürüm varsa {'version','url','size','notes','name'} döner, yoksa None."""
+    req = urllib.request.Request(f'https://api.github.com/repos/{REPO}/releases/latest',
+                                 headers={'User-Agent': UA, 'Accept': 'application/vnd.github+json'})
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        d = json.load(r)
+    tag = d.get('tag_name', '')
+    if _v(tag) <= _v(VERSION):
+        return None
+    asset = next((a for a in d.get('assets', []) if a['name'].lower().endswith('.exe')), None)
+    if not asset:
+        return None
+    return {'version': tag.lstrip('v'), 'url': asset['browser_download_url'], 'size': asset.get('size', 0),
+            'notes': d.get('body') or '', 'name': asset['name']}
+
+
+def download(info, progress=None, cancel=None):
+    """progress(done_bytes, total_bytes, speed_bps, eta_s). İndirilen dosya yolunu döner."""
+    d = os.path.join(tempfile.gettempdir(), APP_ID + '_update'); os.makedirs(d, exist_ok=True)
+    dst = os.path.join(d, f"{APP_ID}-{info['version']}.exe.part")
+    req = urllib.request.Request(info['url'], headers={'User-Agent': UA})
+    with urllib.request.urlopen(req, timeout=30) as r, open(dst, 'wb') as f:
+        total = int(r.headers.get('Content-Length') or info.get('size') or 0)
+        done = 0; t0 = time.time(); last = 0
+        while True:
+            if cancel and cancel():
+                raise RuntimeError('cancelled')
+            b = r.read(256 * 1024)
+            if not b: break
+            f.write(b); done += len(b)
+            now = time.time()
+            if progress and (now - last > 0.2 or done == total):
+                sp = done / max(now - t0, 1e-3)
+                progress(done, total, sp, (total - done) / sp if sp > 0 and total else 0)
+                last = now
+    final = dst[:-5]
+    if os.path.exists(final): os.remove(final)
+    os.replace(dst, final)
+    return final
+
+
+def apply_and_restart(new_file):
+    """Çalışan exe'yi yenisiyle değiştirip programı yeniden başlatır (yalnızca paketlenmiş sürümde)."""
+    if not getattr(sys, 'frozen', False):
+        return False
+    cur = sys.executable; pid = os.getpid()
+    script = os.path.join(os.path.dirname(new_file), 'apply.cmd')
+    with open(script, 'w', encoding='mbcs' if os.name == 'nt' else 'utf-8') as f:
+        f.write(f'''@echo off
+:wait
+tasklist /FI "PID eq {pid}" 2>nul | find "{pid}" >nul && (ping -n 2 127.0.0.1 >nul & goto wait)
+set n=0
+:copy
+copy /y "{new_file}" "{cur}" >nul && goto ok
+set /a n+=1
+if %n% lss 30 (ping -n 2 127.0.0.1 >nul & goto copy)
+:ok
+del "{new_file}" >nul 2>&1
+start "" "{cur}" --updated
+del "%~f0"
+''')
+    flags = 0x08000000 if os.name == 'nt' else 0
+    subprocess.Popen(['cmd.exe', '/c', script], creationflags=flags, close_fds=True)
+    return True

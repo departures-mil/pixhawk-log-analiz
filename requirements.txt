@@ -1,0 +1,11 @@
+PySide6-Essentials>=6.7
+matplotlib>=3.8
+numpy>=1.26
+pymavlink>=2.4.41
+python-docx>=1.1
+reportlab>=4.0
+qrcode>=7.4
+pillow>=10
+arabic-reshaper>=3.0
+python-bidi>=0.4.2
+anthropic>=0.75
