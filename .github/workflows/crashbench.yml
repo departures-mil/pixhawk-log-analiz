@@ -45,6 +45,12 @@ jobs:
         run: python tools_data/crashbench.py run
       - name: Pack logs for review
         run: cd /tmp/bench && tar czf /tmp/crashlogs.tgz *.bin manifest.json
+      - name: Upload logs to draft release (for offline rule tuning; drafts are not visible to the updater)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view bench-data --repo "${{ github.repository }}" >/dev/null 2>&1 || gh release create bench-data --draft --repo "${{ github.repository }}" --target "${{ github.sha }}" --title "bench-data (taslak, kullanıcıya görünmez)" --notes "crashbench log önbelleği"
+          gh release upload bench-data /tmp/crashlogs.tgz --clobber --repo "${{ github.repository }}"
       - uses: actions/upload-artifact@v4
         with:
           name: crashlogs

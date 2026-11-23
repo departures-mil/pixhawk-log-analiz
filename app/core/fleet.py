@@ -153,7 +153,7 @@ def pilot_card(archive, pid):
 def radar_png(avg: dict, lang='tr', title=''):
     import io, math
     from matplotlib.figure import Figure
-    from .charts import shape
+    from .charts import shape, mshape
     keys = [k for k in SCORE_NAMES if k in avg]
     if len(keys) < 3: return None
     fig = Figure(figsize=(4.6, 4.2), dpi=120)
@@ -161,9 +161,9 @@ def radar_png(avg: dict, lang='tr', title=''):
     ang = [i / len(keys) * 2 * math.pi for i in range(len(keys))] + [0]
     vals = [avg[k] for k in keys] + [avg[keys[0]]]
     ax.plot(ang, vals, color='#2563EB', lw=2); ax.fill(ang, vals, color='#2563EB', alpha=0.25)
-    ax.set_xticks(ang[:-1]); ax.set_xticklabels([shape(sname(k, lang), lang) for k in keys], fontsize=7)
+    ax.set_xticks(ang[:-1]); ax.set_xticklabels([mshape(sname(k, lang), lang) for k in keys], fontsize=7)
     ax.set_ylim(0, 100); ax.set_yticks([25, 50, 75, 100]); ax.tick_params(labelsize=6)
-    if title: ax.set_title(shape(title, lang), fontsize=9)
+    if title: ax.set_title(mshape(title, lang), fontsize=9)
     fig.tight_layout(); b = io.BytesIO(); fig.savefig(b, format='png'); return b.getvalue()
 
 

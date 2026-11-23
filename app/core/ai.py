@@ -260,3 +260,22 @@ def translate(settings, usage, text, target):
     import anthropic
     a.client = anthropic.Anthropic(api_key=key, max_retries=2, timeout=180); a.model = model; a.usage = usage
     return OnlineAdvisor.translate(a, text, target)
+
+
+def chat(settings, usage, system, prompt, max_tokens=6000):
+    """Araçsız tek soru-cevap (Parametre Merkezi, ders kitabı vb.). Kullanıcının kendi anahtarıyla."""
+    prov, key, model = current(settings)
+    if not key: raise RuntimeError('no key')
+    if prov == 'gemini':
+        g = GeminiAdvisor(None, key, model, 'en', usage, settings.get('effort', 'medium'))
+        d = g._gen({'systemInstruction': {'parts': [{'text': system}]}, 'contents': [{'role': 'user', 'parts': [{'text': prompt}]}],
+                    'generationConfig': g._cfg(max_tokens)})
+        c = (d.get('candidates') or [{}])[0].get('content') or {}
+        return ''.join(p.get('text', '') for p in c.get('parts', []) if not p.get('thought')).strip()
+    import anthropic
+    cl = anthropic.Anthropic(api_key=key, max_retries=2, timeout=180)
+    resp = cl.messages.create(model=model, max_tokens=max_tokens, system=system, messages=[{'role': 'user', 'content': prompt}])
+    if usage:
+        try: usage.add(resp.usage, {})
+        except Exception: pass
+    return ''.join(getattr(b, 'text', '') for b in resp.content if getattr(b, 'type', '') == 'text').strip()
