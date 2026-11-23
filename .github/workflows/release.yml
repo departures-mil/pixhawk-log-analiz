@@ -1,0 +1,64 @@
+name: build-and-release
+
+# main'e her gönderimde Windows exe derlenir. app/version.py içindeki sürümün
+# henüz Release'i yoksa vX.Y.Z otomatik yayınlanır; programın içindeki
+# "Güncelle" düğmesi yeni sürümü buradan indirir.
+on:
+  push:
+    branches: ['**']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Read version
+        id: ver
+        shell: pwsh
+        run: |
+          $v = ([regex]::Match((Get-Content app/version.py -Raw), 'VERSION\s*=\s*"([^"]+)"')).Groups[1].Value
+          "version=$v" >> $env:GITHUB_OUTPUT
+          $exists = $false
+          gh release view "v$v" --repo "${{ github.repository }}" 2>&1 | Out-Null
+          if ($LASTEXITCODE -eq 0) { $exists = $true }
+          "exists=$exists" >> $env:GITHUB_OUTPUT
+          Write-Host "version=$v exists=$exists"
+          exit 0
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt pyinstaller
+
+      - name: Self-test (synthetic scenarios)
+        run: python tools_ci/selftest.py
+
+      - name: Build exe
+        run: pyinstaller --noconfirm --clean PixhawkLogAnaliz.spec
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PixhawkLogAnaliz-v${{ steps.ver.outputs.version }}
+          path: dist/PixhawkLogAnaliz.exe
+
+      - name: Publish release
+        if: github.ref == 'refs/heads/main' && steps.ver.outputs.exists != 'True'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.ver.outputs.version }}
+          name: Pixhawk Log Analiz v${{ steps.ver.outputs.version }}
+          files: dist/PixhawkLogAnaliz.exe
+          generate_release_notes: true
+          make_latest: true
