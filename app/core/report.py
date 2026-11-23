@@ -4,7 +4,8 @@ import io, os, time, hashlib, json, re, uuid, copy
 import numpy as np
 from .analysis import Analysis, fmt_t
 from .rtexts import RT, LESSON
-from . import texts, charts, knowledge as K, letterhead as LHM
+from . import texts
+from . import why as why_mod, charts, knowledge as K, letterhead as LHM
 
 SEV_COL = {0: '2563EB', 1: 'D97706', 2: 'DC2626'}
 ST_COL = {'good': '16A34A', 'warn': 'D97706', 'bad': 'DC2626'}
@@ -104,6 +105,11 @@ class ReportData:
         if getattr(A, 'serial', ''): rows.append((R('f_serial', lg), A.serial))
         if getattr(self, 'aircraft_name', ''): rows.append((R('f_aircraft', lg), self.aircraft_name))
         if getattr(self, 'pilot_name', ''): rows.append((R('f_pilot', lg), self.pilot_name))
+        try:
+            from . import flightinfo as FI
+            rows += [(a, b) for a, b in FI.rows(getattr(A, 'info', {}) or {}, lg)]
+        except Exception:
+            pass
         return rows
 
     def verify_payload(self):
@@ -245,6 +251,20 @@ def build_docx(rd: ReportData, path, lh=None):
 
     def s_root():
         if not A.root: return
+        y = why_mod.render(A, lg, fmt_t)
+        if y:
+            heading(y['title'])
+            para(y['sentence'], bold=True, size=12.5, col='DC2626' if v == 'crash' else 'D97706')
+            para(y['conf_text'], bold=True, size=10, col='1D4ED8')
+            if y['why']: para(y['why'], size=10)
+            if y['chain']: para(y['chain_h'] + ': ' + y['chain'], size=9.5, italic=True)
+            if y['evidence']:
+                heading(y['evid_h'], 2)
+                for e in y['evidence']: para('• ' + e, size=9.5, space=2)
+            if y.get('weather'): para(y['weather'], size=9.5)
+            if y['notes']:
+                heading(y['ctx_h'], 2)
+                for n in y['notes']: para('• ' + n, size=9.5, space=2)
         heading(R('root', lg))
         c = A.root['cause']
         para(f"{R('root_cause', lg)}: {rd.t('cause_' + c)}  ({fmt_t(A.root.get('t', 0))})", bold=True, size=11.5, col='DC2626' if v == 'crash' else 'D97706')
@@ -668,6 +688,20 @@ def build_pdf(rd: ReportData, path, lh=None, encrypt=None):
     def s_root():
         if not A.root: return
         if long_: story.append(PageBreak())
+        y = why_mod.render(A, lg, fmt_t)
+        if y:
+            story.append(P(y['title'], H1))
+            story.append(P(y['sentence'], ParagraphStyle('ws', parent=H2, textColor=colors.HexColor('#DC2626' if v == 'crash' else '#D97706'))))
+            story.append(P('<b>' + y['conf_text'] + '</b>'))
+            if y['why']: story.append(P(y['why']))
+            if y['chain']: story.append(P('<i>' + y['chain_h'] + ': ' + y['chain'] + '</i>', small))
+            if y['evidence']:
+                story.append(P(y['evid_h'], H2))
+                for e in y['evidence']: story.append(P('• ' + e))
+            if y.get('weather'): story.append(P(y['weather'], small))
+            if y['notes']:
+                story.append(P(y['ctx_h'], H2))
+                for n in y['notes']: story.append(P('• ' + n))
         story.append(P(R('root', lg), H1))
         c = A.root['cause']
         story.append(P(f"{R('root_cause', lg)}: {rd.t('cause_' + c)} ({fmt_t(A.root.get('t', 0))})", ParagraphStyle('rc', parent=H2, textColor=colors.HexColor('#DC2626' if v == 'crash' else '#D97706'))))

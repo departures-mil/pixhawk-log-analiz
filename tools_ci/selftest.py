@@ -129,4 +129,32 @@ try:
     print('v1.0.3 param center / textbook / video OK')
 except Exception:
     import traceback; traceback.print_exc(); bad += 1
+
+# ---- v1.0.4: uçuş bilgileri formu, 'Neden düştü?', problem çözücü, havacılık sözlüğü
+try:
+    from app.core import flightinfo as FI, why as WHY, solver as SV, glossary as GL
+    from app.core.analysis import fmt_t as _ft
+    Ls = loader.load(os.path.join(d, 'stall.BIN'))
+    det, src = FI.detect(Ls); print('detect:', det)
+    info = {**det, 'crashed': 'yes', 'power': 'ice', 'gas_cc': '55', 'stroke': '2', 'airframe': 'vtail', 'autopilot': 'Cube Orange'}
+    As = analysis.Analysis(Ls, info=info)
+    assert As.verdict.get('kind') == 'crash', As.verdict
+    assert As.why and As.why.get('conf', 0) > 0.5, As.why
+    for lg in ('tr', 'en', 'ar'):
+        Rw = WHY.render(As, lg, _ft); assert Rw['sentence'] and Rw['chain'], Rw
+        R = SV.solve(As, ['stall'], {'tr': 'havada hız kaybedip düştü', 'en': 'lost speed and fell', 'ar': 'فقد السرعة وسقط'}[lg], lg)
+        md = SV.to_markdown(R, lg); assert len(md) > 400
+        rows_ = FI.rows(info, lg); assert len(rows_) >= 5
+        rd = report.ReportData(As, lg, None, online_map=False); report.build_pdf(rd, os.path.join(d, f'why_{lg}.pdf'))
+    print('why:', WHY.render(As, 'tr', _ft)['sentence'][:120])
+    # kullanıcı "kırım yok" der, log da normal: normal kalmalı
+    An = analysis.Analysis(loader.load(os.path.join(d, 'normal.BIN')), info={'crashed': 'no'})
+    assert An.verdict.get('kind') == 'normal', An.verdict
+    # sözlük: arm / prearm doğru terimle
+    assert 'arm' in GL.fix('ön kol kontrolü başarısız', 'tr').lower(), GL.fix('ön kol kontrolü başarısız', 'tr')
+    x, tk = GL.protect('Disable prearm display'); assert tk, x
+    c = FI.conf({}); assert c['ask'] is True
+    print('v1.0.4 flight info / why / solver / glossary OK')
+except Exception:
+    import traceback; traceback.print_exc(); bad += 1
 sys.exit(1 if bad else 0)

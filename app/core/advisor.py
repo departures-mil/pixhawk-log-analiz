@@ -52,7 +52,9 @@ class LogTools:
                 'phases': [{'name': p['name'], 't0': round(p['t0'], 1), 't1': round(p['t1'], 1), **{k: (round(v, 2) if isinstance(v, float) else v) for k, v in p.get('stats', {}).items()}} for p in A.phases],
                 'root_cause': A.root.get('cause'), 'root_others': A.root.get('others'),
                 'facts': {k: (round(v, 2) if isinstance(v, float) else v) for k, v in A.facts.items() if k not in ('modes',)},
-                'gps_clock_available': bool(self.L.gps_time0)}
+                'gps_clock_available': bool(self.L.gps_time0),
+                'operator_flight_info': dict(_fi_rows(A)), 'program_crash_verdict': _why_en(A),
+                'weather_at_event': getattr(A, 'weather_event', None) or getattr(A, 'weather', None)}
 
     def list_messages(self):
         return {k: {'fields': [f for f in v.keys() if f != 't'], 'samples': len(v.get('t', []))} for k, v in self.L.msgs.items() if '[' not in k}
@@ -127,6 +129,23 @@ TOOLS = [
 ]
 
 
+def _fi_rows(A):
+    try:
+        from .flightinfo import rows
+        return rows(getattr(A, 'info', {}) or {}, 'en')
+    except Exception:
+        return []
+
+
+def _why_en(A):
+    try:
+        from .why import render
+        r = render(A, 'en', fmt_t) or {}
+        return {k: r.get(k) for k in ('sentence', 'conf_text', 'chain', 'notes')} if r else None
+    except Exception:
+        return None
+
+
 SYSTEM = """You are a senior ArduPilot flight-test engineer, accident investigator and flight instructor acting as an advisor inside a Pixhawk log analysis program.
 You answer questions about ONE flight log that you can query with the provided tools.
 Rules:
@@ -136,6 +155,8 @@ Rules:
 - Be precise and practical like a consultant: give the direct answer first, then the evidence (values, times), then what it means and what to do.
 - Explain technical terms briefly so a student can learn. Use ArduPilot parameter and message names exactly.
 - If the log does not contain the data needed, say so plainly and say which message would be needed.
+- The operator's flight form (crash yes/no, engine type and cc, airframe, autopilot board) is ground truth from the field: use it.
+- Use standard aviation terminology (ARM/DISARM, pre-arm checks, failsafe, roll/pitch/yaw) — never translate "arm" as a body part or weapon.
 - Reply in {lang}. Use short paragraphs and lists; no tables wider than 4 columns."""
 
 
@@ -251,7 +272,7 @@ class OnlineAdvisor:
 
     def translate(self, text, target):
         resp = self.client.messages.create(model=self.model, max_tokens=4000,
-            system='You are a professional aviation/UAV technical translator. Translate faithfully, keep ArduPilot parameter names, units and numbers unchanged. Output only the translation.',
+            system='You are a professional aviation/UAV technical translator. Translate faithfully, keep ArduPilot parameter names, units and numbers unchanged. Output only the translation. ' + _gl(target),
             messages=[{'role': 'user', 'content': f'Translate into {LANG_NAME[target]}:\n\n{text}'}])
         if self.usage: self.usage.add(resp.usage, {})
         return ''.join(getattr(b, 'text', '') for b in resp.content if getattr(b, 'type', '') == 'text').strip()
@@ -423,3 +444,11 @@ def offline_answer(A: Analysis, question: str, lang='tr') -> str:
     if _has(q, 'arm'):
         return '\n'.join(f'• ARM {tl(a)} → DISARM {tl(b)}' for a, b in A.armed) or _r('nodata', lang)
     return _r('unknown', lang)
+
+
+def _gl(target):
+    try:
+        from .glossary import prompt
+        return prompt(target) if target in ('tr', 'ar') else ''
+    except Exception:
+        return ''

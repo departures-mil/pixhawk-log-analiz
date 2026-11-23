@@ -53,12 +53,33 @@ class AnalysisPage(Page):
 
     def _link(self, url):
         u = url.toString()
+        if u == 'ai:why': return self._ai_why()
+        if u.startswith('go:'): return self.win.goto(u[3:])
         if u.startswith('t:'):
             try: self.win.pages['map'].goto_time(float(u[2:])); self.win.goto('map')
             except Exception: pass
         else:
             from PySide6.QtGui import QDesktopServices
             QDesktopServices.openUrl(url)
+
+    def _ai_why(self):
+        A = self.win.A
+        if not A: return
+        from ..core import why, ai as AI
+        from ..core.analysis import fmt_t
+        if not AI.available(self.win.settings): return error(self, t('fi_ai_off'))
+        self.set_busy(True, '🤖 …'); self.prog.setRange(0, 0)
+        def job(): return why.ai_explain(A, self.win.settings, self.win.usage, lang(), fmt_t)
+        def ok(txt):
+            self.set_busy(False)
+            if not txt: return
+            from PySide6.QtWidgets import QDialog, QVBoxLayout, QTextBrowser
+            dl = QDialog(self); dl.setWindowTitle('🤖 ' + t('why_ai_title')); dl.resize(820, 640)
+            vv = QVBoxLayout(dl); tb = QTextBrowser(); tb.setMarkdown(txt); vv.addWidget(tb)
+            if lang() == 'ar': tb.setLayoutDirection(Qt.RightToLeft)
+            vv.addWidget(button(t('close'), dl.accept)); dl.exec()
+        def fail(e): self.set_busy(False); error(self, e)
+        run_bg(job, on_done=ok, on_fail=fail)
 
     def _welcome(self):
         d = 'rtl' if lang() == 'ar' else 'ltr'

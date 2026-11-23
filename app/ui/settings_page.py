@@ -187,6 +187,10 @@ class SettingsPage(Page):
         v.addWidget(g)
         self._users()
 
+        # Log soruları (uçuş bilgileri formu)
+        from .flightform import QuestionEditor
+        v.addWidget(QuestionEditor(self.win))
+
         # Hata raporları
         g = QGroupBox(t('s_crash')); f = QFormLayout(g)
         crh = QHBoxLayout(); self.crash_l = label('', 'muted'); crh.addWidget(self.crash_l, 1)

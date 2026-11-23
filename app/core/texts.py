@@ -141,7 +141,7 @@ S = {
     # v1.0.2: profiller, anomali, rüzgâr, pilot
     'dom_motors': ('Motorlar (multikopter)', 'Motors (multicopter)', 'المحركات (متعدد المراوح)'),
     'dom_vtol': ('VTOL / geçişler', 'VTOL / transitions', 'VTOL / الانتقالات'),
-    'mot_imbalance': ('Motor dengesizliği: {ch} ortalamadan {v} µs farklı (ağırlık merkezi, bükük kol veya zayıf motor/ESC).', 'Motor imbalance: {ch} differs {v} µs from the average (CG, twisted arm or weak motor/ESC).', 'عدم توازن المحركات: {ch} يختلف {v} µs عن المتوسط (مركز الثقل أو ذراع ملتوية أو محرك/ESC ضعيف).'),
+    'mot_imbalance': ('Motor dengesizliği: {ch} ortalamadan {v} µs farklı (ağırlık merkezi, bükük motor kolu veya zayıf motor/ESC).', 'Motor imbalance: {ch} differs {v} µs from the average (CG, twisted arm or weak motor/ESC).', 'عدم توازن المحركات: {ch} يختلف {v} µs عن المتوسط (مركز الثقل أو ذراع ملتوية أو محرك/ESC ضعيف).'),
     'mot_headroom': ('Motor payı düşük: en yüksek motor çıkışı MOT_PWM_MAX değerine {v} µs yakın; araç ağır veya güçsüz.', 'Low motor headroom: highest motor output is within {v} µs of MOT_PWM_MAX; vehicle is heavy or underpowered.', 'هامش المحرك منخفض: أعلى خرج ضمن {v} µs من MOT_PWM_MAX؛ المركبة ثقيلة أو ضعيفة.'),
     'vtol_summary': ('{n} VTOL⇄uçak geçişi, VTOL modlarında {t} dk.', '{n} VTOL⇄plane transitions, {t} min in VTOL modes.', '{n} انتقال VTOL⇄طائرة، {t} دقيقة في أوضاع VTOL.'),
     'vtol_assist_off': ('Q_ASSIST_SPEED = 0: Düşük hızda VTOL motor desteği kapalı; stall riskine karşı açılması önerilir.', 'Q_ASSIST_SPEED = 0: VTOL assist at low airspeed is disabled; enabling it protects against stalls.', 'Q_ASSIST_SPEED = 0: دعم محركات VTOL عند السرعة المنخفضة معطل؛ يُنصح بتفعيله.'),

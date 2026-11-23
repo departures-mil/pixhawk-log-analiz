@@ -5,11 +5,11 @@ from .paths import data_dir
 
 COLS = ['uid', 'name', 'src_path', 'stored', 'size', 'vehicle', 'version', 'flight_date', 'duration', 'flight_time',
         'verdict', 'cause', 'overall', 'health', 'facts', 'analyzed_at', 'updated_at', 'device', 'notes', 'tags',
-        'aircraft', 'pilot', 'profile', 'findings', 'pilot_scores', 'anomaly_index', 'flight_ts']
+        'aircraft', 'pilot', 'profile', 'findings', 'pilot_scores', 'anomaly_index', 'flight_ts', 'info', 'crash_mark']
 NEW_COLS = {'aircraft': 'TEXT', 'pilot': 'TEXT', 'profile': 'TEXT', 'findings': 'TEXT', 'pilot_scores': 'TEXT',
-            'anomaly_index': 'INTEGER', 'flight_ts': 'REAL'}
+            'anomaly_index': 'INTEGER', 'flight_ts': 'REAL', 'info': 'TEXT', 'crash_mark': 'TEXT'}
 # Genel kayıt türleri (filo, bakım, pilot, sınıf, sınav, sonuç, kullanıcı). Silme = işaret (eşitlemede geri gelmesin).
-KINDS = ('aircraft', 'maint', 'pilot', 'class', 'exam', 'result', 'user')
+KINDS = ('aircraft', 'maint', 'pilot', 'class', 'exam', 'result', 'user', 'pset', 'pmark')
 
 
 def now():
@@ -74,7 +74,10 @@ class Archive:
                    notes=old['notes'] if old else '', tags=old['tags'] if old else '',
                    aircraft=(old or {}).get('aircraft') or getattr(A, 'serial', '') or '', pilot=(old or {}).get('pilot') or '',
                    profile=A.profile, findings=json.dumps(fk), pilot_scores=json.dumps(_clean(A.pilot or {})),
-                   anomaly_index=int(getattr(A, 'anomaly_index', 0) or 0), flight_ts=fts)
+                   anomaly_index=int(getattr(A, 'anomaly_index', 0) or 0), flight_ts=fts,
+                   info=json.dumps(_clean(getattr(A, 'info', {}) or {}), ensure_ascii=False),
+                   crash_mark=(getattr(A, 'info', {}) or {}).get('crashed') if (getattr(A, 'info', {}) or {}).get('crashed') in ('yes', 'hard', 'no')
+                   else ((old or {}).get('crash_mark') or ''))
         self._upsert(row)
         return row
 

@@ -69,7 +69,7 @@ ERR_CODE = {
 EV_NAMES = {
     7: ('AP durumu', 'AP state', 'حالة الطيار الآلي'), 9: ('Uçuşa hazırlık', 'Init simple bearing', 'تهيئة الاتجاه'),
     10: ('ARM edildi', 'Armed', 'تم التسليح'), 11: ('DISARM edildi', 'Disarmed', 'تم نزع التسليح'),
-    15: ('Otomatik silahlanma', 'Auto armed', 'تسليح آلي'), 17: ('Kısmen indi', 'Land complete maybe', 'هبوط محتمل'),
+    15: ('Otomatik arm (AUTO_ARMED)', 'Auto armed', 'تسليح آلي'), 17: ('Kısmen indi', 'Land complete maybe', 'هبوط محتمل'),
     18: ('İniş tamamlandı', 'Land complete', 'اكتمل الهبوط'), 19: ('Kayıp araç alarmı', 'Lost copter', 'إنذار فقدان المركبة'),
     25: ('Ev konumu ayarlandı', 'Set home', 'تم ضبط نقطة الإقلاع'), 28: ('İrtifa sapması', 'Not landed', 'لم يهبط'),
     29: ('Kalkış tamamlandı', 'Auto takeoff complete', 'اكتمل الإقلاع الآلي'), 51: ('Hedef seyir noktasına varıldı', 'Waypoint reached', 'تم الوصول لنقطة المسار'),
