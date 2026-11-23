@@ -28,6 +28,29 @@ def build(A, lg):
              f'<td bgcolor="{vc}" width="75%"><span style="font-size:17pt;font-weight:700;color:white">{E(R("verdict", lg))}: {E(texts.T("v_" + v, lg))}</span><br>'
              f'<span style="color:white">{E(texts.T("v_desc_" + v, lg))}</span></td>'
              f'<td bgcolor="#111C33" align="center"><span style="font-size:28pt;font-weight:800;color:{scc}">{sc}</span><br><span style="color:#94A3B8">/100 · {E(R("overall", lg))}</span></td></tr></table>')
+    # Neden düştü? (net hüküm)
+    try:
+        from ..core import why
+        y = why.render(A, lg, fmt_t)
+    except Exception:
+        y = {}
+    if y:
+        col = '#F87171' if v == 'crash' else '#FBBF24'
+        h.append(f'<table width="100%" cellpadding="10" cellspacing="0"><tr><td bgcolor="#1E1B2E">'
+                 f'<span style="font-size:14pt;font-weight:700;color:{col}">❓ {E(y["title"])}</span><br>'
+                 f'<span style="font-size:12pt;color:#F8FAFC"><b>{E(y["sentence"])}</b></span><br>'
+                 f'<span style="color:#93C5FD"><b>{E(y["conf_text"])}</b></span>')
+        if y['why']: h.append(f'<br><span style="color:#CBD5E1">{E(y["why"])}</span>')
+        if y['chain']: h.append(f'<br><span style="color:#94A3B8"><i>{E(y["chain_h"])}: {E(y["chain"])}</i></span>')
+        if y['evidence']:
+            h.append(f'<br><b style="color:#93C5FD">{E(y["evid_h"])}</b><ul>' + ''.join(f'<li>{E(e)}</li>' for e in y['evidence']) + '</ul>')
+        if y.get('weather'): h.append(f'<span style="color:#A5B4FC">🌦 {E(y["weather"])}</span><br>')
+        if y['notes']:
+            h.append(f'<b style="color:#FBBF24">{E(y["ctx_h"])}</b><ul>' + ''.join(f'<li>{E(n)}</li>' for n in y['notes']) + '</ul>')
+        if y['prevent']: h.append(f'<b style="color:#86EFAC">{E(y["todo_h"])}</b><br>{E(y["prevent"])}')
+        h.append('<br><a href="ai:why" style="color:#60A5FA">🤖 ' + E(R('why_ai', lg)) + '</a> &nbsp; '
+                 '<a href="go:solver" style="color:#60A5FA">🩺 ' + E(R('why_solver', lg)) + '</a>')
+        h.append('</td></tr></table>')
     # Sağlık
     h.append(f'<h3 style="color:#93C5FD">{E(R("summary", lg))}</h3><table width="100%" cellpadding="5" cellspacing="2">')
     for k, x in A.health.items():

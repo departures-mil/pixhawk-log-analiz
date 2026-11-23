@@ -156,17 +156,21 @@ class ArchivePage(Page):
         for d in (7, 30, 90, 365): self.f_per.addItem(t(f'd{d}'), d)
         self.f_ver = QComboBox(); self.f_ver.addItem(t('col_verdict') + ': ' + t('ar_all'), '')
         for k in ('crash', 'incident', 'normal'): self.f_ver.addItem(texts.T('v_' + k, lang()), k)
+        self.f_cr = QComboBox(); self.f_cr.addItem('💥 ' + t('fi_crash_mark') + ': ' + t('ar_all'), '')
+        self.f_cr.addItem('💥 ' + t('fi_crash_yes'), 'yes'); self.f_cr.addItem('⚠ ' + t('fi_crash_hard'), 'hard')
+        self.f_cr.addItem('✅ ' + t('fi_crash_no'), 'no'); self.f_cr.addItem('○ ' + t('fi_crash_none'), 'none')
         self.f_ac = QComboBox(); self.f_pi = QComboBox()
-        for w in (self.f_per, self.f_ver, self.f_ac, self.f_pi): w.currentIndexChanged.connect(self.refresh); top.addWidget(w)
+        for w in (self.f_per, self.f_ver, self.f_cr, self.f_ac, self.f_pi): w.currentIndexChanged.connect(self.refresh); top.addWidget(w)
         top.addWidget(button(t('open_sel'), self.open_sel, primary=True))
         top.addWidget(button(t('compare'), self.compare))
+        top.addWidget(button('💥 ' + t('fi_mark_btn'), self.toggle_crash))
         top.addWidget(button(t('remove_sel'), self.remove))
         v.addLayout(top)
         self.f_desc = label('', 'muted'); v.addWidget(self.f_desc)
         sp = QSplitter(Qt.Vertical)
-        cols = ['col_date', 'col_file', 'col_vehicle', 'col_verdict', 'col_score', 'col_cause', 'col_flight', 'col_aircraft', 'col_pilot', 'col_notes']
+        cols = ['col_crash', 'col_date', 'col_file', 'col_vehicle', 'col_verdict', 'col_score', 'col_cause', 'col_flight', 'col_aircraft', 'col_pilot', 'col_notes']
         self.tbl = QTableWidget(0, len(cols)); self.tbl.setHorizontalHeaderLabels([t(c) for c in cols])
-        self.tbl.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+        self.tbl.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
         self.tbl.verticalHeader().setVisible(False); self.tbl.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tbl.setSelectionBehavior(QAbstractItemView.SelectRows); self.tbl.setAlternatingRowColors(True)
         self.tbl.setSelectionMode(QAbstractItemView.ExtendedSelection)
@@ -209,21 +213,38 @@ class ArchivePage(Page):
         if self.f_ac.currentData(): f['aircraft'] = self.f_ac.currentData()
         if self.f_pi.currentData(): f['pilot'] = self.f_pi.currentData()
         allr = a.list()
+        cr = self.f_cr.currentData()
+        if cr: allr = [r for r in allr if (r.get('crash_mark') or 'none') == cr]
         self.rows = search.apply(allr, f, acn, pin)
         dsc = search.describe(f, lg)
         self.f_desc.setText((t('ar_filter', d=dsc) + '  ·  ' if dsc else '') + t('ar_n', n=len(self.rows)))
         self.tbl.setRowCount(len(self.rows))
         for i, r in enumerate(self.rows):
-            vals = [r['flight_date'] or r['analyzed_at'][:16], r['name'], f"{r['vehicle']} {r['version'] or ''}",
+            vals = [{'yes': '💥', 'hard': '⚠', 'no': '✅'}.get(r.get('crash_mark') or '', ''), r['flight_date'] or r['analyzed_at'][:16], r['name'], f"{r['vehicle']} {r['version'] or ''}",
                     texts.T('v_' + (r['verdict'] or 'normal'), lg), str(r['overall']),
                     texts.T('cause_' + r['cause'], lg) if r['cause'] else '', fmt_t(r['flight_time'] or 0),
                     acn.get(r.get('aircraft') or '', r.get('aircraft') or ''), pin.get(r.get('pilot') or '', ''), (r['notes'] or '').replace('\n', ' ')[:60]]
             for j, val in enumerate(vals):
                 it = QTableWidgetItem(val)
-                if j == 3: it.setForeground(QColor(VERDICT_COL.get(r['verdict'], '#94A3B8')))
+                if j == 4: it.setForeground(QColor(VERDICT_COL.get(r['verdict'], '#94A3B8')))
+                if j == 0: it.setToolTip(t('fi_crash_' + {'yes': 'yes', 'hard': 'hard', 'no': 'no'}.get(r.get('crash_mark') or '', 'none')))
                 self.tbl.setItem(i, j, it)
-        self.tbl.resizeColumnsToContents(); self.tbl.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+        self.tbl.resizeColumnsToContents(); self.tbl.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
         self._trend()
+
+    def toggle_crash(self):
+        rs = self._cur()
+        if not rs: return
+        new = '' if all((r.get('crash_mark') == 'yes') for r in rs) else 'yes'
+        for r in rs:
+            self.win.archive.set_field(r['uid'], crash_mark=new)
+            try:
+                inf = json.loads(r.get('info') or '{}')
+                if new: inf['crashed'] = 'yes'
+                else: inf.pop('crashed', None)
+                self.win.archive.set_field(r['uid'], info=json.dumps(inf, ensure_ascii=False))
+            except Exception: pass
+        self.refresh()
 
     def _cur(self):
         rs = sorted({i.row() for i in self.tbl.selectedIndexes()})

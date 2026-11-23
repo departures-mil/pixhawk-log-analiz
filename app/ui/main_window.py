@@ -1,19 +1,19 @@
 """Ana pencere: çerçevesiz, açılışta tam ekran; sağ üstte Güncelle, Eşitle, Küçült, Yarım, Kapat."""
 from __future__ import annotations
-import os, sys, time
+import json, os, sys, time
 from PySide6.QtCore import Qt, QTimer, Signal
 from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QListWidget, QListWidgetItem, QStackedWidget,
                                QFileDialog, QDialog, QFormLayout, QComboBox, QCheckBox, QProgressBar, QLabel, QApplication, QSizeGrip)
 from .i18n import t, lang, set_lang
 from .common import TitleBar, label, button, run_bg, error, info, open_path, app_icon
-from . import pages_a as PA, pages_b as PB, pages_c as PC, pages_p as PP
+from . import pages_a as PA, pages_b as PB, pages_c as PC, pages_p as PP, pages_s as PS
 from .settings_page import SettingsPage
 from ..core.settings import Settings
 from ..core.archive import Archive, file_uid
 from ..core.advisor import Usage
 from ..core.paths import data_dir
 
-NAV = [('analysis', '🔎', 'nav_analysis', PA.AnalysisPage), ('charts', '📈', 'nav_charts', PA.ChartsPage),
+NAV = [('analysis', '🔎', 'nav_analysis', PA.AnalysisPage), ('solver', '🩺', 'nav_solver', PS.SolverPage), ('charts', '📈', 'nav_charts', PA.ChartsPage),
        ('map', '🗺', 'nav_map', PA.MapPage), ('timeline', '🕒', 'nav_timeline', PA.TimelinePage),
        ('advisor', '🤖', 'nav_advisor', PA.AdvisorPage), ('practice', '🎓', 'nav_practice', PA.PracticePage),
        ('exam', '📝', 'nav_exam', PC.ExamPage),
@@ -221,21 +221,56 @@ class MainWindow(QMainWindow):
     def cancel_load(self):
         self._cancel = True
 
-    def open_log(self, path, archive=True):
+    def open_log(self, path, archive=True, info=None):
+        """1) logu oku + offline tahmin  2) uçuş bilgileri formu (cevaplar)  3) analiz (derin inceleme) ve arşiv."""
         self.goto('analysis')
         pg = self.pages['analysis']; pg.set_busy(True, t('loading')); self._cancel = False
-        s = self.settings; arc = self.archive
+        s = self.settings
         w = None
 
         def job():
-            from ..core import loader, analysis, crash, security
+            from ..core import loader, crash, security, flightinfo as FI
             crash.note('open ' + os.path.basename(path))
             real = path
             if path.lower().endswith('.pxloc'): real = security.open_local_file(path)
             L = loader.load(real, progress=lambda f: w.progress.emit(('l', f)), cancel=lambda: self._cancel)
-            w.progress.emit(('a', 0.0))
-            A = analysis.Analysis(L)
+            det, src = FI.detect(L)
+            return L, real, det, src
+
+        def prog(x):
+            k, f = x
+            if k == 'l': pg.set_progress(f, t('loading'))
+            else: pg.set_progress(1.0, t('analyzing'))
+
+        def loaded(r):
+            L, real, det, src = r
+            from ..core import flightinfo as FI
             uid = file_uid(real)
+            old = self.archive.get(uid) or {}
+            prev = {}
+            try: prev = json.loads(old.get('info') or '{}')
+            except Exception: pass
+            last = {k: v for k, v in (s.get('fi_last') or {}).items() if k in FI.STICKY}
+            ans = {**last, **det, **prev, **(info or {})}
+            srcs = {**{k: 'prev' for k in last}, **src, **{k: 'prev' for k in prev}}
+            if info is None and FI.conf(s)['ask']:
+                from .flightform import FlightInfoDialog
+                dl = FlightInfoDialog(self, ans, srcs, L=L)
+                if dl.exec() and not dl.skipped: ans = dl.values()
+            s['fi_last'] = {k: v for k, v in ans.items() if k in FI.STICKY}; s.save()
+            self._analyze(L, real, uid, ans, path, archive)
+
+        def fail(e):
+            pg.set_busy(False); error(self, e)
+        w = run_bg(job, on_done=loaded, on_fail=fail, on_progress=prog)
+
+    def _analyze(self, L, real, uid, info, path, archive=True):
+        pg = self.pages['analysis']; pg.set_busy(True, t('analyzing')); pg.set_progress(1.0, t('analyzing'))
+        s = self.settings; arc = self.archive
+
+        def job():
+            from ..core import analysis, crash
+            A = analysis.Analysis(L, info=info)
             if archive:
                 arc.add_analysis(uid, A, real, s['device_name'], s.get('archive_copy_logs', True), s.get('archive_copy_max_mb', 200),
                                  encrypt=bool(s.get('encrypt_local')))
@@ -253,22 +288,26 @@ class MainWindow(QMainWindow):
                     pass
             return A, uid
 
-        def prog(x):
-            k, f = x
-            if k == 'l': pg.set_progress(f, t('loading'))
-            else: pg.set_progress(1.0, t('analyzing'))
-
         def ok(r):
             pg.set_busy(False)
             self.A, self.uid = r
             for p in self.pages.values():
                 try: p.on_analysis(self.A)
                 except Exception as e: print('page', p, e)
+            self.titlebar.set_log(self.A, (self.A.info or {}).get('crashed', ''))
             self.set_status(f'{os.path.basename(path)} · {t("saved_archive") if archive else ""}')
 
         def fail(e):
             pg.set_busy(False); error(self, e)
-        w = run_bg(job, on_done=ok, on_fail=fail, on_progress=prog)
+        run_bg(job, on_done=ok, on_fail=fail)
+
+    def edit_flight_info(self):
+        """Açık logun uçuş bilgilerini düzenle ve yeniden incele."""
+        if not self.A: return error(self, t('no_log'))
+        from .flightform import FlightInfoDialog
+        dl = FlightInfoDialog(self, dict(self.A.info or {}), {}, L=self.A.L)
+        if not dl.exec() or dl.skipped: return
+        self._analyze(self.A.L, self.A.L.path, self.uid, dl.values(), self.A.L.path, archive=True)
 
     # ------------------------------------------------------------- rapor
     def export_report(self):

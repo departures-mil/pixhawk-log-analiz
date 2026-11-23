@@ -166,7 +166,7 @@ def restore(text, toks, lang):
 
 # ----------------------------------------------- eski çevirileri düzeltme (çalışma anında)
 FIX = {
-    'tr': [(r'[ÖöOo]n kol', 'arm öncesi'), (r'\bsilahsızlandır\w*', 'disarm'), (r'\bsilahlan\w*|\bsilahland\w*', 'arm'),
+    'tr': [(r'[ÖöOo]n kol', 'arm öncesi kontrol'), (r'\bsilahsızlandır\w*', 'disarm'), (r'\bsilahlan\w*|\bsilahland\w*', 'arm'),
            (r'\b[Kk]ol(?:u|lar[ıi]?)? (?:aç|kapat|çöz)\w*', 'arm/disarm'),
            (r'\b[Yy]uvarlanma\b|\b[Yy]uvarlama\b|\b[Yy]ürütme ekseni\b|\b[Rr]ol ekseni\b', 'Yatış (roll) ekseni'),
            (r'\b[Yy]umruk\b', 'sapma (yaw)'), (r'\b[Kk]ırçık kesim\b', 'yunuslama (pitch) trimi'),
@@ -190,11 +190,15 @@ def fix(text, lang):
     return text
 
 
+def _en(p):
+    x = re.split(r'[(\[]', p.split('|')[0])[0]
+    return x.replace('?', '').strip()
+
+
 def prompt(lang):
     """YZ çeviri isteğine eklenecek sözlük özeti."""
     li = 1 if lang == 'tr' else 2
-    pairs = [f"{p.split('|')[0].replace('?', '').replace('(?:', '').replace(')', '').replace('-', '')} = {x[li]}" for p, *x in
-             [(t[0], t[1], t[2]) for t in TERMS[:60]]]
+    pairs = [f"{_en(t[0])} = {t[li]}" for t in TERMS[:70]]
     return ('Use standard aviation terminology. Keep flight mode names, acronyms and parameter names unchanged (' + ', '.join(KEEP[:30])
             + ' …). Glossary: ' + '; '.join(pairs))
 

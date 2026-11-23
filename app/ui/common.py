@@ -5,11 +5,11 @@ from PySide6.QtCore import Qt, QObject, QThread, Signal, QPoint, QSize
 from PySide6.QtGui import QPixmap, QFont, QIcon, QPainter, QColor
 from PySide6.QtWidgets import (QWidget, QHBoxLayout, QLabel, QPushButton, QSizePolicy, QScrollArea, QVBoxLayout,
                                QFrame, QMessageBox, QApplication)
-from .i18n import t
+from .i18n import t, lang
 
 STYLE = """
 * { font-family: 'Segoe UI', 'Noto Sans', 'DejaVu Sans'; font-size: 10pt; }
-QMainWindow, QWidget#root { background: #0F172A; }
+QMainWindow, QWidget#root, QDialog { background: #0F172A; }
 QWidget { color: #E2E8F0; }
 #titlebar { background: #0B1222; border-bottom: 1px solid #1E293B; }
 #apptitle { font-size: 11pt; font-weight: 600; color: #F8FAFC; }
@@ -42,6 +42,8 @@ QScrollArea { border: none; background: transparent; }
 QScrollBar:vertical { background: #0F172A; width: 10px; } QScrollBar::handle:vertical { background: #334155; border-radius: 5px; min-height: 30px; }
 QScrollBar:horizontal { background: #0F172A; height: 10px; } QScrollBar::handle:horizontal { background: #334155; border-radius: 5px; }
 QCheckBox, QRadioButton { spacing: 6px; }
+QListView::indicator { width: 14px; height: 14px; border: 1px solid #64748B; border-radius: 3px; background: #0B1222; }
+QListView::indicator:checked { background: #2563EB; border: 1px solid #93C5FD; }
 QSlider::groove:horizontal { height: 6px; background: #1E293B; border-radius: 3px; }
 QSlider::handle:horizontal { background: #3B82F6; width: 14px; margin: -5px 0; border-radius: 7px; }
 QTabWidget::pane { border: 1px solid #1E293B; border-radius: 8px; background: #0F172A; top: -1px; }
@@ -178,7 +180,26 @@ class TitleBar(QWidget):
         ic = QLabel(); ic.setPixmap(app_icon().pixmap(24, 24)); h.addWidget(ic)
         self.title = QLabel(); self.title.setObjectName('apptitle'); h.addWidget(self.title)
         self.sub = QLabel(); self.sub.setObjectName('muted'); h.addWidget(self.sub)
-        h.addStretch(1)
+        h.addSpacing(14)
+        # işlemler (programın her yerinden tek tık)
+        self.b_open = self._b('📂', 'tbtn', lambda: win.pick_log())
+        self.b_info = self._b('✈', 'tbtn', lambda: win.edit_flight_info())
+        self.b_solve = self._b('🩺', 'tbtn', lambda: win.goto('solver'))
+        self.b_rep = self._b('📄', 'tbtn', lambda: win.export_report())
+        for b in (self.b_open, self.b_info, self.b_solve, self.b_rep): h.addWidget(b)
+        h.addSpacing(10)
+        # o anki log bilgisi (dosya · karar · kırım işareti)
+        self.loginfo = QLabel(''); self.loginfo.setObjectName('muted'); self.loginfo.setMinimumWidth(40)
+        from PySide6.QtWidgets import QSizePolicy, QComboBox
+        self.loginfo.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Preferred)
+        h.addWidget(self.loginfo, 1)
+        # dil seçimi
+        self.lang = QComboBox(); self.lang.setObjectName('tlang'); self.lang.setFocusPolicy(Qt.NoFocus); self.lang.setMinimumWidth(130)
+        self.lang.setSizeAdjustPolicy(QComboBox.AdjustToContents)
+        for c, n in (('tr', '🌐 Türkçe'), ('en', '🌐 English'), ('ar', '🌐 العربية')): self.lang.addItem(n, c)
+        self.lang.setCurrentIndex(max(0, self.lang.findData(win.settings['lang'])))
+        self.lang.currentIndexChanged.connect(self._lang)
+        h.addWidget(self.lang); h.addSpacing(6)
         self.b_upd = self._b('⬇', 'tbtnAccent', win.do_update)
         self.b_sync = self._b('⇅', 'tbtn', win.do_sync)
         self.b_min = self._b('—', 'tbtn', win.showMinimized)
@@ -187,6 +208,20 @@ class TitleBar(QWidget):
         for b in (self.b_upd, self.b_sync, self.b_min, self.b_half, self.b_close): h.addWidget(b)
         self._drag = None
         self.retranslate()
+
+    def _lang(self):
+        c = self.lang.currentData()
+        if c and c != self.win.settings['lang']:
+            self.win.settings['lang'] = c; self.win.settings.save(); self.win.apply_lang()
+
+    def set_log(self, A=None, crash_mark=''):
+        if A is None: self.loginfo.setText(''); return
+        import os
+        from ..core import texts
+        v = A.verdict.get('kind', 'normal')
+        icon = {'crash': '💥', 'incident': '⚠', 'normal': '✅', 'noflight': '⏸'}.get(v, '')
+        mark = '  ·  💥 ' + t('fi_crash_mark') if crash_mark == 'yes' and v != 'crash' else ''
+        self.loginfo.setText(f"  {os.path.basename(A.L.path)}  ·  {A.vehicle}  ·  {icon} {texts.T('v_' + v, lang())}  ·  {A.overall}/100{mark}")
 
     def _b(self, txt, obj, slot):
         b = QPushButton(txt); b.setObjectName(obj); b.clicked.connect(slot); b.setCursor(Qt.PointingHandCursor)
@@ -197,6 +232,8 @@ class TitleBar(QWidget):
         self.title.setText(t('app')); self.sub.setText(f'  v{VERSION}')
         self.b_upd.setText('⬇ ' + t('t_update')); self.b_upd.setToolTip(t('t_update'))
         self.b_sync.setText('⇅ ' + t('t_sync')); self.b_sync.setToolTip(t('t_sync'))
+        self.b_open.setToolTip(t('open_log')); self.b_info.setToolTip(t('fi_title')); self.b_solve.setToolTip(t('nav_solver'))
+        self.b_rep.setToolTip(t('export'))
         self.b_min.setToolTip(t('t_min')); self.b_half.setToolTip(t('t_half')); self.b_close.setToolTip(t('t_close'))
         # Pencere butonları her dilde sağ üstte kalsın
         self.setLayoutDirection(Qt.LeftToRight)

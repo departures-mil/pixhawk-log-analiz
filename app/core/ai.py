@@ -221,7 +221,7 @@ class GeminiAdvisor:
 
     def translate(self, text, target):
         from .advisor import LANG_NAME
-        d = self._gen({'systemInstruction': {'parts': [{'text': 'You are a professional aviation/UAV technical translator. Translate faithfully, keep ArduPilot parameter names, units and numbers unchanged. Output only the translation.'}]},
+        d = self._gen({'systemInstruction': {'parts': [{'text': 'You are a professional aviation/UAV technical translator. Translate faithfully, keep ArduPilot parameter names, units and numbers unchanged. Output only the translation. ' + _gl(target)}]},
                        'contents': [{'role': 'user', 'parts': [{'text': f'Translate into {LANG_NAME[target]}:\n\n{text}'}]}],
                        'generationConfig': self._cfg(4000)})
         c = (d.get('candidates') or [{}])[0].get('content') or {}
@@ -279,3 +279,11 @@ def chat(settings, usage, system, prompt, max_tokens=6000):
         try: usage.add(resp.usage, {})
         except Exception: pass
     return ''.join(getattr(b, 'text', '') for b in resp.content if getattr(b, 'type', '') == 'text').strip()
+
+
+def _gl(target):
+    try:
+        from .glossary import prompt
+        return prompt(target) if target in ('tr', 'ar') else ''
+    except Exception:
+        return ''

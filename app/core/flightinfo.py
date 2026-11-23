@@ -88,6 +88,8 @@ QUESTIONS = [
     {'id': 'notes', 'kind': 'text', 'icon': '📝', 'label': ('Ne gözlemlediniz? (kısa not)', 'What did you observe? (short note)', 'ماذا لاحظت؟ (ملاحظة قصيرة)')},
 ]
 QBYID = {q['id']: q for q in QUESTIONS}
+# Aynı uçakta genelde değişmeyen alanlar: bir sonraki logda öneri olarak gelir
+STICKY = {'power', 'gas_cc', 'stroke', 'cells', 'airframe', 'autopilot', 'gps', 'airspeed', 'prop', 'weight', 'pilot', 'location'}
 
 PROFILE_OF = {'conventional': 'plane', 'ttail': 'plane', 'vtail': 'plane', 'elevon': 'plane', 'twinboom': 'plane', 'glider': 'plane',
               'quadplane': 'vtol', 'tiltrotor': 'vtol', 'tailsitter': 'vtol', 'quad': 'copter', 'hexa': 'copter', 'octa': 'copter',

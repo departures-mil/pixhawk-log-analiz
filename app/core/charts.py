@@ -49,6 +49,17 @@ def rt(key, lang):
     return mshape(RT[key][i], lang)
 
 
+def _g(t, y):
+    """Logdaki boşlukları (kayıt yok) düz çizgiyle birleştirme: büyük zaman aralığına NaN koy."""
+    t = np.asarray(t, float); y = np.asarray(y, float)
+    if len(t) < 3: return t, y
+    dt = np.diff(t); med = float(np.median(dt[dt > 0])) if (dt > 0).any() else 0.0
+    lim = max(2.0, med * 20)
+    k = np.where(dt > lim)[0]
+    if not len(k): return t, y
+    return np.insert(t, k + 1, t[k] + med), np.insert(y, k + 1, np.nan)
+
+
 def _fig(h=3.2, w=8.0):
     fig = Figure(figsize=(w, h), dpi=150)
     fig.patch.set_facecolor('white')
@@ -97,14 +108,14 @@ def chart_alt(A: Analysis, lang):
     L = A.L; fig = _fig(3.4); ax = fig.add_subplot(111); _style(ax, lang)
     _phases(ax, A)
     if A.track is not None:
-        ax.plot(A.track['t'], A.track['rel'], color=C['blue'], lw=1.3, label=rt('l_alt', lang))
+        ax.plot(*_g(A.track['t'], A.track['rel']), color=C['blue'], lw=1.3, label=rt('l_alt', lang))
     ax.set_ylabel(rt('ax_alt', lang), fontsize=8)
     ax2 = ax.twinx(); ax2.tick_params(labelsize=7)
     g = L.s('GPS')
-    if g.has('Spd'): ax2.plot(g['t'], g['Spd'], color=C['orange'], lw=0.8, alpha=0.9, label=rt('l_gs', lang))
+    if g.has('Spd'): ax2.plot(*_g(g['t'], g['Spd']), color=C['orange'], lw=0.8, alpha=0.9, label=rt('l_gs', lang))
     a = L.s('ARSP') if L.s('ARSP').has('Airspeed') else L.s('CTUN')
     f = 'Airspeed' if a.has('Airspeed') else ('As' if a.has('As') else None)
-    if f and A.vehicle == 'Plane': ax2.plot(a['t'], a[f], color=C['green'], lw=0.8, alpha=0.9, label=rt('l_as', lang))
+    if f and A.vehicle == 'Plane': ax2.plot(*_g(a['t'], a[f]), color=C['green'], lw=0.8, alpha=0.9, label=rt('l_as', lang))
     amin = L.params.get('AIRSPEED_MIN', L.params.get('ARSPD_FBW_MIN'))
     if amin and A.vehicle == 'Plane': ax2.axhline(amin, color=C['green'], lw=0.6, ls=':')
     ax2.set_ylabel(rt('ax_spd', lang), fontsize=8)
@@ -121,8 +132,8 @@ def chart_att(A, lang):
     fig = _fig(3.6); ax1 = fig.add_subplot(211); ax2 = fig.add_subplot(212, sharex=ax1)
     for ax, f, lab in ((ax1, 'Roll', 'l_roll'), (ax2, 'Pitch', 'l_pitch')):
         _style(ax, lang); _phases(ax, A)
-        if a.has('Des' + f): ax.plot(a['t'], a['Des' + f], color=C['gray'], lw=0.7, label=f"{rt(lab, lang)} ({rt('l_des', lang)})")
-        ax.plot(a['t'], a[f], color=C['blue'] if f == 'Roll' else C['orange'], lw=0.8, label=rt(lab, lang))
+        if a.has('Des' + f): ax.plot(*_g(a['t'], a['Des' + f]), color=C['gray'], lw=0.7, label=f"{rt(lab, lang)} ({rt('l_des', lang)})")
+        ax.plot(*_g(a['t'], a[f]), color=C['blue'] if f == 'Roll' else C['orange'], lw=0.8, label=rt(lab, lang))
         ax.set_ylabel(rt('ax_deg', lang), fontsize=7); ax.legend(fontsize=6, loc='upper right'); _crash(ax, A)
     ax1.set_title(rt('c_att', lang), fontsize=9, loc='left')
     return _png(fig)
@@ -132,12 +143,12 @@ def chart_gps(A, lang):
     g = A.L.s('GPS')
     if not g.has('NSats'): return None
     fig = _fig(2.8); ax = fig.add_subplot(111); _style(ax, lang); _phases(ax, A)
-    ax.plot(g['t'], g['NSats'], color=C['blue'], lw=1, label=rt('ax_sats', lang))
+    ax.plot(*_g(g['t'], g['NSats']), color=C['blue'], lw=1, label=rt('ax_sats', lang))
     ax.axhline(6, color=C['red'], lw=0.6, ls=':'); ax.axhline(10, color=C['green'], lw=0.6, ls=':')
     ax.set_ylabel(rt('ax_sats', lang), fontsize=8); ax.set_ylim(0, max(20, np.nanmax(g['NSats']) + 2))
     if g.has('HDop'):
         ax2 = ax.twinx(); ax2.tick_params(labelsize=7)
-        ax2.plot(g['t'], np.clip(g['HDop'], 0, 10), color=C['orange'], lw=0.8, label='HDOP'); ax2.axhline(2, color=C['orange'], lw=0.6, ls=':')
+        ax2.plot(*_g(g['t'], np.clip(g['HDop'], 0, 10)), color=C['orange'], lw=0.8, label='HDOP'); ax2.axhline(2, color=C['orange'], lw=0.6, ls=':')
         ax2.set_ylabel('HDOP', fontsize=8)
         h1, l1 = ax.get_legend_handles_labels(); h2, l2 = ax2.get_legend_handles_labels(); ax.legend(h1 + h2, l1 + l2, fontsize=6, loc='lower right')
     _modes(ax, A, lang, False); _crash(ax, A)
@@ -150,12 +161,12 @@ def chart_vibe(A, lang):
     if not v.has('VibeZ'): return None
     fig = _fig(2.9); ax = fig.add_subplot(111); _style(ax, lang); _phases(ax, A)
     for f, c in (('VibeX', C['blue']), ('VibeY', C['green']), ('VibeZ', C['orange'])):
-        if v.has(f): ax.plot(v['t'], v[f], color=c, lw=0.7, label=f[-1])
+        if v.has(f): ax.plot(*_g(v['t'], v[f]), color=c, lw=0.7, label=f[-1])
     ax.axhline(30, color=C['amber'], lw=0.8, ls='--'); ax.axhline(60, color=C['red'], lw=0.8, ls='--')
     ax.set_ylabel(rt('ax_vibe', lang), fontsize=8)
     ck = next((k for k in ('Clip', 'Clip0') if v.has(k)), None)
     if ck:
-        ax2 = ax.twinx(); ax2.tick_params(labelsize=7); ax2.plot(v['t'], v[ck], color=C['red'], lw=0.8, alpha=0.6, label=rt('l_clip', lang))
+        ax2 = ax.twinx(); ax2.tick_params(labelsize=7); ax2.plot(*_g(v['t'], v[ck]), color=C['red'], lw=0.8, alpha=0.6, label=rt('l_clip', lang))
         ax2.set_ylabel(rt('l_clip', lang), fontsize=8)
     ax.legend(fontsize=6, loc='upper left'); _crash(ax, A)
     ax.set_title(rt('c_vibe', lang), fontsize=9, loc='left')
@@ -167,12 +178,12 @@ def chart_bat(A, lang):
     if not b.has('Volt'): return None
     fig = _fig(2.9); ax = fig.add_subplot(111); _style(ax, lang); _phases(ax, A)
     vv = np.where(b['Volt'] > 1, b['Volt'], np.nan)
-    ax.plot(b['t'], vv, color=C['blue'], lw=1, label=rt('l_volt', lang)); ax.set_ylabel(rt('ax_volt', lang), fontsize=8)
+    ax.plot(*_g(b['t'], vv), color=C['blue'], lw=1, label=rt('l_volt', lang)); ax.set_ylabel(rt('ax_volt', lang), fontsize=8)
     P = A.L.params
     for k, c in (('BATT_LOW_VOLT', C['amber']), ('BATT_CRT_VOLT', C['red'])):
         if P.get(k): ax.axhline(P[k], color=c, lw=0.7, ls='--')
     if b.has('Curr') and np.nanmax(np.abs(b['Curr'])) > 0.5:
-        ax2 = ax.twinx(); ax2.tick_params(labelsize=7); ax2.plot(b['t'], b['Curr'], color=C['orange'], lw=0.6, alpha=0.8, label=rt('l_curr', lang))
+        ax2 = ax.twinx(); ax2.tick_params(labelsize=7); ax2.plot(*_g(b['t'], b['Curr']), color=C['orange'], lw=0.6, alpha=0.8, label=rt('l_curr', lang))
         ax2.set_ylabel(rt('ax_curr', lang), fontsize=8)
         h1, l1 = ax.get_legend_handles_labels(); h2, l2 = ax2.get_legend_handles_labels(); ax.legend(h1 + h2, l1 + l2, fontsize=6, loc='lower left')
     _crash(ax, A)
@@ -186,10 +197,10 @@ def chart_rcou(A, lang):
     fig = _fig(3.0); ax = fig.add_subplot(111); _style(ax, lang); _phases(ax, A)
     cols = [C['blue'], C['green'], C['orange'], C['purple']]
     for i, ch in enumerate(('C1', 'C2', 'C3', 'C4')):
-        if o.has(ch): ax.plot(o['t'], o[ch], lw=0.6, color=cols[i], label=ch)
+        if o.has(ch): ax.plot(*_g(o['t'], o[ch]), lw=0.6, color=cols[i], label=ch)
     ax.set_ylabel(rt('ax_pwm', lang), fontsize=8); ax.legend(fontsize=6, loc='upper left', ncol=4)
     if c.has('ThO'):
-        ax2 = ax.twinx(); ax2.tick_params(labelsize=7); ax2.plot(c['t'], c['ThO'], color=C['red'], lw=0.6, alpha=0.6); ax2.set_ylabel(rt('ax_thr', lang), fontsize=8)
+        ax2 = ax.twinx(); ax2.tick_params(labelsize=7); ax2.plot(*_g(c['t'], c['ThO']), color=C['red'], lw=0.6, alpha=0.6); ax2.set_ylabel(rt('ax_thr', lang), fontsize=8)
     _crash(ax, A)
     ax.set_title(rt('c_rcou', lang), fontsize=9, loc='left')
     return _png(fig)
@@ -200,7 +211,7 @@ def chart_ekf(A, lang):
     if not x.has('SV'): return None
     fig = _fig(2.8); ax = fig.add_subplot(111); _style(ax, lang); _phases(ax, A)
     for f, c in (('SV', C['blue']), ('SP', C['green']), ('SH', C['orange']), ('SM', C['purple'])):
-        if x.has(f): ax.plot(x['t'], x[f], lw=0.8, color=c, label=f)
+        if x.has(f): ax.plot(*_g(x['t'], x[f]), lw=0.8, color=c, label=f)
     ax.axhline(0.8, color=C['amber'], lw=0.7, ls='--'); ax.axhline(1.0, color=C['red'], lw=0.7, ls='--')
     ax.set_ylabel(rt('ax_ratio', lang), fontsize=8); ax.legend(fontsize=6, loc='upper left', ncol=4); _modes(ax, A, lang, False); _crash(ax, A)
     ax.set_title(rt('c_ekf', lang), fontsize=9, loc='left')
@@ -212,9 +223,9 @@ def chart_mag(A, lang):
     if not m.has('MagX'): return None
     fig = _fig(2.8); ax = fig.add_subplot(111); _style(ax, lang); _phases(ax, A)
     fm = np.sqrt(m['MagX'] ** 2 + m['MagY'] ** 2 + m['MagZ'] ** 2)
-    ax.plot(m['t'], fm, color=C['teal'], lw=0.8, label='|MAG|'); ax.set_ylabel(rt('ax_mag', lang), fontsize=8)
+    ax.plot(*_g(m['t'], fm), color=C['teal'], lw=0.8, label='|MAG|'); ax.set_ylabel(rt('ax_mag', lang), fontsize=8)
     if c.has('ThO'):
-        ax2 = ax.twinx(); ax2.tick_params(labelsize=7); ax2.plot(c['t'], c['ThO'], color=C['red'], lw=0.6, alpha=0.6, label=rt('l_thr', lang)); ax2.set_ylabel(rt('ax_thr', lang), fontsize=8)
+        ax2 = ax.twinx(); ax2.tick_params(labelsize=7); ax2.plot(*_g(c['t'], c['ThO']), color=C['red'], lw=0.6, alpha=0.6, label=rt('l_thr', lang)); ax2.set_ylabel(rt('ax_thr', lang), fontsize=8)
     ax.set_title(rt('c_mag', lang), fontsize=9, loc='left')
     return _png(fig)
 

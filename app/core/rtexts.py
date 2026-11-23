@@ -1,5 +1,7 @@
 """Rapor ve grafik metinleri (TR/EN/AR) + grafik altı ders notları."""
 RT = {
+    'why_ai': ('Yapay zekâ ile ayrıntılı açıkla', 'Explain in detail with AI', 'اشرح بالتفصيل بالذكاء الاصطناعي'),
+    'why_solver': ('Problem Çözücü ile derin incele', 'Deep check with Problem Solver', 'افحص بعمق بأداة حل المشكلات'),
     'title': ('Uçuş Logu Analiz Raporu', 'Flight Log Analysis Report', 'تقرير تحليل سجل الطيران'),
     'subtitle': ('Pixhawk / ArduPilot', 'Pixhawk / ArduPilot', 'Pixhawk / ArduPilot'),
     'summary': ('Özet', 'Summary', 'الملخص'),
