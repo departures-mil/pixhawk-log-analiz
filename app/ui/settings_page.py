@@ -61,11 +61,26 @@ class SettingsPage(Page):
         self.fields = {}
         for k, lab in (('org', 's_org'), ('sub', 's_sub'), ('prepared_by', 's_prep'), ('watermark', 's_wm'), ('footer', 's_footer')):
             e = QLineEdit(); e.editingFinished.connect(self._save_tpl); self.fields[k] = e; f.addRow(t(lab), e)
-        for k, lab in (('logo', 's_logo'), ('bg', 's_bg')):
-            hh = QHBoxLayout(); e = QLineEdit(); e.editingFinished.connect(self._save_tpl); self.fields[k] = e; hh.addWidget(e, 1)
-            hh.addWidget(button(t('s_browse'), lambda _=False, e=e: self._browse(e))); f.addRow(t(lab), hh)
+        hh = QHBoxLayout(); e = QLineEdit(); e.editingFinished.connect(self._save_tpl); self.fields['logo'] = e; hh.addWidget(e, 1)
+        hh.addWidget(button(t('s_browse'), lambda _=False, e=e: self._browse(e))); f.addRow(t('s_logo'), hh)
         ch = QHBoxLayout(); self.color = QLineEdit(); self.color.editingFinished.connect(self._save_tpl); self.fields['color'] = self.color
         ch.addWidget(self.color, 1); ch.addWidget(button('🎨', self._pick_color)); f.addRow(t('s_color'), ch)
+        v.addWidget(g)
+
+        # Antet ekle (DOCX/PDF arka planı)
+        g = QGroupBox(t('s_lh')); f = QFormLayout(g)
+        f.addRow(label(t('s_lh_help'), 'muted', wrap=True))
+        bh = QHBoxLayout(); self.bg = QLineEdit(); self.bg.setReadOnly(True); self.fields['bg'] = self.bg; bh.addWidget(self.bg, 1)
+        bh.addWidget(button(t('s_lh_load'), self.load_lh, primary=True)); bh.addWidget(button(t('s_lh_clear'), self.clear_lh))
+        f.addRow(t('s_bg'), bh)
+        f.addRow(button('⭐ ' + t('s_lh_preset'), self.use_preset))
+        self.besmele = QCheckBox(t('s_besmele')); self.besmele.toggled.connect(lambda x: self._set_tpl('besmele', bool(x))); f.addRow(self.besmele)
+        from PySide6.QtWidgets import QDoubleSpinBox
+        self.top = QDoubleSpinBox(); self.top.setRange(0, 12); self.top.setSingleStep(0.1); self.top.setDecimals(1)
+        self.top.valueChanged.connect(lambda x: self._set_tpl('top_cm', round(float(x), 1))); f.addRow(t('s_top'), self.top)
+        self.lh_info = label('', 'muted', wrap=True); f.addRow(self.lh_info)
+        ph = QHBoxLayout(); ph.addWidget(button(t('s_lh_preview'), self.preview_lh, primary=True)); ph.addWidget(button(t('s_lh_pdf'), self.sample_pdf)); ph.addStretch(1)
+        f.addRow(ph)
         v.addWidget(g)
 
         # Harita
@@ -177,6 +192,78 @@ class SettingsPage(Page):
         s['template'] = n; s.save()
         lh = s['templates'].get(n, {})
         for k, e in self.fields.items(): e.setText(str(lh.get(k, '')))
+        for w, val in ((self.besmele, bool(lh.get('besmele'))), (self.top, float(lh.get('top_cm') or 0))):
+            w.blockSignals(True); (w.setChecked if w is self.besmele else w.setValue)(val); w.blockSignals(False)
+        self._lh_info()
+
+    def _set_tpl(self, k, val):
+        n = self.tpl.currentText(); s = self.win.settings
+        if not n: return
+        s['templates'].setdefault(n, {})[k] = val; s.save(); self._lh_info()
+
+    def _cur_lh(self):
+        from ..core.report import DEFAULT_LH
+        s = self.win.settings
+        return {**DEFAULT_LH, **s['templates'].get(self.tpl.currentText(), {})}
+
+    def _lh_info(self):
+        from ..core import letterhead as LHM
+        lh = self._cur_lh()
+        if not LHM.resolve(lh.get('bg') or ''):
+            self.lh_info.setText(t('s_lh_none')); return
+        try:
+            top, _ = LHM.bands(LHM.resolve(lh['bg']))
+            self.lh_info.setText(t('s_lh_auto', t=top))
+        except Exception as e:
+            self.lh_info.setText(str(e)[:200])
+
+    def load_lh(self):
+        p, _ = QFileDialog.getOpenFileName(self, t('s_lh_load'), '', 'Letterhead (*.png *.jpg *.jpeg *.docx)')
+        if not p: return
+        from ..core import letterhead as LHM
+        if p.lower().endswith('.docx'):
+            def done(r):
+                self.bg.setText(r['bg']); self._save_tpl()
+                if r.get('besmele'): self.besmele.setChecked(True)
+                info(self, t('s_lh_imported') + ('\n' + ' · '.join(r.get('texts') or [])[:300] if r.get('texts') else ''))
+                self.preview_lh()
+            run_bg(LHM.import_docx, p, on_done=done, on_fail=lambda e: error(self, e[:300]))
+            return
+        self._browse(self.bg, p); self._lh_info()
+
+    def clear_lh(self):
+        self.bg.setText(''); self._save_tpl(); self._lh_info()
+
+    def use_preset(self):
+        from ..core.letterhead import PRESET_NAME, PRESET
+        s = self.win.settings
+        s['templates'][PRESET_NAME] = {**PRESET, **{k: v for k, v in s['templates'].get(PRESET_NAME, {}).items() if k not in ('bg',)}}
+        s['templates'][PRESET_NAME]['bg'] = PRESET['bg']
+        s['template'] = PRESET_NAME; s.save(); self._fill_tpls()
+
+    def preview_lh(self):
+        from PySide6.QtWidgets import QDialog, QLabel
+        from PySide6.QtGui import QPixmap, QImage
+        from ..core import letterhead as LHM
+        lh = self._cur_lh()
+        try:
+            pages = LHM.preview_images(lh, self.win.settings.get('report_lang', 'tr'), width=430)
+        except Exception as e:
+            error(self, str(e)[:300]); return
+        dl = QDialog(self); dl.setWindowTitle(t('s_lh_preview')); lay = QVBoxLayout(dl); row = QHBoxLayout(); lay.addLayout(row)
+        for im, cap in zip(pages, (t('s_lh_p1'), t('s_lh_p2'))):
+            col = QVBoxLayout(); b = im.convert('RGB').tobytes('raw', 'RGB')
+            qi = QImage(b, im.width, im.height, im.width * 3, QImage.Format_RGB888).copy()
+            lb = QLabel(); lb.setPixmap(QPixmap.fromImage(qi)); lb.setStyleSheet('border:1px solid #9CA3AF;')
+            col.addWidget(lb); col.addWidget(label(cap, 'muted')); row.addLayout(col)
+        bh = QHBoxLayout(); bh.addStretch(1); bh.addWidget(button(t('s_lh_pdf'), self.sample_pdf)); bh.addWidget(button(t('close'), dl.accept, primary=True))
+        lay.addLayout(bh); dl.exec()
+
+    def sample_pdf(self):
+        from ..core import report
+        lh = self._cur_lh(); lg = self.win.settings.get('report_lang', 'tr')
+        out = os.path.join(data_dir(), 'antet_onizleme.pdf')
+        run_bg(report.sample_pdf, out, lh, lg, on_done=lambda p: open_path(p), on_fail=lambda e: error(self, e[:300]))
 
     def _save_tpl(self):
         n = self.tpl.currentText(); s = self.win.settings
@@ -195,8 +282,9 @@ class SettingsPage(Page):
         if n and n != 'default':
             s = self.win.settings; s['templates'].pop(n, None); s['template'] = 'default'; s.save(); self._fill_tpls()
 
-    def _browse(self, e):
-        p, _ = QFileDialog.getOpenFileName(self, t('s_browse'), '', 'Image (*.png *.jpg *.jpeg)')
+    def _browse(self, e, p=None):
+        if not p:
+            p, _ = QFileDialog.getOpenFileName(self, t('s_browse'), '', 'Image (*.png *.jpg *.jpeg)')
         if p:
             # Görseli veri klasörüne kopyala (eşitlenen şablon yolları kopmasın)
             import shutil

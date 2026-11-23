@@ -4,13 +4,14 @@ import io, os, time, hashlib, json, re, uuid, copy
 import numpy as np
 from .analysis import Analysis, fmt_t
 from .rtexts import RT, LESSON
-from . import texts, charts, knowledge as K
+from . import texts, charts, knowledge as K, letterhead as LHM
 
 SEV_COL = {0: '2563EB', 1: 'D97706', 2: 'DC2626'}
 ST_COL = {'good': '16A34A', 'warn': 'D97706', 'bad': 'DC2626'}
 V_COL = {'normal': '16A34A', 'incident': 'D97706', 'crash': 'DC2626', 'noflight': '6B7280'}
 
-DEFAULT_LH = {'org': '', 'sub': '', 'logo': '', 'bg': '', 'color': '#1E3A8A', 'watermark': '', 'footer': '', 'prepared_by': ''}
+DEFAULT_LH = {'org': '', 'sub': '', 'logo': '', 'bg': '', 'color': '#1E3A8A', 'watermark': '', 'footer': '', 'prepared_by': '',
+              'besmele': False, 'top_cm': 0}
 
 
 def R(key, lang):
@@ -89,7 +90,8 @@ def build_docx(rd: ReportData, path, lh=None):
     doc = Document()
     sec = doc.sections[0]
     sec.page_height = Cm(29.7); sec.page_width = Cm(21.0)
-    sec.left_margin = sec.right_margin = Cm(1.8); sec.top_margin = Cm(3.0 if not lh['bg'] else 3.6); sec.bottom_margin = Cm(2.2)
+    top_cm, bot_cm, _bg = LHM.margins(lh)
+    sec.left_margin = sec.right_margin = Cm(1.8); sec.top_margin = Cm(top_cm or 3.0); sec.bottom_margin = Cm(max(bot_cm or 0, 2.0))
     sec.header_distance = Cm(0.8); sec.footer_distance = Cm(0.8)
     st = doc.styles['Normal']; st.font.name = 'Calibri'; st.font.size = Pt(10)
     st.element.rPr.rFonts.set(qn('w:cs'), 'Arial'); st.element.rPr.rFonts.set(qn('w:eastAsia'), 'Calibri')
@@ -164,6 +166,12 @@ def build_docx(rd: ReportData, path, lh=None):
     # ---- Antet (başlık/altbilgi + arka plan)
     hdr = sec.header; hp = hdr.paragraphs[0]
     _letterhead_docx(doc, sec, lh, rd, rtl, para, set_rtl, run_rtl)
+
+    # ---- Besmele: yalnızca ilk sayfanın başında (gövdede olduğu için sonraki sayfalarda görünmez)
+    if lh.get('besmele') and os.path.exists(LHM.besmele_path()):
+        bp = doc.add_paragraph(); bp.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        bp.paragraph_format.space_before = Pt(0); bp.paragraph_format.space_after = Pt(6)
+        bp.add_run().add_picture(LHM.besmele_path(), width=Cm(6.5))
 
     # ---- Başlık ve özet kartı
     para(R('title', lg), bold=True, size=20, col=lh['color'].lstrip('#').upper(), align=WD_ALIGN_PARAGRAPH.CENTER, space=0)
@@ -339,10 +347,10 @@ def _letterhead_docx(doc, sec, lh, rd, rtl, para, set_rtl, run_rtl):
         run = hp.add_run()
         drawing = OxmlElement('w:drawing'); drawing.append(parse_xml(_anchor_xml(rid, int(W), int(H), name)))
         run._r.append(drawing)
-    if lh.get('bg') and os.path.exists(lh['bg']):
-        from PIL import Image
-        im = Image.open(lh['bg']).convert('RGB'); b = io.BytesIO(); im.save(b, format='PNG')
-        add_anchor(b.getvalue(), 'letterhead')
+    bg = LHM.resolve(lh.get('bg') or '')
+    if bg:
+        with open(LHM.prepared_bg(bg), 'rb') as f:
+            add_anchor(f.read(), 'letterhead')
     else:
         # Üretilmiş antet: renkli şerit + logo + kurum adı
         from PIL import Image, ImageDraw
@@ -463,6 +471,11 @@ def build_pdf(rd: ReportData, path, lh=None):
         return Image(io.BytesIO(b), width=w, height=w * r)
 
     story = []
+    if lh.get('besmele') and os.path.exists(LHM.besmele_path()):
+        from PIL import Image as _PI
+        bw_, bh_ = _PI.open(LHM.besmele_path()).size
+        bi = Image(LHM.besmele_path(), width=6.5 * cm, height=6.5 * cm * bh_ / bw_); bi.hAlign = 'CENTER'
+        story += [bi, Spacer(1, 6)]
     story += [P(R('title', lg), TT), Spacer(1, 2), P(f"{R('subtitle', lg)} · {os.path.basename(A.L.path)}", ParagraphStyle('c', parent=small, alignment=TA_CENTER, textColor=colors.HexColor('#6B7280'))), Spacer(1, 8)]
     v = A.verdict.get('kind', 'normal')
     vs = ParagraphStyle('v', parent=base, fontName='DJB', fontSize=14, leading=18, textColor=colors.white)
@@ -545,9 +558,8 @@ def build_pdf(rd: ReportData, path, lh=None):
     t = Table([vr], colWidths=[3.6 * cm, W_ - 3.6 * cm] if not rtl else [W_ - 3.6 * cm, 3.6 * cm]); t.setStyle(TableStyle([('VALIGN', (0, 0), (-1, -1), 'MIDDLE')]))
     story += [Spacer(1, 8), P(R('verify', lg), H2), t]
 
-    bg_img = None
-    if lh.get('bg') and os.path.exists(lh['bg']):
-        bg_img = lh['bg']
+    top_cm, bot_cm, bg_src = LHM.margins(lh)
+    bg_img = LHM.prepared_bg(bg_src) if bg_src else None
     wm = None if bg_img else _wm_png(lh, rd)
     wm_bytes = None
     if wm:
@@ -582,10 +594,11 @@ def build_pdf(rd: ReportData, path, lh=None):
             c.setStrokeColor(main); c.setLineWidth(0.6); c.line(1.8 * cm, Hp - 2.5 * cm, Wp - 1.8 * cm, Hp - 2.5 * cm)
         c.setFont('DJ', 7); c.setFillColor(colors.HexColor('#6B7280'))
         ft = (lh.get('footer') + ' · ' if lh.get('footer') else '') + f"{R('report_id', lg)}: {rd.id}" + (f" · {R('prepared_by', lg)}: {lh['prepared_by']}" if lh.get('prepared_by') else '') + f" · {R('page', lg)} {d.page}"
-        c.drawCentredString(Wp / 2, 0.75 * cm, charts.shape(ft, lg))
+        fy = 0.75 * cm if not (bg_img and bot_cm and bot_cm > 1.7) else (bot_cm - 0.75) * cm
+        c.drawCentredString(Wp / 2, fy, charts.shape(ft, lg))
         c.restoreState()
 
-    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=1.8 * cm, rightMargin=1.8 * cm, topMargin=(3.6 if bg_img else 2.9) * cm, bottomMargin=1.6 * cm,
+    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=1.8 * cm, rightMargin=1.8 * cm, topMargin=(top_cm if bg_img else 2.9) * cm, bottomMargin=(bot_cm if bg_img else 1.6) * cm,
                             title=R('title', lg), author=lh.get('prepared_by') or lh.get('org') or 'Pixhawk Log Analiz', subject=rd.id)
     doc.build(story, onFirstPage=on_page, onLaterPages=on_page)
     return path
@@ -596,3 +609,15 @@ def file_sha256(path):
     with open(path, 'rb') as f:
         for ch in iter(lambda: f.read(1 << 20), b''): h.update(ch)
     return h.hexdigest()
+
+
+def sample_pdf(path, lh=None, lang='tr'):
+    """Antet önizlemesi için sentetik bir uçuştan gerçek örnek PDF rapor üretir."""
+    import tempfile
+    from . import synth, loader
+    from .analysis import Analysis
+    d = tempfile.mkdtemp(prefix='lh_prev_'); p = os.path.join(d, 'ornek.BIN')
+    synth.generate(p, 'normal')
+    rd = ReportData(Analysis(loader.load(p)), lang if lang in ('tr', 'en', 'ar') else 'tr', None, online_map=False)
+    build_pdf(rd, path, lh)
+    return path

@@ -45,6 +45,12 @@ class Settings(dict):
         if 'default' not in self['templates']:
             from .report import DEFAULT_LH
             self['templates']['default'] = dict(DEFAULT_LH)
+        # v1.0.1: gömülü hazır antet (Savunma Bakanlığı – Sabit Kanat) bir kez eklenir ve seçilir
+        if not self.get('preset_lh_v1'):
+            from .letterhead import PRESET_NAME, PRESET
+            self['templates'].setdefault(PRESET_NAME, dict(PRESET))
+            self['template'] = PRESET_NAME
+            self['preset_lh_v1'] = True
 
     def save(self):
         os.makedirs(os.path.dirname(self.path), exist_ok=True)

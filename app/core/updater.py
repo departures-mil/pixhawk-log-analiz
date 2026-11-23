@@ -21,17 +21,22 @@ def check(timeout=12):
     tag = d.get('tag_name', '')
     if _v(tag) <= _v(VERSION):
         return None
-    asset = next((a for a in d.get('assets', []) if a['name'].lower().endswith('.exe')), None)
+    assets = d.get('assets', [])
+    # Öncelik: kurulum paketi (Setup). Yoksa eski usul taşınabilir exe.
+    asset = next((a for a in assets if 'setup' in a['name'].lower() and a['name'].lower().endswith('.exe')), None)
+    kind = 'setup'
+    if not asset:
+        asset = next((a for a in assets if a['name'].lower().endswith('.exe')), None); kind = 'exe'
     if not asset:
         return None
     return {'version': tag.lstrip('v'), 'url': asset['browser_download_url'], 'size': asset.get('size', 0),
-            'notes': d.get('body') or '', 'name': asset['name']}
+            'notes': d.get('body') or '', 'name': asset['name'], 'kind': kind}
 
 
 def download(info, progress=None, cancel=None):
     """progress(done_bytes, total_bytes, speed_bps, eta_s). İndirilen dosya yolunu döner."""
     d = os.path.join(tempfile.gettempdir(), APP_ID + '_update'); os.makedirs(d, exist_ok=True)
-    dst = os.path.join(d, f"{APP_ID}-{info['version']}.exe.part")
+    dst = os.path.join(d, (f"{APP_ID}-Setup-{info['version']}.exe" if info.get('kind') == 'setup' else f"{APP_ID}-{info['version']}.exe") + '.part')
     req = urllib.request.Request(info['url'], headers={'User-Agent': UA})
     with urllib.request.urlopen(req, timeout=30) as r, open(dst, 'wb') as f:
         total = int(r.headers.get('Content-Length') or info.get('size') or 0)
@@ -53,17 +58,46 @@ def download(info, progress=None, cancel=None):
     return final
 
 
-def apply_and_restart(new_file):
-    """Çalışan exe'yi yenisiyle değiştirip programı yeniden başlatır (yalnızca paketlenmiş sürümde)."""
-    if not getattr(sys, 'frozen', False):
-        return False
-    cur = sys.executable; pid = os.getpid()
+INSTALL_DIR = os.path.join(os.environ.get('LOCALAPPDATA') or os.path.expanduser('~'), 'Programs', 'Pixhawk Log Analiz')
+
+
+def is_installed():
+    """Program Setup ile kurulmuşsa True (kaldırıcı exe'nin yanında durur)."""
+    if not getattr(sys, 'frozen', False): return False
+    d = os.path.dirname(sys.executable)
+    return any(f.lower().startswith('unins') and f.lower().endswith('.exe') for f in os.listdir(d))
+
+
+def _launch_script(body, new_file):
     script = os.path.join(os.path.dirname(new_file), 'apply.cmd')
     with open(script, 'w', encoding='mbcs' if os.name == 'nt' else 'utf-8') as f:
-        f.write(f'''@echo off
+        f.write(body)
+    flags = 0x08000000 if os.name == 'nt' else 0
+    subprocess.Popen(['cmd.exe', '/c', script], creationflags=flags, close_fds=True)
+
+
+def apply_and_restart(new_file):
+    """Güncellemeyi uygular ve programı yeniden açar (yalnızca paketlenmiş sürümde).
+    Setup paketi: program kapanınca sessizce kurulur (/VERYSILENT), kurulu sürüm açılır.
+    Taşınabilir exe: dosya değiştirilir ve yeniden başlatılır."""
+    if not getattr(sys, 'frozen', False):
+        return False
+    pid = os.getpid()
+    wait = f'''@echo off
 :wait
 tasklist /FI "PID eq {pid}" 2>nul | find "{pid}" >nul && (ping -n 2 127.0.0.1 >nul & goto wait)
-set n=0
+'''
+    if 'setup' in os.path.basename(new_file).lower():
+        target = sys.executable if is_installed() else os.path.join(INSTALL_DIR, 'PixhawkLogAnaliz.exe')
+        log = os.path.join(os.path.dirname(new_file), 'setup.log')
+        _launch_script(wait + f'''start "" /wait "{new_file}" /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP- /CLOSEAPPLICATIONS /LOG="{log}"
+del "{new_file}" >nul 2>&1
+start "" "{target}" --updated
+del "%~f0"
+''', new_file)
+        return True
+    cur = sys.executable
+    _launch_script(wait + f'''set n=0
 :copy
 copy /y "{new_file}" "{cur}" >nul && goto ok
 set /a n+=1
@@ -72,7 +106,5 @@ if %n% lss 30 (ping -n 2 127.0.0.1 >nul & goto copy)
 del "{new_file}" >nul 2>&1
 start "" "{cur}" --updated
 del "%~f0"
-''')
-    flags = 0x08000000 if os.name == 'nt' else 0
-    subprocess.Popen(['cmd.exe', '/c', script], creationflags=flags, close_fds=True)
+''', new_file)
     return True
