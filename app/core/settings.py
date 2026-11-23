@@ -25,7 +25,20 @@ DEFAULTS = {
     'auto_update_check': True,
     'param_tx_cache': {},      # 'NAME|lang' -> [name, desc] (AI ile çevrilen parametreler)
     'practice_best': 0,
+    # v1.0.2
+    'ai_provider': 'gemini',   # gemini (ücretsiz katman) / anthropic
+    'gemini_key': '',
+    'gemini_model': 'gemini-flash-latest',
+    'gemini_models': [], 'claude_models': [],
+    'profile': 'auto',
+    'report_sections': None,   # [[bölüm, açık], …]
+    'report_mode': 'long',
+    'watch_enabled': True, 'watch_dirs': [], 'auto_analyze': False,
+    'encrypt_local': False, 'require_login': False,
+    'weather_online': True,
+    'cache_max_mb': 3000,
 }
+SECRETS = ('api_key', 'gemini_key', 'gh_token')
 
 
 class Settings(dict):
@@ -37,6 +50,9 @@ class Settings(dict):
                 self.update(json.load(f))
         except Exception:
             pass
+        from .security import unprotect
+        for k in SECRETS:
+            if self.get(k): self[k] = unprotect(self[k])
         if not self.get('device_id'):
             self['device_id'] = uuid.uuid4().hex
         if not self.get('device_name'):
@@ -55,8 +71,12 @@ class Settings(dict):
     def save(self):
         os.makedirs(os.path.dirname(self.path), exist_ok=True)
         tmp = self.path + '.tmp'
+        from .security import protect
+        out = dict(self)
+        for k in SECRETS:
+            if out.get(k): out[k] = protect(out[k])
         with open(tmp, 'w', encoding='utf-8') as f:
-            json.dump(self, f, ensure_ascii=False, indent=1)
+            json.dump(out, f, ensure_ascii=False, indent=1)
         os.replace(tmp, self.path)
 
     def letterhead(self):

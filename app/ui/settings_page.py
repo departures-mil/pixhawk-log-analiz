@@ -31,25 +31,46 @@ class SettingsPage(Page):
         self.online.toggled.connect(lambda x: self._set('online', x)); f.addRow(self.online)
         v.addWidget(g)
 
-        # Yapay zekâ
+        # Yapay zekâ (Gemini ücretsiz / Claude) — kolay kurulum
         g = QGroupBox(t('s_ai')); f = QFormLayout(g)
-        f.addRow(label(t('s_key_help'), 'muted', wrap=True))
+        f.addRow(label(t('ai_intro'), 'muted', wrap=True))
+        self.prov = QComboBox(); self.prov.addItem(t('ai_gemini'), 'gemini'); self.prov.addItem(t('ai_claude'), 'anthropic')
+        self.prov.setCurrentIndex(max(0, self.prov.findData(s.get('ai_provider') or 'gemini')))
+        self.prov.currentIndexChanged.connect(self._prov_changed); f.addRow(t('s_provider'), self.prov)
         kh = QHBoxLayout()
-        self.key = QLineEdit(s.get('api_key', '')); self.key.setEchoMode(QLineEdit.Password); self.key.setPlaceholderText('sk-ant-…')
-        self.key.editingFinished.connect(lambda: self._set('api_key', self.key.text().strip()))
-        kh.addWidget(self.key, 1)
+        self.key = QLineEdit(); self.key.setEchoMode(QLineEdit.Password)
+        self.key.editingFinished.connect(self._key_edited); kh.addWidget(self.key, 1)
         kh.addWidget(button('👁', lambda: self.key.setEchoMode(QLineEdit.Normal if self.key.echoMode() == QLineEdit.Password else QLineEdit.Password)))
-        kh.addWidget(button(t('s_get_key'), lambda: QDesktopServices.openUrl(QUrl('https://console.anthropic.com/settings/keys'))))
+        kh.addWidget(button(t('ai_paste'), self._paste))
+        kh.addWidget(button(t('ai_wizard'), self.key_wizard, primary=True))
         kh.addWidget(button(t('s_test'), self.test_key))
         f.addRow(t('s_key'), kh)
-        from ..core.advisor import MODELS
-        self.model = QComboBox(); self.model.addItems(MODELS); self.model.setEditable(True)
-        self.model.setCurrentText(s.get('model')); self.model.currentTextChanged.connect(lambda x: self._set('model', x.strip()))
-        f.addRow(t('s_model'), self.model)
+        self.ai_st = label('', 'muted', wrap=True); f.addRow(self.ai_st)
+        mh = QHBoxLayout()
+        self.model = QComboBox(); self.model.setEditable(True); self.model.setMinimumWidth(280)
+        self.model.currentTextChanged.connect(self._model_changed); mh.addWidget(self.model, 1)
+        mh.addWidget(button(t('ai_refresh'), self.test_key)); f.addRow(t('s_model'), mh)
         self.effort = QComboBox(); self.effort.addItems(['low', 'medium', 'high', 'max']); self.effort.setCurrentText(s.get('effort', 'medium'))
         self.effort.currentTextChanged.connect(lambda x: self._set('effort', x)); f.addRow(t('s_effort'), self.effort)
         f.addRow(label(t('s_usage'), 'h2'))
         self.usage = label('', wrap=True, sel=True); f.addRow(self.usage)
+        v.addWidget(g)
+        self._prov_changed(init=True)
+
+        # Analiz: profil, önbellek, hava durumu, anomali modeli
+        g = QGroupBox(t('s_analysis')); f = QFormLayout(g)
+        from ..core import profiles as PRF
+        self.prof = QComboBox(); self.prof.addItem(t('s_profile_auto'), 'auto')
+        for p in ('plane', 'vtol', 'copter', 'heli', 'rover'): self.prof.addItem(PRF.name(p, lang()), p)
+        self.prof.setCurrentIndex(max(0, self.prof.findData(s.get('profile', 'auto'))))
+        self.prof.currentIndexChanged.connect(lambda _: (self._set('profile', self.prof.currentData()), self.win._apply_core_settings()))
+        f.addRow(t('s_profile'), self.prof); f.addRow(label(t('s_profile_help'), 'muted', wrap=True))
+        ch2 = QHBoxLayout(); self.cmb = QSpinBox(); self.cmb.setRange(100, 50000); self.cmb.setSingleStep(500); self.cmb.setValue(int(s.get('cache_max_mb', 3000)))
+        self.cmb.valueChanged.connect(lambda x: (self._set('cache_max_mb', x), self.win._apply_core_settings())); ch2.addWidget(self.cmb)
+        self.cache_now = label('', 'muted'); ch2.addWidget(self.cache_now, 1); ch2.addWidget(button(t('s_cache_clear'), self._clear_cache))
+        f.addRow(t('s_cache_mb'), ch2)
+        self.wx = QCheckBox(t('s_weather')); self.wx.setChecked(s.get('weather_online', True)); self.wx.toggled.connect(lambda x: self._set('weather_online', x)); f.addRow(self.wx)
+        ah2 = QHBoxLayout(); self.anom_l = label('', 'muted'); ah2.addWidget(self.anom_l, 1); ah2.addWidget(button(t('s_anom_reset'), self._anom_reset)); f.addRow(ah2)
         v.addWidget(g)
 
         # Rapor & antet
@@ -129,6 +150,49 @@ class SettingsPage(Page):
         f.addRow(button('⬇ ' + t('s_check_upd'), win.do_update, primary=True))
         v.addWidget(g)
 
+        # Rapor şablon düzenleyici (bölümler, kısa/uzun)
+        g = QGroupBox(t('s_rep_tpl')); f = QFormLayout(g)
+        f.addRow(label(t('s_rep_tpl_help'), 'muted', wrap=True))
+        self.rmode = QComboBox(); self.rmode.addItem(t('rep_long'), 'long'); self.rmode.addItem(t('rep_short'), 'short')
+        self.rmode.setCurrentIndex(max(0, self.rmode.findData(s.get('report_mode', 'long'))))
+        self.rmode.currentIndexChanged.connect(lambda _: self._set('report_mode', self.rmode.currentData())); f.addRow(t('s_rep_mode'), self.rmode)
+        from PySide6.QtWidgets import QListWidget, QAbstractItemView
+        self.secs = QListWidget(); self.secs.setDragDropMode(QAbstractItemView.InternalMove); self.secs.setMinimumHeight(250)
+        self.secs.itemChanged.connect(lambda *_: self._save_secs()); self.secs.model().rowsMoved.connect(lambda *_: self._save_secs())
+        f.addRow(self.secs); f.addRow(button(t('s_rep_reset'), self._reset_secs))
+        v.addWidget(g)
+        self._fill_secs()
+
+        # Mission Planner entegrasyonu
+        g = QGroupBox(t('s_mp')); f = QFormLayout(g)
+        f.addRow(label(t('s_mp_help'), 'muted', wrap=True))
+        self.watch = QCheckBox(t('s_watch')); self.watch.setChecked(bool(s.get('watch_enabled'))); self.watch.toggled.connect(lambda x: (self._set('watch_enabled', x), self.win.setup_watch(), self._dirs()))
+        f.addRow(self.watch)
+        self.autoan = QCheckBox(t('s_auto_an')); self.autoan.setChecked(bool(s.get('auto_analyze'))); self.autoan.toggled.connect(lambda x: self._set('auto_analyze', x)); f.addRow(self.autoan)
+        from PySide6.QtWidgets import QListWidget as _LW
+        self.dirs = _LW(); self.dirs.setMaximumHeight(110); f.addRow(t('s_dirs'), self.dirs)
+        dh = QHBoxLayout(); dh.addWidget(button(t('s_add_dir'), self._add_dir)); dh.addWidget(button(t('s_rm_dir'), self._rm_dir)); dh.addStretch(1); f.addRow(dh)
+        ash = QHBoxLayout(); ash.addWidget(button('🔗 ' + t('s_assoc'), self._assoc, primary=True)); self.assoc_l = label('', 'muted'); ash.addWidget(self.assoc_l, 1); f.addRow(ash)
+        v.addWidget(g)
+        self._dirs()
+
+        # Güvenlik ve kullanıcılar
+        g = QGroupBox(t('s_sec')); f = QFormLayout(g)
+        f.addRow(label(t('s_sec_help'), 'muted', wrap=True))
+        self.ulist = _LW(); self.ulist.setMaximumHeight(120); f.addRow(t('s_users'), self.ulist)
+        uh = QHBoxLayout(); uh.addWidget(button('➕ ' + t('s_add_user'), self._add_user)); uh.addWidget(button('🗑 ' + t('s_del_user'), self._del_user)); uh.addStretch(1); f.addRow(uh)
+        self.reql = QCheckBox(t('s_req_login')); self.reql.setChecked(bool(s.get('require_login'))); self.reql.toggled.connect(self._req_login); f.addRow(self.reql)
+        self.encl = QCheckBox(t('s_enc_local')); self.encl.setChecked(bool(s.get('encrypt_local'))); self.encl.toggled.connect(lambda x: self._set('encrypt_local', x)); f.addRow(self.encl)
+        eh = QHBoxLayout(); eh.addWidget(button('🔒 ' + t('s_enc_file'), self._enc_file)); eh.addWidget(button('🔓 ' + t('s_dec_file'), self._dec_file)); eh.addStretch(1); f.addRow(eh)
+        v.addWidget(g)
+        self._users()
+
+        # Hata raporları
+        g = QGroupBox(t('s_crash')); f = QFormLayout(g)
+        crh = QHBoxLayout(); self.crash_l = label('', 'muted'); crh.addWidget(self.crash_l, 1)
+        self.b_crash = button('✉ ' + t('cr_send'), self._send_crash); crh.addWidget(self.b_crash); f.addRow(crh)
+        v.addWidget(g)
+
         # Admin ile iletişim (en sonda)
         g = QGroupBox(t('s_contact')); f = QFormLayout(g)
         f.addRow(label(t('s_contact_desc'), 'muted', wrap=True))
@@ -142,7 +206,8 @@ class SettingsPage(Page):
         self._fill_tpls()
 
     def on_show(self):
-        self._usage(); self._cache(); self._sync_info()
+        self._usage(); self._cache(); self._sync_info(); self._an_info(); self._crash_info(); self._dirs(); self._users()
+        if not self.key.text().strip(): self._paste(silent=True)
 
     def _set(self, k, val):
         self.win.settings[k] = val; self.win.settings.save()
@@ -151,32 +216,278 @@ class SettingsPage(Page):
         self._set('lang', self.lang.currentData()); self.win.apply_lang()
 
     # ---- AI
+    def _pkey(self, prov=None):
+        prov = prov or self.prov.currentData()
+        return 'gemini_key' if prov == 'gemini' else 'api_key'
+
+    def _mkey(self, prov=None):
+        prov = prov or self.prov.currentData()
+        return 'gemini_model' if prov == 'gemini' else 'model'
+
+    def _prov_changed(self, *_, init=False):
+        from ..core import ai as AI
+        s = self.win.settings; prov = self.prov.currentData()
+        if not init: self._set('ai_provider', prov)
+        self.key.blockSignals(True); self.key.setText(s.get(self._pkey(), '') or '')
+        self.key.setPlaceholderText('AIza… / AQ.…' if prov == 'gemini' else 'sk-ant-…'); self.key.blockSignals(False)
+        self._fill_models()
+        self.ai_st.setText(t('ai_none') if not self.key.text().strip() else '')
+        self._usage()
+
+    def _fill_models(self, models=None):
+        from ..core import ai as AI
+        s = self.win.settings; prov = self.prov.currentData()
+        lk = 'gemini_models' if prov == 'gemini' else 'claude_models'
+        if models is not None: s[lk] = models; s.save()
+        ms = s.get(lk) or []
+        ms = AI.candidates(prov, ms) if ms else list(AI.PROVIDERS[prov]['fallback'])
+        cur = s.get(self._mkey()) or AI.PROVIDERS[prov]['default']
+        self.model.blockSignals(True); self.model.clear(); self.model.addItems(ms)
+        self.model.setCurrentText(cur); self.model.blockSignals(False)
+
+    def _model_changed(self, x):
+        if x.strip(): self._set(self._mkey(), x.strip())
+
+    def _key_edited(self):
+        from ..core import ai as AI
+        k = self.key.text().strip()
+        p = AI.detect_provider(k)
+        if p and p != self.prov.currentData():
+            self.prov.setCurrentIndex(self.prov.findData(p))   # anahtara göre sağlayıcıyı otomatik seç
+        if k != (self.win.settings.get(self._pkey()) or ''):
+            self._set(self._pkey(), k)
+            if k: self.test_key()
+
+    def _paste(self, *_, silent=False):
+        from PySide6.QtWidgets import QApplication
+        from ..core import ai as AI
+        try: txt = QApplication.clipboard().text()
+        except Exception: txt = ''
+        p, k = AI.find_key(txt)
+        if not k:
+            if not silent and txt.strip(): self.key.setText(txt.strip()); self._key_edited()
+            return False
+        if k == (self.win.settings.get(self._pkey(p)) or ''): return False
+        self.prov.setCurrentIndex(self.prov.findData(p))
+        self.key.setText(k); self._set(self._pkey(p), k)
+        self.ai_st.setText(t('ai_clip_found', p=AI.PROVIDERS[p]['name']))
+        self.test_key()
+        return True
+
+    def key_wizard(self):
+        from PySide6.QtWidgets import QDialog, QApplication
+        from PySide6.QtCore import QTimer
+        from ..core import ai as AI
+        prov = self.prov.currentData(); url = AI.PROVIDERS[prov]['key_url']
+        dl = QDialog(self); dl.setWindowTitle(t('ai_wiz_title')); dl.setMinimumWidth(520); lay = QVBoxLayout(dl)
+        lay.addWidget(label(t('ai_wiz_steps') if prov == 'gemini' else t('ai_wiz_steps_c'), wrap=True))
+        st = label('⏳ ' + t('ai_wiz_wait'), 'h2'); lay.addWidget(st)
+        bh = QHBoxLayout(); bh.addWidget(button(t('ai_open_page'), lambda: QDesktopServices.openUrl(QUrl(url)))); bh.addStretch(1)
+        bh.addWidget(button(t('cancel'), dl.reject)); lay.addLayout(bh)
+        try: start = QApplication.clipboard().text()
+        except Exception: start = ''
+        tm = QTimer(dl); tm.setInterval(700)
+
+        def poll():
+            try: txt = QApplication.clipboard().text()
+            except Exception: return
+            if txt == start: return
+            p, k = AI.find_key(txt)
+            if k:
+                tm.stop(); st.setText('✔ ' + t('ai_wiz_got')); QTimer.singleShot(500, dl.accept)
+                self.prov.setCurrentIndex(self.prov.findData(p)); self.key.setText(k); self._set(self._pkey(p), k)
+        tm.timeout.connect(poll); tm.start()
+        QDesktopServices.openUrl(QUrl(url))
+        if dl.exec() == QDialog.Accepted: self.test_key()
+        tm.stop()
+
+    def test_key(self):
+        from ..core import ai as AI
+        prov = self.prov.currentData(); key = self.key.text().strip()
+        self._set(self._pkey(), key)
+        if not key: self.ai_st.setText(t('ai_none')); return
+        model = self.model.currentText().strip(); usage = self.win.usage
+        self.ai_st.setText('⏳ ' + t('ai_testing'))
+
+        def ok(r):
+            models, m = r
+            self._set(self._mkey(), m); self._fill_models(models)
+            self.ai_st.setText(t('ai_ok', n=len(models), m=m)); self._usage()
+
+        def fail(e):
+            self.ai_st.setText(t('ai_bad', e=str(e)[:260])); self._usage()
+        run_bg(AI.test, prov, key, model, usage, on_done=ok, on_fail=fail)
+
     def _usage(self):
-        d = self.win.usage.data; day = time.strftime('%Y-%m-%d'); bd = d['by_day'].get(day, {'calls': 0, 'in': 0, 'out': 0})
-        txt = t('s_usage_txt', c=d['calls'], i=d['input_tokens'], o=d['output_tokens'], dc=bd['calls'], dt=bd['in'] + bd['out'])
-        lim = d.get('limits') or {}
-        if lim:
+        d = self.win.usage.data; day = time.strftime('%Y-%m-%d')
+        lines = []
+        names = {'gemini': 'Gemini', 'anthropic': 'Claude'}
+        bp = d.get('by_provider') or {}
+        for p in ('gemini', 'anthropic'):
+            x = bp.get(p)
+            if not x: continue
+            td = x.get('today') or {}
+            dc, dt = (td.get('calls', 0), td.get('tokens', 0)) if td.get('day') == day else (0, 0)
+            lines.append(t('ai_prov_usage', p=names[p], c=x['calls'], tk=f"{x['in'] + x['out']:,}", dc=dc, dt=f'{dt:,}'))
+        if not lines and d.get('calls'):
+            bd = d['by_day'].get(day, {'calls': 0, 'in': 0, 'out': 0})
+            lines.append(t('s_usage_txt', c=d['calls'], i=d['input_tokens'], o=d['output_tokens'], dc=bd['calls'], dt=bd['in'] + bd['out']))
+        if not lines: lines.append(t('ai_no_usage'))
+        tk, c = self.win.usage.month_tokens(30)
+        lines.append(t('ai_30d', c=c, tk=f'{tk:,}'))
+        pl = d.get('plimits') or {}
+        prov = self.prov.currentData()
+        if prov == 'gemini':
+            lines.append(''); lines.append(t('ai_gem_lim'))
+            q = pl.get('gemini') or {}
+            if q.get('quota_hit'): lines.append(t('ai_quota_hit', t=q['quota_hit'], d='; '.join(q.get('details') or [])[:300]))
+        else:
+            lim = pl.get('anthropic') or d.get('limits') or {}
             parts = []
             for k in ('requests', 'input-tokens', 'output-tokens', 'tokens'):
                 if k + '-limit' in lim:
-                    parts.append(f"{k}: {lim.get(k + '-remaining', '?')}/{lim[k + '-limit']} (reset {lim.get(k + '-reset', '')[11:19]})")
-            txt += '\n' + t('s_limits') + '\n' + '\n'.join(parts)
-        else:
-            txt += '\n' + t('s_no_limits')
-        self.usage.setText(txt)
+                    parts.append(f"{k}: {lim.get(k + '-remaining', '?')}/{lim[k + '-limit']} (reset {str(lim.get(k + '-reset', ''))[11:19]})")
+            lines.append(''); lines.append(t('s_limits') + '\n' + '\n'.join(parts) if parts else t('s_no_limits'))
+        self.usage.setText('\n'.join(lines))
 
-    def test_key(self):
-        self._set('api_key', self.key.text().strip())
-        key = self.key.text().strip()
-        if not key: return
-        model = self.model.currentText().strip(); usage = self.win.usage
+    # ---- Analiz
+    def _an_info(self):
+        try:
+            from ..core import cache, anomaly
+            self.cache_now.setText(t('s_cache_now', mb=cache.size_mb()))
+            self.anom_l.setText(t('s_anom', n=anomaly.model_info()['flights']))
+        except Exception as e:
+            self.anom_l.setText(str(e)[:120])
 
-        def job():
-            import anthropic
-            c = anthropic.Anthropic(api_key=key, timeout=60)
-            raw = c.messages.with_raw_response.create(model=model, max_tokens=16, messages=[{'role': 'user', 'content': 'ping'}])
-            usage.add(raw.parse().usage, raw.headers); return True
-        run_bg(job, on_done=lambda _: (self._usage(), info(self, '✔ OK')), on_fail=lambda e: error(self, e[:300]))
+    def _clear_cache(self):
+        from ..core import cache
+        cache.clear(); self._an_info()
+
+    def _anom_reset(self):
+        from ..core import anomaly
+        anomaly.save_model({'profiles': {}, 'learned': []}); self._an_info()
+
+    # ---- Rapor bölümleri
+    def _fill_secs(self):
+        from PySide6.QtWidgets import QListWidgetItem
+        from ..core import report
+        cfg = self.win.settings.get('report_sections')
+        order = [k for k, _ in cfg] if cfg else list(report.SECTIONS)
+        order += [k for k in report.SECTIONS if k not in order]
+        on = dict(cfg) if cfg else {}
+        self.secs.blockSignals(True); self.secs.clear()
+        for k in order:
+            if k not in report.SECTIONS: continue
+            it = QListWidgetItem(('★ ' if k in report.SHORT else '   ') + report.R('sec_' + k, lang()))
+            it.setData(Qt.UserRole, k); it.setFlags(it.flags() | Qt.ItemIsUserCheckable | Qt.ItemIsDragEnabled)
+            it.setCheckState(Qt.Checked if on.get(k, True) else Qt.Unchecked); self.secs.addItem(it)
+        self.secs.blockSignals(False)
+
+    def _save_secs(self):
+        cfg = [[self.secs.item(i).data(Qt.UserRole), self.secs.item(i).checkState() == Qt.Checked] for i in range(self.secs.count())]
+        self._set('report_sections', cfg)
+
+    def _reset_secs(self):
+        self._set('report_sections', None); self._fill_secs()
+
+    # ---- Mission Planner
+    def _dirs(self):
+        from ..core import mpwatch
+        s = self.win.settings
+        self.dirs.clear()
+        for d in s.get('watch_dirs') or []: self.dirs.addItem(d)
+        for d in mpwatch.default_dirs():
+            if d not in (s.get('watch_dirs') or []): self.dirs.addItem(d + '  (Mission Planner)')
+        self.assoc_l.setText(t('s_assoc_on') if mpwatch.is_associated() else ('' if mpwatch.exe_path() else t('s_assoc_dev')))
+
+    def _add_dir(self):
+        d = QFileDialog.getExistingDirectory(self, t('s_add_dir'))
+        if d:
+            s = self.win.settings; ds = list(s.get('watch_dirs') or [])
+            if d not in ds: ds.append(d)
+            self._set('watch_dirs', ds); self.win.setup_watch(); self._dirs()
+
+    def _rm_dir(self):
+        it = self.dirs.currentItem()
+        if not it: return
+        s = self.win.settings; ds = [x for x in (s.get('watch_dirs') or []) if x != it.text()]
+        self._set('watch_dirs', ds); self.win.setup_watch(); self._dirs()
+
+    def _assoc(self):
+        from ..core import mpwatch
+        try:
+            if mpwatch.associate(): info(self, t('s_assoc_ok'))
+            else: info(self, t('s_assoc_dev'))
+        except Exception as e:
+            error(self, str(e)[:300])
+        self._dirs()
+
+    # ---- Güvenlik
+    def _users(self):
+        from ..core import security
+        self.ulist.clear()
+        for u in security.users(self.win.archive):
+            from PySide6.QtWidgets import QListWidgetItem
+            it = QListWidgetItem(f"{u['name']} · {security.role_name(u.get('role'), lang())}"); it.setData(Qt.UserRole, u['id']); self.ulist.addItem(it)
+
+    def _add_user(self):
+        from PySide6.QtWidgets import QDialog
+        from ..core import security
+        dl = QDialog(self); dl.setWindowTitle(t('s_add_user')); f = QFormLayout(dl)
+        nm = QLineEdit(); f.addRow(t('u_name'), nm)
+        pw = QLineEdit(); pw.setEchoMode(QLineEdit.Password); f.addRow(t('u_pw'), pw)
+        rl = QComboBox()
+        for r in security.ROLES: rl.addItem(security.role_name(r, lang()), r)
+        if not security.users(self.win.archive): rl.setCurrentIndex(0)
+        else: rl.setCurrentIndex(2)
+        f.addRow(t('u_role'), rl)
+        h = QHBoxLayout(); h.addWidget(button(t('cancel'), dl.reject)); h.addWidget(button(t('save'), dl.accept, primary=True)); f.addRow(h)
+        if dl.exec() == QDialog.Accepted and nm.text().strip() and pw.text():
+            security.add_user(self.win.archive, nm.text(), rl.currentData(), pw.text()); self._users()
+
+    def _del_user(self):
+        it = self.ulist.currentItem()
+        if it: self.win.archive.rec_del('user', it.data(Qt.UserRole)); self._users()
+
+    def _req_login(self, x):
+        from ..core import security
+        if x and not any(u.get('role') == 'admin' for u in security.users(self.win.archive)):
+            self.reql.blockSignals(True); self.reql.setChecked(False); self.reql.blockSignals(False)
+            info(self, t('s_need_admin')); return
+        self._set('require_login', x)
+
+    def _enc_file(self):
+        from ..core import security
+        p, _ = QFileDialog.getOpenFileName(self, t('s_enc_file'))
+        if not p: return
+        pw, ok = QInputDialog.getText(self, t('s_enc_file'), t('u_pw'), QLineEdit.Password)
+        if not ok or not pw: return
+        out = security.encrypt_file(p, p + '.pxenc', pw); info(self, t('enc_done', p=out))
+
+    def _dec_file(self):
+        from ..core import security
+        p, _ = QFileDialog.getOpenFileName(self, t('s_dec_file'), '', 'Encrypted (*.pxenc);;All (*.*)')
+        if not p: return
+        pw, ok = QInputDialog.getText(self, t('s_dec_file'), t('u_pw'), QLineEdit.Password)
+        if not ok: return
+        out = p[:-6] if p.endswith('.pxenc') else p + '.dec'
+        try:
+            security.decrypt_file(p, out, pw); info(self, t('dec_done', p=out)); open_path(os.path.dirname(out))
+        except Exception:
+            error(self, t('ex_bad_pw'))
+
+    # ---- Hata raporları
+    def _crash_info(self):
+        from ..core import crash
+        try: n = len(crash.pending())
+        except Exception: n = 0
+        self.crash_l.setText(t('s_crash_n', n=n) if n else t('s_crash_none')); self.b_crash.setEnabled(bool(n))
+
+    def _send_crash(self):
+        from ..core import crash
+        ps = crash.pending()
+        if ps: self.win.crash_dialog(ps)
+        self._crash_info()
 
     # ---- Antet şablonları
     def _fill_tpls(self):

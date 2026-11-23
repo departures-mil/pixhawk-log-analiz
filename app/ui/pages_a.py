@@ -46,10 +46,19 @@ class AnalysisPage(Page):
         self.b_cancel = button(t('cancel'), win.cancel_load); self.b_cancel.setVisible(False)
         pr.addWidget(self.prog, 1); pr.addWidget(self.b_cancel)
         v.addLayout(pr)
-        self.view = QTextBrowser(); self.view.setOpenExternalLinks(True)
+        self.view = QTextBrowser(); self.view.setOpenLinks(False); self.view.anchorClicked.connect(self._link)
         self.view.setHtml(self._welcome())
         v.addWidget(self.view, 1)
         self.setAcceptDrops(True)
+
+    def _link(self, url):
+        u = url.toString()
+        if u.startswith('t:'):
+            try: self.win.pages['map'].goto_time(float(u[2:])); self.win.goto('map')
+            except Exception: pass
+        else:
+            from PySide6.QtGui import QDesktopServices
+            QDesktopServices.openUrl(url)
 
     def _welcome(self):
         d = 'rtl' if lang() == 'ar' else 'ltr'
@@ -65,7 +74,7 @@ class AnalysisPage(Page):
             p = u.toLocalFile()
             if os.path.isdir(p):
                 self.win.goto('batch'); self.win.pages['batch'].run_folder(p); return
-            if p.lower().endswith(('.bin', '.tlog', '.log')):
+            if p.lower().endswith(('.bin', '.tlog', '.log', '.pxloc')):
                 self.win.open_log(p); return
 
     def set_busy(self, busy, text=''):
@@ -125,6 +134,18 @@ class ChartsPage(Page):
         self.img.set_png(self.cache.get(k))
         self.lesson.setHtml(summary_html.lesson_html(k, lang()))
 
+    def show_key(self, k, t_=None, span=None):
+        """Grafiği seç; t_/span verilirse ilgili an turuncu işaretli çizilir (alıştırma / ders rehberi)."""
+        if k not in CHART_KEYS: return
+        i = CHART_KEYS.index(k)
+        self.list.blockSignals(True); self.list.setCurrentRow(i); self.list.blockSignals(False)
+        self.lesson.setHtml(summary_html.lesson_html(k, lang()))
+        A = self.win.A
+        if A is None: return
+        if t_ is None and span is None: self.img.set_png(self.cache.get(k)); return
+        lg = lang()
+        run_bg(charts.render_marked, k, A, lg, t_, span, on_done=lambda b: self.img.set_png(b) if b else None)
+
 
 # --------------------------------------------------------------- Harita + 3B
 class MapPage(Page):
@@ -164,7 +185,18 @@ class MapPage(Page):
         self.spd.setCurrentIndex(2); ctl.addWidget(self.spd)
         rv.addLayout(ctl)
         self.info = label('', wrap=True); rv.addWidget(self.info)
-        self.tabs.addTab(rw, '✈ 3D')
+        from PySide6.QtWidgets import QSplitter
+        sp3 = QSplitter(Qt.Horizontal); sp3.addWidget(rw)
+        gw = QWidget(); gv = QVBoxLayout(gw); gv.setContentsMargins(6, 0, 0, 0)
+        gh = QHBoxLayout(); gh.addWidget(label(t('ls_title'), 'h2')); gh.addStretch(1)
+        self.b_guide = button(t('ls_play'), self.guide_play, primary=True); gh.addWidget(self.b_guide); gv.addLayout(gh)
+        gv.addWidget(label(t('ls_help'), 'muted', wrap=True))
+        self.steps = QListWidget(); self.steps.currentRowChanged.connect(self._step); gv.addWidget(self.steps, 2)
+        self.step_txt = QTextBrowser(); gv.addWidget(self.step_txt, 2)
+        self.step_img = ImageView(); gv.addWidget(self.step_img, 3)
+        sp3.addWidget(gw); sp3.setSizes([900, 520])
+        self.tabs.addTab(sp3, '✈ 3D')
+        self.lsteps = []; self.gtimer = QTimer(self); self.gtimer.setInterval(6500); self.gtimer.timeout.connect(self._guide_next)
         self.timer = QTimer(self); self.timer.setInterval(50); self.timer.timeout.connect(self._tick)
         self.A = None; self.tr = None
 
@@ -173,6 +205,47 @@ class MapPage(Page):
         self.map_lesson.setHtml(summary_html.lesson_html('c_map', lang()))
         self.render_map()
         self._setup3d()
+        self._lessons()
+
+    # ------------------------------------------------------------ ders rehberi
+    def _lessons(self):
+        from ..core import lessons
+        self.gtimer.stop(); self.b_guide.setText(t('ls_play'))
+        try: self.lsteps = lessons.build(self.A, lang())
+        except Exception: self.lsteps = []
+        self.steps.blockSignals(True); self.steps.clear()
+        for st in self.lsteps: self.steps.addItem(f"{st['time']}  ·  {st['title']}")
+        self.steps.blockSignals(False)
+        self.step_txt.setHtml(''); self.step_img.set_png(None)
+
+    def goto_time(self, tt):
+        if self.tr is None: return
+        self.tabs.setCurrentIndex(1)
+        i = int(np.clip(np.searchsorted(self.tr['t'], tt), 0, len(self.tr['t']) - 1))
+        self.slider.setValue(i)
+
+    def _step(self, i):
+        if not (0 <= i < len(self.lsteps)): return
+        st = self.lsteps[i]; lg = lang(); d = 'rtl' if lg == 'ar' else 'ltr'
+        self.step_txt.setHtml(f'<div dir="{d}"><h3 style="color:#FBBF24">{E(st["time"])} · {E(st["title"])}</h3><p style="font-size:11pt">{E(st["text"])}</p></div>')
+        if self.tr is not None:
+            j = int(np.clip(np.searchsorted(self.tr['t'], st['t']), 0, len(self.tr['t']) - 1)); self.slider.setValue(j)
+        A = self.A; span = (st['t'], st['t1']) if st.get('t1') else None
+        run_bg(charts.render_marked, st['chart'], A, lg, st['t'], span, on_done=lambda b: self.step_img.set_png(b) if b else None)
+
+    def guide_play(self):
+        if self.gtimer.isActive():
+            self.gtimer.stop(); self.b_guide.setText(t('ls_play')); return
+        if not self.lsteps: return
+        self.b_guide.setText(t('ls_stop'))
+        if self.steps.currentRow() < 0 or self.steps.currentRow() >= len(self.lsteps) - 1: self.steps.setCurrentRow(0)
+        else: self._step(self.steps.currentRow())
+        self.gtimer.start()
+
+    def _guide_next(self):
+        i = self.steps.currentRow() + 1
+        if i >= len(self.lsteps): self.gtimer.stop(); self.b_guide.setText(t('ls_play')); return
+        self.steps.setCurrentRow(i)
 
     def render_map(self):
         if not self.A: return
@@ -368,16 +441,17 @@ class AdvisorPage(Page):
         if not q: return
         if not self.A: return error(self, t('no_log'))
         self.q.clear(); self.hist.append(('u', q)); self._render()
-        from ..core.advisor import offline_answer, OnlineAdvisor
+        from ..core.advisor import offline_answer
+        from ..core import ai as AI
         lg = lang(); A = self.A; s = self.win.settings
-        key = (s.get('api_key') or '').strip()
+        key = AI.current(s)[1]
         if not self.use_ai.isChecked():
             self.hist.append(('a', offline_answer(A, q, lg))); self._render(); return
         if not key:
             self.hist.append(('a', t('need_key') + '\n\n' + offline_answer(A, q, lg))); self._render(); return
         if self.adv is None or self.adv.lang != lg:
             try:
-                self.adv = OnlineAdvisor(A, key, s.get('model'), lg, self.win.usage, s.get('effort', 'medium'))
+                self.adv = AI.make_advisor(A, s, lg, self.win.usage)
             except Exception as e:
                 self.hist.append(('a', t('ai_fail', e=e) + '\n\n' + offline_answer(A, q, lg))); self._render(); return
         self.b_send.setEnabled(False); self.status.setText(t('thinking', x='…'))
@@ -393,7 +467,8 @@ class AdvisorPage(Page):
         def fail(e):
             self.b_send.setEnabled(True); self.status.setText('')
             # Yarım kalmış tur geçmişini temizle
-            if adv.messages and adv.messages[-1]['role'] == 'user': adv.messages.clear()
+            msgs = getattr(adv, 'messages', None) or getattr(adv, 'contents', None)
+            if msgs and msgs[-1].get('role') == 'user': msgs.clear()
             self.hist.append(('a', t('ai_fail', e=e[:200]) + '\n\n' + offline_answer(A, q, lg))); self._render()
         w = run_bg(job, on_done=ok, on_fail=fail, on_progress=lambda n: self.status.setText(t('thinking', x=n)))
 
@@ -435,7 +510,9 @@ class PracticePage(Page):
         self.res = label('', wrap=True); cv.addWidget(self.res)
         row = QHBoxLayout()
         self.b_check = button(t('check'), self.check, primary=True); self.b_next = button(t('next'), self.next_q)
-        row.addWidget(self.b_check); row.addWidget(self.b_next); row.addStretch(1); cv.addLayout(row)
+        self.b_chart = button(t('go_chart'), self.go_chart); self.b_lib = button(t('go_lib'), self.go_lib)
+        self.b_chart.setVisible(False); self.b_lib.setVisible(False)
+        row.addWidget(self.b_check); row.addWidget(self.b_next); row.addWidget(self.b_chart); row.addWidget(self.b_lib); row.addStretch(1); cv.addLayout(row)
         v.addWidget(c); v.addStretch(1)
         self.qs = []; self.i = 0; self.ok = 0; self.answered = 0
         self.new()
@@ -459,7 +536,7 @@ class PracticePage(Page):
             if k < len(q['opts']): r.setText(q['opts'][k])
             r.setStyleSheet('font-size:11pt; padding:6px')
         self.grp.setExclusive(True)
-        self.res.setText(''); self.b_check.setEnabled(True)
+        self.res.setText(''); self.b_check.setEnabled(True); self.b_chart.setVisible(False); self.b_lib.setVisible(False)
 
     def _score(self):
         best = self.win.settings.get('practice_best', 0)
@@ -475,11 +552,27 @@ class PracticePage(Page):
             r.setEnabled(False)
             if j == q['ans']: r.setStyleSheet('font-size:11pt; padding:6px; color:#4ADE80; font-weight:700')
             elif j == k: r.setStyleSheet('font-size:11pt; padding:6px; color:#F87171')
-        self.res.setText((t('correct') if good else t('wrong', c=q['opts'][q['ans']])) + '\n' + q.get('exp', ''))
+        txt = (t('correct') if good else t('wrong', c=q['opts'][q['ans']])) + '\n' + q.get('exp', '')
+        we = q.get('wexp') or []
+        if not good and k < len(we) and we[k]: txt += '\n\n❓ ' + t('why_wrong') + ' ' + we[k]
+        self.res.setText(txt)
+        self.b_chart.setVisible(bool(q.get('chart') and self.win.A)); self.b_lib.setVisible(bool(q.get('lib')))
         self.b_check.setEnabled(False)
         if self.ok > self.win.settings.get('practice_best', 0):
             self.win.settings['practice_best'] = self.ok; self.win.settings.save()
         self._score()
+
+    def go_chart(self):
+        q = self.qs[self.i] if self.qs else None
+        if not q or not q.get('chart'): return
+        self.win.goto('charts'); self.win.pages['charts'].show_key(q['chart'], q.get('t'))
+
+    def go_lib(self):
+        q = self.qs[self.i] if self.qs else None
+        if not q or not q.get('lib'): return
+        pg = self.win.pages[q['lib']]; self.win.goto(q['lib'])
+        try: pg.q.setText(q['key'])
+        except Exception: pass
 
     def next_q(self):
         if not self.qs: return

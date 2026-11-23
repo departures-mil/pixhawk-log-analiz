@@ -176,13 +176,20 @@ class ArchivePage(Page):
         super().__init__(win)
         v = QVBoxLayout(self); v.setContentsMargins(16, 12, 16, 12)
         top = QHBoxLayout()
-        self.q = QLineEdit(); self.q.setPlaceholderText(t('search')); self.q.textChanged.connect(self.refresh); top.addWidget(self.q, 1)
+        self.q = QLineEdit(); self.q.setPlaceholderText(t('ar_search_ph')); self.q.textChanged.connect(self.refresh); top.addWidget(self.q, 1)
+        self.f_per = QComboBox(); self.f_per.addItem(t('ar_period') + ': ' + t('ar_all'), 0)
+        for d in (7, 30, 90, 365): self.f_per.addItem(t(f'd{d}'), d)
+        self.f_ver = QComboBox(); self.f_ver.addItem(t('col_verdict') + ': ' + t('ar_all'), '')
+        for k in ('crash', 'incident', 'normal'): self.f_ver.addItem(texts.T('v_' + k, lang()), k)
+        self.f_ac = QComboBox(); self.f_pi = QComboBox()
+        for w in (self.f_per, self.f_ver, self.f_ac, self.f_pi): w.currentIndexChanged.connect(self.refresh); top.addWidget(w)
         top.addWidget(button(t('open_sel'), self.open_sel, primary=True))
         top.addWidget(button(t('compare'), self.compare))
         top.addWidget(button(t('remove_sel'), self.remove))
         v.addLayout(top)
+        self.f_desc = label('', 'muted'); v.addWidget(self.f_desc)
         sp = QSplitter(Qt.Vertical)
-        cols = ['col_date', 'col_file', 'col_vehicle', 'col_verdict', 'col_score', 'col_cause', 'col_flight', 'col_notes']
+        cols = ['col_date', 'col_file', 'col_vehicle', 'col_verdict', 'col_score', 'col_cause', 'col_flight', 'col_aircraft', 'col_pilot', 'col_notes']
         self.tbl = QTableWidget(0, len(cols)); self.tbl.setHorizontalHeaderLabels([t(c) for c in cols])
         self.tbl.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
         self.tbl.verticalHeader().setVisible(False); self.tbl.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -209,14 +216,33 @@ class ArchivePage(Page):
     def on_show(self):
         self.refresh()
 
+    def _fill_filters(self, acn, pin):
+        for cb, title, d in ((self.f_ac, t('col_aircraft'), acn), (self.f_pi, t('col_pilot'), pin)):
+            cur = cb.currentData(); cb.blockSignals(True); cb.clear(); cb.addItem(title + ': ' + t('ar_all'), '')
+            for k, n in sorted(d.items(), key=lambda x: x[1]): cb.addItem(n, k)
+            cb.setCurrentIndex(max(0, cb.findData(cur))); cb.blockSignals(False)
+
     def refresh(self, *_):
-        self.rows = self.win.archive.list(self.q.text().strip())
+        from ..core import search
+        a = self.win.archive; lg = lang()
+        acn = {x['id']: x.get('name') or x['id'] for x in a.rec_list('aircraft')}
+        pin = {x['id']: x['name'] for x in a.rec_list('pilot')}
+        self._fill_filters(acn, pin)
+        f = search.parse(self.q.text())
+        if self.f_per.currentData(): f['days'] = self.f_per.currentData()
+        if self.f_ver.currentData(): f['verdict'] = self.f_ver.currentData()
+        if self.f_ac.currentData(): f['aircraft'] = self.f_ac.currentData()
+        if self.f_pi.currentData(): f['pilot'] = self.f_pi.currentData()
+        allr = a.list()
+        self.rows = search.apply(allr, f, acn, pin)
+        dsc = search.describe(f, lg)
+        self.f_desc.setText((t('ar_filter', d=dsc) + '  ·  ' if dsc else '') + t('ar_n', n=len(self.rows)))
         self.tbl.setRowCount(len(self.rows))
-        lg = lang()
         for i, r in enumerate(self.rows):
             vals = [r['flight_date'] or r['analyzed_at'][:16], r['name'], f"{r['vehicle']} {r['version'] or ''}",
                     texts.T('v_' + (r['verdict'] or 'normal'), lg), str(r['overall']),
-                    texts.T('cause_' + r['cause'], lg) if r['cause'] else '', fmt_t(r['flight_time'] or 0), (r['notes'] or '').replace('\n', ' ')[:60]]
+                    texts.T('cause_' + r['cause'], lg) if r['cause'] else '', fmt_t(r['flight_time'] or 0),
+                    acn.get(r.get('aircraft') or '', r.get('aircraft') or ''), pin.get(r.get('pilot') or '', ''), (r['notes'] or '').replace('\n', ' ')[:60]]
             for j, val in enumerate(vals):
                 it = QTableWidgetItem(val)
                 if j == 3: it.setForeground(QColor(VERDICT_COL.get(r['verdict'], '#94A3B8')))
@@ -476,21 +502,16 @@ class ParamLibPage(Page):
         r = self.tbl.currentRow()
         if r < 0: return
         k = self.names[r]; p = self.P.get(k); lg = lang()
-        key = (self.win.settings.get('api_key') or '').strip()
+        from ..core import ai as AI
+        s = self.win.settings
         if not p or lg == 'en': return
-        if not key: return error(self, t('need_key').split('.')[0])
-        from ..core.advisor import OnlineAdvisor
+        if not AI.available(s): return error(self, t('need_key').split('.')[0])
         en = p.get('en') or ['', '']
         txt = f'{en[0]}\n|||\n{en[1]}'
         self.b_tx.setEnabled(False)
 
         def job():
-            from ..core import advisor
-            a = advisor.OnlineAdvisor.__new__(advisor.OnlineAdvisor)
-            import anthropic
-            a.client = anthropic.Anthropic(api_key=key, max_retries=2, timeout=120)
-            a.model = self.win.settings.get('model'); a.usage = self.win.usage
-            return advisor.OnlineAdvisor.translate(a, txt, lg)
+            return AI.translate(s, self.win.usage, txt, lg)
 
         def ok(out):
             self.b_tx.setEnabled(True)
@@ -533,7 +554,13 @@ class VerifyPage(Page):
     def by_id(self):
         x = self.id.text().strip()
         if not x: return
-        if x.startswith('PLA1|'): x = x.split('|')[1]
+        if x.startswith(('PLA1|', 'PLACERT|')): x = x.split('|')[1]
+        from ..core import exam as X
+        c = X.find_certificate(self.win.archive, x)
+        if c:
+            ex = self.win.archive.rec_get('exam', c.get('exam_id', '')) or {}
+            return self._out({k: c.get(k) for k in ('cert_id', 'student', 'score', 'total', 'pct', 'date') if k in c} | {'exam': ex.get('title', '')},
+                             t('ver_cert', s=c['student'], e=ex.get('title', ''), p=int(round(c.get('pct', 0))), d=c.get('date', '')), '')
         r = self.win.archive.find_report(rid=x)
         self._out(r, t('verify_id_ok') if r else t('verify_bad'), '')
 

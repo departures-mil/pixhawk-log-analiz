@@ -6,7 +6,7 @@ from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, Q
                                QFileDialog, QDialog, QFormLayout, QComboBox, QCheckBox, QProgressBar, QLabel, QApplication, QSizeGrip)
 from .i18n import t, lang, set_lang
 from .common import TitleBar, label, button, run_bg, error, info, open_path, app_icon
-from . import pages_a as PA, pages_b as PB
+from . import pages_a as PA, pages_b as PB, pages_c as PC
 from .settings_page import SettingsPage
 from ..core.settings import Settings
 from ..core.archive import Archive, file_uid
@@ -16,14 +16,18 @@ from ..core.paths import data_dir
 NAV = [('analysis', '🔎', 'nav_analysis', PA.AnalysisPage), ('charts', '📈', 'nav_charts', PA.ChartsPage),
        ('map', '🗺', 'nav_map', PA.MapPage), ('timeline', '🕒', 'nav_timeline', PA.TimelinePage),
        ('advisor', '🤖', 'nav_advisor', PA.AdvisorPage), ('practice', '🎓', 'nav_practice', PA.PracticePage),
+       ('exam', '📝', 'nav_exam', PC.ExamPage),
        ('scen', '🧪', 'nav_scen', PB.ScenarioPage), ('batch', '🗂', 'nav_batch', PB.BatchPage),
-       ('archive', '🗄', 'nav_archive', PB.ArchivePage), ('msgs', '📘', 'nav_msgs', PB.MsgLibPage),
+       ('archive', '🗄', 'nav_archive', PB.ArchivePage), ('fleet', '🛩', 'nav_fleet', PC.FleetPage),
+       ('pilots', '👨‍✈️', 'nav_pilots', PC.PilotsPage), ('msgs', '📘', 'nav_msgs', PB.MsgLibPage),
        ('params', '⚙', 'nav_params', PB.ParamLibPage), ('verify', '✅', 'nav_verify', PB.VerifyPage),
        ('settings', '🛠', 'nav_settings', SettingsPage)]
 
 
 class MainWindow(QMainWindow):
     lan_merged = Signal(object, str)
+    crashed = Signal(str)
+    open_req = Signal(str)
 
     def __init__(self):
         super().__init__()
@@ -31,6 +35,9 @@ class MainWindow(QMainWindow):
         self.archive = Archive()
         self.usage = Usage(os.path.join(data_dir(), 'ai_usage.json'))
         self.A = None; self.uid = None; self._cancel = False; self._half = False
+        self.role = 'admin'; self.user_name = ''
+        self._apply_core_settings()
+        self.crashed.connect(self._on_crash); self.open_req.connect(self._open_req)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.Window)
         self.setWindowIcon(app_icon())
         self.lan_merged.connect(self._lan_merged)
@@ -43,6 +50,106 @@ class MainWindow(QMainWindow):
             self.lan = None
         if self.settings.get('auto_update_check', True):
             QTimer.singleShot(2500, lambda: self.do_update(silent=True))
+        # Mission Planner log klasörü izleme
+        self.watcher = None; self.wtimer = QTimer(self); self.wtimer.setInterval(5000); self.wtimer.timeout.connect(self._watch_tick)
+        self.setup_watch()
+        QTimer.singleShot(4000, self._pending_crashes)
+
+    # ------------------------------------------------------------ v1.0.2 yardımcıları
+    def _apply_core_settings(self):
+        s = self.settings
+        try:
+            from ..core import analysis, cache
+            analysis.PROFILE_OVERRIDE['v'] = s.get('profile', 'auto') or 'auto'
+            cache.MAX_MB = int(s.get('cache_max_mb', 3000) or 3000)
+        except Exception:
+            pass
+
+    def login(self):
+        """Giriş gerekiyorsa sor. False: kullanıcı vazgeçti."""
+        from ..core import security
+        us = security.users(self.archive)
+        if not (self.settings.get('require_login') and us): return True
+        from PySide6.QtWidgets import QLineEdit
+        while True:
+            dl = QDialog(); dl.setWindowTitle(t('login_title')); dl.setWindowIcon(app_icon()); dl.setMinimumWidth(380); f = QFormLayout(dl)
+            nm = QComboBox(); nm.setEditable(True); nm.addItems([u['name'] for u in us]); f.addRow(t('u_name'), nm)
+            pw = QLineEdit(); pw.setEchoMode(QLineEdit.Password); f.addRow(t('u_pw'), pw); pw.setFocus()
+            h = QHBoxLayout(); h.addWidget(button(t('cancel'), dl.reject)); h.addWidget(button(t('login_title'), dl.accept, primary=True)); f.addRow(h)
+            if dl.exec() != QDialog.Accepted: return False
+            u = security.login(self.archive, nm.currentText(), pw.text())
+            if u:
+                self.role = u.get('role', 'student'); self.user_name = u['name']; return True
+            error(dl, t('login_bad'))
+
+    def apply_role(self):
+        from ..core import security
+        hid = security.HIDDEN.get(self.role, set())
+        for i, k in enumerate(self.keys):
+            self.nav.item(i).setHidden(k in hid)
+        if self.user_name:
+            self.set_status(t('login_as', n=self.user_name, r=security.role_name(self.role, lang())))
+
+    def setup_watch(self):
+        from ..core import mpwatch
+        s = self.settings
+        if s.get('watch_enabled'):
+            dirs = list(dict.fromkeys((s.get('watch_dirs') or []) + mpwatch.default_dirs()))
+            self.watcher = mpwatch.Watcher(dirs); self.wtimer.start()
+        else:
+            self.watcher = None; self.wtimer.stop()
+
+    def _watch_tick(self):
+        if not self.watcher: return
+        try: new = self.watcher.scan()
+        except Exception: return
+        for p in new:
+            if self.settings.get('auto_analyze'):
+                self.open_log(p)
+            else:
+                self.set_status(t('mp_new', n=os.path.basename(p)))
+                self.mp_btn.setText('▶ ' + t('mp_analyze') + ': ' + os.path.basename(p)); self.mp_btn.setVisible(True)
+                self.mp_btn.path = p
+            break
+
+    def _mp_open(self):
+        p = getattr(self.mp_btn, 'path', None); self.mp_btn.setVisible(False)
+        if p: self.open_log(p)
+
+    def _open_req(self, p):
+        self.showMaximized(); self.raise_(); self.activateWindow()
+        if p and os.path.isfile(p): self.open_log(p)
+
+    # ------------------------------------------------------------ çökme raporu
+    def _on_crash(self, path):
+        self.crash_dialog([path])
+
+    def _pending_crashes(self):
+        from ..core import crash
+        try: ps = crash.pending()
+        except Exception: ps = []
+        if ps: self.crash_dialog(ps, prev=True)
+
+    def crash_dialog(self, paths, prev=False):
+        if getattr(self, '_crash_open', False): return
+        self._crash_open = True
+        try:
+            from PySide6.QtWidgets import QPlainTextEdit
+            from ..core import crash
+            dl = QDialog(self); dl.setWindowTitle(t('cr_title')); dl.setMinimumWidth(560); v = QVBoxLayout(dl)
+            v.addWidget(label((t('cr_prev') + '\n\n' if prev else '') + t('cr_text'), wrap=True))
+            note = QPlainTextEdit(); note.setPlaceholderText(t('cr_note')); note.setMaximumHeight(80); v.addWidget(note)
+            det = QPlainTextEdit(); det.setReadOnly(True); det.setVisible(False); det.setMinimumHeight(220)
+            try: det.setPlainText('\n\n'.join(open(p, encoding='utf-8').read()[-5000:] for p in paths))
+            except Exception: pass
+            v.addWidget(det)
+            h = QHBoxLayout(); h.addWidget(button(t('cr_details'), lambda: det.setVisible(not det.isVisible()))); h.addStretch(1)
+            h.addWidget(button(t('cr_later'), dl.reject)); h.addWidget(button(t('cr_send'), dl.accept, primary=True)); v.addLayout(h)
+            if dl.exec() == QDialog.Accepted:
+                run_bg(crash.send, paths, lang(), note.toPlainText(), on_done=lambda ok: self.set_status(t('cr_sent') if ok else t('c_fail')),
+                       on_fail=lambda e: self.set_status(t('c_fail')))
+        finally:
+            self._crash_open = False
 
     # ------------------------------------------------------------ kurulum
     def build(self):
@@ -64,10 +171,12 @@ class MainWindow(QMainWindow):
         sb = QHBoxLayout(); sbw = QWidget(); sbw.setObjectName('statusbar'); sbw.setAttribute(Qt.WA_StyledBackground, True); sbw.setLayout(sb)
         sb.setContentsMargins(10, 2, 2, 2)
         self.status = QLabel(''); sb.addWidget(self.status, 1)
+        self.mp_btn = button('', self._mp_open, primary=True); self.mp_btn.setVisible(False); sb.addWidget(self.mp_btn)
         self.upd_bar = QProgressBar(); self.upd_bar.setVisible(False); self.upd_bar.setFixedWidth(560); sb.addWidget(self.upd_bar)
         sb.addWidget(QSizeGrip(sbw))
         v.addWidget(sbw)
         self.nav.setCurrentRow(0)
+        self.apply_role()
         if self.A:
             for p in self.pages.values():
                 try: p.on_analysis(self.A)
@@ -119,13 +228,29 @@ class MainWindow(QMainWindow):
         w = None
 
         def job():
-            from ..core import loader, analysis
-            L = loader.load(path, progress=lambda f: w.progress.emit(('l', f)), cancel=lambda: self._cancel)
+            from ..core import loader, analysis, crash, security
+            crash.note('open ' + os.path.basename(path))
+            real = path
+            if path.lower().endswith('.pxloc'): real = security.open_local_file(path)
+            L = loader.load(real, progress=lambda f: w.progress.emit(('l', f)), cancel=lambda: self._cancel)
             w.progress.emit(('a', 0.0))
             A = analysis.Analysis(L)
-            uid = file_uid(path)
+            uid = file_uid(real)
             if archive:
-                arc.add_analysis(uid, A, path, s['device_name'], s.get('archive_copy_logs', True), s.get('archive_copy_max_mb', 200))
+                arc.add_analysis(uid, A, real, s['device_name'], s.get('archive_copy_logs', True), s.get('archive_copy_max_mb', 200),
+                                 encrypt=bool(s.get('encrypt_local')))
+                try:
+                    from ..core import fleet, anomaly
+                    fleet.ensure_aircraft(arc, A)
+                    anomaly.learn(A, uid)
+                except Exception as e:
+                    crash.note(f'fleet/anomaly: {e}')
+            if s.get('online', True) and s.get('weather_online', True):
+                try:
+                    from ..core import weather
+                    weather.for_analysis(A)
+                except Exception:
+                    pass
             return A, uid
 
         def prog(x):
@@ -157,12 +282,32 @@ class MainWindow(QMainWindow):
         fc = QComboBox(); fc.addItem('PDF', 'pdf'); fc.addItem('DOCX', 'docx'); fc.addItem(t('rep_both'), 'both')
         fc.setCurrentIndex(max(0, fc.findData(s.get('report_fmt', 'pdf')))); f.addRow(t('rep_fmt'), fc)
         tc = QComboBox(); tc.addItems(list(s['templates'])); tc.setCurrentText(s.get('template', 'default')); f.addRow(t('rep_tpl'), tc)
-        ai = QCheckBox(t('rep_ai')); ai.setChecked(bool(s.get('report_ai', True) and s.get('api_key') and s.get('online', True))); f.addRow(ai)
+        from ..core import ai as AI
+        md = QComboBox(); md.addItem(t('rep_long'), 'long'); md.addItem(t('rep_short'), 'short')
+        md.setCurrentIndex(max(0, md.findData(s.get('report_mode', 'long')))); f.addRow(t('s_rep_mode'), md)
+        acs = QComboBox(); acs.addItem(t('fl_none'), '')
+        for a_ in self.archive.rec_list('aircraft'): acs.addItem(f"{a_.get('name', '')} · {a_.get('serial', '')}", a_['id'])
+        cur_rec = self.archive.get(self.uid) if self.uid else None
+        acs.setCurrentIndex(max(0, acs.findData((cur_rec or {}).get('aircraft') or getattr(self.A, 'serial', '')))); f.addRow(t('rep_aircraft'), acs)
+        pls = QComboBox(); pls.addItem(t('fl_none'), '')
+        for p_ in self.archive.rec_list('pilot'): pls.addItem(p_['name'], p_['id'])
+        pls.setCurrentIndex(max(0, pls.findData((cur_rec or {}).get('pilot') or ''))); f.addRow(t('rep_pilot'), pls)
+        ai = QCheckBox(t('rep_ai')); ai.setChecked(bool(s.get('report_ai', True) and AI.available(s))); ai.setEnabled(AI.available(s)); f.addRow(ai)
         mp = QCheckBox(t('rep_map')); mp.setChecked(bool(s.get('online', True))); f.addRow(mp)
+        from PySide6.QtWidgets import QLineEdit
+        enc = QCheckBox(t('rep_encrypt')); pw = QLineEdit(); pw.setEchoMode(QLineEdit.Password); pw.setPlaceholderText(t('rep_pw')); pw.setEnabled(False)
+        enc.toggled.connect(pw.setEnabled); eh = QHBoxLayout(); eh.addWidget(enc); eh.addWidget(pw, 1); f.addRow(eh)
         h = QHBoxLayout(); h.addWidget(button(t('cancel'), dl.reject)); h.addWidget(button(t('export'), dl.accept, primary=True)); f.addRow(h)
         if dl.exec() != QDialog.Accepted: return
         rl, fmt, tpl = lc.currentData(), fc.currentData(), tc.currentText()
+        mode = md.currentData(); s['report_mode'] = mode
         s['report_lang'] = rl; s['report_fmt'] = fmt; s['template'] = tpl; s['report_ai'] = ai.isChecked(); s.save()
+        password = pw.text() if enc.isChecked() and pw.text() else None
+        if self.uid:
+            if acs.currentData() != ((cur_rec or {}).get('aircraft') or ''): self.archive.set_field(self.uid, aircraft=acs.currentData())
+            if pls.currentData() != ((cur_rec or {}).get('pilot') or ''): self.archive.set_field(self.uid, pilot=pls.currentData())
+        ac_name = acs.currentText() if acs.currentData() else ''; pi_name = pls.currentText() if pls.currentData() else ''
+        sections = s.get('report_sections')
         base = os.path.splitext(os.path.basename(self.A.L.path))[0] + f'_rapor_{rl}'
         ext = 'docx' if fmt == 'docx' else 'pdf'
         out, _ = QFileDialog.getSaveFileName(self, t('rep_title'), os.path.join(os.path.dirname(self.A.L.path), base + '.' + ext),
@@ -170,28 +315,32 @@ class MainWindow(QMainWindow):
         if not out: return
         out = os.path.splitext(out)[0]
         A = self.A; uid = self.uid; lh = s['templates'].get(tpl) or s.letterhead(); use_ai = ai.isChecked(); online_map = mp.isChecked()
-        arc = self.archive; dev = s['device_name']; key = s.get('api_key'); model = s.get('model'); effort = s.get('effort', 'medium'); usage = self.usage
+        arc = self.archive; dev = s['device_name']; usage = self.usage
         self.set_status(t('rep_creating'))
         pg = self.pages['analysis']; pg.set_busy(True, t('rep_creating')); pg.prog.setRange(0, 0)
 
         def job():
             from ..core import report
-            from ..core.advisor import OnlineAdvisor
+            from ..core import ai as AI, security
             ai_text = None
-            if use_ai and key:
+            if use_ai and AI.available(s):
                 try:
-                    adv = OnlineAdvisor(A, key, model, rl, usage, effort)
+                    adv = AI.make_advisor(A, s, rl, usage)
                     ai_text = adv.ask('Write the expert commentary section of the official flight-log report: 1) overall assessment, '
                                       '2) what happened and when (key times), 3) root cause with evidence, 4) concrete recommendations '
                                       '(parameters, maintenance, training). Use short headings (#) and bullet points. Max ~450 words.')
                 except Exception:
                     ai_text = None
-            rd = report.ReportData(A, rl, ai_text, online_map, s.get('map_src', 'osm'))
+            rd = report.ReportData(A, rl, ai_text, online_map, s.get('map_src', 'osm'), sections=sections, mode=mode)
+            rd.aircraft_name = ac_name; rd.pilot_name = pi_name
             outs = []
             if fmt in ('pdf', 'both'):
-                p = out + '.pdf'; report.build_pdf(rd, p, lh); outs.append((p, 'pdf'))
+                p = out + '.pdf'; report.build_pdf(rd, p, lh, encrypt=password); outs.append((p, 'pdf'))
             if fmt in ('docx', 'both'):
-                p = out + '.docx'; report.build_docx(rd, p, lh); outs.append((p, 'docx'))
+                p = out + '.docx'; report.build_docx(rd, p, lh)
+                if password:
+                    security.encrypt_file(p, p + '.pxenc', password); os.remove(p); p = p + '.pxenc'
+                outs.append((p, 'docx'))
             for p, fm in outs:
                 if uid: arc.add_report(rd.id, uid, report.file_sha256(p), A.verdict.get('kind'), A.overall, rl, fm, p, dev, os.path.basename(A.L.path))
             return outs
@@ -272,4 +421,5 @@ class MainWindow(QMainWindow):
 
     def closeEvent(self, e):
         if self.lan: self.lan.stop = True
+        self.wtimer.stop()
         super().closeEvent(e)
