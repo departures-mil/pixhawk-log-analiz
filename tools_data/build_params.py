@@ -11,7 +11,7 @@ import gzip, json, os, sys, time, urllib.request, datetime
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE = 'https://autotest.ardupilot.org/Parameters'
 # program içi ad -> autotest klasör adları (ilk bulunan)
-VEHICLES = [('Plane', ['ArduPlane']), ('Copter', ['ArduCopter']), ('Heli', ['Heli', 'ArduCopter-heli']),
+VEHICLES = [('Plane', ['ArduPlane']), ('Copter', ['ArduCopter']),
             ('Rover', ['Rover', 'APMrover2']), ('Sub', ['ArduSub']), ('Blimp', ['Blimp']),
             ('Tracker', ['AntennaTracker']), ('Periph', ['AP_Periph'])]
 

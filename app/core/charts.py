@@ -1,6 +1,6 @@
 """Rapor ve arayüz grafikleri (matplotlib). Her grafik PNG bayt dizisi olarak üretilir."""
 from __future__ import annotations
-import io, math
+import io, math, re
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
@@ -27,9 +27,26 @@ def shape(s, lang):
         return s
 
 
+def _mpl_ctl():
+    """matplotlib 3.11+ Arapçayı kendisi şekillendirip sağdan sola diziyor (libraqm); o zaman ikinci kez işlenmemeli."""
+    try:
+        v = tuple(int(x) for x in re.findall(r'\d+', matplotlib.__version__)[:2])
+        return v >= (3, 11)
+    except Exception:
+        return False
+
+
+MPL_CTL = _mpl_ctl()
+
+
+def mshape(s, lang):
+    """matplotlib metni için Arapça şekillendirme (gerekiyorsa)."""
+    return s if MPL_CTL else shape(s, lang)
+
+
 def rt(key, lang):
     i = ('tr', 'en', 'ar').index(lang)
-    return shape(RT[key][i], lang)
+    return mshape(RT[key][i], lang)
 
 
 def _fig(h=3.2, w=8.0):
@@ -242,7 +259,7 @@ def chart_health(A, lang):
     if not A.health: return None
     items = list(A.health.items())
     fig = _fig(0.42 * len(items) + 0.8, 7.2); ax = fig.add_subplot(111)
-    names = [shape(T('dom_' + k, lang), lang) for k, _ in items]; vals = [v['score'] for _, v in items]
+    names = [mshape(T('dom_' + k, lang), lang) for k, _ in items]; vals = [v['score'] for _, v in items]
     cols = [C['green'] if v['status'] == 'good' else (C['amber'] if v['status'] == 'warn' else C['red']) for _, v in items]
     y = np.arange(len(items))[::-1]
     ax.barh(y, vals, color=cols, height=0.6)

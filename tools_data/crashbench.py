@@ -201,7 +201,8 @@ def write(res):
     json.dump({'score': s, 'history': hist[-20:], 'results': res}, open(prev, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     lib = [{k: r.get(k) for k in ('id', 'title', 'url', 'log_url', 'label', 'cause_hint', 'mb', 'vehicle', 'got', 'got_cause', 'dur', 'created')}
            for r in res if r.get('got') not in (None, 'error')]
-    json.dump(lib, open(os.path.join(ROOT, 'app', 'data', 'crashlib.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=0)
+    json.dump({'score': s, 'date': hist[-1]['date'], 'cases': lib}, open(os.path.join(ROOT, 'app', 'data', 'crashlib.json'), 'w', encoding='utf-8'),
+              ensure_ascii=False, indent=0)
     os.makedirs(os.path.join(ROOT, 'docs'), exist_ok=True)
     L = ['# Gerçek kırım logları ile teşhis doğruluğu', '',
          f"Kaynak: discuss.ardupilot.org kamuya açık konular · Tarih: {hist[-1]['date']} · Log sayısı: {s['n']} (+{s['errors']} okunamayan)", '',

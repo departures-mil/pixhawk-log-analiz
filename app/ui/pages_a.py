@@ -183,6 +183,8 @@ class MapPage(Page):
         self.spd = QComboBox()
         for x in ('1x', '2x', '5x', '10x', '20x'): self.spd.addItem(x)
         self.spd.setCurrentIndex(2); ctl.addWidget(self.spd)
+        from .pages_p import video_dialog
+        ctl.addWidget(button('🎬 ' + t('vd_btn'), lambda: video_dialog(self.win, self), primary=True))
         rv.addLayout(ctl)
         self.info = label('', wrap=True); rv.addWidget(self.info)
         from PySide6.QtWidgets import QSplitter

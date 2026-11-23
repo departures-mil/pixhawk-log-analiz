@@ -16,43 +16,17 @@ from ..core.paths import res, data_dir
 E = html.escape
 LI = {'tr': 0, 'en': 1, 'ar': 2}
 
-SCEN = {
-    'normal': (('Normal uçuş', 'Normal flight', 'رحلة طبيعية'),
-               ('Sorunsuz otomatik görev: kalkış, seyir, RTL ve iniş. Referans olarak "sağlıklı" grafiklerin nasıl göründüğünü öğrenin.',
-                'Trouble-free auto mission: takeoff, cruise, RTL and landing. Learn what "healthy" charts look like.',
-                'مهمة تلقائية دون مشاكل: إقلاع وطيران وعودة وهبوط. تعلّم شكل الرسوم "السليمة".')),
-    'gps_loss': (('GPS kaybı ve kırım', 'GPS loss and crash', 'فقدان GPS وتحطم'),
-                 ('Uydu sayısı düşer, HDOP büyür, EKF konum güvenini kaybeder; araç kontrolsüz alçalarak düşer.',
-                  'Satellite count drops, HDOP rises, EKF loses position confidence; the aircraft descends uncontrolled and crashes.',
-                  'ينخفض عدد الأقمار ويرتفع HDOP ويفقد EKF الثقة بالموقع؛ تهبط الطائرة دون سيطرة وتتحطم.')),
-    'battery': (('Batarya tükenmesi', 'Battery depletion', 'نفاد البطارية'),
-                ('Hücre gerilimi kritik seviyenin altına iner, failsafe gecikir, motor gücü yetmez ve araç düşer.',
-                 'Cell voltage falls below critical, failsafe is late, motor power is insufficient and the aircraft falls.',
-                 'ينخفض جهد الخلية تحت الحد الحرج ويتأخر الأمان ولا تكفي قدرة المحرك فتسقط الطائرة.')),
-    'vibration': (('Aşırı titreşim', 'Excessive vibration', 'اهتزاز مفرط'),
-                  ('Pervane/motor dengesizliği nedeniyle titreşim ve clipping artar; EKF ve irtifa tahmini bozulur.',
-                   'Prop/motor imbalance raises vibration and clipping; EKF and altitude estimate degrade.',
-                   'عدم توازن المروحة/المحرك يزيد الاهتزاز والقص؛ يتدهور EKF وتقدير الارتفاع.')),
-    'radio_loss': (('Radyo (RC) kaybı', 'Radio (RC) loss', 'فقدان الراديو (RC)'),
-                   ('RC sinyali kesilir, throttle failsafe devreye girer ve araç RTL ile geri döner (kırım yok).',
-                    'RC signal is lost, throttle failsafe triggers and the aircraft returns with RTL (no crash).',
-                    'ينقطع إشارة RC ويُفعّل أمان الخانق وتعود الطائرة بوضع RTL (دون تحطم).')),
-    'stall': (('Stall (tutunma kaybı)', 'Stall', 'انهيار الطائرة (Stall)'),
-              ('Düşük hava hızında dik tırmanış; kanat tutunmayı kaybeder, burun düşer ve araç irtifa kaybederek çakılır.',
-               'Steep climb at low airspeed; the wing stalls, the nose drops and the aircraft crashes losing altitude.',
-               'صعود حاد بسرعة منخفضة؛ يفقد الجناح الرفع ويهبط الأنف وتتحطم الطائرة.')),
-    'compass': (('Pusula paraziti', 'Compass interference', 'تداخل البوصلة'),
-                ('Motor akımı manyetometreyi bozar; yön hatası EKF\'i şaşırtır, araç rotasından sapar ve düşer.',
-                 'Motor current corrupts the magnetometer; heading error confuses the EKF, the aircraft drifts and crashes.',
-                 'يفسد تيار المحرك المغناطيسية؛ يربك خطأ الاتجاه EKF فتنحرف الطائرة وتسقط.')),
-}
+from ..core.scenarios import SCEN  # noqa: E402
 
 
 class ScenarioPage(Page):
     def __init__(self, win):
         super().__init__(win)
         v = QVBoxLayout(self); v.setContentsMargins(16, 12, 16, 12)
-        v.addWidget(label(t('scen_intro'), 'muted', wrap=True))
+        top = QHBoxLayout(); top.addWidget(label(t('scen_intro'), 'muted', wrap=True), 1)
+        from .pages_p import book_dialog
+        top.addWidget(button('📕 ' + t('tb_btn'), lambda: book_dialog(self.win, self), primary=True))
+        v.addLayout(top)
         h = QHBoxLayout()
         self.list = QListWidget(); self.list.setFixedWidth(300)
         i = LI[lang()]

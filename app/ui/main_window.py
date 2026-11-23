@@ -6,7 +6,7 @@ from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, Q
                                QFileDialog, QDialog, QFormLayout, QComboBox, QCheckBox, QProgressBar, QLabel, QApplication, QSizeGrip)
 from .i18n import t, lang, set_lang
 from .common import TitleBar, label, button, run_bg, error, info, open_path, app_icon
-from . import pages_a as PA, pages_b as PB, pages_c as PC
+from . import pages_a as PA, pages_b as PB, pages_c as PC, pages_p as PP
 from .settings_page import SettingsPage
 from ..core.settings import Settings
 from ..core.archive import Archive, file_uid
@@ -17,10 +17,10 @@ NAV = [('analysis', '🔎', 'nav_analysis', PA.AnalysisPage), ('charts', '📈',
        ('map', '🗺', 'nav_map', PA.MapPage), ('timeline', '🕒', 'nav_timeline', PA.TimelinePage),
        ('advisor', '🤖', 'nav_advisor', PA.AdvisorPage), ('practice', '🎓', 'nav_practice', PA.PracticePage),
        ('exam', '📝', 'nav_exam', PC.ExamPage),
-       ('scen', '🧪', 'nav_scen', PB.ScenarioPage), ('batch', '🗂', 'nav_batch', PB.BatchPage),
+       ('scen', '🧪', 'nav_scen', PB.ScenarioPage), ('crashlib', '💥', 'nav_crashlib', PP.CrashLibPage), ('batch', '🗂', 'nav_batch', PB.BatchPage),
        ('archive', '🗄', 'nav_archive', PB.ArchivePage), ('fleet', '🛩', 'nav_fleet', PC.FleetPage),
        ('pilots', '👨‍✈️', 'nav_pilots', PC.PilotsPage), ('msgs', '📘', 'nav_msgs', PB.MsgLibPage),
-       ('params', '⚙', 'nav_params', PB.ParamLibPage), ('verify', '✅', 'nav_verify', PB.VerifyPage),
+       ('params', '🧩', 'nav_params', PP.ParamCenterPage), ('verify', '✅', 'nav_verify', PB.VerifyPage),
        ('settings', '🛠', 'nav_settings', SettingsPage)]
 
 

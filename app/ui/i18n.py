@@ -252,6 +252,8 @@ U = {
 
 from .i18n2 import U2 as _U2  # noqa: E402
 for _k, _v in _U2.items(): U.setdefault(_k, _v)
+from .i18n3 import U3 as _U3  # noqa: E402
+U.update(_U3)
 
 
 def t(key, **a):
