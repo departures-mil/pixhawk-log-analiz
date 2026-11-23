@@ -467,7 +467,7 @@ class AdvisorPage(Page):
         from ..core.advisor import offline_answer
         from ..core import ai as AI
         lg = lang(); A = self.A; s = self.win.settings
-        key = AI.current(s)[1]
+        key = AI.available(s)
         if not self.use_ai.isChecked():
             self.hist.append(('a', offline_answer(A, q, lg))); self._render(); return
         if not key:
