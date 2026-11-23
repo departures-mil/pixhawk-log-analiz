@@ -67,7 +67,7 @@ jobs:
       - name: Smoke test (silent install + uninstall)
         shell: pwsh
         run: |
-          $s = "dist\PixhawkLogAnaliz-Setup-${{ steps.ver.outputs.version }}.exe"
+          $s = "dist\PixhawkLogAnaliz_Setup_${{ steps.ver.outputs.version }}.exe"
           Start-Process $s -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/SP-' -Wait
           $d = "$env:LOCALAPPDATA\Programs\Pixhawk Log Analiz"
           if (-not (Test-Path "$d\PixhawkLogAnaliz.exe")) { Write-Error 'install failed'; exit 1 }
@@ -82,17 +82,17 @@ jobs:
           name: PixhawkLogAnaliz-v${{ steps.ver.outputs.version }}
           path: |
             dist/PixhawkLogAnaliz.exe
-            dist/PixhawkLogAnaliz-Setup-*.exe
+            dist/PixhawkLogAnaliz_Setup_*.exe
 
-      # GitHub, varlıkları en yeniden eskiye listeler; v1.0.0'daki eski güncelleyici listedeki ilk .exe'yi alır.
-      # Bu yüzden Setup önce, taşınabilir exe en son yüklenir (listede ilk sırada taşınabilir exe olur).
+      # GitHub varlıkları ada göre sıralar; v1.0.0'daki eski güncelleyici listedeki ilk .exe'yi alır.
+      # "PixhawkLogAnaliz.exe" < "PixhawkLogAnaliz_Setup_…" olduğundan taşınabilir exe hep ilk sırada kalır.
       - name: Publish release
         if: github.ref == 'refs/heads/main' && steps.ver.outputs.exists != 'True'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.ver.outputs.version }}
           name: Pixhawk Log Analiz v${{ steps.ver.outputs.version }}
-          files: dist/PixhawkLogAnaliz-Setup-${{ steps.ver.outputs.version }}.exe
+          files: dist/PixhawkLogAnaliz_Setup_${{ steps.ver.outputs.version }}.exe
           generate_release_notes: true
           make_latest: true
 
@@ -105,7 +105,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
 
-      # Mevcut sürümde sıralama yanlışsa (Setup ilk sıradaysa) yalnızca taşınabilir exe'yi yeniden yükleyerek düzelt.
+      # Mevcut sürümde Setup ilk sıradaysa onu yeni adla yeniden yükleyip eskisini sil.
       - name: Fix asset order of existing release
         if: github.ref == 'refs/heads/main' && steps.ver.outputs.exists == 'True'
         shell: pwsh
@@ -113,7 +113,8 @@ jobs:
           $first = gh api "repos/${{ github.repository }}/releases/tags/v${{ steps.ver.outputs.version }}" --jq '[.assets[] | select(.name | endswith(".exe"))][0].name'
           Write-Host "first exe asset: $first"
           if ($first -like '*Setup*') {
-            gh release upload "v${{ steps.ver.outputs.version }}" "dist/PixhawkLogAnaliz.exe" --repo "${{ github.repository }}" --clobber
+            gh release upload "v${{ steps.ver.outputs.version }}" "dist/PixhawkLogAnaliz_Setup_${{ steps.ver.outputs.version }}.exe" --repo "${{ github.repository }}" --clobber
+            gh release delete-asset "v${{ steps.ver.outputs.version }}" "$first" --repo "${{ github.repository }}" --yes
             gh api "repos/${{ github.repository }}/releases/tags/v${{ steps.ver.outputs.version }}" --jq '.assets[].name'
           }
         env:
