@@ -1,4 +1,20 @@
-[
+{
+"score": {
+"n": 64,
+"errors": 1,
+"tp": 26,
+"fn": 19,
+"fp": 9,
+"tn": 10,
+"accuracy": 0.562,
+"recall_crash": 0.578,
+"specificity": 0.526,
+"cause_n": 32,
+"cause_match": 3,
+"cause_acc": 0.094
+},
+"date": "2026-11-23 11:26",
+"cases": [
 {
 "id": "10063",
 "title": "Crash on first flight after mayor crash",
@@ -896,3 +912,4 @@
 "created": "2023-04-23"
 }
 ]
+}
