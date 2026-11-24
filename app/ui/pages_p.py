@@ -50,6 +50,7 @@ class ParamCenterPage(Page):
         self.cur_lbl = label('', 'muted', wrap=True); v.addWidget(self.cur_lbl)
         self.tabs = QTabWidget(); v.addWidget(self.tabs, 1)
         self._build_browse(); self._build_inspect(); self._build_compare(); self._build_archive(); self._build_learn(); self._build_ask()
+        self._build_preflight(); self._build_tuning()
 
     # ================================================================ yükleme
     def on_show(self):
@@ -88,6 +89,8 @@ class ParamCenterPage(Page):
 
     def on_analysis(self, A):
         if self.db: self.from_log(silent=True)
+        self._tune_res = None
+        if hasattr(self, 'tune_view'): self._refresh_tuning()
 
     # ================================================================ 1) Gezgin
     def _build_browse(self):
@@ -376,7 +379,7 @@ class ParamCenterPage(Page):
     def _cur_changed(self):
         c = self.cur
         self.cur_lbl.setText(t('pc_cur', n=c['name'] or '-', c=len(c['params'])) if c['params'] else t('pc_cur_none'))
-        self._refresh_inspect()
+        self._refresh_inspect(); self._refresh_preflight()
 
     def open_file(self):
         p, _ = QFileDialog.getOpenFileName(self, t('pc_open_file'), '', 'ArduPilot params (*.param *.parm *.params *.txt *.csv);;All (*.*)')
@@ -707,6 +710,130 @@ class ParamCenterPage(Page):
         self.b_ask.setEnabled(False); self.ans.setHtml(f'<p>{E(t("pc_working"))}</p>')
         run_bg(PC.ai_question, s, self.win.usage, q, vv, lg, cur, names, on_done=lambda r: show(r or off, bool(r)),
                on_fail=lambda e: show(off + '\n\n' + t('pc_ai_fail', e=str(e)[:200]), False))
+
+
+    # ================================================================ 7) Uçuş öncesi kontrol listesi
+    def _build_preflight(self):
+        w = QWidget(); v = QVBoxLayout(w)
+        v.addWidget(label(t('pf_help'), 'muted', wrap=True))
+        bar = QHBoxLayout()
+        bar.addWidget(button('📂 ' + t('pc_open_file'), self.open_file))
+        bar.addWidget(button('🛩 ' + t('pc_from_log'), self.from_log))
+        bar.addSpacing(12); bar.addWidget(label(t('pf_cells')))
+        self.pf_cells = QComboBox(); self.pf_cells.addItem(t('pf_auto'), 0)
+        for n in range(1, 15): self.pf_cells.addItem(f'{n}S', n)
+        self.pf_cells.currentIndexChanged.connect(self._refresh_preflight); bar.addWidget(self.pf_cells)
+        self.pf_chem = QComboBox(); self.pf_chem.addItem('LiPo', 'lipo'); self.pf_chem.addItem('Li-ion', 'liion')
+        self.pf_chem.currentIndexChanged.connect(self._refresh_preflight); bar.addWidget(self.pf_chem)
+        bar.addStretch(1)
+        bar.addWidget(button('🛠 ' + t('pf_fix'), self._pf_fix, primary=True))
+        bar.addWidget(button('💾 ' + t('pf_save'), self._pf_save))
+        v.addLayout(bar)
+        self.pf_view = QTextBrowser(); v.addWidget(self.pf_view, 1)
+        self.tabs.addTab(w, '✅ ' + t('pc_tab_pre'))
+        self._pf = None
+
+    def _refresh_preflight(self, *_):
+        if not hasattr(self, 'pf_view'): return
+        from ..core import preflight as PF
+        P = self.cur['params']; lg = lang(); d_ = 'rtl' if lg == 'ar' else 'ltr'
+        if not P:
+            self.pf_view.setHtml(f'<div dir="{d_}"><p>{E(t("pf_none"))}</p></div>'); self._pf = None; return
+        vv = self.vehicle() if self.db else PC.detect_vehicle(P)
+        r = PF.checklist(P, vv, lg, {'cells': self.pf_cells.currentData() or None, 'chem': self.pf_chem.currentData()})
+        self._pf = r
+        col = {'go': '#34D399', 'caution': '#FBBF24', 'nogo': '#F87171'}[r['status']]
+        ic = {'fail': '⛔', 'warn': '⚠', 'pass': '✔', 'na': '–'}; cc = {'fail': '#F87171', 'warn': '#FBBF24', 'pass': '#34D399', 'na': '#94A3B8'}
+        h = [f'<div dir="{d_}"><h2 style="color:{col}">{E(r["summary"])}</h2><p>{E(r["counts_t"])} · {E(PC.vname(r["vehicle"], lg))}</p>',
+             '<table cellspacing="0" cellpadding="5" width="100%">']
+        for it in r['items']:
+            fx = ''.join(f'<br><span style="color:#93C5FD">→ {E(k)} = {E(PC.fmt(val))}</span>' for k, val in it.get('fix') or [])
+            h.append(f'<tr><td width="28" style="color:{cc[it["st"]]};font-size:13pt">{ic[it["st"]]}</td>'
+                     f'<td width="190" style="color:#94A3B8">{E(it["cat_t"])}</td><td><b>{E(it["title"])}</b><br>{E(it["text"])}{fx}</td></tr>')
+        h.append('</table>')
+        h.append(f'<p style="color:#64748B">{E(t("pf_note"))}</p></div>')
+        self.pf_view.setHtml(''.join(h))
+
+    def _pf_fix(self):
+        from ..core import preflight as PF
+        if not self._pf: return error(self, t('pc_cur_none'))
+        fixes = [(it['title'], k, val) for it in self._pf['items'] for k, val in it.get('fix') or []]
+        if not fixes: return info(self, t('pf_nofix'))
+        txt = '\n'.join(f'• {a}: {k} = {PC.fmt(val)}' for a, k, val in fixes)
+        if QMessageBox.question(self, t('pf_fix'), t('pf_fix_q', x=txt)) != QMessageBox.Yes: return
+        newp = PF.apply_fixes(self.cur['params'], self._pf)
+        self._export(newp, os.path.splitext(self.cur['name'] or 'params')[0] + '_duzeltilmis')
+
+    def _pf_save(self):
+        from ..core import preflight as PF
+        if not self._pf: return error(self, t('pc_cur_none'))
+        p, _ = QFileDialog.getSaveFileName(self, t('pf_save'), os.path.splitext(self.cur['name'] or 'params')[0] + '_ucus_oncesi.txt', 'Text (*.txt)')
+        if not p: return
+        open(p, 'w', encoding='utf-8').write(PF.to_text(self._pf)); info(self, t('pc_exported', p=p))
+
+    # ================================================================ 8) PID / TECS ayar önerileri
+    def _build_tuning(self):
+        w = QWidget(); v = QVBoxLayout(w)
+        v.addWidget(label(t('tu_help'), 'muted', wrap=True))
+        bar = QHBoxLayout()
+        bar.addWidget(button('🔄 ' + t('tu_run'), lambda: self._refresh_tuning(force=True), primary=True))
+        bar.addWidget(button('⬇ ' + t('tu_export'), self._tu_export))
+        bar.addWidget(button('📋 ' + t('tu_copy'), self._tu_copy))
+        bar.addStretch(1); v.addLayout(bar)
+        sp = QSplitter(Qt.Vertical)
+        self.tune_view = QTextBrowser(); sp.addWidget(self.tune_view)
+        self.ttbl = _tbl(['✓', t('tu_axis'), t('p_name'), t('tu_cur'), t('tu_new'), t('tu_conf'), t('tu_why')], 6)
+        sp.addWidget(self.ttbl); sp.setSizes([420, 260]); v.addWidget(sp, 1)
+        self.tabs.addTab(w, '🎛 ' + t('pc_tab_tune'))
+        self._tune_res = None
+        self._refresh_tuning()
+
+    def _refresh_tuning(self, force=False):
+        lg = lang(); d_ = 'rtl' if lg == 'ar' else 'ltr'; A = self.win.A
+        if not A:
+            self.tune_view.setHtml(f'<div dir="{d_}"><p>{E(t("tu_nolog"))}</p></div>'); self.ttbl.setRowCount(0); return
+        from ..core import tuning as TU
+        if force or self._tune_res is None or self._tune_res.get('_lg') != lg:
+            try:
+                self._tune_res = TU.analyze(A, lg); self._tune_res['_lg'] = lg
+            except Exception as e:
+                self.tune_view.setHtml(f'<p style="color:#F87171">{E(str(e))}</p>'); return
+        r = self._tune_res
+        cc = {'good': '#34D399', 'warn': '#FBBF24', 'bad': '#F87171', 'na': '#94A3B8', 'lowexc': '#94A3B8'}
+        h = [f'<div dir="{d_}"><h3 style="color:#93C5FD">{E(t("pc_tab_tune"))} · {E(os.path.basename(A.L.path))}</h3>']
+        if r.get('note'): h.append(f'<p style="color:#FBBF24">{E(r["note"])}</p>')
+        for a in r['axes']:
+            h.append(f'<h4 style="color:{cc.get(a.get("status"), "#CBD5E1")}">{E(a["title"])}</h4>')
+            if a.get('metrics_text'): h.append(f'<p style="color:#CBD5E1">{E(a["metrics_text"])}</p>')
+            for n_ in a.get('notes', []): h.append(f'<p>• {E(n_)}</p>')
+            for x in a.get('recs', []): h.append(f'<p style="color:#FDE68A">→ <b>{E(x["param"])}</b>: {E(PC.fmt(x["cur"]))} → <b>{E(PC.fmt(x["new"]))}</b> — {E(x["why"])}</p>')
+        h.append(f'<p style="color:#64748B">⚠ {E(r["disclaimer"])}</p></div>')
+        self.tune_view.setHtml(''.join(h))
+        recs = r['recs']; self.ttbl.setRowCount(len(recs))
+        for i, x in enumerate(recs):
+            ck = QTableWidgetItem(); ck.setFlags(ck.flags() | Qt.ItemIsUserCheckable); ck.setCheckState(Qt.Checked if x['conf'] != 'c_lo' else Qt.Unchecked)
+            self.ttbl.setItem(i, 0, ck); self.ttbl.setItem(i, 1, _it(x['axis'])); self.ttbl.setItem(i, 2, _it(x['param'], '#FBBF24'))
+            self.ttbl.setItem(i, 3, _it(PC.fmt(x['cur']))); self.ttbl.setItem(i, 4, _it(PC.fmt(x['new']), '#34D399'))
+            self.ttbl.setItem(i, 5, _it(x['conf_t'])); self.ttbl.setItem(i, 6, _it(x['why']))
+
+    def _tu_selected(self):
+        r = self._tune_res or {}
+        return [x for i, x in enumerate(r.get('recs', [])) if self.ttbl.item(i, 0) and self.ttbl.item(i, 0).checkState() == Qt.Checked]
+
+    def _tu_export(self):
+        sel = self._tu_selected()
+        if not sel: return info(self, t('tu_none_sel'))
+        from ..core import tuning as TU
+        p, _ = QFileDialog.getSaveFileName(self, t('tu_export'), 'ayar_onerileri.param', 'Mission Planner (*.param)')
+        if not p: return
+        open(p, 'w', encoding='utf-8').write(TU.param_file({'recs': sel}, self.vehicle()))
+        info(self, t('tu_exported', p=p))
+
+    def _tu_copy(self):
+        from PySide6.QtWidgets import QApplication
+        sel = self._tu_selected()
+        QApplication.clipboard().setText('\n'.join(f"{x['param']}: {PC.fmt(x['cur'])} -> {PC.fmt(x['new'])}  ({x['why']})" for x in sel))
+        self.win.set_status(t('tu_copied', n=len(sel)))
 
 
 # ====================================================================== Gerçek kaza logları

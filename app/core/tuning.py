@@ -27,6 +27,16 @@ T = {
     'lowexc': ('Yetersiz manevra: istenen hız çok küçük ({x}). Güvenilir öneri için keskin manevralı bir deneme uçuşu ya da AUTOTUNE yapın.',
                'Not enough excitation: the demanded rate is very small ({x}). Fly sharp manoeuvres or AUTOTUNE for a reliable recommendation.',
                'إثارة غير كافية: المعدل المطلوب صغير جداً ({x}). نفّذ مناورات حادة أو AUTOTUNE للحصول على توصية موثوقة.'),
+    'lowrate': ('Ayar verisi {hz} Hz ile kaydedilmiş; hız döngüsü için en az 25 Hz gerekir (Copter: LOG_BITMASK’ta PID + FAST_ATT, Plane: ATTITUDE_FAST). Öneri üretilmedi.',
+                'Tuning data was logged at {hz} Hz; the rate loop needs at least 25 Hz (Copter: PID + FAST_ATT in LOG_BITMASK, Plane: ATTITUDE_FAST). No recommendation made.',
+                'سُجّلت بيانات الضبط بتردد {hz} هرتز؛ تحتاج حلقة المعدل 25 هرتز على الأقل (Copter: PID + FAST_ATT في LOG_BITMASK، Plane: ATTITUDE_FAST). لم تُقدَّم توصية.'),
+    'lowrate2': ('Kayıt hızı {hz} Hz: yalnız büyük kazanç hataları ve yavaş salınımlar değerlendirildi (güven düşük). Kesin ayar için LOG_BITMASK’ta hızlı tutum / PID kaydını açın.',
+                 'Log rate {hz} Hz: only large gain errors and slow oscillations were assessed (low confidence). Enable fast attitude / PID logging in LOG_BITMASK for precise tuning.',
+                 'معدل التسجيل {hz} هرتز: قُيّمت أخطاء الكسب الكبيرة والتذبذبات البطيئة فقط (ثقة منخفضة). فعّل تسجيل الوضع السريع / PID في LOG_BITMASK لضبط دقيق.'),
+    'lowcorr': ('İstenen ve gerçek hız arasında ilişki zayıf (r = {c}): veri yerde, kontrol dışı ya da mekanik arızalı bir bölümden geliyor. Ayar önerisi güvenilir olmaz.',
+                'Weak relation between demanded and actual rate (r = {c}): the data comes from the ground, an out-of-control segment or a mechanical fault. A tuning recommendation would not be reliable.',
+                'علاقة ضعيفة بين المعدل المطلوب والفعلي (r = {c}): البيانات من الأرض أو من مقطع خارج السيطرة أو عطل ميكانيكي. لن تكون توصية الضبط موثوقة.'),
+    'noflight': ('Uçuş bulunamadı; ayar analizi yalnız havadaki veriyle yapılır.', 'No flight found; tuning analysis uses airborne data only.', 'لم يُعثر على طيران؛ يعتمد تحليل الضبط على بيانات الطيران فقط.'),
     'metrics': ('Kazanç oranı {g}  ·  gecikme {lag} ms  ·  izleme hatası %{e}  ·  salınım {osc}',
                 'Gain ratio {g}  ·  lag {lag} ms  ·  tracking error {e}%  ·  oscillation {osc}',
                 'نسبة الكسب {g}  ·  التأخير {lag} مللي ث  ·  خطأ التتبع {e}%  ·  التذبذب {osc}'),
@@ -161,6 +171,35 @@ def _osc(err, hz, fmin=0.6, ref=None):
     return float(ff[i]), float(pe[m][i] / med) if pp[i] > 0.25 * pe[m][i] else 0.0
 
 
+def _periodic(x, hz, f):
+    """Gerçek salınım mı? Sinyalin bir periyot gecikmeli kendisiyle ilintisi (otokorelasyon) yüksek olmalı."""
+    if not f: return 0.0
+    k = int(round(hz / f))
+    if k < 2 or len(x) < 4 * k: return 0.0
+    x = x - np.mean(x); d = float(np.dot(x, x))
+    if d <= 0: return 0.0
+    return float(np.dot(x[:-k], x[k:]) / d)
+
+
+def _acf_period(parts, hz, lo_s, hi_s):
+    """Parçalar içinde otokorelasyonun en yüksek olduğu periyot: (periyot sn, ilinti)."""
+    best = (None, 0.0)
+    lags = np.arange(max(int(lo_s * hz), 2), int(hi_s * hz) + 1)
+    if not len(lags): return best
+    acc = np.zeros(len(lags)); w = 0.0
+    for x in parts:
+        x = x - np.mean(x); d = float(np.dot(x, x))
+        if d <= 0 or len(x) < lags[-1] + 10 * hz: continue
+        acc += np.array([np.dot(x[:-k], x[k:]) / d * len(x) / (len(x) - k) for k in lags]) * len(x); w += len(x)
+    if w == 0: return best
+    acc /= w
+    # ilk tepe: ilinti önce sıfırın altına inmeli, sonra yeniden yükselmeli (gerçek periyot)
+    neg = np.where(acc < 0)[0]
+    if not len(neg): return best
+    i = int(neg[0] + np.argmax(acc[neg[0]:]))
+    return float(lags[i] / hz), float(acc[i])
+
+
 def _r(x, n=2):
     try: return round(float(x), n)
     except Exception: return x
@@ -209,6 +248,11 @@ def rate_axis(L, flights, ax, spec, P, lang, multirotor, hf_hz):
     """Bir eksenin hız döngüsünü ölçer ve öneri üretir."""
     out = {'axis': ax, 'title': tx('axis_' + ax, lang), 'recs': [], 'notes': [], 'metrics': {}}
     s = L.s(spec['msg'])
+    if s.has('Des') and not s.has('Tar'):
+        # Eski sürüm (≤3.8): yalnız istenen hız (Des) var → gerçek hız IMU jiroskopundan (rad/s → °/s)
+        imu = L.s('IMU'); gk = {'roll': 'GyrX', 'pitch': 'GyrY', 'yaw': 'GyrZ'}[ax]
+        if imu.has(gk):
+            s = type(s)(s); s['Tar'] = s['Des']; s['Act'] = np.interp(s['t'], imu['t'], imu[gk]) * 57.2958
     fields = ['Tar', 'Act']
     have_terms = all(s.has(f) for f in ('P', 'I', 'D'))
     G = _grid(s, fields + (['P', 'I', 'D'] + (['FF'] if s.has('FF') else []) if have_terms else []), flights)
@@ -231,6 +275,17 @@ def rate_axis(L, flights, ax, spec, P, lang, multirotor, hf_hz):
     if exc < 3.0:
         out['notes'].append(tx('lowexc', lang, x=f'{exc:.1f}°/s')); out['status'] = 'lowexc'
         return out
+    low_rate = rate < 18
+    if rate < 8:
+        out['notes'].append(tx('lowrate', lang, hz=int(round(rate)))); out['status'] = 'na'
+        return out
+    lag0 = _lag_ms(des_d, act_d, hz); k0 = int(round(lag0 / 1000.0 * hz))
+    dd0, aa0 = (des_d[:len(des_d) - k0], act_d[k0:]) if k0 > 0 else (des_d, act_d)
+    cc = float(np.corrcoef(dd0, aa0)[0, 1]) if np.std(aa0) > 0 else 0.0   # gecikme düzeltilmiş ilinti
+    out['metrics']['corr'] = _r(cc)
+    if not np.isfinite(cc) or cc < 0.5:
+        out['notes'].append(tx('lowcorr', lang, c=_r(cc))); out['status'] = 'na'
+        return out
     # Yalnız manevra içeren örnekler üzerinden kazanç oranı (|istenen| > 2°/s)
     m = np.abs(des_d) > 2.0
     gain = float(np.dot(des_d[m], act_d[m]) / max(np.dot(des_d[m], des_d[m]), 1e-9)) if m.sum() > 20 else 1.0
@@ -246,7 +301,7 @@ def rate_axis(L, flights, ax, spec, P, lang, multirotor, hf_hz):
     res = (act_d[k:] - gain * des_d[:len(des_d) - k]) if k > 0 else act_d - gain * des_d
     f_osc, p_osc = _osc(res, hz, ref=des_d[:len(res)])
     nyq = hz / 2.0
-    osc = f_osc is not None and p_osc >= 25.0 and np.std(res) > 1.5
+    osc = f_osc is not None and p_osc >= 25.0 and np.std(res) > 1.5 and _periodic(res, hz, f_osc) > 0.3
     shares = {}
     if have_terms:
         tot = np.abs(d['P']) + np.abs(d['I']) + np.abs(d['D']) + (np.abs(d['FF']) if 'FF' in d else 0) + 1e-9
@@ -263,6 +318,12 @@ def rate_axis(L, flights, ax, spec, P, lang, multirotor, hf_hz):
     # güven: veri süresi + uyarım
     dur = len(g) / hz
     conf = 'c_hi' if (dur > 120 and exc > 8) else 'c_mid' if (dur > 40 and exc > 4) else 'c_lo'
+    if low_rate:
+        # 10 Hz kayıt: yalnız büyük kazanç hataları ve düşük frekanslı salınım güvenle görülür
+        conf = 'c_lo'; out['notes'].append(tx('lowrate2', lang, hz=int(round(rate))))
+        gain_ok = (0.6 <= gain <= 1.35) or cc < 0.7
+    else:
+        gain_ok = None
     recs = []
     if osc:
         hf = f_osc >= min(hf_hz, nyq * 0.7)
@@ -279,6 +340,8 @@ def rate_axis(L, flights, ax, spec, P, lang, multirotor, hf_hz):
                 r_ = _rec(P, spec['TC'][0], 1.2, tx('r_osc_lf', lang), conf, lang); r_ and recs.append(r_)
             else:
                 r_ = _rec(P, spec['P'][0], 0.85, tx('r_osc_lf', lang), conf, lang, spec['P'][1:]); r_ and recs.append(r_)
+    elif gain_ok:
+        pass
     elif gain > 1.2:
         name_ = spec['FF'] if (not multirotor and shares.get('FF', 0) > shares.get('P', 0)) else spec['P']
         r_ = _rec(P, name_[0], 1.0 / gain, tx('r_overshoot', lang), conf, lang, name_[1:]); r_ and recs.append(r_)
@@ -290,7 +353,7 @@ def rate_axis(L, flights, ax, spec, P, lang, multirotor, hf_hz):
             if not r_:  # FF yok / 0 → P
                 r_ = _rec(P, spec['P'][0], 1.15, tx('r_sluggish_p', lang, g=_r(gain), lag=int(lag)), conf, lang, spec['P'][1:])
             r_ and recs.append(r_)
-    if not osc and lag > (180 if not multirotor else 90) and gain >= 0.75 and spec.get('TC'):
+    if not low_rate and not osc and lag > (180 if not multirotor else 90) and gain >= 0.75 and spec.get('TC'):
         r_ = _rec(P, spec['TC'][0], 0.85, tx('r_lag', lang, lag=int(lag)), 'c_lo', lang); r_ and recs.append(r_)
     if i_load > 0.45 and ax != 'yaw':
         out['notes'].append(tx('r_i_load', lang, x=int(100 * i_load)))
@@ -305,6 +368,9 @@ def rate_axis(L, flights, ax, spec, P, lang, multirotor, hf_hz):
 def tecs(L, flights, P, lang):
     out = {'axis': 'tecs', 'title': tx('tecs', lang), 'recs': [], 'notes': [], 'metrics': {}}
     s = L.s('TECS')
+    s = type(s)(s)
+    for a, b in (('h_dem', 'hdem'), ('dh_dem', 'dhdem'), ('sp_dem', 'spdem'), ('dsp_dem', 'dspdem')):   # eski sürüm alan adları
+        if a in s and b not in s: s[b] = s[a]
     G = _grid(s, ['h', 'hdem', 'dh', 'sp', 'spdem'], flights, hz=10.0)
     if G is None:
         out['notes'].append(tx('nodata', lang, m='TECS')); out['status'] = 'na'; return out
@@ -356,16 +422,33 @@ def tecs(L, flights, P, lang):
                 recs.append({'param': 'TRIM_THROTTLE', 'cur': _r(cur, 0), 'new': float(int(round(min(max(trim, cur * 0.75), cur * 1.25)))),
                              'why': tx('r_trim_thr', lang, x=int(round(trim))), 'conf': conf})
     # irtifa salınımı (porpoising): 4–40 sn periyot
-    f_h, p_h = _osc(he, hz, fmin=1 / 40.0)
-    if f_h and f_h < 0.25 and p_h > 30 and np.std(he) > 2.0:
-        a = _r(np.std(he) * 1.41, 1)
-        r_ = _rec(P, 'TECS_PTCH_DAMP', 1.25 if P.get('TECS_PTCH_DAMP', 0) else 1, tx('r_porp', lang, p=_r(1 / f_h, 0), a=a), conf, lang)
-        if not r_ and 'TECS_PTCH_DAMP' in P:
-            recs.append({'param': 'TECS_PTCH_DAMP', 'cur': 0.0, 'new': 0.1, 'why': tx('r_porp', lang, p=_r(1 / f_h, 0), a=a), 'conf': conf})
-        elif r_: recs.append(r_)
-    f_s, p_s = _osc(se, hz, fmin=1 / 40.0)
-    if f_s and f_s < 0.3 and p_s > 30 and np.std(se) > 1.2:
-        r_ = _rec(P, 'TECS_THR_DAMP', 1.25, tx('r_spd_osc', lang, a=_r(np.std(se) * 1.41, 1)), conf, lang); r_ and recs.append(r_)
+    # Yalnız hedef irtifanın sabit olduğu (düz uçuş) bölümlerde: tırmanma/alçalma adımları salınım sanılmasın
+    k2 = max(int(2 * hz), 1); hd = d['hdem']
+    dhd = np.abs(np.concatenate([np.zeros(k2), (hd[k2:] - hd[:-k2]) / 2.0]))   # 2 sn'lik ortalama eğim
+    lvl_h = np.convolve((dhd < 0.3).astype(float), np.ones(int(5 * hz)) / int(5 * hz), mode='same') > 0.99
+    parts = []; seg_idx = []; i = 0; n_ = len(he)
+    while i < n_:
+        if lvl_h[i]:
+            j = i
+            while j < n_ and lvl_h[j]: j += 1
+            if j - i > 60 * hz: parts.append(he[i:j] - np.mean(he[i:j])); seg_idx.append((i, j))
+            i = j
+        else:
+            i += 1
+    per, ac = _acf_period(parts, hz, 4.0, 40.0)
+    amp = float(np.std(np.concatenate(parts))) if parts else 0.0
+    if per and ac > 0.4 and amp > 2.0:
+        a = _r(amp * 1.41, 1); why = tx('r_porp', lang, p=_r(per, 0), a=a)
+        if P.get('TECS_PTCH_DAMP', 0):
+            r_ = _rec(P, 'TECS_PTCH_DAMP', 1.25, why, conf, lang); r_ and recs.append(r_)
+        elif 'TECS_PTCH_DAMP' in P:
+            recs.append({'param': 'TECS_PTCH_DAMP', 'cur': 0.0, 'new': 0.1, 'why': why, 'conf': conf})
+    # hız salınımı: aynı düz uçuş bölümlerinde hız hatası
+    sp_parts = [se[a:b] - np.mean(se[a:b]) for a, b in seg_idx]
+    per_s, ac_s = _acf_period(sp_parts, hz, 3.0, 40.0)
+    amp_s = float(np.std(np.concatenate(sp_parts))) if sp_parts else 0.0
+    if per_s and ac_s > 0.4 and amp_s > 1.2:
+        r_ = _rec(P, 'TECS_THR_DAMP', 1.25, tx('r_spd_osc', lang, a=_r(amp_s * 1.41, 1)), conf, lang); r_ and recs.append(r_)
     if not recs and hrms > 6 and tm < 5 and tn < 5:
         r_ = _rec(P, 'TECS_TIME_CONST', 0.8, tx('r_h_lag', lang, h=_r(hrms, 1)), 'c_mid', lang); r_ and recs.append(r_)
     if us > 5: out['notes'].append(tx('r_underspeed', lang, u=int(us)))
@@ -376,9 +459,28 @@ def tecs(L, flights, P, lang):
 
 
 # ------------------------------------------------------------------ multikopter irtifa
+FW_MODES = {1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 15}    # sabit kanat PID'lerinin çalıştığı modlar (MANUAL ve Q modları hariç)
+TECS_MODES = {6, 7, 10, 11, 12, 15}                       # FBWB, CRUISE, AUTO, RTL, LOITER, GUIDED: TECS irtifa/hız kontrolü
+ALT_MODES = {2, 3, 4, 5, 6, 9, 15, 16, 17, 21}   # ALT_HOLD, AUTO, GUIDED, LOITER, RTL, LAND, AUTOTUNE, POSHOLD, BRAKE, SMART_RTL
+
+
+def _mode_windows(L, flights, modes):
+    """Uçuş aralıklarını yalnız verilen modlardaki parçalara indirger."""
+    ms = L.modes or []
+    if not ms: return flights
+    out = []
+    for i, (t, num, _, _) in enumerate(ms):
+        if int(num) not in modes: continue
+        t1 = ms[i + 1][0] if i + 1 < len(ms) else 1e12
+        for a, b in flights:
+            lo, hi = max(a, t), min(b, t1)
+            if hi - lo > 15: out.append((lo, hi))
+    return out
 def copter_alt(L, flights, P, lang, prefix='MOT_', psc='PSC_'):
     out = {'axis': 'alt', 'title': tx('alt', lang), 'recs': [], 'notes': [], 'metrics': {}}
     s = L.s('CTUN')
+    # İrtifa denetimi yalnız irtifa tutan modlarda anlamlı (STABILIZE/ACRO'da DAlt pilotu izler)
+    flights = _mode_windows(L, flights, ALT_MODES) or []
     G = _grid(s, ['ThO', 'Alt', 'DAlt'], flights, hz=10.0)
     if G is None:
         out['notes'].append(tx('nodata', lang, m='CTUN')); out['status'] = 'na'; return out
@@ -394,9 +496,13 @@ def copter_alt(L, flights, P, lang, prefix='MOT_', psc='PSC_'):
         if abs(x - cur) > 0.04:
             recs.append({'param': prefix + 'THST_HOVER', 'cur': _r(cur, 3), 'new': _r(min(max(x, 0.125), 0.6875), 3),
                          'why': tx('r_hover', lang, x=_r(x, 3), c=_r(cur, 3)), 'conf': 'c_hi' if hov.sum() > 60 * hz else 'c_mid'})
-    f_a, p_a = _osc(ae, hz, fmin=0.2)
-    if f_a and p_a > 30 and np.std(ae) > 0.3:
-        why = tx('r_alt_osc', lang, p=_r(1 / f_a, 1), a=_r(np.std(ae) * 1.41, 2))
+    cut = np.where(np.diff(g) > 1.5 / hz)[0] + 1
+    parts = [x for x in np.split(ae, cut) if len(x) > 30 * hz]
+    per, ac = _acf_period(parts, hz, 1.5, 12.0)
+    amp = float(np.std(np.concatenate(parts))) if parts else 0.0
+    out['metrics'].update(alt_osc_s=_r(per, 1) if per else None, alt_osc_r=_r(ac, 2))
+    if per and ac > 0.45 and amp > 0.5:
+        why = tx('r_alt_osc', lang, p=_r(per, 1), a=_r(amp * 1.41, 2))
         for n_ in (psc + 'ACCZ_P', psc + 'ACCZ_I'):
             r_ = _rec(P, n_, 0.8, why, 'c_mid', lang); r_ and recs.append(r_)
     out['recs'] = recs; out['status'] = 'warn' if recs else 'good'
@@ -408,7 +514,9 @@ def copter_alt(L, flights, P, lang, prefix='MOT_', psc='PSC_'):
 def analyze(A, lang='tr'):
     """A: analysis.Analysis. Döner {'profile','axes':[...], 'recs':[...], 'disclaimer'}."""
     L = A.L; P = L.params or {}; prof = getattr(A, 'profile', 'plane')
-    flights = A.flights or ([(0, L.duration)] if L.duration else [])
+    flights = [f for f in (A.flights or []) if f[1] - f[0] > 15]
+    if not flights:
+        return {'profile': prof, 'axes': [], 'recs': [], 'disclaimer': tx('disclaimer', lang), 'note': tx('noflight', lang)}
     axes = []
     if prof in ('copter', 'heli'):
         spec = _copter_ax('ATC_')
@@ -418,10 +526,11 @@ def analyze(A, lang='tr'):
     elif prof == 'rover':
         pass
     else:
+        fw = _mode_windows(L, flights, FW_MODES) if L.modes else flights
         for ax in ('roll', 'pitch', 'yaw'):
             if ax == 'yaw' and P.get('YAW_RATE_ENABLE', 0) == 0 and not L.s('PIDY').has('Tar'): continue
-            axes.append(rate_axis(L, flights, ax, PLANE_AX[ax], P, lang, False, hf_hz=2.0))
-        axes.append(tecs(L, flights, P, lang))
+            axes.append(rate_axis(L, fw, ax, PLANE_AX[ax], P, lang, False, hf_hz=2.0))
+        axes.append(tecs(L, _mode_windows(L, flights, TECS_MODES) if L.modes else flights, P, lang))
         if prof == 'vtol' and L.s('RATE').has('RDes'):
             # QuadPlane: Q modlarındaki çok rotorlu ayar (RATE mesajı, Q_A_ parametreleri)
             qf = _q_flights(A) or flights
