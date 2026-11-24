@@ -485,7 +485,7 @@ class Shell(QObject):
         self.brand_tag = label('', obj='fcBrandTag', wrap=True)
         names.addWidget(self.brand_name)
         names.addWidget(self.brand_tag)
-        self.vbadge = label('v' + '.'.join(str(version).split('.')[:2]) if version else '', 'version-badge')
+        self.vbadge = label('v' + str(version) if version else '', 'version-badge')  # tam sürüm vX.Y.Z (kısaltma yok)
         bl.addWidget(self.logo, 0, Qt.AlignTop)
         bl.addLayout(names, 1)
         bl.addWidget(self.vbadge, 0, Qt.AlignTop)

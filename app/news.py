@@ -1,6 +1,10 @@
 """Sürüm notları ("Neler yeni" + release-notes.json). Yeni sürümde EN ÜSTE eklenir; tr/en/ar zorunlu."""
 
 NEWS = [
+    {'v': '1.1.2',
+     'tr': 'Sürüm rozeti tam sürümü gösterir (v1.1.2)',
+     'en': 'The version badge shows the full version (v1.1.2)',
+     'ar': 'تعرض شارة الإصدار رقم الإصدار كاملاً (v1.1.2)'},
     {'v': '1.1.1',
      'tr': 'Daha gerçekçi teşhis: 326 gerçek kaza/uçuş loguyla ölçüldü (uzman yanıtlarıyla etiketli); doğruluk %86\n'
            '"Teşhis doğru muydu?" düğmesi: geri bildiriminiz teşhisleri geliştirir (kişisel veri gönderilmez)\n'

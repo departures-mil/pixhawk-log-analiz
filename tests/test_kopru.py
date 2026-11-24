@@ -89,3 +89,10 @@ def test_new_manifest_plan_for_new_clients():
     assert p['mode'] == 'patch' and p['setup']['file'].startswith('PixhawkLogAnaliz_Setup_')
     p2 = plan(man, {'repo': 'pixhawk-log-analiz', 'app': 'pixhawk-log-analiz', 'version': NEW, 'channel': 'win-exe', 'setupChannel': 'win-setup'})
     assert p2['channel'] == 'win-exe' and p2['mode'] == 'full'
+
+
+def test_surum_rozeti_tam():
+    """1.1.2: kenar çubuğundaki sürüm rozeti tam sürümü gösterir (vX.Y.Z, kısaltma yok)."""
+    import pathlib
+    src = (pathlib.Path(__file__).resolve().parents[1] / 'fccore' / 'window.py').read_text(encoding='utf-8')
+    assert "split('.')[:2]" not in src
