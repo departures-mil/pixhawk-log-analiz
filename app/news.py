@@ -1,6 +1,25 @@
 """Sürüm notları ("Neler yeni" + release-notes.json). Yeni sürümde EN ÜSTE eklenir; tr/en/ar zorunlu."""
 
 NEWS = [
+    {'v': '1.1.4',
+     'tr': 'Dört seviyeli karar: Kaza · Ciddi sorun · Küçük uyarı · Normal (küçük uyarılar artık kaza gibi gösterilmez)\n'
+           'Kontrolsüz düşüş algılama (yükseklik kaybı, hız, açı) ve VTOL/çok motorlu araçta motor kaybı; motor numarası çıkış eşlemesinden\n'
+           'İtki/ağırlık oranı, havada kalma gücü ve tahmini uçuş süresi; aynı aracın önceki uçuşlarıyla karşılaştırma\n'
+           'Kalibre edilmiş güven yüzdesi (gerçek kazalarda ölçülen isabet); yapay zekâ yalnız log ölçümlerine dayanır\n'
+           'Raporda resmî olay raporu bölümü (olay özeti, zaman çizelgesi, kök neden, öneriler, imza/onay)\n'
+           'Bozuk son kayıtlı ve kurulu (armed) başlayan loglar doğru okunur',
+     'en': 'Four-level verdict: Crash · Serious problem · Minor warning · Normal (minor warnings no longer look like crashes)\n'
+           'Uncontrolled descent detection (height loss, speed, attitude) and motor loss on VTOL/multirotor; motor number from output mapping\n'
+           'Thrust-to-weight, hover power and estimated endurance; comparison with the same aircraft\'s previous flights\n'
+           'Calibrated confidence (hit rate measured on real crashes); AI explanations grounded only in log measurements\n'
+           'Formal incident report section (summary, timeline, root cause, recommendations, signature/approval)\n'
+           'Logs with a corrupt last record or starting already armed are read correctly',
+     'ar': 'قرار بأربعة مستويات: تحطم · مشكلة خطيرة · تحذير بسيط · طبيعي (لم تعد التحذيرات البسيطة تظهر كتحطم)\n'
+           'كشف الهبوط غير المتحكم به (فقدان الارتفاع، السرعة، الزاوية) وفقدان المحرك في VTOL ومتعدد المحركات؛ رقم المحرك من تعيين المخارج\n'
+           'نسبة الدفع إلى الوزن وقدرة التحليق وزمن الطيران المتوقع؛ مقارنة مع الرحلات السابقة لنفس الطائرة\n'
+           'نسبة ثقة معايرة (دقة مقاسة على حوادث حقيقية)؛ شروح الذكاء الاصطناعي تستند فقط إلى قياسات السجل\n'
+           'قسم تقرير حادث رسمي (ملخص، تسلسل زمني، السبب الجذري، توصيات، توقيع/اعتماد)\n'
+           'تُقرأ بشكل صحيح السجلات ذات السجل الأخير التالف أو التي تبدأ والطائرة مسلحة'},
     {'v': '1.1.3',
      'tr': 'Güncellemeler artık tamamen kendiliğinden: yeni sürüm arka planda sessizce indirilir, program kapanınca pencere açmadan kurulur; bir sonraki açılışta yeni sürüm gelir. Hemen kurmak için Güncelle → «Şimdi kur ve yeniden aç». Kurulum gereken güncellemeler de sessiz yapılır. Kayıtlara dokunulmaz.',
      'en': 'Updates are now fully automatic: the new version downloads quietly in the background and installs without any window when the program closes; the next start opens the new version. To install right away: Update → «Install now and reopen». Updates that need the installer also run silently. Records are not touched.',
