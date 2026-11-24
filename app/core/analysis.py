@@ -641,6 +641,17 @@ class Analysis(ExtMixin):
             if hard_ev: ev.append(F('cr_user_conflict'))
             else: kind = 'incident'; ev.append(F('cr_user_no'))
         self.verdict = {'kind': kind, 'score': max(0, min(100, score)), 'evidence': ev}
+        # öğrenen ikinci görüş (uzman etiketli gerçek loglarla eğitildi); yalnız ölçülmüş yararı varsa sınır kararı düzeltir
+        self.ml_p = None
+        try:
+            from . import mlmodel
+            self.ml_p = mlmodel.prob({'verdict': self.verdict, 'health': self.health, 'vehicle': self.vehicle})
+            if uc not in ('yes', 'no', 'hard'):
+                k2 = mlmodel.adjust(kind, score, self.ml_p)
+                if k2 != kind:
+                    self.verdict['kind'] = k2; self.verdict['ml'] = True
+        except Exception:
+            pass
 
     # ----------------------------------------------------------- kök neden
     def _root_cause(self):

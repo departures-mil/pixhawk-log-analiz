@@ -1,6 +1,6 @@
 # Gerçek kırım logları ile teşhis doğruluğu
 
-Kaynak: discuss.ardupilot.org kamuya açık konular · Tarih: 2026-11-24 09:20 · Log sayısı: 117 (+3 okunamayan)
+Kaynak: discuss.ardupilot.org kamuya açık konular · Tarih: 2026-11-24 09:29 · Log sayısı: 117 (+3 okunamayan)
 
 Etiket kaynağı: **uzman etiketleri** — her konudaki deneyimli/ekip üyelerinin yanıtları elle okunarak kırım/normal ve kök neden belirlendi (tools_data/crashbench/labels.json). Kök neden puanı yalnız uzmanların bir nedende birleştiği kırımlar üzerinden hesaplanır.
 
@@ -11,7 +11,7 @@ Etiket kaynağı: **uzman etiketleri** — her konudaki deneyimli/ekip üyelerin
 | Normal uçuşu doğru tanıma (özgüllük) | %72 (23/32) |
 | Kesin 'kırım' kararı verilen kırım logları | 45/85 |
 | Normal logda yanlış 'kırım' kararı | 0 |
-| Kök neden uyumu (ana neden) | %58 (41/71) |
+| Kök neden uyumu (ana neden) | %59 (42/71) |
 | Kök neden uyumu (ana veya ikincil nedenlerde) | %76 (54/71) |
 
 ## Sürüm geçmişi
@@ -27,6 +27,7 @@ Etiket kaynağı: **uzman etiketleri** — her konudaki deneyimli/ekip üyelerin
 | 2026-11-24 09:19 | dev | 117 | %84 | %93 | %59 | %58 |
 | 2026-11-24 09:20 | dev | 117 | %86 | %89 | %78 | %56 |
 | 2026-11-24 09:20 | dev | 117 | %86 | %92 | %72 | %58 |
+| 2026-11-24 09:29 | dev | 117 | %86 | %92 | %72 | %59 |
 
 ## Log listesi
 
@@ -79,7 +80,7 @@ Etiket kaynağı: **uzman etiketleri** — her konudaki deneyimli/ekip üyelerin
 | [Quadcopter Crash Log Analysis Request](https://discuss.ardupilot.org/t/quadcopter-crash-log-analysis-request/99897) | Copter | crash | ✅ crash | motor | motor | 20 sn |
 | [Log Analysis of Crash(Almost)](https://discuss.ardupilot.org/t/log-analysis-of-crash-almost/101181) | Copter | crash | ✅ incident | gps | vibration | 2681 sn |
 | [MFE Fighter VTOL crash - suspected IO MCU failure](https://discuss.ardupilot.org/t/mfe-fighter-vtol-crash-suspected-io-mcu-failure/102276) | Plane | crash | ✅ incident | control | - | 460 sn |
-| [Ardupilot Quad-plane unexpected crash](https://discuss.ardupilot.org/t/ardupilot-quad-plane-unexpected-crash/102402) | Plane | crash | ✅ incident | stall | control | 23 sn |
+| [Ardupilot Quad-plane unexpected crash](https://discuss.ardupilot.org/t/ardupilot-quad-plane-unexpected-crash/102402) | Plane | crash | ✅ incident | control | control | 23 sn |
 | [V-Tail Fixed Wing Crash](https://discuss.ardupilot.org/t/v-tail-fixed-wing-crash/121201) | Plane | crash | ✅ incident | control | control | 11817726897044 sn |
 | [Please help analyse a crash log](https://discuss.ardupilot.org/t/please-help-analyse-a-crash-log/121455) | Plane | crash | ✅ incident | power | control | 694 sn |
 | [AUTOTUNE crash and strange logs](https://discuss.ardupilot.org/t/autotune-crash-and-strange-logs/12677) | Plane | crash | ✅ incident | stall | - | 261 sn |
