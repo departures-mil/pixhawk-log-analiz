@@ -1,6 +1,22 @@
 """Sürüm notları ("Neler yeni" + release-notes.json). Yeni sürümde EN ÜSTE eklenir; tr/en/ar zorunlu."""
 
 NEWS = [
+    {'v': '1.1.1',
+     'tr': 'Daha gerçekçi teşhis: 326 gerçek kaza/uçuş loguyla ölçüldü (uzman yanıtlarıyla etiketli); doğruluk %86\n'
+           '"Teşhis doğru muydu?" düğmesi: geri bildiriminiz teşhisleri geliştirir (kişisel veri gönderilmez)\n'
+           'Kaçan kazalar: takla, uçuşta log kesilmesi, yön kontrolü kaybı; motor doygunluğu ve motor numarasıyla kanıt\n'
+           'Sabit kanat: ters/yetersiz kumanda yüzeyi, ağırlık merkezi, hava hızı kalibrasyonu; batarya iç direnci, titreşim frekansı\n'
+           'Eksik log kayıtları için uyarı ve güven yüzdesi; öğrenen ikinci görüş (ML)',
+     'en': 'More realistic diagnosis: measured on 326 real crash/flight logs (expert-labelled); accuracy 86%\n'
+           '"Was the diagnosis right?" button: your feedback improves diagnoses (no personal data sent)\n'
+           'Missed crashes: flips, log cut in flight, yaw control loss; motor saturation with motor number as evidence\n'
+           'Fixed wing: reversed/weak control surface, centre of gravity, airspeed calibration; battery internal resistance, vibration frequency\n'
+           'Warning and confidence percentage for missing log data; learning second opinion (ML)',
+     'ar': 'تشخيص أكثر واقعية: تم القياس على 326 سجل تحطم/طيران حقيقي (مصنفة من الخبراء)؛ الدقة 86%\n'
+           'زر "هل كان التشخيص صحيحاً؟": ملاحظاتك تحسّن التشخيص (لا تُرسل بيانات شخصية)\n'
+           'الحوادث الفائتة: الانقلاب، انقطاع السجل أثناء الطيران، فقدان التحكم في الانعراج؛ تشبع المحركات مع رقم المحرك كدليل\n'
+           'الجناح الثابت: سطح تحكم معكوس/ضعيف، مركز الثقل، معايرة سرعة الهواء؛ المقاومة الداخلية للبطارية، تردد الاهتزاز\n'
+           'تحذير ونسبة ثقة عند نقص بيانات السجل؛ رأي ثانٍ متعلم (تعلم آلي)'},
     {'v': '1.1.0',
      'tr': 'Yeni Falcon görünümü, renk şeması seçici (eski görünüm: Klasik), koyu/açık tema ve yazı boyutu\n'
            'Sağ üstte Eşitle · Wi-Fi · Güncelle · tema · dil | Küçült · Orta · Tam ekran · Kapat; program tam ekran açılır\n'
