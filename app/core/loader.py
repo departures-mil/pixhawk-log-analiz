@@ -87,9 +87,9 @@ def _finish(acc: dict) -> dict:
 
 def _vehicle_from(text):
     t = text.lower()
-    if 'arduplane' in t: return 'Plane'
-    if 'arducopter' in t: return 'Copter'
-    if 'ardurover' in t or 'rover' in t: return 'Rover'
+    if 'arduplane' in t or 'apm:plane' in t: return 'Plane'
+    if 'arducopter' in t or 'apm:copter' in t or 'arduheli' in t: return 'Copter'
+    if 'ardurover' in t or 'apm:rover' in t or 'rover' in t: return 'Rover'
     if 'ardusub' in t: return 'Sub'
     if 'heli' in t: return 'Copter'
     return None
@@ -97,7 +97,17 @@ def _vehicle_from(text):
 
 NONE_KEY = ('ATT', 'POS', 'CTUN', 'NTUN', 'TECS', 'AETR', 'RCIN', 'RCOU', 'PM', 'STAT', 'AHR2', 'AOA', 'POWR', 'RSSI', 'DSF', 'ORGN', 'RATE',
             'CMD', 'PIDR', 'PIDP', 'PIDY', 'RAD', 'MAV')
-LOADER_VER = 4
+LOADER_VER = 5
+
+
+def _fix_vehicle(L):
+    """Sürüm metni tanınmadıysa araç tipini parametrelerden çıkar (varsayılan 'Plane' yanlış olabilir)."""
+    if L.version and _vehicle_from(L.version): return
+    P = L.params
+    if any(k in P for k in ('ATC_RAT_RLL_P', 'MOT_SPIN_MIN', 'H_RSC_MODE', 'ATC_RAT_RLL_KP')) and 'RLL2SRV_P' not in P and 'RLL_RATE_P' not in P:
+        L.vehicle = 'Copter'
+    elif any(k in P for k in ('RLL2SRV_P', 'RLL_RATE_P', 'TECS_CLMB_MAX')):
+        L.vehicle = 'Plane'
 
 
 def load(path: str, progress=None, cancel=None, use_cache=True) -> LogData:
@@ -124,6 +134,7 @@ def load(path: str, progress=None, cancel=None, use_cache=True) -> LogData:
         except Exception:
             import traceback; traceback.print_exc()
             L = _load_bin(path, progress, cancel)
+    _fix_vehicle(L)
     if use_cache:
         try:
             from . import cache

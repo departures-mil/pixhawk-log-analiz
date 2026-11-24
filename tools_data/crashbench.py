@@ -223,7 +223,9 @@ def _one(tid, m):
 def labels():
     """Elle temizlenmiş etiketler (uzman yanıtlarından): {id: {label, cause, alt, src, note}}"""
     p = os.path.join(ROOT, 'tools_data', 'crashbench', 'labels.json')
-    return json.load(open(p, encoding='utf-8')) if os.path.exists(p) else {}
+    if not os.path.exists(p): return {}
+    d = json.load(open(p, encoding='utf-8'))
+    return d.get('labels', d) if isinstance(d, dict) else {}
 
 
 def run():
@@ -274,7 +276,7 @@ def write(res):
     if os.path.exists(prev):
         try: hist = json.load(open(prev, encoding='utf-8')).get('history', [])
         except Exception: pass
-    hist.append({'date': time.strftime('%Y-%m-%d %H:%M'), **s})
+    hist.append({'date': time.strftime('%Y-%m-%d %H:%M'), 'tag': os.environ.get('BENCH_TAG', ''), **s})
     json.dump({'score': s, 'history': hist[-20:], 'results': res}, open(prev, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     lib = [{k: r.get(k) for k in ('id', 'title', 'url', 'log_url', 'label', 'cause_hint', 'mb', 'vehicle', 'got', 'got_cause', 'dur', 'created')}
            for r in res if r.get('got') not in (None, 'error')]
@@ -283,17 +285,23 @@ def write(res):
     os.makedirs(os.path.join(ROOT, 'docs'), exist_ok=True)
     L = ['# Gerçek kırım logları ile teşhis doğruluğu', '',
          f"Kaynak: discuss.ardupilot.org kamuya açık konular · Tarih: {hist[-1]['date']} · Log sayısı: {s['n']} (+{s['errors']} okunamayan)", '',
+         ("Etiket kaynağı: **uzman etiketleri** — her konudaki deneyimli/ekip üyelerinin yanıtları elle okunarak "
+          "kırım/normal ve kök neden belirlendi (tools_data/crashbench/labels.json). Kök neden puanı yalnız uzmanların "
+          "bir nedende birleştiği kırımlar üzerinden hesaplanır." if s.get('labels') == 'expert' else
+          "Etiket kaynağı: forum başlığı (gürültülü)."), '',
          '| Ölçüt | Değer |', '|---|---|',
          f"| Genel doğruluk (kırım/olay ↔ normal) | %{s['accuracy']*100:.0f} |",
          f"| Kırımı yakalama oranı (duyarlılık) | %{s['recall_crash']*100:.0f} ({s['tp']}/{s['tp']+s['fn']}) |",
          f"| Normal uçuşu doğru tanıma (özgüllük) | %{s['specificity']*100:.0f} ({s['tn']}/{s['tn']+s['fp']}) |",
          f"| Kesin 'kırım' kararı verilen kırım logları | {s.get('crash_verdict', '-')}/{s['tp']+s['fn']} |",
          f"| Normal logda yanlış 'kırım' kararı | {s.get('false_crash', '-')} |",
-         f"| Kök neden uyumu (başlıkta ipucu olanlar) | %{s['cause_acc']*100:.0f} ({s['cause_match']}/{s['cause_n']}) |", '',
-         '## Sürüm geçmişi', '', '| Tarih | Log | Doğruluk | Duyarlılık | Özgüllük | Kök neden |', '|---|---|---|---|---|---|']
+         f"| Kök neden uyumu (ana neden) | %{s['cause_acc']*100:.0f} ({s['cause_match']}/{s['cause_n']}) |",
+         f"| Kök neden uyumu (ana veya ikincil nedenlerde) | %{s.get('cause_any_acc', 0)*100:.0f} ({s.get('cause_any', '-')}/{s['cause_n']}) |", '',
+         '## Sürüm geçmişi', '', '| Tarih | Sürüm / etiket | Log | Doğruluk | Duyarlılık | Özgüllük | Kök neden |', '|---|---|---|---|---|---|---|']
     for h in hist[-10:]:
-        L.append(f"| {h['date']} | {h['n']} | %{h['accuracy']*100:.0f} | %{h['recall_crash']*100:.0f} | %{h['specificity']*100:.0f} | %{h['cause_acc']*100:.0f} |")
-    L += ['', '## Log listesi', '', '| Konu | Araç | Etiket | Program | Kök neden (program) | İpucu (başlık) | Süre |', '|---|---|---|---|---|---|---|']
+        L.append(f"| {h['date']} | {h.get('tag') or h.get('labels') or '-'} | {h['n']} | %{h['accuracy']*100:.0f} | %{h['recall_crash']*100:.0f} | "
+                 f"%{h['specificity']*100:.0f} | %{h['cause_acc']*100:.0f} |")
+    L += ['', '## Log listesi', '', '| Konu | Araç | Etiket | Program | Kök neden (program) | Kök neden (uzman) | Süre |', '|---|---|---|---|---|---|---|']
     for r in sorted(res, key=lambda r: (r['label'], r.get('got') or '')):
         mark = '✅' if (r.get('got') in ('crash', 'incident')) == (r['label'] == 'crash') else '❌'
         ttl = (r.get('title') or '').replace('|', '/')[:70]

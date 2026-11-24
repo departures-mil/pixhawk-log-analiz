@@ -391,7 +391,7 @@ def checklist(params, vehicle='Plane', lang='tr', ctx=None):
             if not has_roll and not (fun & {79, 80}): need.append(('aileron/elevon', '4 / 77,78'))
             if not has_pitch: need.append(('elevator/V-tail', '19 / 79,80'))
         elif v == C_:
-            frm = int(P.get('FRAME_CLASS', 1) or 1); n_m = {1: 4, 2: 6, 3: 8, 4: 3, 5: 6, 7: 3, 10: 1, 12: 4, 14: 4, 15: 4}.get(frm, 4)
+            frm = int(P.get('FRAME_CLASS', 1) or 1); n_m = {1: 4, 2: 6, 3: 8, 4: 8, 5: 6, 7: 3, 10: 2, 12: 12, 14: 10, 15: 4}.get(frm, 4)
             got = len(fun & set(range(33, 41)) | fun & set(range(82, 86)))
             if got < n_m: need.append((f'motor ({got}/{n_m})', '33…40'))
         names = {70: 'throttle', 4: 'aileron', 19: 'elevator', 21: 'rudder', 77: 'elevon', 78: 'elevon', 79: 'V-tail', 80: 'V-tail'}

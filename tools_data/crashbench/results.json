@@ -2,69 +2,23 @@
  "score": {
   "n": 117,
   "errors": 3,
-  "tp": 73,
-  "fn": 12,
+  "tp": 74,
+  "fn": 11,
   "fp": 13,
   "tn": 19,
   "crash_verdict": 35,
   "false_crash": 0,
-  "accuracy": 0.786,
-  "recall_crash": 0.859,
+  "accuracy": 0.795,
+  "recall_crash": 0.871,
   "specificity": 0.594,
-  "cause_n": 64,
-  "cause_match": 11,
-  "cause_acc": 0.172
+  "cause_n": 71,
+  "cause_match": 36,
+  "cause_acc": 0.507,
+  "cause_any": 48,
+  "cause_any_acc": 0.676,
+  "labels": "expert"
  },
  "history": [
-  {
-   "date": "2026-11-23 11:17",
-   "n": 64,
-   "errors": 1,
-   "tp": 26,
-   "fn": 19,
-   "fp": 9,
-   "tn": 10,
-   "accuracy": 0.562,
-   "recall_crash": 0.578,
-   "specificity": 0.526,
-   "cause_n": 32,
-   "cause_match": 3,
-   "cause_acc": 0.094
-  },
-  {
-   "date": "2026-11-23 11:35",
-   "n": 65,
-   "errors": 0,
-   "tp": 40,
-   "fn": 7,
-   "fp": 8,
-   "tn": 10,
-   "crash_verdict": 19,
-   "false_crash": 0,
-   "accuracy": 0.769,
-   "recall_crash": 0.851,
-   "specificity": 0.556,
-   "cause_n": 33,
-   "cause_match": 7,
-   "cause_acc": 0.212
-  },
-  {
-   "date": "2026-11-23 17:06",
-   "n": 65,
-   "errors": 0,
-   "tp": 40,
-   "fn": 7,
-   "fp": 8,
-   "tn": 10,
-   "crash_verdict": 19,
-   "false_crash": 0,
-   "accuracy": 0.769,
-   "recall_crash": 0.851,
-   "specificity": 0.556,
-   "cause_n": 33,
-   "cause_match": 7,
-   "cause_acc": 0.212
-  },
   {
    "date": "2026-11-23 17:08",
    "n": 65,
@@ -80,24 +34,50 @@
    "specificity": 0.556,
    "cause_n": 33,
    "cause_match": 7,
-   "cause_acc": 0.212
+   "cause_acc": 0.212,
+   "tag": "v1.0.4 · forum başlığı"
   },
   {
-   "date": "2026-11-24 04:39",
-   "n": 117,
-   "errors": 3,
-   "tp": 73,
-   "fn": 12,
+   "date": "2026-11-24 04:55",
+   "n": 114,
+   "errors": 6,
+   "tp": 71,
+   "fn": 11,
    "fp": 13,
    "tn": 19,
    "crash_verdict": 35,
    "false_crash": 0,
-   "accuracy": 0.786,
-   "recall_crash": 0.859,
+   "accuracy": 0.789,
+   "recall_crash": 0.866,
    "specificity": 0.594,
-   "cause_n": 64,
-   "cause_match": 11,
-   "cause_acc": 0.172
+   "cause_n": 68,
+   "cause_match": 24,
+   "cause_acc": 0.353,
+   "cause_any": 36,
+   "cause_any_acc": 0.529,
+   "labels": "expert",
+   "tag": "v1.0.5 · uzman"
+  },
+  {
+   "date": "2026-11-24 05:03",
+   "tag": "v1.0.6 · uzman",
+   "n": 117,
+   "errors": 3,
+   "tp": 74,
+   "fn": 11,
+   "fp": 13,
+   "tn": 19,
+   "crash_verdict": 35,
+   "false_crash": 0,
+   "accuracy": 0.795,
+   "recall_crash": 0.871,
+   "specificity": 0.594,
+   "cause_n": 71,
+   "cause_match": 36,
+   "cause_acc": 0.507,
+   "cause_any": 48,
+   "cause_any_acc": 0.676,
+   "labels": "expert"
   }
  ],
  "results": [
@@ -107,17 +87,25 @@
    "url": "https://discuss.ardupilot.org/t/crash-on-first-flight-after-mayor-crash/10063",
    "log_url": "https://discuss.ardupilot.org/uploads/default/original/2X/a/a07950b2a577c3b5cfd90c2b4b41762e61488124.bin",
    "label": "crash",
-   "cause_hint": "motor",
+   "cause_hint": "compass",
    "mb": 0.6,
    "category_id": 36,
    "created": "2016-07-04",
-   "vehicle": "Plane",
+   "label_forum": "crash",
+   "hint_forum": "motor",
+   "cause_alt": [
+    "gps"
+   ],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
+   "vehicle": "Copter",
    "got": "crash",
    "got_cause": "control",
    "others": [],
-   "overall": 50,
+   "overall": 47,
    "dur": 89,
-   "sec": 1.0,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -138,7 +126,7 @@
      {
       "k": "cr_flip",
       "a": {
-       "t": 85.576146,
+       "t": 85.475016,
        "a": 181
       }
      }
@@ -146,8 +134,8 @@
    },
    "facts": {
     "duration": 89.13475,
-    "vehicle": "Plane",
-    "version": "",
+    "vehicle": "Copter",
+    "version": "APM:Copter V3.3.2 (7f16e4d6)",
     "takeoff_t": 76.802426,
     "land_t": 89.15458,
     "flight_time": 12.352153999999999,
@@ -164,26 +152,39 @@
     "min_volt": 2060.0,
     "min_volt_t": 85.265415,
     "used_mah": 71.06446075439453,
-    "profile": "plane",
+    "profile": "copter",
     "serial": "004D00263034510736353832",
     "anomaly_index": 0
    },
    "health": {
     "gps": {
-     "score": 100,
+     "score": 86,
      "status": "good",
      "metrics": {
       "min_sats": 7.0,
       "mean_sats": 7.935483870967742,
       "max_hdop": 1.06,
-      "bad_pct": 0.0,
+      "bad_pct": 6.451612903225806,
       "glitches": 0
      },
-     "findings": []
+     "findings": [
+      {
+       "k": "gps_bad_pct",
+       "a": {
+        "pct": 6.5
+       }
+      },
+      {
+       "k": "gps_min_sats",
+       "a": {
+        "n": 7
+       }
+      }
+     ]
     },
     "vibration": {
-     "score": 85,
-     "status": "good",
+     "score": 77,
+     "status": "warn",
      "metrics": {
       "p95": 22.348596572875927,
       "max": 87.47296905517578,
@@ -291,20 +292,30 @@
    "url": "https://discuss.ardupilot.org/t/log-analysis-of-crash-almost/101181",
    "log_url": "https://drive.google.com/file/d/1SlPEqBNy40i5duZNSyOUgMtsn6DOktnM/view?usp=share_link",
    "label": "crash",
-   "cause_hint": "motor",
+   "cause_hint": "vibration",
    "mb": 63.9,
    "category_id": 6,
    "created": "2023-05-20",
+   "label_forum": "crash",
+   "hint_forum": "motor",
+   "cause_alt": [
+    "gps",
+    "ekf"
+   ],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "incident",
-   "got_cause": "battery",
+   "got_cause": "gps",
    "others": [
-    "gps",
+    "battery",
+    "compass",
     "ekf"
    ],
    "overall": 81,
    "dur": 2681,
-   "sec": 1.2,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -671,14 +682,24 @@
    "url": "https://discuss.ardupilot.org/t/solved-agricultural-quad-crash-analysis/101517",
    "log_url": "https://drive.google.com/file/d/13vcBeSnvnIo1chP7CAs1Gpn-6XtJeWY0",
    "label": "crash",
-   "cause_hint": "gps",
+   "cause_hint": "motor",
    "mb": 4.9,
    "category_id": 155,
    "created": "2023-05-26",
+   "label_forum": "crash",
+   "hint_forum": "gps",
+   "cause_alt": [
+    "vibration"
+   ],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "incident",
-   "got_cause": "control",
-   "others": [],
+   "got_cause": "motor",
+   "others": [
+    "control"
+   ],
    "overall": 46,
    "dur": 417,
    "sec": 0.6,
@@ -1008,16 +1029,22 @@
    "mb": 16.3,
    "category_id": 166,
    "created": "2023-05-27",
+   "label_forum": "normal",
+   "hint_forum": null,
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Plane",
    "got": "incident",
-   "got_cause": "stall",
+   "got_cause": "power",
    "others": [
-    "control",
-    "power"
+    "stall",
+    "control"
    ],
    "overall": 63,
    "dur": 567,
-   "sec": 0.7,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -1247,6 +1274,12 @@
    "mb": 4.7,
    "category_id": 167,
    "created": "2023-05-31",
+   "label_forum": "normal",
+   "hint_forum": null,
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "noflight",
    "got_cause": null,
@@ -1581,19 +1614,25 @@
    "url": "https://discuss.ardupilot.org/t/mfe-fighter-vtol-crash-suspected-io-mcu-failure/102276",
    "log_url": "https://drive.google.com/file/d/17I2QfADtTHif11Aup3OApQWW18aR8790/view?usp=sharing",
    "label": "crash",
-   "cause_hint": "gps",
+   "cause_hint": null,
    "mb": 44.2,
    "category_id": 144,
    "created": "2023-06-12",
+   "label_forum": "crash",
+   "hint_forum": "gps",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Plane",
    "got": "incident",
-   "got_cause": "stall",
+   "got_cause": "control",
    "others": [
-    "control"
+    "stall"
    ],
    "overall": 47,
    "dur": 460,
-   "sec": 0.8,
+   "sec": 1.1,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -1841,19 +1880,26 @@
    "url": "https://discuss.ardupilot.org/t/ardupilot-quad-plane-unexpected-crash/102402",
    "log_url": "https://drive.google.com/file/d/1sMHhJB2qKCT4aZb9MFiOR9OR_ZykhH_Z/view?usp=drive_link",
    "label": "crash",
-   "cause_hint": null,
+   "cause_hint": "control",
    "mb": 2.7,
    "category_id": 144,
    "created": "2023-06-14",
+   "label_forum": "crash",
+   "hint_forum": null,
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Plane",
    "got": "incident",
    "got_cause": "stall",
    "others": [
-    "control"
+    "control",
+    "power"
    ],
    "overall": 44,
    "dur": 23,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 55,
@@ -2075,10 +2121,16 @@
    "url": "https://discuss.ardupilot.org/t/seeking-feedback-on-tuning-7-inch-copter-for-improved-stability/103076",
    "log_url": "https://discuss.ardupilot.org/uploads/short-url/dSpr8kC1zOqbhVyHcobXZAnYA9H.zip",
    "label": "normal",
-   "cause_hint": "control",
+   "cause_hint": null,
    "mb": 2.2,
    "category_id": 6,
    "created": "2023-06-29",
+   "label_forum": "normal",
+   "hint_forum": "control",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "noflight",
    "got_cause": null,
@@ -2260,11 +2312,18 @@
    "url": "https://discuss.ardupilot.org/t/arducopter-initial-tuning-and-setup-oscillation-issue/103213",
    "log_url": "https://drive.google.com/file/d/1JwqQbwn2o5DMM8jwrljjba6CGbO9lXAp/view?usp=sharing",
    "label": "crash",
-   "cause_hint": "motor",
+   "cause_hint": "control",
    "mb": 3.6,
    "category_id": 6,
    "created": "2023-07-03",
-   "label_src": "autopilot",
+   "label_forum": "normal",
+   "hint_forum": "motor",
+   "cause_alt": [
+    "motor"
+   ],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
    "got_cause": "unknown",
@@ -2470,17 +2529,23 @@
    "url": "https://discuss.ardupilot.org/t/fft-based-harmonic-notch-filter-for-dynamic-tuning/104391",
    "log_url": "https://drive.google.com/file/d/1tUApWUoRdljtuebC0NZ1yi-Z3UNNjR_E/view?usp=drive_link",
    "label": "normal",
-   "cause_hint": "control",
+   "cause_hint": null,
    "mb": 3.8,
    "category_id": 6,
    "created": "2023-07-31",
+   "label_forum": "normal",
+   "hint_forum": "control",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "noflight",
    "got_cause": null,
    "others": null,
    "overall": 69,
    "dur": 118,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -2641,15 +2706,22 @@
    "url": "https://discuss.ardupilot.org/t/coptor-automatically-begins-hovering-in-a-roughly-elliptical-orbit-around-the-takeoff-location-in-loiter-mode/107868",
    "log_url": "http://drive.google.com/file/d/19qEqw1Tves8nJjeGsfGUnPkF9sRGt5Y-/view?usp=sharing",
    "label": "crash",
-   "cause_hint": null,
+   "cause_hint": "compass",
    "mb": 0.9,
    "category_id": 6,
    "created": "2023-10-16",
-   "label_src": "autopilot",
+   "label_forum": "normal",
+   "hint_forum": null,
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
-   "got_cause": "control",
+   "got_cause": "motor",
    "others": [
+    "compass",
+    "control",
     "gps"
    ],
    "overall": 31,
@@ -2886,17 +2958,17 @@
      "score": 70,
      "status": "warn",
      "metrics": {
-      "motor_pwm_mean": 1430.3862433862432,
-      "motor_imbalance_us": 100.11640211640201,
-      "motor_headroom_us": 498.5873015873017,
+      "motor_pwm_mean": 1360.5337301587301,
+      "motor_imbalance_us": 220.80357142857133,
+      "motor_headroom_us": 477.52380952380963,
       "hover_thr": 0.2831963002681732
      },
      "findings": [
       {
        "k": "mot_imbalance",
        "a": {
-        "ch": "C3",
-        "v": 100
+        "ch": "C4",
+        "v": 221
        }
       }
      ]
@@ -2970,17 +3042,23 @@
    "url": "https://discuss.ardupilot.org/t/jitter-in-auto-modes-help-with-log-review/108349",
    "log_url": "https://discuss.ardupilot.org/uploads/short-url/3IIxVVMhI0WyXrvI9p6IRwV9UKH.bin",
    "label": "normal",
-   "cause_hint": "motor",
+   "cause_hint": null,
    "mb": 0.5,
    "category_id": 169,
    "created": "2023-10-26",
+   "label_forum": "normal",
+   "hint_forum": "motor",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "noflight",
    "got_cause": null,
    "others": null,
    "overall": 43,
    "dur": 27,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -3130,10 +3208,16 @@
    "url": "https://discuss.ardupilot.org/t/log-review-auto-mission-stopped-in-flight/110997",
    "log_url": "https://drive.google.com/file/d/1FhnNXbynNZsXrCof8mF57ao46XaV1UdS/view?usp=sharing",
    "label": "normal",
-   "cause_hint": "battery",
+   "cause_hint": null,
    "mb": 4.2,
    "category_id": 6,
    "created": "2023-12-26",
+   "label_forum": "normal",
+   "hint_forum": "battery",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "incident",
    "got_cause": "unknown",
@@ -3314,17 +3398,23 @@
    "url": "https://discuss.ardupilot.org/t/performance-review-of-quadcopter/112001",
    "log_url": "https://drive.google.com/file/d/1Q3f-TUiCYlnpIT3SnswvdB9Sfc1B0HiR/view?usp=drivesdk",
    "label": "normal",
-   "cause_hint": "battery",
+   "cause_hint": null,
    "mb": 12.8,
    "category_id": 6,
    "created": "2024-01-21",
+   "label_forum": "normal",
+   "hint_forum": "battery",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "incident",
    "got_cause": "battery",
    "others": [],
    "overall": 83,
    "dur": 575,
-   "sec": 0.6,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -3539,17 +3629,23 @@
    "url": "https://discuss.ardupilot.org/t/notch-filter-review-tune-analysis/115513",
    "log_url": "https://drive.google.com/file/d/1QzQKZXtYV8SWq0oA0cYYKzCl0krpmOuU/view?usp=sharing",
    "label": "normal",
-   "cause_hint": "motor",
+   "cause_hint": null,
    "mb": 64.0,
    "category_id": 144,
    "created": "2024-03-31",
+   "label_forum": "normal",
+   "hint_forum": "motor",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Plane",
    "got": "incident",
    "got_cause": "unknown",
    "others": null,
    "overall": 54,
    "dur": 134,
-   "sec": 0.9,
+   "sec": 1.0,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -3724,17 +3820,23 @@
    "url": "https://discuss.ardupilot.org/t/log-review-autotune-cuav-yaw-with-gps-and-optical-flow/115971",
    "log_url": "https://drive.google.com/file/d/1Cxl63ETU0m0ZRGFrtUY2s97qsKWoc7iW/view?usp=sharing",
    "label": "normal",
-   "cause_hint": "gps",
+   "cause_hint": null,
    "mb": 9.1,
    "category_id": 6,
    "created": "2024-04-08",
+   "label_forum": "normal",
+   "hint_forum": "gps",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "normal",
    "got_cause": null,
    "others": null,
    "overall": 85,
    "dur": 707,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -3931,15 +4033,21 @@
    "url": "https://discuss.ardupilot.org/t/pixhawk-crashed-while-ground-testing/11638",
    "log_url": "https://discuss.ardupilot.org/uploads/default/original/2X/f/f78d3c160b71117c00d5fb5bc301458e36bdc7c0.zip",
    "label": "crash",
-   "cause_hint": "gps",
+   "cause_hint": null,
    "mb": 1.7,
    "category_id": 109,
    "created": "2016-09-23",
-   "vehicle": "Plane",
+   "label_forum": "crash",
+   "hint_forum": "gps",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": true,
+   "note": "FC crash on ground",
+   "vehicle": "Copter",
    "got": "noflight",
    "got_cause": null,
    "others": null,
-   "overall": 99,
+   "overall": 94,
    "dur": 155,
    "sec": 0.5,
    "verdict": {
@@ -3949,8 +4057,8 @@
    },
    "facts": {
     "duration": 155.170343,
-    "vehicle": "Plane",
-    "version": "",
+    "vehicle": "Copter",
+    "version": "APM:Copter V3.4-rc5 (0d9d101f)",
     "arm_t": 0.005638,
     "disarm_t": 155.170343,
     "max_alt": 3.7599998712539673,
@@ -3963,7 +4071,7 @@
     "min_volt": 22.2510986328125,
     "min_volt_t": 94.447986,
     "used_mah": 1740.4146728515625,
-    "profile": "plane",
+    "profile": "copter",
     "serial": "002A002B3334511332353634",
     "wind_mean": 0.0,
     "wind_max": 0.0,
@@ -4053,6 +4161,25 @@
       "radio_failsafes": 0
      },
      "findings": []
+    },
+    "motors": {
+     "score": 88,
+     "status": "good",
+     "metrics": {
+      "motor_pwm_mean": 1556.6722580645162,
+      "motor_imbalance_us": 45.121290322580535,
+      "motor_headroom_us": 348.20645161290327,
+      "hover_thr": 0.3519868552684784
+     },
+     "findings": [
+      {
+       "k": "mot_imbalance",
+       "a": {
+        "ch": "C2",
+        "v": 45
+       }
+      }
+     ]
     }
    },
    "events": [
@@ -4100,17 +4227,25 @@
    "url": "https://discuss.ardupilot.org/t/desired-pitch-ignored-crashing-at-launch/117787",
    "log_url": "https://discuss.ardupilot.org/uploads/short-url/itQ8nFkhttYcISKtU7RoFUQ8oUg.bin",
    "label": "crash",
-   "cause_hint": null,
+   "cause_hint": "control",
    "mb": 0.5,
    "category_id": 176,
    "created": "2024-05-14",
+   "label_forum": "crash",
+   "hint_forum": null,
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Plane",
    "got": "crash",
    "got_cause": "control",
-   "others": [],
+   "others": [
+    "power"
+   ],
    "overall": 45,
    "dur": 13,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 75,
@@ -4333,17 +4468,23 @@
    "url": "https://discuss.ardupilot.org/t/crash-analysis-probable-power-loss/118356",
    "log_url": "https://drive.google.com/file/d/16Ng1tGRue-Vsmy0pOJHz32k8CATg6mpZ/view?usp=sharing",
    "label": "crash",
-   "cause_hint": "battery",
+   "cause_hint": "power",
    "mb": 97.2,
    "category_id": 174,
    "created": "2024-05-24",
+   "label_forum": "crash",
+   "hint_forum": "battery",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "normal",
    "got_cause": null,
    "others": null,
    "overall": 97,
    "dur": 12033899678709,
-   "sec": 1.2,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -4495,19 +4636,28 @@
    "url": "https://discuss.ardupilot.org/t/first-crash-with-ardupilot-please-help-to-find-reason/118894",
    "log_url": "https://drive.google.com/file/d/1qJNhjhglCzBNmmBgN4z2Arw3lUx_NvsA/view?usp=sharing",
    "label": "crash",
-   "cause_hint": "vibration",
+   "cause_hint": "motor",
    "mb": 10.8,
    "category_id": 174,
    "created": "2024-06-05",
+   "label_forum": "crash",
+   "hint_forum": "vibration",
+   "cause_alt": [
+    "vibration"
+   ],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
-   "got_cause": "vibration",
+   "got_cause": "gps",
    "others": [
-    "gps"
+    "vibration",
+    "compass"
    ],
    "overall": 49,
    "dur": 524,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -4760,17 +4910,23 @@
    "url": "https://discuss.ardupilot.org/t/autotune-gives-poor-tuning-values-on-roll-axis-and-causing-vibration-on-arms/120018",
    "log_url": "https://drive.google.com/file/d/198STK3lE5vNZDqK3JiFPGggQTHqxUY6K/view?usp=sharing",
    "label": "normal",
-   "cause_hint": "vibration",
+   "cause_hint": null,
    "mb": 5.8,
    "category_id": 169,
    "created": "2024-06-29",
+   "label_forum": "normal",
+   "hint_forum": "vibration",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "normal",
    "got_cause": null,
    "others": null,
    "overall": 98,
    "dur": 256,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -4922,10 +5078,16 @@
    "url": "https://discuss.ardupilot.org/t/v-tail-fixed-wing-crash/121201",
    "log_url": "https://drive.google.com/file/d/1Z5E0ATOPDZCsXnu9A9Zl8ORdXiOq7ffB/view?usp=sharing",
    "label": "crash",
-   "cause_hint": null,
+   "cause_hint": "control",
    "mb": 2.3,
    "category_id": 7,
    "created": "2024-07-23",
+   "label_forum": "crash",
+   "hint_forum": null,
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Plane",
    "got": "incident",
    "got_cause": "control",
@@ -4935,7 +5097,7 @@
    ],
    "overall": 38,
    "dur": 11817726897044,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 45,
@@ -5182,19 +5344,25 @@
    "url": "https://discuss.ardupilot.org/t/please-help-analyse-a-crash-log/121455",
    "log_url": "https://drive.google.com/file/d/1H9T2reTKcF-76olk-h0dGZYgcw1Zc7ij/view?usp=sharing",
    "label": "crash",
-   "cause_hint": "gps",
+   "cause_hint": "control",
    "mb": 16.3,
    "category_id": 176,
    "created": "2024-07-29",
+   "label_forum": "crash",
+   "hint_forum": "gps",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Plane",
    "got": "incident",
-   "got_cause": "control",
+   "got_cause": "power",
    "others": [
-    "power"
+    "control"
    ],
    "overall": 50,
    "dur": 694,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -5387,19 +5555,26 @@
    "url": "https://discuss.ardupilot.org/t/hexacopter-crash-log-analysis-request/121620",
    "log_url": "https://drive.google.com/file/d/184N7nwLrv_YS8Rr1z0hn5JYpuW7ywFLq/view?usp=drive_link",
    "label": "crash",
-   "cause_hint": "vibration",
+   "cause_hint": "motor",
    "mb": 1.6,
    "category_id": 174,
    "created": "2024-07-31",
+   "label_forum": "crash",
+   "hint_forum": "vibration",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
-   "got_cause": "control",
+   "got_cause": "motor",
    "others": [
-    "radio"
+    "compass",
+    "control"
    ],
    "overall": 36,
    "dur": 1658,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -5722,17 +5897,23 @@
    "url": "https://discuss.ardupilot.org/t/hot-motors-even-in-gentle-hover/122147",
    "log_url": "https://drive.google.com/file/d/1MUrnLGQOXIMriXw_yIbyxp0j290f0APe/view?usp=sharing",
    "label": "normal",
-   "cause_hint": "vibration",
+   "cause_hint": null,
    "mb": 57.0,
    "category_id": 174,
    "created": "2024-08-11",
+   "label_forum": "normal",
+   "hint_forum": "vibration",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "noflight",
    "got_cause": null,
    "others": null,
    "overall": 86,
    "dur": 207,
-   "sec": 0.8,
+   "sec": 1.0,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -5878,17 +6059,23 @@
    "url": "https://discuss.ardupilot.org/t/review-log-for-yaw-1hz-oscillation/122473",
    "log_url": "https://drive.google.com/file/d/1lSOxM_e9gXuAsA-HgcqLBunj0T-hjAdB/view?usp=drive_link",
    "label": "normal",
-   "cause_hint": "compass",
+   "cause_hint": null,
    "mb": 55.6,
    "category_id": 144,
    "created": "2024-08-17",
+   "label_forum": "normal",
+   "hint_forum": "compass",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Plane",
    "got": "incident",
    "got_cause": "unknown",
    "others": null,
    "overall": 44,
    "dur": 92,
-   "sec": 0.8,
+   "sec": 1.1,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -6093,19 +6280,30 @@
    "mb": 42.9,
    "category_id": 6,
    "created": "2024-10-23",
+   "label_forum": "crash",
+   "hint_forum": "compass",
+   "cause_alt": [
+    "motor",
+    "gps"
+   ],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
-   "got_cause": "battery",
+   "got_cause": "motor",
    "others": [
+    "battery",
     "control",
     "vibration",
     "radio",
+    "compass",
     "gps",
     "ekf"
    ],
    "overall": 36,
    "dur": 1708,
-   "sec": 1.0,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -6659,15 +6857,22 @@
    "mb": 6.6,
    "category_id": 123,
    "created": "2016-11-08",
+   "label_forum": "crash",
+   "hint_forum": null,
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Plane",
    "got": "incident",
    "got_cause": "stall",
    "others": [
-    "control"
+    "control",
+    "power"
    ],
    "overall": 45,
    "dur": 261,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -6850,17 +7055,23 @@
    "url": "https://discuss.ardupilot.org/t/quadcopter-aggressive-gains-after-autotune/126920",
    "log_url": "https://drive.google.com/file/d/1R66nE1aMInci0Y_ucvg8Q5bVVn9dHCwK/view?usp=drive_link",
    "label": "normal",
-   "cause_hint": "control",
+   "cause_hint": null,
    "mb": 20.4,
    "category_id": 6,
    "created": "2024-11-29",
+   "label_forum": "normal",
+   "hint_forum": "control",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "normal",
    "got_cause": null,
    "others": null,
    "overall": 99,
    "dur": 87,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -7014,13 +7225,19 @@
    "mb": 1.0,
    "category_id": 41,
    "created": "2016-11-13",
-   "vehicle": "Plane",
+   "label_forum": "crash",
+   "hint_forum": null,
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
+   "vehicle": "Copter",
    "got": "normal",
    "got_cause": null,
    "others": null,
-   "overall": 100,
+   "overall": 98,
    "dur": 87,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 10,
@@ -7040,8 +7257,8 @@
    },
    "facts": {
     "duration": 87.014669,
-    "vehicle": "Plane",
-    "version": "",
+    "vehicle": "Copter",
+    "version": "APM:Copter V3.3.3 (acf2e10c)",
     "takeoff_t": 27.454347,
     "land_t": 86.935116,
     "flight_time": 59.480768999999995,
@@ -7059,7 +7276,7 @@
     "min_volt_t": 44.109846,
     "used_mah": 1152.3839111328125,
     "first_error": null,
-    "profile": "plane",
+    "profile": "copter",
     "serial": "002A003B3134510335303739",
     "anomaly_index": 0
    },
@@ -7077,7 +7294,7 @@
      "findings": []
     },
     "vibration": {
-     "score": 100,
+     "score": 95,
      "status": "good",
      "metrics": {
       "p95": 13.114970111846914,
@@ -7144,11 +7361,17 @@
    "mb": 1.9,
    "category_id": 104,
    "created": "2016-11-17",
-   "vehicle": "Plane",
+   "label_forum": "crash",
+   "hint_forum": null,
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
+   "vehicle": "Copter",
    "got": "normal",
    "got_cause": null,
    "others": null,
-   "overall": 95,
+   "overall": 91,
    "dur": 173,
    "sec": 0.5,
    "verdict": {
@@ -7163,8 +7386,8 @@
    },
    "facts": {
     "duration": 173.196772,
-    "vehicle": "Plane",
-    "version": "",
+    "vehicle": "Copter",
+    "version": "APM:Copter V3.3.3 (acf2e10c)",
     "takeoff_t": 98.862435,
     "land_t": 164.979199,
     "flight_time": 66.11676399999999,
@@ -7182,7 +7405,7 @@
     "min_volt_t": 165.073813,
     "used_mah": 521.3634643554688,
     "first_error": null,
-    "profile": "plane",
+    "profile": "copter",
     "serial": "001B00303133470738383835",
     "anomaly_index": 0
    },
@@ -7200,7 +7423,7 @@
      "findings": []
     },
     "vibration": {
-     "score": 90,
+     "score": 82,
      "status": "good",
      "metrics": {
       "p95": 21.144977569580075,
@@ -7274,13 +7497,19 @@
    "mb": 6.7,
    "category_id": 6,
    "created": "2025-02-26",
+   "label_forum": "normal",
+   "hint_forum": null,
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "noflight",
    "got_cause": null,
    "others": null,
    "overall": 77,
    "dur": 200,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -7493,17 +7722,23 @@
    "url": "https://discuss.ardupilot.org/t/about-pid-tuning-of-30inch-prop-quadrotor/131480",
    "log_url": "https://drive.google.com/file/d/17tLkHjZOvSNgqq73X1JcmjNVJ6SAbkQ0/view?usp=sharing",
    "label": "normal",
-   "cause_hint": "vibration",
+   "cause_hint": null,
    "mb": 121.2,
    "category_id": 6,
    "created": "2025-03-09",
+   "label_forum": "normal",
+   "hint_forum": "vibration",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "incident",
    "got_cause": "radio",
    "others": [],
    "overall": 79,
    "dur": 7133983284583,
-   "sec": 1.5,
+   "sec": 2.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -7714,14 +7949,22 @@
    "url": "https://discuss.ardupilot.org/t/help-me-analyze-the-logs-of-the-crash/132485",
    "log_url": "https://drive.google.com/file/d/1rB5_1aiGNypMAYQ_pR5V2kNT0hJIt3fO/view?usp=sharing",
    "label": "crash",
-   "cause_hint": "motor",
+   "cause_hint": "control",
    "mb": 6.4,
    "category_id": 169,
    "created": "2025-03-28",
+   "label_forum": "crash",
+   "hint_forum": "motor",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "incident",
    "got_cause": "control",
-   "others": [],
+   "others": [
+    "power"
+   ],
    "overall": 46,
    "dur": 82,
    "sec": 0.6,
@@ -7962,13 +8205,19 @@
    "mb": 0.7,
    "category_id": 6,
    "created": "2025-04-25",
+   "label_forum": "crash",
+   "hint_forum": "motor",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "noflight",
    "got_cause": null,
    "others": null,
    "overall": 30,
    "dur": 29,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -8231,19 +8480,26 @@
    "url": "https://discuss.ardupilot.org/t/help-on-log-analisys-helicopter-crashed/133637",
    "log_url": "https://discuss.ardupilot.org/uploads/short-url/zHslmwhqwSw581MKhwfxMmpuKqo.bin",
    "label": "crash",
-   "cause_hint": "battery",
+   "cause_hint": "control",
    "mb": 0.4,
    "category_id": 40,
    "created": "2025-04-25",
+   "label_forum": "crash",
+   "hint_forum": "battery",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "incident",
-   "got_cause": "control",
+   "got_cause": "compass",
    "others": [
+    "control",
     "ekf"
    ],
    "overall": 33,
    "dur": 27,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -8486,20 +8742,23 @@
    "url": "https://discuss.ardupilot.org/t/correct-tuning-response-to-manual-tuning-charts/133895",
    "log_url": "https://drive.google.com/file/d/1P1D8u1Oyk-ndApTfRa6WCrIUQ1AWbtEZ/view?usp=sharing",
    "label": "crash",
-   "cause_hint": "motor",
+   "cause_hint": null,
    "mb": 34.2,
    "category_id": 174,
    "created": "2025-05-03",
+   "label_forum": "normal",
+   "hint_forum": "motor",
+   "cause_alt": [],
    "label_src": "autopilot",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
-   "got_cause": "radio",
-   "others": [
-    "gps"
-   ],
+   "got_cause": "control",
+   "others": [],
    "overall": 50,
    "dur": 151,
-   "sec": 0.7,
+   "sec": 1.1,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -8769,14 +9028,22 @@
    "url": "https://discuss.ardupilot.org/t/crash-analysis-help-ekf-failures-compass-inconsistent-gps-dropouts-arducopter-4-5-7/135472",
    "log_url": "https://drive.google.com/file/d/1xIwDo11VYJ04t_DFK39nqGQZwaGS4jkh/view?usp=sharing",
    "label": "crash",
-   "cause_hint": "vibration",
+   "cause_hint": "motor",
    "mb": 4.6,
    "category_id": 6,
    "created": "2025-06-14",
+   "label_forum": "crash",
+   "hint_forum": "vibration",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
-   "got_cause": "control",
+   "got_cause": "motor",
    "others": [
+    "control",
+    "compass",
     "ekf"
    ],
    "overall": 67,
@@ -9076,16 +9343,25 @@
    "mb": 15.0,
    "category_id": 179,
    "created": "2025-06-22",
+   "label_forum": "crash",
+   "hint_forum": "motor",
+   "cause_alt": [
+    "power"
+   ],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "incident",
    "got_cause": "control",
    "others": [
     "gps",
+    "compass",
     "ekf"
    ],
    "overall": 41,
    "dur": 66,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -9346,16 +9622,22 @@
    "url": "https://discuss.ardupilot.org/t/crash-analysis-of-hexacopter/137474",
    "log_url": "https://drive.google.com/file/d/1yBojzcdNi0n-UGmyrLUPawqZYBlmmZnD/view?usp=drive_link",
    "label": "crash",
-   "cause_hint": null,
+   "cause_hint": "motor",
    "mb": 12.3,
    "category_id": 6,
    "created": "2025-08-05",
+   "label_forum": "crash",
+   "hint_forum": null,
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "incident",
    "got_cause": "control",
    "others": [
     "ekf",
-    "gps"
+    "compass"
    ],
    "overall": 43,
    "dur": 1164,
@@ -9630,19 +9912,26 @@
    "url": "https://discuss.ardupilot.org/t/crashed-because-of-compass/137647",
    "log_url": "https://drive.google.com/file/d/19XoKSG0UMcuZJtWanjJJxAQWlvPRCKR7/view?usp=sharing",
    "label": "crash",
-   "cause_hint": "gps",
+   "cause_hint": "control",
    "mb": 63.7,
    "category_id": 6,
    "created": "2025-08-09",
+   "label_forum": "crash",
+   "hint_forum": "gps",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
    "got_cause": "motor",
    "others": [
+    "compass",
     "control"
    ],
    "overall": 44,
    "dur": 414,
-   "sec": 0.9,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -9889,8 +10178,254 @@
    "mb": 8.0,
    "category_id": 144,
    "created": "2025-08-14",
-   "got": "error",
-   "err": "Command '['/opt/hostedtoolcache/Python/3.12.16/x64/bin/python', '/home/runner/work/pixhawk-log-analiz/pixhawk-log-analiz/run.py', '--analyze', '/tmp/bench/137901.bin', '--json', '/tmp/bench/137901.json']' returned non-zero exit status 1."
+   "label_forum": "crash",
+   "hint_forum": "compass",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
+   "vehicle": "Plane",
+   "got": "incident",
+   "got_cause": "control",
+   "others": [],
+   "overall": 37,
+   "dur": 258,
+   "sec": 0.5,
+   "verdict": {
+    "kind": "incident",
+    "score": 20,
+    "evidence": [
+     {
+      "k": "cr_attitude",
+      "a": {
+       "r": 176,
+       "p": 70
+      }
+     }
+    ]
+   },
+   "facts": {
+    "duration": 257.601295,
+    "vehicle": "Plane",
+    "version": "ArduPlane V4.6.2 (1ebd4d99)",
+    "takeoff_t": 44.722883,
+    "land_t": 242.703473,
+    "flight_time": 18.798711999999995,
+    "n_flights": 2,
+    "arm_t": 2.22679,
+    "disarm_t": 242.602464,
+    "max_alt": 2.4157187938690186,
+    "max_alt_t": 241.023415,
+    "max_dist": 7.826251876958295,
+    "max_dist_t": 244.822763,
+    "distance": 14.118430125854132,
+    "max_gs": 3.1243679523468018,
+    "max_gs_t": 242.422246,
+    "max_as": 1.8639752864837646,
+    "max_as_t": 242.542613,
+    "min_volt": 13.85205078125,
+    "min_volt_t": 54.021796,
+    "used_mah": 59.67543411254883,
+    "first_error": null,
+    "profile": "vtol",
+    "serial": "002100313233510237343433",
+    "wind_mean": 0.0,
+    "wind_max": 0.0,
+    "wind_from": 180.0,
+    "anomaly_index": 0
+   },
+   "health": {
+    "gps": {
+     "score": 0,
+     "status": "bad",
+     "metrics": {
+      "min_sats": 0.0,
+      "mean_sats": 3.893617021276596,
+      "max_hdop": 100.0,
+      "bad_pct": 59.57446808510638,
+      "glitches": 0
+     },
+     "findings": [
+      {
+       "k": "gps_bad_pct",
+       "a": {
+        "pct": 59.6
+       }
+      },
+      {
+       "k": "gps_min_sats",
+       "a": {
+        "n": 0
+       }
+      }
+     ]
+    },
+    "vibration": {
+     "score": 92,
+     "status": "good",
+     "metrics": {
+      "p95": 12.296904039382952,
+      "max": 107.03303527832031,
+      "z_mean": 5.246468017710016,
+      "clip": 82.0
+     },
+     "findings": [
+      {
+       "k": "vibe_clip",
+       "a": {
+        "n": 82
+       }
+      }
+     ]
+    },
+    "power": {
+     "score": 80,
+     "status": "good",
+     "metrics": {
+      "vmin": 13.85205078125,
+      "vmax": 16.542470932006836,
+      "cells": 4,
+      "per_cell_min": 3.4630126953125,
+      "current_sensor": true,
+      "used_mah": 59.67543411254883,
+      "capacity": null,
+      "vcc_min": 5.112039089202881,
+      "max_curr": 46.925575256347656
+     },
+     "findings": [
+      {
+       "k": "bat_mid_cell",
+       "a": {
+        "v": 3.46,
+        "n": 4
+       }
+      }
+     ]
+    },
+    "ekf": {
+     "score": 82,
+     "status": "good",
+     "metrics": {
+      "SV": 0.44,
+      "SP": 0.04,
+      "SH": 0.13,
+      "SM": 1.45,
+      "mag_var_pct": 15.56637165656764
+     },
+     "findings": [
+      {
+       "k": "ekf_bad",
+       "a": {
+        "k": "SM",
+        "v": 1.45
+       }
+      }
+     ]
+    },
+    "control": {
+     "score": 0,
+     "status": "bad",
+     "metrics": {
+      "roll_rms": 30.043142499766716,
+      "pitch_rms": 9.13943156070664,
+      "roll_max": 175.8004608154297,
+      "pitch_max": 69.87724304199219
+     },
+     "findings": [
+      {
+       "k": "att_roll_err",
+       "a": {
+        "v": 30.0
+       }
+      },
+      {
+       "k": "att_pitch_err",
+       "a": {
+        "v": 9.1
+       }
+      },
+      {
+       "k": "att_roll_exceed",
+       "a": {
+        "v": 176,
+        "lim": 45
+       }
+      }
+     ]
+    },
+    "servo": {
+     "score": 92,
+     "status": "good",
+     "metrics": {
+      "C1": 2.6595744680851063,
+      "C2": 2.6595744680851063,
+      "C4": 3.1914893617021276,
+      "thr_full_pct": 0.0,
+      "thr_mean": 0.0
+     },
+     "findings": []
+    },
+    "rc": {
+     "score": 100,
+     "status": "good",
+     "metrics": {
+      "below_fs_pct": 0.0,
+      "radio_failsafes": 0
+     },
+     "findings": []
+    },
+    "airspeed": {
+     "score": 0,
+     "status": "bad",
+     "metrics": {
+      "as_mean": 0.09148144470329614,
+      "as_min": 0.0,
+      "below_min_pct": 100.0,
+      "as_minus_gs": -0.36425327653683365
+     },
+     "findings": [
+      {
+       "k": "as_low",
+       "a": {
+        "v": 100.0,
+        "min": 9.0
+       }
+      },
+      {
+       "k": "as_not_used",
+       "a": {}
+      }
+     ]
+    },
+    "cpu": {
+     "score": 100,
+     "status": "good",
+     "metrics": {
+      "load_max": 30.5,
+      "long_loops": 0.0
+     },
+     "findings": []
+    },
+    "vtol": {
+     "score": 100,
+     "status": "good",
+     "metrics": {
+      "transitions": 0,
+      "vtol_time_s": 256.79350999999997,
+      "q_thr_full_pct": 3.6231884057971016
+     },
+     "findings": [
+      {
+       "k": "vtol_summary",
+       "a": {
+        "n": 0,
+        "t": 4.3
+       }
+      }
+     ]
+    }
+   },
+   "events": []
   },
   {
    "id": "137946",
@@ -9898,10 +10433,16 @@
    "url": "https://discuss.ardupilot.org/t/autotune-doesnt-complete-logs-cut-off/137946",
    "log_url": "https://drive.google.com/file/d/1Mpd0IYZcqHEfeY69XHUr-IrwYtV4YnAy/view?usp=sharing",
    "label": "normal",
-   "cause_hint": "control",
+   "cause_hint": null,
    "mb": 8.1,
    "category_id": 179,
    "created": "2025-08-16",
+   "label_forum": "normal",
+   "hint_forum": "control",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "incident",
    "got_cause": "unknown",
@@ -10065,17 +10606,23 @@
    "url": "https://discuss.ardupilot.org/t/my-logs-and-only-my-logs-wont-open-in-the-pid-review-tool/137978",
    "log_url": "https://drive.google.com/file/d/1UxjiI64FDVLSho2z8yYDMT0dhhLWppYg/view?usp=sharing",
    "label": "normal",
-   "cause_hint": "control",
+   "cause_hint": null,
    "mb": 2.7,
    "category_id": 6,
    "created": "2025-08-18",
-   "vehicle": "Plane",
+   "label_forum": "normal",
+   "hint_forum": "control",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
+   "vehicle": "Copter",
    "got": "noflight",
    "got_cause": null,
    "others": null,
-   "overall": 38,
+   "overall": 42,
    "dur": 46,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -10083,12 +10630,12 @@
    },
    "facts": {
     "duration": 45.804268,
-    "vehicle": "Plane",
+    "vehicle": "Copter",
     "version": "",
     "min_volt": 1.002694010734558,
     "min_volt_t": 40.555723,
     "used_mah": 438.0862731933594,
-    "profile": "plane",
+    "profile": "copter",
     "serial": "",
     "wind_mean": 0.0,
     "wind_max": 0.0,
@@ -10140,7 +10687,14 @@
       "roll_max": 13.813680648803711,
       "pitch_max": 6.899041175842285
      },
-     "findings": []
+     "findings": [
+      {
+       "k": "att_roll_err",
+       "a": {
+        "v": 4.6
+       }
+      }
+     ]
     },
     "servo": {
      "score": 0,
@@ -10193,6 +10747,17 @@
        }
       }
      ]
+    },
+    "motors": {
+     "score": 100,
+     "status": "good",
+     "metrics": {
+      "motor_pwm_mean": 1145.75,
+      "motor_imbalance_us": 6.25,
+      "motor_headroom_us": 848.0,
+      "hover_thr": 0.125
+     },
+     "findings": []
     }
    },
    "events": [
@@ -10250,17 +10815,25 @@
    "url": "https://discuss.ardupilot.org/t/crashed-it-yawed-badly-and-crashed-due-to-compass-anomalies-in-arducopter-4-6-0-with-micoair-nxt-px4-v2/138968",
    "log_url": "https://drive.google.com/file/d/1kHH5Nw-3jX0cnZm3A6HAJ2zMwJxk8w98/view?usp=sharing",
    "label": "crash",
-   "cause_hint": "gps",
+   "cause_hint": "motor",
    "mb": 18.9,
    "category_id": 179,
    "created": "2025-09-13",
+   "label_forum": "crash",
+   "hint_forum": "gps",
+   "cause_alt": [
+    "compass"
+   ],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "normal",
    "got_cause": null,
    "others": null,
    "overall": 91,
    "dur": 899,
-   "sec": 0.7,
+   "sec": 0.8,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -10432,10 +11005,16 @@
    "url": "https://discuss.ardupilot.org/t/tandem-wing-tilt-hexaplane-crashed-during-auto-transition-rolled-right-log-attached/140136",
    "log_url": "https://drive.google.com/file/d/1UVi39If14DjgBm6W_iCXij3CTC72iti4/view?usp=sharing",
    "label": "crash",
-   "cause_hint": "motor",
+   "cause_hint": null,
    "mb": 6.5,
    "category_id": 144,
    "created": "2025-10-19",
+   "label_forum": "crash",
+   "hint_forum": "motor",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Plane",
    "got": "crash",
    "got_cause": "compass",
@@ -10446,7 +11025,7 @@
    ],
    "overall": 43,
    "dur": 53,
-   "sec": 0.6,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -10691,17 +11270,23 @@
    "url": "https://discuss.ardupilot.org/t/crash-analysis-uncommanded-dip-in-throttle/141437",
    "log_url": "https://www.dropbox.com/scl/fi/lv14e0nn46t9ymfeb5xev/00000009.BIN?rlkey=tqq7sear37s3n5fbshueps25y&dl=0",
    "label": "crash",
-   "cause_hint": "vibration",
+   "cause_hint": "radio",
    "mb": 11.5,
    "category_id": 179,
    "created": "2025-12-13",
+   "label_forum": "crash",
+   "hint_forum": "vibration",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
    "got_cause": "control",
    "others": [],
    "overall": 45,
    "dur": 694,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -10948,17 +11533,23 @@
    "url": "https://discuss.ardupilot.org/t/hover-learn-results-and-ins-raw-log-review/141829",
    "log_url": "https://drive.google.com/file/d/1If7nkaWegKH-CAxwEu7OTLpLDW6LJk9J/view?usp=sharing",
    "label": "normal",
-   "cause_hint": "motor",
+   "cause_hint": null,
    "mb": 23.3,
    "category_id": 179,
    "created": "2026-01-11",
+   "label_forum": "normal",
+   "hint_forum": "motor",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "incident",
    "got_cause": "radio",
    "others": [],
    "overall": 80,
    "dur": 185,
-   "sec": 0.6,
+   "sec": 0.9,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -11188,10 +11779,18 @@
    "url": "https://discuss.ardupilot.org/t/4-1-vtol-crash-analysis-in-q-mode-vtol-motors-quit/142142",
    "log_url": "https://drive.google.com/file/d/1dVKWYs22b-u3WfHLohTlR_nnmjqu05NJ/view?usp=drive_link",
    "label": "crash",
-   "cause_hint": "vibration",
+   "cause_hint": "motor",
    "mb": 40.9,
    "category_id": 179,
    "created": "2026-01-31",
+   "label_forum": "crash",
+   "hint_forum": "vibration",
+   "cause_alt": [
+    "power"
+   ],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Plane",
    "got": "incident",
    "got_cause": "unknown",
@@ -11406,16 +12005,20 @@
    "url": "https://discuss.ardupilot.org/t/review-cubeorange-21-crash-log/142574",
    "log_url": "https://drive.google.com/file/d/14QmsN3qb_8ciTRPH56_frbE5ydRducYw/view?usp=drivesdk",
    "label": "crash",
-   "cause_hint": "motor",
+   "cause_hint": "control",
    "mb": 12.3,
    "category_id": 6,
    "created": "2026-02-25",
+   "label_forum": "crash",
+   "hint_forum": "motor",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
    "got_cause": "control",
-   "others": [
-    "ekf"
-   ],
+   "others": [],
    "overall": 36,
    "dur": 536,
    "sec": 0.7,
@@ -11724,16 +12327,23 @@
    "mb": 39.6,
    "category_id": 179,
    "created": "2026-03-04",
+   "label_forum": "crash",
+   "hint_forum": null,
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "incident",
    "got_cause": "control",
    "others": [
     "gps",
+    "compass",
     "ekf"
    ],
    "overall": 50,
    "dur": 998,
-   "sec": 0.9,
+   "sec": 1.1,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -12016,19 +12626,25 @@
    "url": "https://discuss.ardupilot.org/t/log-analysis-crashed/142836",
    "log_url": "https://drive.google.com/file/d/1DZR-RzbBVQrXbIZjDwekSb_soo2FLuRo/view?usp=sharing",
    "label": "crash",
-   "cause_hint": "radio",
+   "cause_hint": "power",
    "mb": 39.2,
    "category_id": 6,
    "created": "2026-03-11",
+   "label_forum": "crash",
+   "hint_forum": "radio",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "incident",
-   "got_cause": "radio",
+   "got_cause": "power",
    "others": [
-    "power"
+    "radio"
    ],
    "overall": 79,
    "dur": 1618,
-   "sec": 0.9,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -12314,17 +12930,23 @@
    "url": "https://discuss.ardupilot.org/t/drone-has-crashed-log-file-attached/143330",
    "log_url": "https://drive.google.com/file/d/1V9xFKNM8CqoiV4EJKLIuNLmzD0qILcR4/view?usp=sharing",
    "label": "crash",
-   "cause_hint": null,
+   "cause_hint": "control",
    "mb": 6.8,
    "category_id": 179,
    "created": "2026-04-08",
+   "label_forum": "crash",
+   "hint_forum": null,
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
    "got_cause": "control",
    "others": [],
    "overall": 51,
    "dur": 235,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -12578,19 +13200,26 @@
    "url": "https://discuss.ardupilot.org/t/crash-analysis-request-hexa-x-cube-orange-28-props-arducopter-4-6-2/143577",
    "log_url": "https://drive.google.com/file/d/1DcqyA44eVNgSuAW1g6J0tcpbztTKOWP-/view?usp=sharing",
    "label": "crash",
-   "cause_hint": "gps",
+   "cause_hint": "motor",
    "mb": 9.9,
    "category_id": 179,
    "created": "2026-04-29",
+   "label_forum": "crash",
+   "hint_forum": "gps",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "incident",
-   "got_cause": "control",
+   "got_cause": "motor",
    "others": [
+    "control",
     "radio"
    ],
    "overall": 41,
    "dur": 830,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -12906,10 +13535,16 @@
    "url": "https://discuss.ardupilot.org/t/plane-enters-spiral-toilet-bowl-loop-during-roll-in-autotune-factory-pids/144973",
    "log_url": "https://drive.google.com/file/d/1vv30dRS_bemJAMzsmpvzKj8HTJCAGXsl/view?usp=sharing",
    "label": "normal",
-   "cause_hint": "gps",
+   "cause_hint": null,
    "mb": 28.8,
    "category_id": 166,
    "created": "2026-07-31",
+   "label_forum": "normal",
+   "hint_forum": "gps",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Plane",
    "got": "incident",
    "got_cause": "control",
@@ -12918,7 +13553,7 @@
    ],
    "overall": 47,
    "dur": 600,
-   "sec": 0.7,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 55,
@@ -13134,13 +13769,19 @@
    "mb": 63.9,
    "category_id": 179,
    "created": "2026-09-19",
+   "label_forum": "crash",
+   "hint_forum": null,
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": true,
+   "note": "no crash",
    "vehicle": "Copter",
    "got": "incident",
    "got_cause": "control",
    "others": [],
    "overall": 56,
    "dur": 216,
-   "sec": 0.8,
+   "sec": 0.9,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -13356,10 +13997,16 @@
    "url": "https://discuss.ardupilot.org/t/vtol-tiltrotor-crash-in-qloiter-sudden-yaw-spin-backward-movement-and-nose-down-rotation/145787",
    "log_url": "https://drive.google.com/file/d/1Q6UmtdmwmqKySEGBCNfvHExMNuPWz_jq/view?usp=drivesdk",
    "label": "crash",
-   "cause_hint": "compass",
+   "cause_hint": null,
    "mb": 72.6,
    "category_id": 186,
    "created": "2026-10-12",
+   "label_forum": "crash",
+   "hint_forum": "compass",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": true,
+   "note": "wrong log",
    "vehicle": "Plane",
    "got": "incident",
    "got_cause": "stall",
@@ -13368,7 +14015,7 @@
    ],
    "overall": 51,
    "dur": 946,
-   "sec": 1.0,
+   "sec": 1.2,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -13582,12 +14229,18 @@
    "mb": 12.2,
    "category_id": 123,
    "created": "2017-03-19",
+   "label_forum": "crash",
+   "hint_forum": null,
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Plane",
    "got": "incident",
-   "got_cause": "control",
+   "got_cause": "power",
    "others": [
-    "battery",
-    "power"
+    "control",
+    "battery"
    ],
    "overall": 41,
    "dur": 489,
@@ -13808,17 +14461,23 @@
    "url": "https://discuss.ardupilot.org/t/first-flight-some-issues-with-x8-need-help-analysing-logs/17024",
    "log_url": "https://discuss.ardupilot.org/uploads/default/original/2X/0/05b5137c247032d8ab8d22ee73973c6bcc94aa7a.bin",
    "label": "normal",
-   "cause_hint": "motor",
+   "cause_hint": null,
    "mb": 1.2,
    "category_id": 109,
    "created": "2017-04-30",
-   "vehicle": "Plane",
+   "label_forum": "normal",
+   "hint_forum": "motor",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
+   "vehicle": "Copter",
    "got": "incident",
    "got_cause": "vibration",
    "others": [],
-   "overall": 47,
+   "overall": 46,
    "dur": 642,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -13831,8 +14490,8 @@
    },
    "facts": {
     "duration": 642.187037,
-    "vehicle": "Plane",
-    "version": "",
+    "vehicle": "Copter",
+    "version": "APM:Copter V3.4.1 (04c76843)",
     "takeoff_t": 14.18283,
     "land_t": 642.14695,
     "flight_time": 30.003896999999935,
@@ -13850,7 +14509,7 @@
     "min_volt_t": 37.724209,
     "used_mah": 99.23961639404297,
     "first_error": null,
-    "profile": "plane",
+    "profile": "copter",
     "serial": "003000423134510233363633",
     "wind_mean": 0.0,
     "wind_max": 0.0,
@@ -13961,6 +14620,25 @@
       "radio_failsafes": 0
      },
      "findings": []
+    },
+    "motors": {
+     "score": 70,
+     "status": "warn",
+     "metrics": {
+      "motor_pwm_mean": 1358.8762541806018,
+      "motor_imbalance_us": 155.37123745819372,
+      "motor_headroom_us": 524.8260869565217,
+      "hover_thr": 0.5
+     },
+     "findings": [
+      {
+       "k": "mot_imbalance",
+       "a": {
+        "ch": "C1",
+        "v": 155
+       }
+      }
+     ]
     }
    },
    "events": []
@@ -13971,17 +14649,23 @@
    "url": "https://discuss.ardupilot.org/t/cube-2-1-3-4-6-i-think-mp-1-3-48-new-to-pixhawk2-crash-logs/17161",
    "log_url": "https://discuss.ardupilot.org/uploads/default/original/2X/4/4d52abb9c66661dfad3e7fcc5c2ade6fca394ffc.bin",
    "label": "crash",
-   "cause_hint": "motor",
+   "cause_hint": null,
    "mb": 4.1,
    "category_id": 127,
    "created": "2017-05-05",
-   "vehicle": "Plane",
+   "label_forum": "crash",
+   "hint_forum": "motor",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
+   "vehicle": "Copter",
    "got": "crash",
    "got_cause": "control",
    "others": [],
-   "overall": 53,
+   "overall": 48,
    "dur": 314,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -14010,11 +14694,11 @@
    },
    "facts": {
     "duration": 313.804786,
-    "vehicle": "Plane",
-    "version": "",
+    "vehicle": "Copter",
+    "version": "APM:Copter V3.4.6 (e707341b)",
     "takeoff_t": 0.229047,
-    "land_t": 311.27437,
-    "flight_time": 311.045323,
+    "land_t": 311.681763,
+    "flight_time": 311.452716,
     "n_flights": 1,
     "arm_t": 0.006582,
     "disarm_t": 313.804871,
@@ -14028,7 +14712,7 @@
     "min_volt": 11.286306381225586,
     "min_volt_t": 4.43539,
     "used_mah": 0.0,
-    "profile": "plane",
+    "profile": "copter",
     "serial": "003000353435510A38393730",
     "wind_mean": 0.0,
     "wind_max": 0.0,
@@ -14041,7 +14725,7 @@
      "status": "good",
      "metrics": {
       "min_sats": 15.0,
-      "mean_sats": 18.66096115865701,
+      "mean_sats": 18.65877712031558,
       "max_hdop": 0.7000000000000001,
       "bad_pct": 0.0,
       "glitches": 0
@@ -14049,15 +14733,21 @@
      "findings": []
     },
     "vibration": {
-     "score": 91,
+     "score": 83,
      "status": "good",
      "metrics": {
-      "p95": 16.79582166671753,
+      "p95": 16.795403957366943,
       "max": 78.65985870361328,
-      "z_mean": 11.201565085777839,
+      "z_mean": 11.19732590116079,
       "clip": 58.0
      },
      "findings": [
+      {
+       "k": "vibe_mid",
+       "a": {
+        "v": 16.8
+       }
+      },
       {
        "k": "vibe_clip",
        "a": {
@@ -14092,8 +14782,8 @@
      "status": "warn",
      "metrics": {
       "SV": 1.58,
-      "SP": 0.26,
-      "SH": 0.54,
+      "SP": 0.29,
+      "SH": 0.64,
       "SM": 0.77,
       "mag_var_pct": 5.125485338003874
      },
@@ -14112,19 +14802,19 @@
      ]
     },
     "control": {
-     "score": 14,
+     "score": 7,
      "status": "bad",
      "metrics": {
-      "roll_rms": 14.278977379467811,
-      "pitch_rms": 3.8950400712022155,
-      "roll_max": 178.82,
+      "roll_rms": 15.641180221476146,
+      "pitch_rms": 3.895461095516746,
+      "roll_max": 179.34,
       "pitch_max": 74.02
      },
      "findings": [
       {
        "k": "att_roll_err",
        "a": {
-        "v": 14.3
+        "v": 15.6
        }
       },
       {
@@ -14140,11 +14830,11 @@
      "score": 89,
      "status": "good",
      "metrics": {
-      "C1": 4.460093896713615,
-      "C2": 4.460093896713615,
-      "C4": 4.460093896713615,
+      "C1": 4.454119223040857,
+      "C2": 4.454119223040857,
+      "C4": 4.454119223040857,
       "thr_full_pct": 0.0,
-      "thr_mean": 19.888027957537524
+      "thr_mean": 19.86138625900097
      },
      "findings": []
     },
@@ -14156,6 +14846,25 @@
       "radio_failsafes": 0
      },
      "findings": []
+    },
+    "motors": {
+     "score": 70,
+     "status": "warn",
+     "metrics": {
+      "motor_pwm_mean": 1400.0829705291358,
+      "motor_imbalance_us": 109.39475887474873,
+      "motor_headroom_us": 449.6034829202947,
+      "hover_thr": 0.2153613418340683
+     },
+     "findings": [
+      {
+       "k": "mot_imbalance",
+       "a": {
+        "ch": "C4",
+        "v": 109
+       }
+      }
+     ]
     }
    },
    "events": [
@@ -14206,13 +14915,19 @@
    "mb": 3.6,
    "category_id": 41,
    "created": "2017-06-17",
-   "vehicle": "Plane",
+   "label_forum": "crash",
+   "hint_forum": "motor",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
+   "vehicle": "Copter",
    "got": "incident",
-   "got_cause": "unknown",
-   "others": null,
+   "got_cause": "power",
+   "others": [],
    "overall": 46,
    "dur": 273810,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 55,
@@ -14234,11 +14949,11 @@
    },
    "facts": {
     "duration": 273809.8,
-    "vehicle": "Plane",
-    "version": "",
-    "takeoff_t": 273639.2,
+    "vehicle": "Copter",
+    "version": "APM:Copter solo-1.3.1 (7e9206cc)",
+    "takeoff_t": 273638.6,
     "land_t": 273809.8,
-    "flight_time": 170.59999999997672,
+    "flight_time": 171.20000000001164,
     "n_flights": 1,
     "arm_t": 0.0,
     "disarm_t": 273809.8,
@@ -14252,7 +14967,7 @@
     "min_volt": 1476.0,
     "min_volt_t": 225.757,
     "used_mah": 1712.0,
-    "profile": "plane",
+    "profile": "copter",
     "serial": "004D001D3235510638343332",
     "anomaly_index": 0
    },
@@ -14262,7 +14977,7 @@
      "status": "good",
      "metrics": {
       "min_sats": 11.0,
-      "mean_sats": 11.921545667447306,
+      "mean_sats": 11.921820303383898,
       "max_hdop": 0.97,
       "bad_pct": 0.0,
       "glitches": 0
@@ -14312,6 +15027,12 @@
        "k": "att_roll_err",
        "a": {
         "v": 20.3
+       }
+      },
+      {
+       "k": "att_pitch_err",
+       "a": {
+        "v": 4.7
        }
       },
       {
@@ -14365,15 +15086,21 @@
    "mb": 86.8,
    "category_id": 129,
    "created": "2017-10-06",
-   "vehicle": "Plane",
+   "label_forum": "crash",
+   "hint_forum": "vibration",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
+   "vehicle": "Copter",
    "got": "incident",
-   "got_cause": "vibration",
+   "got_cause": "power",
    "others": [
-    "power"
+    "vibration"
    ],
-   "overall": 48,
+   "overall": 40,
    "dur": 654,
-   "sec": 1.0,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 10,
@@ -14393,8 +15120,8 @@
    },
    "facts": {
     "duration": 654.289904,
-    "vehicle": "Plane",
-    "version": "",
+    "vehicle": "Copter",
+    "version": "APM:Copter V3.4.6 (e707341b)",
     "takeoff_t": 11.30421,
     "land_t": 654.210096,
     "flight_time": 642.905886,
@@ -14412,7 +15139,7 @@
     "min_volt_t": 644.68605,
     "used_mah": 2736.4677734375,
     "first_error": null,
-    "profile": "plane",
+    "profile": "copter",
     "serial": "001C00273233470333363339",
     "wind_mean": 0.0,
     "wind_max": 0.0,
@@ -14421,19 +15148,32 @@
    },
    "health": {
     "gps": {
-     "score": 100,
-     "status": "good",
+     "score": 0,
+     "status": "bad",
      "metrics": {
       "min_sats": 6.0,
       "mean_sats": 7.126178390137781,
       "max_hdop": 1.36,
-      "bad_pct": 0.0,
+      "bad_pct": 87.27338651196519,
       "glitches": 0
      },
-     "findings": []
+     "findings": [
+      {
+       "k": "gps_bad_pct",
+       "a": {
+        "pct": 87.3
+       }
+      },
+      {
+       "k": "gps_min_sats",
+       "a": {
+        "n": 6
+       }
+      }
+     ]
     },
     "vibration": {
-     "score": 3,
+     "score": 0,
      "status": "bad",
      "metrics": {
       "p95": 57.02376270294189,
@@ -14523,6 +15263,17 @@
       "radio_failsafes": 0
      },
      "findings": []
+    },
+    "motors": {
+     "score": 100,
+     "status": "good",
+     "metrics": {
+      "motor_pwm_mean": 1543.3445600584155,
+      "motor_imbalance_us": 6.1623767798466815,
+      "motor_headroom_us": 403.3944870390653,
+      "hover_thr": 0.3854920268058777
+     },
+     "findings": []
     }
    },
    "events": []
@@ -14533,15 +15284,21 @@
    "url": "https://discuss.ardupilot.org/t/crash-log-review-request/23148",
    "log_url": "https://www.dropbox.com/s/n1bx5hatr49jk1q/00000012.BIN?dl=0",
    "label": "crash",
-   "cause_hint": null,
+   "cause_hint": "power",
    "mb": 11.3,
    "category_id": 129,
    "created": "2017-11-15",
-   "vehicle": "Plane",
+   "label_forum": "crash",
+   "hint_forum": null,
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
+   "vehicle": "Copter",
    "got": "normal",
    "got_cause": null,
    "others": null,
-   "overall": 100,
+   "overall": 98,
    "dur": 2023,
    "sec": 0.6,
    "verdict": {
@@ -14563,11 +15320,11 @@
    },
    "facts": {
     "duration": 2022.569579,
-    "vehicle": "Plane",
-    "version": "",
-    "takeoff_t": 16.125567,
+    "vehicle": "Copter",
+    "version": "APM:Copter V3.5.3 (1a85c237)",
+    "takeoff_t": 11.198687,
     "land_t": 2022.469468,
-    "flight_time": 816.1632190000001,
+    "flight_time": 825.31424,
     "n_flights": 2,
     "arm_t": 0.004613,
     "disarm_t": 2022.569579,
@@ -14582,12 +15339,12 @@
     "min_volt_t": 2018.992536,
     "used_mah": 14513.314453125,
     "first_error": null,
-    "profile": "plane",
+    "profile": "copter",
     "serial": "001E00343236510A36363331",
     "wind_mean": 0.0,
     "wind_max": 0.0,
     "wind_from": 180.0,
-    "anomaly_index": 5
+    "anomaly_index": 0
    },
    "health": {
     "gps": {
@@ -14595,7 +15352,7 @@
      "status": "good",
      "metrics": {
       "min_sats": 21.0,
-      "mean_sats": 25.18983890954151,
+      "mean_sats": 25.18304337172262,
       "max_hdop": 0.58,
       "bad_pct": 0.0,
       "glitches": 0
@@ -14603,12 +15360,12 @@
      "findings": []
     },
     "vibration": {
-     "score": 100,
+     "score": 96,
      "status": "good",
      "metrics": {
-      "p95": 12.242078590393067,
+      "p95": 12.233488702774046,
       "max": 21.76171875,
-      "z_mean": 10.053524551576436,
+      "z_mean": 10.055726922290624,
       "clip": 0.0
      },
      "findings": []
@@ -14645,8 +15402,8 @@
      "score": 100,
      "status": "good",
      "metrics": {
-      "roll_rms": 0.12064194468444372,
-      "pitch_rms": 0.1308360208651295,
+      "roll_rms": 0.12128326945474158,
+      "pitch_rms": 0.13422504846847194,
       "roll_max": 7.92,
       "pitch_max": 11.57
      },
@@ -14660,7 +15417,7 @@
       "C2": 0.0,
       "C4": 0.0,
       "thr_full_pct": 0.0,
-      "thr_mean": 41.96202543629283
+      "thr_mean": 41.9269407886545
      },
      "findings": []
     },
@@ -14670,6 +15427,17 @@
      "metrics": {
       "below_fs_pct": 0.0,
       "radio_failsafes": 0
+     },
+     "findings": []
+    },
+    "motors": {
+     "score": 100,
+     "status": "good",
+     "metrics": {
+      "motor_pwm_mean": 1616.3655405405405,
+      "motor_imbalance_us": 31.293181818181893,
+      "motor_headroom_us": 302.34127764127766,
+      "hover_thr": 0.42694082856178284
      },
      "findings": []
     }
@@ -14682,21 +15450,30 @@
    "url": "https://discuss.ardupilot.org/t/crash-multiple-times/25966",
    "log_url": "https://drive.google.com/open?id=11tqraZOCMClCmuMXFivqTPkTu_1gSqgN",
    "label": "crash",
-   "cause_hint": "compass",
+   "cause_hint": "vibration",
    "mb": 0.3,
    "category_id": 109,
    "created": "2018-02-18",
-   "vehicle": "Plane",
+   "label_forum": "crash",
+   "hint_forum": "compass",
+   "cause_alt": [
+    "radio"
+   ],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
+   "vehicle": "Copter",
    "got": "incident",
    "got_cause": "vibration",
    "others": [
     "control",
     "ekf",
+    "motor",
     "power"
    ],
-   "overall": 30,
+   "overall": 31,
    "dur": 29,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 55,
@@ -14719,8 +15496,8 @@
    },
    "facts": {
     "duration": 28.984789,
-    "vehicle": "Plane",
-    "version": "",
+    "vehicle": "Copter",
+    "version": "APM:Copter V3.4.6 (5221448a)",
     "takeoff_t": 0.084747,
     "land_t": 28.885623,
     "flight_time": 28.800876,
@@ -14735,7 +15512,7 @@
     "max_gs": 6.462793350219727,
     "max_gs_t": 14.984774,
     "used_mah": -1351.1365966796875,
-    "profile": "plane",
+    "profile": "copter",
     "serial": "",
     "wind_mean": 0.0,
     "wind_max": 0.0,
@@ -14756,7 +15533,7 @@
      "findings": []
     },
     "vibration": {
-     "score": 33,
+     "score": 25,
      "status": "bad",
      "metrics": {
       "p95": 49.220594406127866,
@@ -14920,6 +15697,25 @@
        }
       }
      ]
+    },
+    "motors": {
+     "score": 70,
+     "status": "warn",
+     "metrics": {
+      "motor_pwm_mean": 1505.916666666667,
+      "motor_imbalance_us": 149.2361111111113,
+      "motor_headroom_us": 351.5277777777778,
+      "hover_thr": 0.23953743278980255
+     },
+     "findings": [
+      {
+       "k": "mot_imbalance",
+       "a": {
+        "ch": "C2",
+        "v": 149
+       }
+      }
+     ]
     }
    },
    "events": [
@@ -15019,30 +15815,32 @@
    "mb": 0.8,
    "category_id": 129,
    "created": "2018-03-09",
-   "vehicle": "Plane",
-   "got": "incident",
-   "got_cause": "control",
-   "others": [
+   "label_forum": "crash",
+   "hint_forum": "compass",
+   "cause_alt": [
     "gps"
+   ],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
+   "vehicle": "Copter",
+   "got": "incident",
+   "got_cause": "motor",
+   "others": [
+    "compass",
+    "control"
    ],
    "overall": 34,
    "dur": 139,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
-    "score": 45,
+    "score": 20,
     "evidence": [
-     {
-      "k": "cr_sink",
-      "a": {
-       "v": 175.2,
-       "t": 126.860313
-      }
-     },
      {
       "k": "cr_attitude",
       "a": {
-       "r": 171,
+       "r": 57,
        "p": 78
       }
      }
@@ -15050,11 +15848,11 @@
    },
    "facts": {
     "duration": 139.316663,
-    "vehicle": "Plane",
-    "version": "",
-    "takeoff_t": 121.352708,
-    "land_t": 126.860313,
-    "flight_time": 5.507604999999998,
+    "vehicle": "Copter",
+    "version": "APM:Copter V3.5.5 (27229c83)",
+    "takeoff_t": 121.152506,
+    "land_t": 130.273034,
+    "flight_time": 9.120527999999993,
     "n_flights": 1,
     "arm_t": 0.005221,
     "disarm_t": 139.316663,
@@ -15065,7 +15863,7 @@
     "distance": 710.9024112226551,
     "max_gs": 9.145000457763672,
     "max_gs_t": 120.32773,
-    "profile": "plane",
+    "profile": "copter",
     "serial": "002800323536511837353630",
     "wind_mean": 0.0,
     "wind_max": 0.0,
@@ -15078,7 +15876,7 @@
      "status": "good",
      "metrics": {
       "min_sats": 17.0,
-      "mean_sats": 17.925925925925927,
+      "mean_sats": 17.91111111111111,
       "max_hdop": 0.63,
       "bad_pct": 0.0,
       "glitches": 1
@@ -15093,19 +15891,19 @@
      ]
     },
     "vibration": {
-     "score": 78,
+     "score": 72,
      "status": "warn",
      "metrics": {
-      "p95": 27.460215377807618,
-      "max": 31.376691818237305,
-      "z_mean": 15.1224365754561,
+      "p95": 26.642507171630854,
+      "max": 52.52759552001953,
+      "z_mean": 13.324086854746053,
       "clip": 17.0
      },
      "findings": [
       {
        "k": "vibe_mid",
        "a": {
-        "v": 27.5
+        "v": 26.6
        }
       },
       {
@@ -15164,44 +15962,51 @@
      "score": 0,
      "status": "bad",
      "metrics": {
-      "roll_rms": 34.87390649963744,
-      "pitch_rms": 27.355163381642665,
-      "roll_max": 105.84,
+      "roll_rms": 36.14877665767064,
+      "pitch_rms": 23.699645636521726,
+      "roll_max": 170.72,
       "pitch_max": 77.59
      },
      "findings": [
       {
        "k": "att_roll_err",
        "a": {
-        "v": 34.9
+        "v": 36.1
        }
       },
       {
        "k": "att_pitch_err",
        "a": {
-        "v": 27.4
+        "v": 23.7
        }
       },
       {
        "k": "att_roll_exceed",
        "a": {
-        "v": 106,
+        "v": 171,
         "lim": 45
        }
       }
      ]
     },
     "servo": {
-     "score": 100,
+     "score": 85,
      "status": "good",
      "metrics": {
       "C1": 0.0,
       "C2": 0.0,
       "C4": 0.0,
-      "thr_full_pct": 22.22222222222222,
-      "thr_mean": 77.36645194667356
+      "thr_full_pct": 13.333333333333334,
+      "thr_mean": 56.7662093633165
      },
-     "findings": []
+     "findings": [
+      {
+       "k": "thr_full",
+       "a": {
+        "v": 13.3
+       }
+      }
+     ]
     },
     "rc": {
      "score": 65,
@@ -15215,6 +16020,25 @@
        "k": "rc_fs",
        "a": {
         "n": 1
+       }
+      }
+     ]
+    },
+    "motors": {
+     "score": 70,
+     "status": "warn",
+     "metrics": {
+      "motor_pwm_mean": 1593.2435897435898,
+      "motor_imbalance_us": 107.90293040293045,
+      "motor_headroom_us": 266.4725274725274,
+      "hover_thr": 0.3499999940395355
+     },
+     "findings": [
+      {
+       "k": "mot_imbalance",
+       "a": {
+        "ch": "C2",
+        "v": 108
        }
       }
      ]
@@ -15301,15 +16125,22 @@
    "url": "https://discuss.ardupilot.org/t/help-with-log-analysis-after-maiden-crash-in-autotune/34453",
    "log_url": "https://discuss.ardupilot.org/uploads/default/original/3X/1/a/1a1737403bff58fa0f05677429109a8715080f87.bin",
    "label": "crash",
-   "cause_hint": "gps",
+   "cause_hint": "control",
    "mb": 0.4,
    "category_id": 7,
    "created": "2018-10-27",
+   "label_forum": "crash",
+   "hint_forum": "gps",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Plane",
    "got": "crash",
    "got_cause": "control",
    "others": [
-    "stall"
+    "stall",
+    "power"
    ],
    "overall": 40,
    "dur": 17,
@@ -15529,17 +16360,23 @@
    "url": "https://discuss.ardupilot.org/t/log-crash-analysis-help/37003",
    "log_url": "https://www.dropbox.com/s/a04po9r7hxczypl/2018-11-22%2015-50-21.zip?dl=0",
    "label": "crash",
-   "cause_hint": "battery",
+   "cause_hint": "motor",
    "mb": 1.3,
    "category_id": 41,
    "created": "2019-01-04",
-   "vehicle": "Plane",
+   "label_forum": "crash",
+   "hint_forum": "battery",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
+   "vehicle": "Copter",
    "got": "incident",
    "got_cause": "unknown",
    "others": null,
    "overall": 87,
    "dur": 424325,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 25,
@@ -15555,11 +16392,11 @@
    },
    "facts": {
     "duration": 424325.2,
-    "vehicle": "Plane",
-    "version": "",
-    "takeoff_t": 424313.6,
+    "vehicle": "Copter",
+    "version": "APM:Copter solo-1.3.1 (7e9206cc)",
+    "takeoff_t": 424311.6,
     "land_t": 424325.2,
-    "flight_time": 11.600000000034925,
+    "flight_time": 13.600000000034925,
     "n_flights": 1,
     "arm_t": 0.0,
     "disarm_t": 424325.2,
@@ -15574,7 +16411,7 @@
     "min_volt_t": 94.324,
     "used_mah": 159.0,
     "first_error": null,
-    "profile": "plane",
+    "profile": "copter",
     "serial": "002F001E3135510636333436",
     "anomaly_index": 0
    },
@@ -15584,7 +16421,7 @@
      "status": "good",
      "metrics": {
       "min_sats": 18.0,
-      "mean_sats": 20.274509803921568,
+      "mean_sats": 19.901639344262296,
       "max_hdop": 0.62,
       "bad_pct": 0.0,
       "glitches": 0
@@ -15658,10 +16495,16 @@
    "url": "https://discuss.ardupilot.org/t/ac-copter-3-7-dev-fell-from-the-sky-crash-log/37800",
    "log_url": "https://discuss.ardupilot.org/uploads/default/original/3X/4/d/4dd812963834b929b0b7e09df796084d08cf5f74.BIN",
    "label": "crash",
-   "cause_hint": "gps",
+   "cause_hint": "power",
    "mb": 0.9,
    "category_id": 41,
    "created": "2019-01-26",
+   "label_forum": "crash",
+   "hint_forum": "gps",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "incident",
    "got_cause": "gps",
@@ -15670,7 +16513,7 @@
    ],
    "overall": 71,
    "dur": 175,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -15886,17 +16729,28 @@
    "url": "https://discuss.ardupilot.org/t/crash-alt-hold-drone-climbs-no-throttle-control/39705",
    "log_url": "https://discuss.ardupilot.org/uploads/default/original/3X/4/8/4857a983f3a295abfb5ced1846e8125760f49448.bin",
    "label": "crash",
-   "cause_hint": null,
+   "cause_hint": "ekf",
    "mb": 0.2,
    "category_id": 140,
    "created": "2019-03-13",
+   "label_forum": "crash",
+   "hint_forum": null,
+   "cause_alt": [
+    "power"
+   ],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
-   "got_cause": "control",
-   "others": [],
+   "got_cause": "motor",
+   "others": [
+    "control",
+    "power"
+   ],
    "overall": 39,
    "dur": 15,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 95,
@@ -16128,17 +16982,25 @@
    "url": "https://discuss.ardupilot.org/t/solved-strange-crash-and-prearm-iomcu-error-on-cube/41509",
    "log_url": "https://drive.google.com/file/d/1tsEwt-awm3SH2y7mvyitdpE_orrJS-Bg/view?usp=drive_open",
    "label": "crash",
-   "cause_hint": "battery",
+   "cause_hint": null,
    "mb": 11.4,
    "category_id": 140,
    "created": "2019-04-24",
+   "label_forum": "crash",
+   "hint_forum": "battery",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
    "got_cause": "control",
-   "others": [],
+   "others": [
+    "compass"
+   ],
    "overall": 48,
    "dur": 667,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -16363,15 +17225,22 @@
    "mb": 3.8,
    "category_id": 140,
    "created": "2019-05-07",
+   "label_forum": "crash",
+   "hint_forum": "motor",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "incident",
    "got_cause": "motor",
    "others": [
+    "compass",
     "control"
    ],
    "overall": 66,
    "dur": 642,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -16582,8 +17451,8 @@
      "score": 88,
      "status": "good",
      "metrics": {
-      "motor_pwm_mean": 1569.6460218046857,
-      "motor_imbalance_us": 49.141730456970436,
+      "motor_pwm_mean": 1563.8970076548364,
+      "motor_imbalance_us": 59.65344467640921,
       "motor_headroom_us": 331.2122477383439,
       "hover_thr": 0.3509633541107178
      },
@@ -16591,8 +17460,8 @@
       {
        "k": "mot_imbalance",
        "a": {
-        "ch": "C1",
-        "v": 49
+        "ch": "C8",
+        "v": 60
        }
       }
      ]
@@ -16606,17 +17475,27 @@
    "url": "https://discuss.ardupilot.org/t/crashed-in-autotune-in-copter-3-6-seems-like-esc-problem/42115",
    "log_url": "https://drive.google.com/open?id=1cF7wpdXy0tpc1X9BqqWGSu7pptKIQq15",
    "label": "crash",
-   "cause_hint": "vibration",
+   "cause_hint": "control",
    "mb": 2.6,
    "category_id": 140,
    "created": "2019-05-08",
-   "vehicle": "Plane",
+   "label_forum": "crash",
+   "hint_forum": "vibration",
+   "cause_alt": [
+    "motor"
+   ],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
+   "vehicle": "Copter",
    "got": "crash",
-   "got_cause": "control",
-   "others": [],
-   "overall": 87,
+   "got_cause": "motor",
+   "others": [
+    "control"
+   ],
+   "overall": 83,
    "dur": 836,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -16645,11 +17524,11 @@
    },
    "facts": {
     "duration": 836.102674,
-    "vehicle": "Plane",
+    "vehicle": "Copter",
     "version": "",
     "takeoff_t": 11.033231,
-    "land_t": 192.533102,
-    "flight_time": 181.499871,
+    "land_t": 192.833113,
+    "flight_time": 181.799882,
     "n_flights": 1,
     "arm_t": 0.0,
     "disarm_t": 195.128468,
@@ -16663,7 +17542,7 @@
     "min_volt": 24.402435302734375,
     "min_volt_t": 180.430674,
     "used_mah": 0.0,
-    "profile": "plane",
+    "profile": "copter",
     "serial": "0047002C3237511832363435",
     "wind_mean": 0.0,
     "wind_max": 0.0,
@@ -16676,7 +17555,7 @@
      "status": "good",
      "metrics": {
       "min_sats": 21.0,
-      "mean_sats": 22.213891951488424,
+      "mean_sats": 22.215621562156215,
       "max_hdop": 0.5700000000000001,
       "bad_pct": 0.0,
       "glitches": 0
@@ -16687,9 +17566,9 @@
      "score": 100,
      "status": "good",
      "metrics": {
-      "p95": 7.89970235824585,
-      "max": 12.142951011657715,
-      "z_mean": 6.522924887969802,
+      "p95": 7.930211424827573,
+      "max": 32.298282623291016,
+      "z_mean": 6.529117080375831,
       "clip": 5.0
      },
      "findings": [
@@ -16735,19 +17614,19 @@
      "findings": []
     },
     "control": {
-     "score": 76,
+     "score": 73,
      "status": "warn",
      "metrics": {
-      "roll_rms": 5.769174664416041,
-      "pitch_rms": 2.978449344183609,
+      "roll_rms": 5.968071602943935,
+      "pitch_rms": 3.4219733963303276,
       "roll_max": 50.78,
-      "pitch_max": 25.27
+      "pitch_max": 70.3
      },
      "findings": [
       {
        "k": "att_roll_err",
        "a": {
-        "v": 5.8
+        "v": 6.0
        }
       }
      ]
@@ -16757,10 +17636,10 @@
      "status": "good",
      "metrics": {
       "C1": 0.0,
-      "C2": 2.6997245179063363,
-      "C4": 0.8815426997245178,
-      "thr_full_pct": 1.8732782369146006,
-      "thr_mean": 38.77648913252781
+      "C2": 2.7502750275027505,
+      "C4": 1.0451045104510452,
+      "thr_full_pct": 2.035203520352035,
+      "thr_mean": 38.87751802834872
      },
      "findings": []
     },
@@ -16781,6 +17660,25 @@
       "long_loops": 7.0
      },
      "findings": []
+    },
+    "motors": {
+     "score": 70,
+     "status": "warn",
+     "metrics": {
+      "motor_pwm_mean": 1588.9872570590394,
+      "motor_imbalance_us": 121.87119545287874,
+      "motor_headroom_us": 245.9015401540155,
+      "hover_thr": 0.37572067975997925
+     },
+     "findings": [
+      {
+       "k": "mot_imbalance",
+       "a": {
+        "ch": "C3",
+        "v": 122
+       }
+      }
+     ]
     }
    },
    "events": [
@@ -16815,10 +17713,16 @@
    "url": "https://discuss.ardupilot.org/t/kakute-f7-6-inch-flip-crash-need-help-with-logs/42527",
    "log_url": "https://discuss.ardupilot.org/uploads/default/original/3X/6/0/6068d5bd7ac23d1a045fbd6a2241727fd46ab98a.bin",
    "label": "crash",
-   "cause_hint": "vibration",
+   "cause_hint": "motor",
    "mb": 0.7,
    "category_id": 140,
    "created": "2019-05-18",
+   "label_forum": "crash",
+   "hint_forum": "vibration",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
    "got_cause": "motor",
@@ -16829,7 +17733,7 @@
    ],
    "overall": 42,
    "dur": 80,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -17145,17 +18049,23 @@
    "url": "https://discuss.ardupilot.org/t/advice-on-log-with-crash-on-takeoff/42843",
    "log_url": "https://drive.google.com/open?id=1ZTh-dy2CneH7jl6JckupJGI5Vfu2KI8q",
    "label": "crash",
-   "cause_hint": null,
+   "cause_hint": "control",
    "mb": 49.3,
    "category_id": 142,
    "created": "2019-05-25",
+   "label_forum": "crash",
+   "hint_forum": null,
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Plane",
    "got": "incident",
-   "got_cause": "unknown",
-   "others": null,
+   "got_cause": "power",
+   "others": [],
    "overall": 42,
    "dur": 1146,
-   "sec": 0.9,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -17347,17 +18257,23 @@
    "url": "https://discuss.ardupilot.org/t/loss-of-altitude-and-crash-when-engaging-loiter/44042",
    "log_url": "https://www.dropbox.com/s/h9f2fredr4yam7c/crash%20on%20loiter%20engage%201.bin?dl=0",
    "label": "crash",
-   "cause_hint": "gps",
+   "cause_hint": null,
    "mb": 2.2,
    "category_id": 140,
    "created": "2019-06-24",
+   "label_forum": "crash",
+   "hint_forum": "gps",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "normal",
    "got_cause": null,
    "others": null,
    "overall": 100,
    "dur": 58,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -17443,14 +18359,25 @@
    "url": "https://discuss.ardupilot.org/t/crashed-log-analysis/44903",
    "log_url": "https://drive.google.com/open?id=1xeugM6Qq5l--nuX77RTHBmHdkJ0_IoN2",
    "label": "crash",
-   "cause_hint": null,
+   "cause_hint": "motor",
    "mb": 47.4,
    "category_id": 140,
    "created": "2019-07-17",
+   "label_forum": "crash",
+   "hint_forum": null,
+   "cause_alt": [
+    "radio"
+   ],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
-   "got_cause": "control",
-   "others": [],
+   "got_cause": "motor",
+   "others": [
+    "control",
+    "power"
+   ],
    "overall": 70,
    "dur": 369,
    "sec": 0.8,
@@ -17680,14 +18607,24 @@
    "url": "https://discuss.ardupilot.org/t/copter-crashed-could-you-please-help-me/46644",
    "log_url": "https://drive.google.com/file/d/1eN8il-g1doGf87DlI31hEHlN3t0F0OTi/view",
    "label": "crash",
-   "cause_hint": null,
+   "cause_hint": "motor",
    "mb": 4.1,
    "category_id": 140,
    "created": "2019-09-01",
-   "vehicle": "Plane",
+   "label_forum": "crash",
+   "hint_forum": null,
+   "cause_alt": [
+    "control"
+   ],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
+   "vehicle": "Copter",
    "got": "crash",
-   "got_cause": "unknown",
-   "others": null,
+   "got_cause": "motor",
+   "others": [
+    "control"
+   ],
    "overall": 100,
    "dur": 40,
    "sec": 0.5,
@@ -17712,8 +18649,8 @@
    },
    "facts": {
     "duration": 40.458814,
-    "vehicle": "Plane",
-    "version": "",
+    "vehicle": "Copter",
+    "version": "APM:Copter V3.5.7 (b11c6af3)",
     "takeoff_t": 15.739233,
     "land_t": 34.917674,
     "flight_time": 19.178441,
@@ -17727,7 +18664,7 @@
     "distance": 19.76412060316995,
     "max_gs": 3.3350002765655518,
     "max_gs_t": 37.359172,
-    "profile": "plane",
+    "profile": "copter",
     "serial": "002D00293335510838343732",
     "wind_mean": 0.0,
     "wind_max": 0.0,
@@ -17801,6 +18738,17 @@
       "radio_failsafes": 0
      },
      "findings": []
+    },
+    "motors": {
+     "score": 100,
+     "status": "good",
+     "metrics": {
+      "motor_pwm_mean": 1612.9446721311474,
+      "motor_imbalance_us": 35.66598360655735,
+      "motor_headroom_us": 302.9726775956285,
+      "hover_thr": 0.5489369034767151
+     },
+     "findings": []
     }
    },
    "events": [
@@ -17835,16 +18783,22 @@
    "url": "https://discuss.ardupilot.org/t/crashed-crashed-into-a-tower-while-do-the-mission-deviate-from-scheduled-course/48069",
    "log_url": "https://drive.google.com/open?id=1N2MY8xN78Z9MP9P8PZhsOixq3rTbRqyu",
    "label": "crash",
-   "cause_hint": null,
+   "cause_hint": "control",
    "mb": 27.0,
    "category_id": 140,
    "created": "2019-10-12",
+   "label_forum": "crash",
+   "hint_forum": null,
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
-   "got_cause": "control",
+   "got_cause": "motor",
    "others": [
-    "gps",
-    "radio"
+    "control",
+    "gps"
    ],
    "overall": 42,
    "dur": 735,
@@ -18079,8 +19033,8 @@
      "score": 100,
      "status": "good",
      "metrics": {
-      "motor_pwm_mean": 1582.655123873874,
-      "motor_imbalance_us": 21.972691441441384,
+      "motor_pwm_mean": 1577.5257601351352,
+      "motor_imbalance_us": 26.80447635135124,
       "motor_headroom_us": 345.66976351351354,
       "hover_thr": 0.34130507707595825
      },
@@ -18179,21 +19133,27 @@
    "url": "https://discuss.ardupilot.org/t/helicopter-lost-control-in-stabilize-mode-and-crashed-log-attached/54194",
    "log_url": "https://drive.google.com/open?id=1q46YzibgMC70cRFhCQgt1z5306i08YuZ",
    "label": "crash",
-   "cause_hint": null,
+   "cause_hint": "ekf",
    "mb": 5.2,
    "category_id": 40,
    "created": "2020-03-29",
+   "label_forum": "crash",
+   "hint_forum": null,
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "incident",
-   "got_cause": "gps",
+   "got_cause": "vibration",
    "others": [
+    "gps",
     "ekf",
-    "vibration",
     "control"
    ],
    "overall": 30,
    "dur": 690,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -18730,17 +19690,25 @@
    "url": "https://discuss.ardupilot.org/t/copter-crashed-after-successful-autotune/54470",
    "log_url": "https://drive.google.com/open?id=1zZKz2VOossSEK6_dvXaZ5S2qltOXdglv",
    "label": "crash",
-   "cause_hint": "battery",
+   "cause_hint": "control",
    "mb": 36.0,
    "category_id": 155,
    "created": "2020-04-05",
+   "label_forum": "crash",
+   "hint_forum": "battery",
+   "cause_alt": [
+    "ekf"
+   ],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
    "got_cause": "control",
    "others": [],
    "overall": 64,
    "dur": 1304,
-   "sec": 0.8,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -18974,17 +19942,23 @@
    "url": "https://discuss.ardupilot.org/t/crash-log-analysis-and-problem-diagnosis-potential-bug/5457",
    "log_url": "https://www.dropbox.com/s/f45gvg7o1eptbcp/144.BIN?dl=0",
    "label": "crash",
-   "cause_hint": "ekf",
+   "cause_hint": null,
    "mb": 2.4,
    "category_id": 41,
    "created": "2015-05-04",
+   "label_forum": "crash",
+   "hint_forum": "ekf",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "incident",
-   "got_cause": "unknown",
-   "others": null,
+   "got_cause": "power",
+   "others": [],
    "overall": 68,
    "dur": 301851,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -19255,13 +20229,21 @@
    "mb": 3.4,
    "category_id": 155,
    "created": "2020-05-01",
+   "label_forum": "crash",
+   "hint_forum": "motor",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
-   "got_cause": "gps",
-   "others": [],
+   "got_cause": "motor",
+   "others": [
+    "control"
+   ],
    "overall": 85,
    "dur": 251,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -19483,8 +20465,430 @@
    "mb": 13.8,
    "category_id": 155,
    "created": "2020-05-26",
-   "got": "error",
-   "err": "Command '['/opt/hostedtoolcache/Python/3.12.16/x64/bin/python', '/home/runner/work/pixhawk-log-analiz/pixhawk-log-analiz/run.py', '--analyze', '/tmp/bench/56960.bin', '--json', '/tmp/bench/56960.json']' returned non-zero exit status 1."
+   "label_forum": "crash",
+   "hint_forum": "motor",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
+   "vehicle": "Copter",
+   "got": "incident",
+   "got_cause": "gps",
+   "others": [
+    "ekf"
+   ],
+   "overall": 44,
+   "dur": 1857,
+   "sec": 1.9,
+   "verdict": {
+    "kind": "incident",
+    "score": 0,
+    "evidence": [
+     {
+      "k": "cr_landed",
+      "a": {}
+     }
+    ]
+   },
+   "facts": {
+    "duration": 1856.652885,
+    "vehicle": "Copter",
+    "version": "ArduCopter V4.0.3 (ffd08628)",
+    "takeoff_t": 315.85695,
+    "land_t": 25.255047,
+    "flight_time": -1262.9329119999998,
+    "n_flights": 8,
+    "arm_t": 306.949789,
+    "disarm_t": 1866.956652,
+    "max_alt": 210.9039306640625,
+    "max_alt_t": 389.039537,
+    "max_dist": 473.50823424297124,
+    "max_dist_t": 387.132371,
+    "distance": 4128.533281518532,
+    "max_gs": 30.529001235961914,
+    "max_gs_t": 398.887044,
+    "min_volt": 5.124989986419678,
+    "min_volt_t": 1727.142361,
+    "used_mah": 931.7277221679688,
+    "profile": "copter",
+    "serial": "003300323138511338343530",
+    "wind_mean": 0.0,
+    "wind_max": 0.0,
+    "wind_from": 180.0,
+    "anomaly_index": 100
+   },
+   "health": {
+    "gps": {
+     "score": 51,
+     "status": "bad",
+     "metrics": {
+      "min_sats": 7.0,
+      "mean_sats": 13.576833073322932,
+      "max_hdop": 1.61,
+      "bad_pct": 0.4290171606864275,
+      "glitches": 6
+     },
+     "findings": [
+      {
+       "k": "gps_min_sats",
+       "a": {
+        "n": 7
+       }
+      },
+      {
+       "k": "gps_glitch",
+       "a": {
+        "n": 6
+       }
+      }
+     ]
+    },
+    "vibration": {
+     "score": 91,
+     "status": "good",
+     "metrics": {
+      "p95": 8.502427482604979,
+      "max": 77.10869598388672,
+      "z_mean": 4.1878371829392504,
+      "clip": 91.0
+     },
+     "findings": [
+      {
+       "k": "vibe_clip",
+       "a": {
+        "n": 91
+       }
+      }
+     ]
+    },
+    "power": {
+     "score": 40,
+     "status": "bad",
+     "metrics": {
+      "vmin": 5.124989986419678,
+      "vmax": 8.005948066711426,
+      "cells": 2,
+      "per_cell_min": 2.562494993209839,
+      "current_sensor": true,
+      "used_mah": 931.7277221679688,
+      "capacity": null,
+      "vcc_min": 0.0,
+      "max_curr": 14.30751895904541
+     },
+     "findings": [
+      {
+       "k": "bat_low_cell",
+       "a": {
+        "v": 2.56,
+        "n": 2
+       }
+      },
+      {
+       "k": "vcc_low",
+       "a": {
+        "v": 0.0
+       }
+      }
+     ]
+    },
+    "ekf": {
+     "score": 19,
+     "status": "bad",
+     "metrics": {
+      "SV": 3.18,
+      "SP": 0.43,
+      "SH": 1.6,
+      "SM": 3.9,
+      "mag_var_pct": 148.72058384312717
+     },
+     "findings": [
+      {
+       "k": "ekf_bad",
+       "a": {
+        "k": "SV",
+        "v": 3.18
+       }
+      },
+      {
+       "k": "ekf_bad",
+       "a": {
+        "k": "SH",
+        "v": 1.6
+       }
+      },
+      {
+       "k": "ekf_bad",
+       "a": {
+        "k": "SM",
+        "v": 3.9
+       }
+      },
+      {
+       "k": "mag_var",
+       "a": {
+        "v": 148.7
+       }
+      },
+      {
+       "k": "ekf_err",
+       "a": {}
+      }
+     ]
+    },
+    "control": {
+     "score": 62,
+     "status": "warn",
+     "metrics": {
+      "roll_rms": 5.1972229793088145,
+      "pitch_rms": 3.4356850072154477,
+      "roll_max": 85.11,
+      "pitch_max": 69.76
+     },
+     "findings": [
+      {
+       "k": "att_roll_err",
+       "a": {
+        "v": 5.2
+       }
+      },
+      {
+       "k": "att_roll_exceed",
+       "a": {
+        "v": 85,
+        "lim": 45
+       }
+      }
+     ]
+    },
+    "servo": {
+     "score": 54,
+     "status": "bad",
+     "metrics": {
+      "C1": 13.47545472325445,
+      "C2": 2.7185605319773125,
+      "C4": 18.501858008996674,
+      "thr_full_pct": 0.31292783101897126,
+      "thr_mean": 33.932063534947645
+     },
+     "findings": [
+      {
+       "k": "servo_sat",
+       "a": {
+        "ch": "C4",
+        "v": 18.5
+       }
+      }
+     ]
+    },
+    "rc": {
+     "score": 100,
+     "status": "good",
+     "metrics": {
+      "below_fs_pct": 0.0,
+      "rssi_min": 0.7549999952316284,
+      "radio_failsafes": 0
+     },
+     "findings": []
+    },
+    "cpu": {
+     "score": 100,
+     "status": "good",
+     "metrics": {
+      "load_max": 55.6,
+      "long_loops": 4662.0
+     },
+     "findings": []
+    },
+    "motors": {
+     "score": 70,
+     "status": "warn",
+     "metrics": {
+      "motor_pwm_mean": 1498.5730490905535,
+      "motor_imbalance_us": 84.36221396440442,
+      "motor_headroom_us": 367.0647369450421,
+      "hover_thr": 0.3238189220428467
+     },
+     "findings": [
+      {
+       "k": "mot_imbalance",
+       "a": {
+        "ch": "C4",
+        "v": 84
+       }
+      }
+     ]
+    }
+   },
+   "events": [
+    {
+     "t": 321.56786,
+     "cat": "err",
+     "sev": 2,
+     "text": {
+      "k": "ev_err",
+      "a": {
+       "sub": 11,
+       "code": 2
+      }
+     }
+    },
+    {
+     "t": 482.15053,
+     "cat": "err",
+     "sev": 2,
+     "text": {
+      "k": "ev_err",
+      "a": {
+       "sub": 11,
+       "code": 2
+      }
+     }
+    },
+    {
+     "t": 602.723738,
+     "cat": "err",
+     "sev": 2,
+     "text": {
+      "k": "ev_err",
+      "a": {
+       "sub": 11,
+       "code": 2
+      }
+     }
+    },
+    {
+     "t": 850.731359,
+     "cat": "err",
+     "sev": 2,
+     "text": {
+      "k": "ev_err",
+      "a": {
+       "sub": 11,
+       "code": 2
+      }
+     }
+    },
+    {
+     "t": 1046.774897,
+     "cat": "err",
+     "sev": 2,
+     "text": {
+      "k": "ev_err",
+      "a": {
+       "sub": 25,
+       "code": 1
+      }
+     }
+    },
+    {
+     "t": 1048.344739,
+     "cat": "err",
+     "sev": 2,
+     "text": {
+      "k": "ev_err",
+      "a": {
+       "sub": 25,
+       "code": 1
+      }
+     }
+    },
+    {
+     "t": 1048.693603,
+     "cat": "err",
+     "sev": 2,
+     "text": {
+      "k": "ev_err",
+      "a": {
+       "sub": 16,
+       "code": 2
+      }
+     }
+    },
+    {
+     "t": 1048.693673,
+     "cat": "err",
+     "sev": 2,
+     "text": {
+      "k": "ev_err",
+      "a": {
+       "sub": 17,
+       "code": 1
+      }
+     }
+    },
+    {
+     "t": 1048.794732,
+     "cat": "err",
+     "sev": 2,
+     "text": {
+      "k": "ev_err",
+      "a": {
+       "sub": 11,
+       "code": 2
+      }
+     }
+    },
+    {
+     "t": 1049.395735,
+     "cat": "err",
+     "sev": 2,
+     "text": {
+      "k": "ev_err",
+      "a": {
+       "sub": 29,
+       "code": 1
+      }
+     }
+    },
+    {
+     "t": 1160.254413,
+     "cat": "err",
+     "sev": 2,
+     "text": {
+      "k": "ev_err",
+      "a": {
+       "sub": 25,
+       "code": 1
+      }
+     }
+    },
+    {
+     "t": 1825.337714,
+     "cat": "err",
+     "sev": 2,
+     "text": {
+      "k": "ev_err",
+      "a": {
+       "sub": 11,
+       "code": 2
+      }
+     }
+    },
+    {
+     "t": 1826.137661,
+     "cat": "err",
+     "sev": 2,
+     "text": {
+      "k": "ev_err",
+      "a": {
+       "sub": 16,
+       "code": 2
+      }
+     }
+    },
+    {
+     "t": 1826.137778,
+     "cat": "err",
+     "sev": 2,
+     "text": {
+      "k": "ev_err",
+      "a": {
+       "sub": 17,
+       "code": 1
+      }
+     }
+    }
+   ]
   },
   {
    "id": "57400",
@@ -19492,17 +20896,23 @@
    "url": "https://discuss.ardupilot.org/t/sudden-fall-down-and-crash-attaching-logs/57400",
    "log_url": "https://discuss.ardupilot.org/uploads/short-url/sySVQUMF9VoYy7kGKUJNLah2MTG.zip",
    "label": "crash",
-   "cause_hint": "motor",
+   "cause_hint": "power",
    "mb": 1.7,
    "category_id": 6,
    "created": "2020-06-04",
+   "label_forum": "crash",
+   "hint_forum": "motor",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "incident",
    "got_cause": "power",
    "others": [],
    "overall": 89,
    "dur": 111,
-   "sec": 0.5,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -19669,17 +21079,23 @@
    "url": "https://discuss.ardupilot.org/t/maiden-tarot-650-rolls-right-tips-over-before-take-off-when-i-increased-throttle-log/64684",
    "log_url": "https://discuss.ardupilot.org/uploads/short-url/b1WikJHmaECiDjQYKrhEefibcxy.bin",
    "label": "normal",
-   "cause_hint": "battery",
+   "cause_hint": null,
    "mb": 0.5,
    "category_id": 155,
    "created": "2020-11-28",
+   "label_forum": "normal",
+   "hint_forum": "battery",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "noflight",
    "got_cause": null,
    "others": null,
    "overall": 46,
    "dur": 47,
-   "sec": 0.5,
+   "sec": 0.8,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -19848,21 +21264,27 @@
    "url": "https://discuss.ardupilot.org/t/help-in-analysis-of-logs-after-crashing-autotuning/66230",
    "log_url": "https://drive.google.com/file/d/1KxZJhmj2jvdxMMR9NfIO_jhs-JbfoKry/view?usp=sharing",
    "label": "crash",
-   "cause_hint": "vibration",
+   "cause_hint": "motor",
    "mb": 11.6,
    "category_id": 155,
    "created": "2021-01-13",
+   "label_forum": "crash",
+   "hint_forum": "vibration",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "incident",
-   "got_cause": "control",
+   "got_cause": "motor",
    "others": [
+    "control",
     "vibration",
-    "motor",
     "gps"
    ],
    "overall": 69,
    "dur": 801,
-   "sec": 0.6,
+   "sec": 1.2,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -20096,17 +21518,23 @@
    "url": "https://discuss.ardupilot.org/t/pitch-commands-cause-some-yaw-i-did-not-tune-the-copter/66822",
    "log_url": "https://drive.google.com/file/d/1fT3XqUwYjnY-Abeck0JQ0nIABNTpKtzM/view?usp=sharing",
    "label": "normal",
-   "cause_hint": "battery",
+   "cause_hint": null,
    "mb": 3.1,
    "category_id": 155,
    "created": "2021-01-28",
+   "label_forum": "normal",
+   "hint_forum": "battery",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "normal",
    "got_cause": null,
    "others": null,
    "overall": 84,
    "dur": 189,
-   "sec": 0.5,
+   "sec": 1.2,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -20275,17 +21703,23 @@
    "url": "https://discuss.ardupilot.org/t/tuning-a-fleet-of-large-quadrotors/67153",
    "log_url": "https://drive.google.com/file/d/1ehyKYq1NGAG_BOcGcj7nZ6WXhreKBI8f/view?usp=sharing",
    "label": "normal",
-   "cause_hint": "vibration",
+   "cause_hint": null,
    "mb": 5.3,
    "category_id": 6,
    "created": "2021-02-03",
+   "label_forum": "normal",
+   "hint_forum": "vibration",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "normal",
    "got_cause": null,
    "others": null,
    "overall": 85,
    "dur": 241,
-   "sec": 0.6,
+   "sec": 0.8,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -20445,14 +21879,24 @@
    "url": "https://discuss.ardupilot.org/t/need-help-with-crash-analysis/68371",
    "log_url": "https://drive.google.com/file/d/1IAm8hopTdi_ju3O2fV4786mURdECyLPZ/view?usp=sharing",
    "label": "crash",
-   "cause_hint": "gps",
+   "cause_hint": "vibration",
    "mb": 4.1,
    "category_id": 155,
    "created": "2021-03-06",
+   "label_forum": "crash",
+   "hint_forum": "gps",
+   "cause_alt": [
+    "gps",
+    "radio"
+   ],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
-   "got_cause": "control",
+   "got_cause": "compass",
    "others": [
+    "control",
     "radio",
     "gps"
    ],
@@ -20934,10 +22378,18 @@
    "url": "https://discuss.ardupilot.org/t/crash-arducopter-4-0-7-log-attached/69409",
    "log_url": "https://discuss.ardupilot.org/uploads/short-url/rDVRcz07mOjYQKJSuTHDAQJJi0D.bin",
    "label": "crash",
-   "cause_hint": null,
+   "cause_hint": "radio",
    "mb": 0.4,
    "category_id": 155,
    "created": "2021-03-29",
+   "label_forum": "crash",
+   "hint_forum": null,
+   "cause_alt": [
+    "vibration"
+   ],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
    "got_cause": "motor",
@@ -20946,7 +22398,7 @@
    ],
    "overall": 40,
    "dur": 33,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -21226,20 +22678,28 @@
    "url": "https://discuss.ardupilot.org/t/vtol-crash-analysis/69983",
    "log_url": "https://drive.google.com/file/d/1Omy-8aLzT_KzZM6dEaKHmPwY3OiAuE0p/view?usp=sharing",
    "label": "crash",
-   "cause_hint": "motor",
+   "cause_hint": "control",
    "mb": 16.0,
    "category_id": 144,
    "created": "2021-04-13",
+   "label_forum": "crash",
+   "hint_forum": "motor",
+   "cause_alt": [
+    "battery"
+   ],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Plane",
    "got": "incident",
-   "got_cause": "stall",
+   "got_cause": "battery",
    "others": [
-    "battery",
+    "stall",
     "power"
    ],
    "overall": 48,
    "dur": 147,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -21438,10 +22898,16 @@
    "url": "https://discuss.ardupilot.org/t/autotune-resulted-in-twitchy-control-surfaces/73403",
    "log_url": "https://s3.amazonaws.com/realsentrygun.com/uploads/2021-07-05+13-39-26.bin",
    "label": "normal",
-   "cause_hint": "control",
+   "cause_hint": null,
    "mb": 74.4,
    "category_id": 160,
    "created": "2021-07-07",
+   "label_forum": "normal",
+   "hint_forum": "control",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Plane",
    "got": "incident",
    "got_cause": "stall",
@@ -21450,7 +22916,7 @@
    ],
    "overall": 42,
    "dur": 1789,
-   "sec": 1.1,
+   "sec": 1.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -21652,17 +23118,26 @@
    "url": "https://discuss.ardupilot.org/t/need-help-to-analyze-log-sudden-crash/74509",
    "log_url": "https://www.dropbox.com/s/1ndhlzvwrvj8uht/2021-08-07%2011-00-05.zip?dl=0",
    "label": "crash",
-   "cause_hint": "gps",
+   "cause_hint": "motor",
    "mb": 3.3,
    "category_id": 155,
    "created": "2021-08-07",
+   "label_forum": "crash",
+   "hint_forum": "gps",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
-   "got_cause": "gps",
-   "others": [],
+   "got_cause": "motor",
+   "others": [
+    "control",
+    "gps"
+   ],
    "overall": 50,
    "dur": 98,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -21893,10 +23368,16 @@
    "url": "https://discuss.ardupilot.org/t/help-needed-in-determining-cause-of-crash/75345",
    "log_url": "https://drive.google.com/file/d/1vF1Pj82O1Q6-qgj_IwMZEhLddDgBBnqb/view?usp=sharing",
    "label": "crash",
-   "cause_hint": "compass",
+   "cause_hint": "motor",
    "mb": 4.9,
    "category_id": 6,
    "created": "2021-08-29",
+   "label_forum": "crash",
+   "hint_forum": "compass",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
    "got_cause": "motor",
@@ -22207,17 +23688,23 @@
    "url": "https://discuss.ardupilot.org/t/drone-crashed-sudden-rise-in-yaw-during-flying-and-crash-landed/76391",
    "log_url": "https://drive.google.com/file/d/1iJ9IeEOc3vtRyz_mB8NXzvKumUFo6jmu/view?usp=sharing",
    "label": "crash",
-   "cause_hint": "compass",
+   "cause_hint": "motor",
    "mb": 8.0,
    "category_id": 155,
    "created": "2021-09-24",
+   "label_forum": "crash",
+   "hint_forum": "compass",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "normal",
    "got_cause": null,
    "others": null,
    "overall": 92,
    "dur": 657,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -22389,14 +23876,24 @@
    "url": "https://discuss.ardupilot.org/t/octocopter-multiple-crash/76588",
    "log_url": "https://drive.google.com/file/d/1XMLs-iWGdZ9FX1FUkA-UN68e3uNjw_Wx/view?usp=sharing",
    "label": "crash",
-   "cause_hint": "battery",
+   "cause_hint": "motor",
    "mb": 5.6,
    "category_id": 6,
    "created": "2021-09-30",
+   "label_forum": "crash",
+   "hint_forum": "battery",
+   "cause_alt": [
+    "control"
+   ],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "incident",
-   "got_cause": "control",
-   "others": [],
+   "got_cause": "motor",
+   "others": [
+    "control"
+   ],
    "overall": 51,
    "dur": 398,
    "sec": 0.6,
@@ -22624,17 +24121,23 @@
    "url": "https://discuss.ardupilot.org/t/log-review-for-big-hex/78394",
    "log_url": "https://drive.google.com/file/d/1xrL2URMbZesGIOufq9Ic124NAyVNyHB-/view?usp=sharing",
    "label": "normal",
-   "cause_hint": "motor",
+   "cause_hint": null,
    "mb": 0.9,
    "category_id": 159,
    "created": "2021-11-13",
+   "label_forum": "normal",
+   "hint_forum": "motor",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "noflight",
    "got_cause": null,
    "others": null,
    "overall": 55,
    "dur": 87,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -22771,17 +24274,23 @@
    "url": "https://discuss.ardupilot.org/t/f450-log-review/78506",
    "log_url": "https://drive.google.com/file/d/1a4R_yYfkDbzN0CyacWgPup_32ib8bKhY/view?usp=sharing",
    "label": "normal",
-   "cause_hint": "motor",
+   "cause_hint": null,
    "mb": 2.6,
    "category_id": 159,
    "created": "2021-11-16",
+   "label_forum": "normal",
+   "hint_forum": "motor",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "normal",
    "got_cause": null,
    "others": null,
    "overall": 81,
    "dur": 167,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -22968,12 +24477,150 @@
    "url": "https://discuss.ardupilot.org/t/x-quad-3-2-1-mid-flight-crash/8079",
    "log_url": "https://www.dropbox.com/s/cke4g9qdpz4b0n4/2016-03-30%2017-13-46.bin?dl=0",
    "label": "crash",
-   "cause_hint": "gps",
+   "cause_hint": "power",
    "mb": 0.6,
    "category_id": 38,
    "created": "2016-03-29",
-   "got": "error",
-   "err": "Command '['/opt/hostedtoolcache/Python/3.12.16/x64/bin/python', '/home/runner/work/pixhawk-log-analiz/pixhawk-log-analiz/run.py', '--analyze', '/tmp/bench/8079.bin', '--json', '/tmp/bench/8079.json']' returned non-zero exit status 1."
+   "label_forum": "crash",
+   "hint_forum": "gps",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
+   "vehicle": "Copter",
+   "got": "incident",
+   "got_cause": "power",
+   "others": [],
+   "overall": 48,
+   "dur": 230928,
+   "sec": 0.6,
+   "verdict": {
+    "kind": "incident",
+    "score": 10,
+    "evidence": [
+     {
+      "k": "cr_log_end",
+      "a": {
+       "alt": 54,
+       "t": 230928.0
+      }
+     },
+     {
+      "k": "cr_landed",
+      "a": {}
+     }
+    ]
+   },
+   "facts": {
+    "duration": 230928.0,
+    "vehicle": "Copter",
+    "version": "ArduCopter V3.2.1 (36b405fb)",
+    "takeoff_t": 314065.2,
+    "land_t": 314392.0,
+    "flight_time": 20.999999999941792,
+    "n_flights": 2,
+    "arm_t": 0.0,
+    "disarm_t": 230928.0,
+    "max_alt": 54.39000000000004,
+    "max_alt_t": 230926.4,
+    "max_dist": 7001.377773721553,
+    "max_dist_t": 230928.0,
+    "distance": 175.3497483274037,
+    "max_gs": 5.8500000000000005,
+    "max_gs_t": 314517.0,
+    "min_volt": 1405.0,
+    "min_volt_t": 1172.941,
+    "used_mah": 1320.9979248046875,
+    "first_error": null,
+    "profile": "copter",
+    "serial": "",
+    "anomaly_index": 0
+   },
+   "health": {
+    "gps": {
+     "score": 88,
+     "status": "good",
+     "metrics": {
+      "min_sats": 9.0,
+      "mean_sats": 9.943396226415095,
+      "max_hdop": 1.87,
+      "bad_pct": 5.660377358490567,
+      "glitches": 0
+     },
+     "findings": [
+      {
+       "k": "gps_bad_pct",
+       "a": {
+        "pct": 5.7
+       }
+      }
+     ]
+    },
+    "power": {
+     "score": 100,
+     "status": "good",
+     "metrics": {
+      "vmin": 1405.0,
+      "vmax": 1647.0,
+      "cells": 392,
+      "per_cell_min": 3.5841836734693877,
+      "current_sensor": true,
+      "used_mah": 1320.9979248046875,
+      "capacity": 5000.0,
+      "vcc_min": null,
+      "max_curr": 2752.0
+     },
+     "findings": []
+    },
+    "ekf": {
+     "score": 100,
+     "status": "good",
+     "metrics": {
+      "mag_var_pct": 2.154734672631733
+     },
+     "findings": []
+    },
+    "control": {
+     "score": 0,
+     "status": "bad",
+     "metrics": {
+      "roll_rms": 15.210379122959242,
+      "pitch_rms": 8.528359628044946,
+      "roll_max": 174.13,
+      "pitch_max": 80.79
+     },
+     "findings": [
+      {
+       "k": "att_roll_err",
+       "a": {
+        "v": 15.2
+       }
+      },
+      {
+       "k": "att_pitch_err",
+       "a": {
+        "v": 8.5
+       }
+      },
+      {
+       "k": "att_roll_exceed",
+       "a": {
+        "v": 174,
+        "lim": 45
+       }
+      }
+     ]
+    },
+    "rc": {
+     "score": 100,
+     "status": "good",
+     "metrics": {
+      "radio_failsafes": 0
+     },
+     "findings": []
+    }
+   },
+   "events": []
   },
   {
    "id": "81170",
@@ -22981,17 +24628,23 @@
    "url": "https://discuss.ardupilot.org/t/what-data-log-params-to-track-for-pid-tuning/81170",
    "log_url": "https://drive.google.com/file/d/1Wkh9K-U3HE51sgBqBZHzVVTH_UjreAwW/view?usp=drivesdk",
    "label": "normal",
-   "cause_hint": "motor",
+   "cause_hint": null,
    "mb": 4.9,
    "category_id": 6,
    "created": "2022-01-27",
+   "label_forum": "normal",
+   "hint_forum": "motor",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Plane",
    "got": "incident",
    "got_cause": "stall",
    "others": [],
    "overall": 48,
    "dur": 74,
-   "sec": 0.5,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -23175,13 +24828,21 @@
    "mb": 0.5,
    "category_id": 132,
    "created": "2022-02-13",
+   "label_forum": "crash",
+   "hint_forum": "control",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
    "got_cause": "control",
-   "others": [],
+   "others": [
+    "power"
+   ],
    "overall": 44,
    "dur": 34,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 95,
@@ -23412,17 +25073,23 @@
    "url": "https://discuss.ardupilot.org/t/vtol-unstable-crashed-in-qstablized-mode/82934",
    "log_url": "https://drive.google.com/file/d/12Ce8TTC2IqUpuCqSsqCvUP8x5v3UueqY/view?usp=drivesdk",
    "label": "crash",
-   "cause_hint": "gps",
+   "cause_hint": "control",
    "mb": 21.7,
    "category_id": 144,
    "created": "2022-03-13",
+   "label_forum": "crash",
+   "hint_forum": "gps",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Plane",
    "got": "incident",
    "got_cause": "unknown",
    "others": null,
    "overall": 53,
    "dur": 285,
-   "sec": 0.7,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -23578,17 +25245,23 @@
    "url": "https://discuss.ardupilot.org/t/crash-with-4-2-0-beta-and-4-3-0-daily-bdshot/83297",
    "log_url": "https://drive.google.com/file/d/1RE4Vx6E8l2ly5vAN-rxgQH1S-_TKdwJG/view?usp=sharing",
    "label": "crash",
-   "cause_hint": "battery",
+   "cause_hint": "power",
    "mb": 2.3,
    "category_id": 161,
    "created": "2022-03-22",
+   "label_forum": "crash",
+   "hint_forum": "battery",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "normal",
    "got_cause": null,
    "others": null,
    "overall": 92,
    "dur": 124,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -23741,17 +25414,25 @@
    "url": "https://discuss.ardupilot.org/t/crash-hexacopter-suddenly-crashed-while-auto/83521",
    "log_url": "https://www.dropbox.com/s/dunql28hfaatnw6/crash.BIN?dl=1",
    "label": "crash",
-   "cause_hint": "vibration",
+   "cause_hint": "motor",
    "mb": 3.9,
    "category_id": 159,
    "created": "2022-03-29",
+   "label_forum": "crash",
+   "hint_forum": "vibration",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "incident",
-   "got_cause": "control",
-   "others": [],
+   "got_cause": "motor",
+   "others": [
+    "control"
+   ],
    "overall": 55,
    "dur": 339,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -23951,20 +25632,26 @@
    "url": "https://discuss.ardupilot.org/t/new-pilot-can-someone-please-help-me-understand-my-crash/85880",
    "log_url": "https://drive.google.com/file/d/1HASE18ID5cchuGhlhBItu3Yu3NPTognL/view?usp=sharing",
    "label": "crash",
-   "cause_hint": "motor",
+   "cause_hint": "ekf",
    "mb": 3.2,
    "category_id": 163,
    "created": "2022-05-23",
+   "label_forum": "crash",
+   "hint_forum": "motor",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Plane",
    "got": "incident",
-   "got_cause": "compass",
+   "got_cause": "power",
    "others": [
-    "control",
-    "power"
+    "compass",
+    "control"
    ],
    "overall": 43,
    "dur": 104,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -24188,17 +25875,23 @@
    "url": "https://discuss.ardupilot.org/t/need-help-looking-over-a-log-had-an-unexpected-crash/87171",
    "log_url": "https://discuss.ardupilot.org/uploads/short-url/scCjrg8FJJykxo7VsGCFyWTbQHS.zip",
    "label": "crash",
-   "cause_hint": "gps",
+   "cause_hint": null,
    "mb": 2.0,
    "category_id": 20,
    "created": "2022-06-22",
+   "label_forum": "crash",
+   "hint_forum": "gps",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Plane",
    "got": "incident",
    "got_cause": "control",
    "others": [],
    "overall": 44,
    "dur": 1041,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 45,
@@ -24507,17 +26200,23 @@
    "url": "https://discuss.ardupilot.org/t/low-throttle-hover-mag-issues-and-dshot600/89501",
    "log_url": "https://drive.google.com/file/d/1zxJGzRECam4DSyzmA7D468A2pEsLMQ09/view?usp=sharing",
    "label": "normal",
-   "cause_hint": "gps",
+   "cause_hint": null,
    "mb": 4.5,
    "category_id": 161,
    "created": "2022-08-12",
+   "label_forum": "normal",
+   "hint_forum": "gps",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "normal",
    "got_cause": null,
    "others": null,
    "overall": 92,
    "dur": 249,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -24693,15 +26392,22 @@
    "mb": 1.7,
    "category_id": 40,
    "created": "2022-08-29",
+   "label_forum": "crash",
+   "hint_forum": "vibration",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
    "got_cause": "vibration",
    "others": [
+    "compass",
     "gps"
    ],
    "overall": 38,
    "dur": 138,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -24953,17 +26659,23 @@
    "url": "https://discuss.ardupilot.org/t/help-tuning-14-quad/90984",
    "log_url": "https://www.dropbox.com/s/y1m5c8jy1q7ajrd/00000035.BIN?dl=0",
    "label": "normal",
-   "cause_hint": "vibration",
+   "cause_hint": null,
    "mb": 28.3,
    "category_id": 6,
    "created": "2022-09-19",
+   "label_forum": "normal",
+   "hint_forum": "vibration",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "incident",
    "got_cause": "unknown",
    "others": null,
    "overall": 52,
    "dur": 171,
-   "sec": 0.7,
+   "sec": 1.0,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -25121,17 +26833,25 @@
    "url": "https://discuss.ardupilot.org/t/copter-crashed-with-ekf-primary-changed-0-ekf-primary-changed-2-deadly-crash/92858",
    "log_url": "https://drive.google.com/file/d/1mGlIYOldXplk2v6X9ONToFKoXiILNke1/view?usp=sharing",
    "label": "crash",
-   "cause_hint": "gps",
+   "cause_hint": "vibration",
    "mb": 23.6,
    "category_id": 161,
    "created": "2022-11-08",
+   "label_forum": "crash",
+   "hint_forum": "gps",
+   "cause_alt": [
+    "motor"
+   ],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "incident",
    "got_cause": "unknown",
    "others": null,
    "overall": 79,
    "dur": 1034,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 25,
@@ -25354,17 +27074,23 @@
    "url": "https://discuss.ardupilot.org/t/maiden-trex-550-flight-massive-side-to-side-shaking/93323",
    "log_url": "https://drive.google.com/file/d/1zadpFwFxu9rQTO_m6Krb2UBzMPv1HgSR/view?usp=sharing",
    "label": "normal",
-   "cause_hint": "vibration",
+   "cause_hint": null,
    "mb": 1.8,
    "category_id": 40,
    "created": "2022-11-20",
+   "label_forum": "normal",
+   "hint_forum": "vibration",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "noflight",
    "got_cause": null,
    "others": null,
    "overall": 50,
    "dur": 113,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -25524,15 +27250,22 @@
    "url": "https://discuss.ardupilot.org/t/in-flight-crash-investigation/94084",
    "log_url": "https://drive.google.com/file/d/1QPx2HfzpnTUrZpYyfEPuNPTQxBa5IxL9/view?usp=share_link",
    "label": "crash",
-   "cause_hint": "vibration",
+   "cause_hint": "control",
    "mb": 6.5,
    "category_id": 144,
    "created": "2022-12-09",
+   "label_forum": "crash",
+   "hint_forum": "vibration",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Plane",
    "got": "crash",
-   "got_cause": "compass",
+   "got_cause": "control",
    "others": [
-    "control"
+    "compass",
+    "power"
    ],
    "overall": 43,
    "dur": 72,
@@ -25781,14 +27514,24 @@
    "url": "https://discuss.ardupilot.org/t/crash-log-file-assistance/96429",
    "log_url": "https://drive.google.com/file/d/1qePmURZmhzbtFjutFHr-fsRrm_5rnkPZ/view?usp=sharing",
    "label": "crash",
-   "cause_hint": "compass",
+   "cause_hint": "motor",
    "mb": 8.0,
    "category_id": 6,
    "created": "2023-02-04",
+   "label_forum": "crash",
+   "hint_forum": "compass",
+   "cause_alt": [
+    "control"
+   ],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
-   "got_cause": "control",
-   "others": [],
+   "got_cause": "motor",
+   "others": [
+    "control"
+   ],
    "overall": 48,
    "dur": 117,
    "sec": 0.9,
@@ -26011,17 +27754,23 @@
    "url": "https://discuss.ardupilot.org/t/large-x8-disarm-power-logging-loss-in-flight-causing-crash-onboard-log/97192",
    "log_url": "https://drive.google.com/file/d/1Azm-9MCFerMmAxVAHA1zhbhX5QYAY7wj/view?usp=share_link",
    "label": "crash",
-   "cause_hint": null,
+   "cause_hint": "power",
    "mb": 8.0,
    "category_id": 167,
    "created": "2023-02-21",
+   "label_forum": "crash",
+   "hint_forum": null,
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "noflight",
    "got_cause": null,
    "others": null,
    "overall": 55,
    "dur": 96,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -26156,9 +27905,9 @@
      "score": 100,
      "status": "good",
      "metrics": {
-      "motor_pwm_mean": 1113.4877963737797,
-      "motor_imbalance_us": 0.2660390516039115,
-      "motor_headroom_us": 826.376569037657,
+      "motor_pwm_mean": 1113.642259414226,
+      "motor_imbalance_us": 0.4822175732217602,
+      "motor_headroom_us": 825.8943514644352,
       "hover_thr": 0.22470280528068542
      },
      "findings": []
@@ -26172,17 +27921,23 @@
    "url": "https://discuss.ardupilot.org/t/discrepancy-in-the-matek-f765-log-file-after-a-crash/97318",
    "log_url": "https://discuss.ardupilot.org/uploads/short-url/9gBAe7Y4EWKUPp2FR94udzW0Lu5.bin",
    "label": "crash",
-   "cause_hint": "gps",
+   "cause_hint": null,
    "mb": 1.0,
    "category_id": 166,
    "created": "2023-02-25",
+   "label_forum": "crash",
+   "hint_forum": "gps",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Plane",
    "got": "noflight",
    "got_cause": null,
    "others": null,
    "overall": 100,
    "dur": 56,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -26217,17 +27972,23 @@
    "url": "https://discuss.ardupilot.org/t/filtering-vibration-to-get-a-better-tune/98578",
    "log_url": "https://drive.google.com/file/d/13a5mcXESk6eVpiigKSaXHoVGImmyQ-Pt/view?usp=sharing",
    "label": "normal",
-   "cause_hint": "vibration",
+   "cause_hint": null,
    "mb": 3.9,
    "category_id": 167,
    "created": "2023-03-22",
+   "label_forum": "normal",
+   "hint_forum": "vibration",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "noflight",
    "got_cause": null,
    "others": null,
    "overall": 77,
    "dur": 266,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -26401,15 +28162,22 @@
    "mb": 1.5,
    "category_id": 6,
    "created": "2023-03-27",
+   "label_forum": "crash",
+   "hint_forum": "motor",
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
    "got_cause": "motor",
    "others": [
+    "compass",
     "control"
    ],
    "overall": 32,
    "dur": 70,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -26676,15 +28444,26 @@
    "mb": 0.5,
    "category_id": 155,
    "created": "2023-04-20",
+   "label_forum": "crash",
+   "hint_forum": "motor",
+   "cause_alt": [
+    "control"
+   ],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "crash",
-   "got_cause": "battery",
+   "got_cause": "motor",
    "others": [
-    "control"
+    "compass",
+    "battery",
+    "control",
+    "power"
    ],
    "overall": 48,
    "dur": 20,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 95,
@@ -26966,10 +28745,18 @@
    "url": "https://discuss.ardupilot.org/t/tailless-vtol-crash-log/99978",
    "log_url": "https://discuss.ardupilot.org/uploads/short-url/7sy8xUy9PhCymAltrrbdpn0bk3F.zip",
    "label": "crash",
-   "cause_hint": "gps",
+   "cause_hint": "control",
    "mb": 1.2,
    "category_id": 153,
    "created": "2023-04-22",
+   "label_forum": "crash",
+   "hint_forum": "gps",
+   "cause_alt": [
+    "stall"
+   ],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Plane",
    "got": "incident",
    "got_cause": "stall",
@@ -26979,7 +28766,7 @@
    ],
    "overall": 30,
    "dur": 17,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -27206,13 +28993,19 @@
    "mb": 3.1,
    "category_id": 40,
    "created": "2023-04-23",
+   "label_forum": "normal",
+   "hint_forum": null,
+   "cause_alt": [],
+   "label_src": "expert",
+   "exclude": false,
+   "note": "",
    "vehicle": "Copter",
    "got": "noflight",
    "got_cause": null,
    "others": null,
    "overall": 76,
    "dur": 175,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "noflight",
     "score": 0,
