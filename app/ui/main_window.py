@@ -58,6 +58,7 @@ class MainWindow(QMainWindow):
         self.watcher = None; self.wtimer = QTimer(self); self.wtimer.setInterval(5000); self.wtimer.timeout.connect(self._watch_tick)
         self.setup_watch()
         QTimer.singleShot(4000, self._pending_crashes)
+        QTimer.singleShot(9000, self._flush_feedback)
 
     # ------------------------------------------------------------ v1.0.2 yardımcıları
     def _apply_core_settings(self):
@@ -127,6 +128,15 @@ class MainWindow(QMainWindow):
     # ------------------------------------------------------------ çökme raporu
     def _on_crash(self, path):
         self.crash_dialog([path])
+
+    def _flush_feedback(self):
+        """İnternetsizken sıraya alınmış teşhis geri bildirimlerini arka planda gönder."""
+        try:
+            from ..core import feedback
+            from .common import run_bg
+            run_bg(feedback.flush)
+        except Exception:
+            pass
 
     def _pending_crashes(self):
         from ..core import crash

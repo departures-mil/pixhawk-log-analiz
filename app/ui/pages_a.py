@@ -54,6 +54,7 @@ class AnalysisPage(Page):
     def _link(self, url):
         u = url.toString()
         if u == 'ai:why': return self._ai_why()
+        if u == 'fb:why': return self._feedback()
         if u.startswith('go:'): return self.win.goto(u[3:])
         if u.startswith('t:'):
             try: self.win.pages['map'].goto_time(float(u[2:])); self.win.goto('map')
@@ -80,6 +81,49 @@ class AnalysisPage(Page):
             vv.addWidget(button(t('close'), dl.accept)); dl.exec()
         def fail(e): self.set_busy(False); error(self, e)
         run_bg(job, on_done=ok, on_fail=fail)
+
+    def _feedback(self):
+        """'Teşhis doğru muydu?' penceresi: yalnız teşhis özeti (log değil) izinle gönderilir."""
+        A = self.win.A
+        if not A: return
+        from PySide6.QtWidgets import QDialog, QFormLayout, QTextEdit
+        from ..core import feedback as FB
+        lg = lang(); root = A.root or {}
+        dl = QDialog(self); dl.setWindowTitle(t('fb_title')); dl.resize(620, 520)
+        if lg == 'ar': dl.setLayoutDirection(Qt.RightToLeft)
+        vv = QVBoxLayout(dl)
+        it = label(t('fb_intro'), 'muted'); it.setWordWrap(True); vv.addWidget(it)
+        vv.addWidget(label(t('fb_prog', v=texts.T('v_' + (A.verdict.get('kind') or 'normal'), lg),
+                             c=texts.T('cause_' + root['cause'], lg) if root.get('cause') and root['cause'] != 'unknown' else '-')))
+        fm = QFormLayout()
+        grp = QButtonGroup(dl); row = QHBoxLayout(); rb = {}
+        for k in ('yes', 'part', 'no'):
+            r_ = QRadioButton(t('fb_' + k)); grp.addButton(r_); row.addWidget(r_); rb[k] = r_
+        rb['yes'].setChecked(True)
+        w_ = QWidget(); w_.setLayout(row); fm.addRow(t('fb_q'), w_)
+        oc = QComboBox()
+        for k in FB.OUTCOMES: oc.addItem(texts.T('v_' + k, lg), k)
+        i0 = FB.OUTCOMES.index(A.verdict.get('kind')) if A.verdict.get('kind') in FB.OUTCOMES else 2
+        oc.setCurrentIndex(i0); fm.addRow(t('fb_outcome'), oc)
+        cc = QComboBox(); cc.addItem(t('fb_unknown'), 'unknown')
+        for k in FB.CAUSES[:-1]: cc.addItem(texts.T('cause_' + k, lg), k)
+        if root.get('cause') in FB.CAUSES[:-1]: cc.setCurrentIndex(FB.CAUSES.index(root['cause']) + 1)
+        fm.addRow(t('fb_cause'), cc)
+        vv.addLayout(fm)
+        vv.addWidget(label(t('fb_note')))
+        note = QTextEdit(); note.setMaximumHeight(120); vv.addWidget(note)
+        ok = QCheckBox(t('fb_consent')); vv.addWidget(ok)
+        def send():
+            if not ok.isChecked(): return error(dl, t('fb_need_consent'))
+            vok = next(k for k, r_ in rb.items() if r_.isChecked())
+            d = FB.build(A, vok, oc.currentData(), cc.currentData(), note.toPlainText(), lg)
+            def done(sent):
+                info(self, t('fb_sent') if sent else t('fb_queued')); dl.accept()
+            run_bg(FB.send, d, on_done=done, on_fail=lambda e: error(dl, e))
+        bb = QHBoxLayout(); bb.addStretch(1)
+        bb.addWidget(button(t('close'), dl.reject)); bb.addWidget(button(t('fb_send'), send, primary=True))
+        vv.addLayout(bb)
+        dl.exec()
 
     def _welcome(self):
         d = 'rtl' if lang() == 'ar' else 'ltr'

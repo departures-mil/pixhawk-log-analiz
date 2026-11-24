@@ -97,6 +97,18 @@ W = {
                 'Weather ({where}, {time} UTC): {temp}°C, wind {wind} m/s, gusts {gust} m/s, humidity {rh}%, precipitation {precip} mm',
                 'الطقس ({where}، {time} UTC): {temp}°م، رياح {wind} م/ث، هبات {gust} م/ث، رطوبة {rh}%، هطول {precip} مم'),
     'wx_ev': ('kırım/olay noktası', 'crash/event point', 'نقطة التحطم/الحادث'), 'wx_home': ('kalkış noktası', 'take-off point', 'نقطة الإقلاع'),
+    'n_mot_sat': ('Motor {m} itki kaybetti: komutu tavana dayandı, karşısındaki motor {o} dengelemek için tabana indi. Motor {m}, ESC\'si, kablosu ve pervanesini kontrol edin.',
+                  'Motor {m} lost thrust: its command hit the ceiling while the opposite motor {o} was driven to the floor to compensate. Check motor {m}, its ESC, wiring and propeller.',
+                  'فقد المحرك {m} الدفع: وصل أمره إلى الحد الأعلى بينما خُفِّض المحرك المقابل {o} إلى الحد الأدنى للتعويض. افحص المحرك {m} ومنظم سرعته وأسلاكه ومروحته.'),
+    'n_mot_esc': ('ESC telemetrisi: motor {m} diğerleri dönerken durdu (devir sıfıra indi). ESC {m} (senkron kaçırma, aşırı ısınma, besleme) ve motor {m} kontrol edilmeli.',
+                  'ESC telemetry: motor {m} stopped (RPM dropped to zero) while the others kept spinning. Check ESC {m} (desync, overheating, supply) and motor {m}.',
+                  'قياس منظم السرعة: توقف المحرك {m} (انخفضت السرعة إلى الصفر) بينما استمرت المحركات الأخرى. افحص منظم السرعة {m} (فقدان التزامن، السخونة، التغذية) والمحرك {m}.'),
+    'n_surf_rev': ('Kumanda yüzeyi ters ya da yetersiz ({s}): otopilot bir yöne dönmek istediğinde araç ters yöne döndü. Önce burnu/kanadı elle eğip FBWA modunda yüzeyin doğru yöne gittiğini kontrol edin (SERVOx_REVERSED); yön doğruysa servo hareket aralığını (SERVOx_MIN/MAX) ve mekanik bağlantıyı büyütün.',
+                   'Control surface reversed or too weak ({s}): when the autopilot asked for one direction the aircraft rotated the other way. First tilt the aircraft by hand in FBWA and check the surface moves the right way (SERVOx_REVERSED); if it does, increase servo travel (SERVOx_MIN/MAX) and linkage throw.',
+                   'سطح التحكم معكوس أو ضعيف ({s}): عندما طلب الطيار الآلي اتجاهاً دارت الطائرة في الاتجاه المعاكس. أمِل الطائرة يدوياً في وضع FBWA وتحقق من اتجاه السطح (SERVOx_REVERSED)؛ إن كان صحيحاً فزد مدى السيرفو (SERVOx_MIN/MAX) وحركة الوصلة.'),
+    'n_gaps': ('Bu logda teşhisi sınırlayan eksikler var: {g}. Daha kesin sonuç için LOG_BITMASK varsayılan değerine alınmalı (RCOU, VIBE, PID kayıtları) ve akım sensörü/ESC telemetrisi bağlanmalı.',
+               'This log lacks data that limits the diagnosis: {g}. For a more certain result set LOG_BITMASK to default (RCOU, VIBE, PID logging) and connect a current sensor / ESC telemetry.',
+               'يفتقر هذا السجل إلى بيانات تحد من التشخيص: {g}. لنتيجة أدق اضبط LOG_BITMASK على القيمة الافتراضية (تسجيل RCOU وVIBE وPID) ووصّل حساس التيار / قياس منظمات السرعة.'),
     'n_tuning': ('Ayar uçuşu: AUTOTUNE/PID değişiklikleri sırasında salınım kontrol kaybına dönüşebilir; ayarı yüksek irtifada ve geri alma planıyla yapın.',
                  'Tuning flight: during AUTOTUNE/PID changes oscillation can become loss of control; tune at a safe altitude with a bail-out plan.',
                  'رحلة ضبط: أثناء AUTOTUNE/تغيير PID قد يتحول التذبذب إلى فقدان سيطرة؛ اضبط على ارتفاع آمن مع خطة تراجع.'),
@@ -149,6 +161,19 @@ def build(A):
     if af == 'tailsitter': notes.append(('n_tailsit', {}))
     if af in ('quad', 'hexa', 'octa', 'x8', 'y6', 'tri') and c in ('motor', 'control', 'unknown'):
         notes.append(('n_multi_motor', {'a': af}))
+    mf = root.get('motor') or {}
+    if c == 'motor' and mf.get('m'):
+        if mf.get('kind') == 'esc': notes.insert(0, ('n_mot_esc', {'m': mf['m']}))
+        elif mf.get('o'): notes.insert(0, ('n_mot_sat', {'m': mf['m'], 'o': mf['o']}))
+        conf += 0.05
+    if getattr(A, 'surf_rev', None) and c == 'control':
+        notes.insert(0, ('n_surf_rev', {'s': A.surf_rev[1]})); conf += 0.15
+    gaps = list(getattr(A, 'gaps', []) or [])
+    if gaps:
+        notes.append(('n_gaps', {'g': gaps}))
+        crit = {'motor': ('gap_rcou', 'gap_esc'), 'unknown': ('gap_rcou', 'gap_vibe', 'gap_att_rate'), 'control': ('gap_att_rate', 'gap_pid'),
+                'power': ('gap_curr',), 'battery': ('gap_curr',), 'vibration': ('gap_vibe',)}.get(c, ())
+        conf -= 0.06 * sum(1 for x in gaps if x in crit)
     if info.get('airspeed') == 'no' and c == 'stall': notes.append(('n_no_aspd_stall', {}))
     if ap:
         b = info.get('autopilot')
@@ -183,6 +208,7 @@ def build(A):
     ev_items = [e for e in ev if e.get('k') not in ('cr_landed',)][:6]
     if dom and A.health.get(dom):
         ev_items += list(A.health[dom].get('findings') or [])[:3]
+    conf = max(0.2, min(0.97, conf))
     wxs = {k: wx.get(k) for k in ('time_utc', 'temp', 'rh', 'wind', 'gust', 'dir', 'precip', 'cloud', 't')} if wx else {}
     return {'wx': wxs, 'wx_event': bool(getattr(A, 'weather_event', None)), 'kind': v, 'cause': c, 'tc': float(root.get('t', _end_t(A)) or 0), 'te': float(_end_t(A)), 'conf': round(conf, 2),
             'hard': hard, 'evidence': ev_items, 'chain': root.get('chain') or [], 'notes': notes, 'others': others}
@@ -223,8 +249,24 @@ def render(A, lang, tfmt):
             'todo_h': w('todo', lang), 'prevent': prev, 'ctx_h': w('ctx', lang), 'notes': [w(k, lang, **_na(a, lang)) for k, a in y['notes']]}
 
 
+GAP_T = {'gap_rcou': ('motor çıkışları (RCOU)', 'motor outputs (RCOU)', 'مخارج المحركات (RCOU)'),
+         'gap_vibe': ('titreşim (VIBE)', 'vibration (VIBE)', 'الاهتزاز (VIBE)'),
+         'gap_att': ('tutum (ATT)', 'attitude (ATT)', 'الوضعية (ATT)'),
+         'gap_att_rate': ('tutum kaydı 10 Hz altında', 'attitude logged below 10 Hz', 'تسجيل الوضعية أقل من 10 هرتز'),
+         'gap_curr': ('batarya akımı', 'battery current', 'تيار البطارية'),
+         'gap_pid': ('PID kaydı (PIDR/PIDP/PIDY)', 'PID logging (PIDR/PIDP/PIDY)', 'تسجيل PID (PIDR/PIDP/PIDY)'),
+         'gap_esc': ('ESC telemetrisi (devir)', 'ESC telemetry (RPM)', 'قياس منظمات السرعة (الدوران)'),
+         'gap_gps': ('GPS', 'GPS', 'GPS'),
+         'surf_elev': ('irtifa dümeni', 'elevator', 'الرافع'), 'surf_ail': ('kanatçık', 'aileron', 'الجنيح')}
+
+
 def _na(a, lang):
     a = dict(a)
+    li = LI.get(lang, 0)
+    if isinstance(a.get('g'), list):
+        a['g'] = ', '.join(GAP_T.get(x, (x, x, x))[li] for x in a['g'])
+    if a.get('s') in ('elev', 'ail'):
+        a['s'] = GAP_T['surf_' + a['s']][li]
     if 'a' in a:
         from .flightinfo import value_label
         a['a'] = value_label('airframe', a['a'], lang)
