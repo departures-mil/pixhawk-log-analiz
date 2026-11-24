@@ -48,7 +48,11 @@ class MainWindow(QMainWindow):
             self.lan = LanServer(self.settings, self.archive, on_merged=lambda r, n: self.lan_merged.emit(r, n)); self.lan.start()
         except Exception:
             self.lan = None
-        if self.settings.get('auto_update_check', True):
+        if '--update-failed' in sys.argv:
+            # Yama kopyalanamadı → tam dosyayla otomatik yeniden dene
+            self._force_full_update = True
+            QTimer.singleShot(2000, lambda: self.do_update(silent=False))
+        elif self.settings.get('auto_update_check', True):
             QTimer.singleShot(2500, lambda: self.do_update(silent=True))
         # Mission Planner log klasörü izleme
         self.watcher = None; self.wtimer = QTimer(self); self.wtimer.setInterval(5000); self.wtimer.timeout.connect(self._watch_tick)
@@ -402,23 +406,35 @@ class MainWindow(QMainWindow):
         self._updating = True
         w = None
 
+        force_full = bool(getattr(self, '_force_full_update', False))
+        mode = {'m': 'full'}
+
         def job():
             info_ = updater.check()
             if not info_: return None
             if silent: return ('avail', info_)
             w.progress.emit(('start', info_))
-            p = updater.download(info_, progress=lambda d, n, sp, eta: w.progress.emit(('p', (d, n, sp, eta))))
+            p = updater.download(info_, progress=lambda d, n, sp, eta: w.progress.emit(('p', (d, n, sp, eta))),
+                                 on_mode=lambda m, n: w.progress.emit(('mode', (m, n))), force_full=force_full)
             return ('done', p)
 
         def prog(x):
             k, v = x
             if k == 'start':
                 self.upd_bar.setVisible(True); self.upd_bar.setRange(0, 1000); self.set_status(t('u_found', v=v['version']))
+            elif k == 'mode':
+                mode['m'] = v[0]
+                self.upd_bar.setValue(0)
+                if v[0] == 'delta':
+                    self.set_status(t('u6_delta_st', mb=v[1] / 1e6))
+                else:
+                    self.set_status(t('u6_full_st', mb=v[1] / 1e6))
             else:
                 d, n, sp, eta = v
                 self.upd_bar.setValue(int(1000 * d / max(n, 1)))
                 e = f'{int(eta // 60)}:{int(eta % 60):02d}'
-                self.upd_bar.setFormat(t('u_prog', p=100 * d / max(n, 1), d=d / 1e6, t=n / 1e6, r=(n - d) / 1e6, s=sp / 1e6, eta=e))
+                tag = t('u6_delta') if mode['m'] == 'delta' else t('u6_full')
+                self.upd_bar.setFormat(tag + '  ·  ' + t('u_prog', p=100 * d / max(n, 1), d=d / 1e6, t=n / 1e6, r=(n - d) / 1e6, s=sp / 1e6, eta=e))
 
         def ok(r):
             self._updating = False
@@ -427,7 +443,11 @@ class MainWindow(QMainWindow):
                 return
             if r[0] == 'avail':
                 self.set_status(t('u_avail', v=r[1]['version'])); self.titlebar.b_upd.setStyleSheet('background:#16A34A'); return
-            self.set_status(t('u_install') if 'setup' in os.path.basename(r[1]).lower() else t('u_apply'))
+            self._force_full_update = False
+            if isinstance(r[1], dict):
+                self.set_status(t('u6_apply_delta', n=len(r[1].get('files', []))))
+            else:
+                self.set_status(t('u_install') if 'setup' in os.path.basename(r[1]).lower() else t('u_apply'))
             if updater.apply_and_restart(r[1]):
                 QTimer.singleShot(600, QApplication.instance().quit)
             else:

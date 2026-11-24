@@ -155,6 +155,50 @@ def harvest():
     print('logs:', len(man), 'total MB', round(total))
 
 
+def _plain(cooked):
+    t = re.sub(r'<aside class="quote.*?</aside>', ' ', cooked or '', flags=re.S)   # alıntıları at
+    t = re.sub(r'<(br|p|li|div)[^>]*>', '\n', t); t = re.sub('<[^>]+>', ' ', t)
+    return re.sub(r'[ \t]+', ' ', html.unescape(t)).strip()
+
+
+def threads():
+    """Etiket temizliği için her konunun TÜM yanıtlarını (uzman cevapları dahil) indirir →
+    tools_data/crashbench/threads.json.gz. Etiketler bu metinlerden elle çıkarılıp labels.json'a yazılır."""
+    import gzip
+    man = json.load(open(os.path.join(BENCH, 'manifest.json')))
+    out_p = os.path.join(ROOT, 'tools_data', 'crashbench', 'threads.json.gz')
+    out = {}
+    if os.path.exists(out_p):
+        try: out = json.load(gzip.open(out_p, 'rt', encoding='utf-8'))
+        except Exception: out = {}
+    for tid in sorted(man):
+        if tid in out and out[tid].get('posts'): continue
+        try:
+            T = get(f'{FORUM}/t/{tid}.json'); time.sleep(1.2)
+            posts = list((T.get('post_stream') or {}).get('posts') or [])
+            ids = [i for i in ((T.get('post_stream') or {}).get('stream') or []) if i not in {p['id'] for p in posts}][:60]
+            for k in range(0, len(ids), 20):
+                q = '&'.join(f'post_ids[]={i}' for i in ids[k:k + 20])
+                try:
+                    more = get(f'{FORUM}/t/{tid}/posts.json?{q}'); time.sleep(1.2)
+                    posts += (more.get('post_stream') or {}).get('posts') or []
+                except Exception as e:
+                    print('  more fail', tid, e)
+            rows = []
+            for p in sorted(posts, key=lambda p: p.get('post_number', 0))[:80]:
+                likes = sum(a.get('count', 0) for a in (p.get('actions_summary') or []) if a.get('id') == 2)
+                rows.append({'n': p.get('post_number'), 'u': p.get('username'), 'tl': p.get('trust_level'),
+                             'staff': bool(p.get('staff') or p.get('moderator') or p.get('admin')), 'likes': likes,
+                             'acc': bool(p.get('accepted_answer')), 'd': (p.get('created_at') or '')[:10], 'x': _plain(p.get('cooked'))[:3500]})
+            out[tid] = {'title': T.get('title'), 'url': man[tid]['url'], 'posts': rows}
+            print(f'{tid}: {len(rows)} posts  {T.get("title", "")[:70]}', flush=True)
+        except Exception as e:
+            print('thread fail', tid, e)
+    os.makedirs(os.path.dirname(out_p), exist_ok=True)
+    with gzip.open(out_p, 'wt', encoding='utf-8') as f: json.dump(out, f, ensure_ascii=False)
+    print('threads:', len(out))
+
+
 def run():
     man = json.load(open(os.path.join(BENCH, 'manifest.json')))
     res = []
@@ -234,4 +278,4 @@ def write(res):
 
 
 if __name__ == '__main__':
-    {'harvest': harvest, 'run': run}[sys.argv[1]]()
+    {'harvest': harvest, 'run': run, 'threads': threads}[sys.argv[1]]()
