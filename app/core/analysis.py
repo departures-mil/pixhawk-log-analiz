@@ -57,6 +57,7 @@ class Analysis(ExtMixin):
         self.why = {}
         self.extras = extras
         self.anomalies = []      # ML anomali pencereleri
+        self.baseline = []       # aynı aracın geçmişine göre alışılmadık ölçümler (arşivle doldurulur)
         self.pilot = {}          # pilot performans ölçütleri
         self.wind = {}           # logdan kestirilen rüzgâr
         self.weather = None      # çevrimiçi hava durumu (sonradan eklenir)
@@ -92,6 +93,12 @@ class Analysis(ExtMixin):
         self._root_cause()
         self._params()
         self._facts()
+        self.facts.update({('phys_' + k): v for k, v in (getattr(self, 'physics', None) or {}).items()})
+        try:
+            from . import baseline
+            baseline.collect(self)
+        except Exception:
+            pass
         try:
             from . import why
             self.why = why.build(self)
@@ -697,7 +704,8 @@ class Analysis(ExtMixin):
         # 'sorunlu' kararının derecesi: ciddi (kaza riski/kanıtı) ya da küçük uyarı (tek başına önemsiz sağlık bulgusu)
         fs = any(r in K.FAILSAFE_REASONS for _, _, _, r in L.modes)
         crit_err = any(s in (2, 5, 6, 7, 8, 9, 12, 16, 17) and c != 0 for _, s, c in L.errors)
-        serious = score >= 25 or (score > 0 and bool(bad_dom)) or bool(bad_dom & {'gps', 'ekf', 'power', 'motors', 'rc', 'control'}) \
+        crit = {'gps', 'ekf', 'power', 'motors', 'rc', 'control'}
+        serious = score >= 25 or (score > 0 and bool(bad_dom)) or bool(bad_dom & crit) \
             or len(bad_dom) >= 3 or ((fs or crit_err) and bool(bad_dom))
         # kullanıcının cevabı (uçuş bilgileri formu)
         uc = self.info.get('crashed')
