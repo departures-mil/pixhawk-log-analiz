@@ -14,11 +14,10 @@ def main():
         return cli(sys.argv)
     from PySide6.QtWidgets import QApplication
     from PySide6.QtCore import Qt
-    from app.ui.common import STYLE, app_icon
+    from app.ui.common import app_icon
     from app.version import APP_NAME
     app = QApplication(sys.argv)
     app.setApplicationName(APP_NAME); app.setWindowIcon(app_icon())
-    app.setStyleSheet(STYLE)
     files = [a for a in sys.argv[1:] if os.path.isfile(a) and a.lower().endswith(('.bin', '.tlog', '.pxloc'))]
     # Tek örnek: program açıksa dosyayı mevcut pencereye gönder
     from PySide6.QtNetwork import QLocalServer, QLocalSocket
@@ -30,11 +29,16 @@ def main():
     QLocalServer.removeServer(sname)
     server = QLocalServer(); server.listen(sname)
     from app.core import crash
+    from app.core.settings import Settings
+    crash.install()                       # yerel kayıt; fccore.crash bunu sarar (kabuk.init)
+    settings = Settings()
+    from app.ui import kabuk
+    core = kabuk.init(app, settings, auto_update=bool(settings.get('auto_update_check', True)))
     from app.ui.main_window import MainWindow
     from app.ui import ajan
     ajan.kur()
-    w = MainWindow()
-    crash.install(on_crash=lambda p: w.crashed.emit(p))
+    w = MainWindow(settings, core)
+    crash.set_callback(lambda p: w.crashed.emit(p))
 
     def incoming():
         c = server.nextPendingConnection()
@@ -46,6 +50,7 @@ def main():
     if not w.login():
         crash.shutdown(); return
     w.apply_role(); w.show_start()
+    kabuk.after_show(core, w)
     ajan.baslat(app, w)
     for a in files:
         w.open_log(a); break

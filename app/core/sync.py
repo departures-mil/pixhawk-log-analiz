@@ -1,5 +1,6 @@
 """Eşitleme: 1) GitHub (kullanıcının kendi gizli gist'i)  2) Aynı modem/router üzerinden LAN (internet gerekmez).
-İki yöntemde de kayıtlar birleştirilir: hiçbir kayıt silinmez, üst üste yazılmaz (yeni olan kazanır, notlar birleşir)."""
+İki yöntemde de kayıtlar ortak çekirdek kuralıyla birleştirilir (fccore.lanmerge): hiçbir kayıt silinmez, üst üste yazılmaz —
+çakışmada yeni olan kalır, eski hal eşitleme yedeğine (archive.sync_backup); uzak silme yerelde arşivlenir."""
 from __future__ import annotations
 import gzip, json, socket, struct, threading, time, urllib.request
 from ..version import VERSION, APP_ID
@@ -22,15 +23,17 @@ def merge_payload(settings, archive, data):
     """Gelen veriyi yerel veriye ekler. (eklenen, güncellenen) döner."""
     if not data or data.get('app') != APP_ID:
         return 0, 0
-    a, u = archive.merge(data)
+    a, u = archive.merge(data, source=data.get("name") or "")
     for name, lh in (data.get('templates') or {}).items():
         cur = settings['templates'].get(name)
         if cur is None:
             settings['templates'][name] = lh; a += 1
-        elif cur != lh and name != 'default':
+        elif cur != lh:
             alt = f"{name} ({data.get('name') or 'remote'})"
-            if alt not in settings['templates']:
+            if name != 'default' and alt not in settings['templates']:
                 settings['templates'][alt] = lh; a += 1
+            elif settings['templates'].get(alt) != lh:
+                archive.backup('conflict', 'templates', '', name, lh, data.get('name') or '')   # hiçbir hal kaybolmasın
     cache = settings.setdefault('param_tx_cache', {})
     for k, v in (data.get('param_tx_cache') or {}).items():
         if k not in cache: cache[k] = v
