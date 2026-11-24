@@ -70,9 +70,22 @@ def safe_extract(zip_path, dest):
         z.extractall(base)
 
 
-if __name__ == '__main__':
-    if len(sys.argv) != 3:
+def main(argv=None):
+    """python -m fccore.fcpack <klasör> <zip>. Windows CI konsolu (cp1252) Türkçe harfte çökmesin: stdout UTF-8'e
+    çevrilir (olmazsa yerine '?'), durum satırı yalnız ASCII."""
+    for st in (sys.stdout, sys.stderr):
+        try:
+            st.reconfigure(encoding='utf-8', errors='replace')
+        except Exception:
+            pass
+    argv = sys.argv[1:] if argv is None else argv
+    if len(argv) != 2:
         print(__doc__)
-        sys.exit(2)
-    pack(sys.argv[1], sys.argv[2])
-    print('yazıldı', sys.argv[2], 'zlib', zlib.ZLIB_RUNTIME_VERSION)
+        return 2
+    pack(argv[0], argv[1])
+    print('written', argv[1], 'zlib', zlib.ZLIB_RUNTIME_VERSION)
+    return 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())

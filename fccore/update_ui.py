@@ -24,6 +24,9 @@ class UpdateController(QObject):
         self._quit_sig.connect(self._do_quit, Qt.QueuedConnection)
         self.state = self.u.snapshot()
         self.u.subscribe(lambda s: self._relay.emit(s))
+        app = QApplication.instance()
+        if app is not None:   # hazır (arka planda indirilmiş) güncelleme program kapanınca pencere açmadan kurulur
+            app.aboutToQuit.connect(lambda: self.u.apply_pending(relaunch=False))
 
     @Slot(dict)
     def _on_state(self, s):
