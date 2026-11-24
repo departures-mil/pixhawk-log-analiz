@@ -25,7 +25,7 @@ class ExtMixin:
             o = L.s('RCOU'); fnd = []; met = {}; sc = 100
             n_mot = int(P.get('FRAME_CLASS', 1)) and 4
             fr = int(P.get('FRAME_CLASS', 1))
-            n_mot = {1: 4, 2: 6, 3: 8, 4: 3, 5: 6, 7: 3, 10: 4, 12: 4, 14: 4}.get(fr, 4)
+            n_mot = {1: 4, 2: 6, 3: 8, 4: 8, 5: 6, 7: 3, 10: 2, 12: 12, 14: 10}.get(fr, 4)
             chans = [f'C{i}' for i in range(1, n_mot + 1) if o.has(f'C{i}')]
             if pr == 'copter' and len(chans) >= 3:
                 m = self.in_flight(o['t']) if self.flights else np.ones(len(o['t']), bool)
