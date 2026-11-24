@@ -21,7 +21,7 @@ def _facts(A, lg):
 def build(A, lg):
     d = 'rtl' if lg == 'ar' else 'ltr'
     al = 'right' if lg == 'ar' else 'left'
-    v = A.verdict.get('kind', 'normal'); vc = VERDICT_COL.get(v, '#64748B')
+    v = texts.vkey(A.verdict); vc = VERDICT_COL.get(v, '#64748B')
     sc = A.overall; scc = STATUS_COL['good' if sc >= 80 else ('warn' if sc >= 55 else 'bad')]
     h = [f'<div dir="{d}" style="text-align:{al}">']
     h.append(f'<table width="100%" cellpadding="12" cellspacing="0"><tr>'

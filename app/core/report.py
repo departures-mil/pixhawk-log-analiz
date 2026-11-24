@@ -9,7 +9,7 @@ from . import why as why_mod, charts, knowledge as K, letterhead as LHM
 
 SEV_COL = {0: '2563EB', 1: 'D97706', 2: 'DC2626'}
 ST_COL = {'good': '16A34A', 'warn': 'D97706', 'bad': 'DC2626'}
-V_COL = {'normal': '16A34A', 'incident': 'D97706', 'crash': 'DC2626', 'noflight': '6B7280'}
+V_COL = {'normal': '16A34A', 'incident': 'D97706', 'incident_minor': 'CA8A04', 'crash': 'DC2626', 'noflight': '6B7280'}
 
 DEFAULT_LH = {'org': '', 'sub': '', 'logo': '', 'bg': '', 'color': '#1E3A8A', 'watermark': '', 'footer': '', 'prepared_by': '',
               'besmele': False, 'top_cm': 0}
@@ -219,7 +219,7 @@ def build_docx(rd: ReportData, path, lh=None):
 
     para(R('title', lg), bold=True, size=20, col=lh['color'].lstrip('#').upper(), align=WD_ALIGN_PARAGRAPH.CENTER, space=0)
     para(f"{R('subtitle', lg)} · {os.path.basename(A.L.path)}", size=9, col='6B7280', align=WD_ALIGN_PARAGRAPH.CENTER, space=10)
-    v = A.verdict.get('kind', 'normal')
+    v = texts.vkey(A.verdict)
     long_ = rd.mode != 'short'
 
     def s_summary():
@@ -656,7 +656,7 @@ def build_pdf(rd: ReportData, path, lh=None, encrypt=None):
     long_ = rd.mode != 'short'
     story = K_['besmele']()
     story += [P(R('title', lg), TT), Spacer(1, 2), P(f"{R('subtitle', lg)} · {os.path.basename(A.L.path)}", ParagraphStyle('c', parent=small, alignment=TA_CENTER, textColor=colors.HexColor('#6B7280'))), Spacer(1, 8)]
-    v = A.verdict.get('kind', 'normal')
+    v = texts.vkey(A.verdict)
 
     def s_summary():
         vs = ParagraphStyle('v', parent=base, fontName='DJB', fontSize=14, leading=18, textColor=colors.white)
