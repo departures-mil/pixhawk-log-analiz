@@ -109,6 +109,13 @@ def harvest():
     man = json.load(open(mf)) if os.path.exists(mf) else {}
     tf = os.path.join(BENCH, 'tried.json')
     seen = set(man) | (set(json.load(open(tf))) if os.path.exists(tf) else set())
+    if os.environ.get('BENCH_SKIP_KNOWN'):      # ayrı (dokunulmamış) test seti: geliştirme setindeki konular alınmaz
+        seen |= set(labels())
+        try:
+            import gzip
+            seen |= set(json.load(gzip.open(os.path.join(ROOT, 'tools_data', 'crashbench', 'threads.json.gz'), 'rt', encoding='utf-8')))
+        except Exception:
+            pass
     total = sum(x.get('mb', 0) for x in man.values())
     need = {'crash': N_CRASH - sum(1 for x in man.values() if x['label'] == 'crash'),
             'normal': N_NORMAL - sum(1 for x in man.values() if x['label'] == 'normal')}
@@ -172,7 +179,7 @@ def threads():
     tools_data/crashbench/threads.json.gz. Etiketler bu metinlerden elle çıkarılıp labels.json'a yazılır."""
     import gzip
     man = json.load(open(os.path.join(BENCH, 'manifest.json')))
-    out_p = os.path.join(ROOT, 'tools_data', 'crashbench', 'threads.json.gz')
+    out_p = os.path.join(ROOT, 'tools_data', 'crashbench', os.environ.get('BENCH_THREADS_OUT', 'threads.json.gz'))
     out = {}
     if os.path.exists(out_p):
         try: out = json.load(gzip.open(out_p, 'rt', encoding='utf-8'))
@@ -255,7 +262,7 @@ def run():
 
 def score(res):
     ok = [r for r in res if r.get('got') not in (None, 'error') and not r.get('exclude')]
-    def pos(r): return r['got'] in ('crash', 'incident')
+    def pos(r): return r['got'] == 'crash' or (r['got'] == 'incident' and (r.get('verdict') or {}).get('severity') != 'minor')
     tp = sum(1 for r in ok if r['label'] == 'crash' and pos(r)); fn = sum(1 for r in ok if r['label'] == 'crash' and not pos(r))
     fp = sum(1 for r in ok if r['label'] == 'normal' and pos(r)); tn = sum(1 for r in ok if r['label'] == 'normal' and not pos(r))
     ch = [r for r in ok if r['label'] == 'crash' and r.get('cause_hint')]
@@ -323,7 +330,8 @@ def write(res):
         pass
     L += ['', '## Log listesi', '', '| Konu | Araç | Etiket | Program | Kök neden (program) | Kök neden (uzman) | Süre |', '|---|---|---|---|---|---|---|']
     for r in sorted(res, key=lambda r: (r['label'], r.get('got') or '')):
-        mark = '✅' if (r.get('got') in ('crash', 'incident')) == (r['label'] == 'crash') else '❌'
+        ps = r.get('got') == 'crash' or (r.get('got') == 'incident' and (r.get('verdict') or {}).get('severity') != 'minor')
+        mark = '✅' if ps == (r['label'] == 'crash') else '❌'
         ttl = (r.get('title') or '').replace('|', '/')[:70]
         L.append(f"| [{ttl}]({r['url']}) | {r.get('vehicle') or '-'} | {r['label']} | {mark} {r.get('got')} | {r.get('got_cause') or '-'} | "
                  f"{r.get('cause_hint') or '-'} | {r.get('dur') or '-'} sn |")

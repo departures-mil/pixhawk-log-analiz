@@ -132,6 +132,55 @@ def battery_ir(A):
     return []
 
 
+# ------------------------------------------------------------------ fizik modeli (güç bütçesi)
+def power_budget(A):
+    """Çok rotorlu: düz asılı kalmadaki gazdan itki/ağırlık oranı (MOT_THST_EXPO eğrisiyle), asılı kalma gücü ve
+    kalan süre kestirimi. Sabit kanat: düz seyirdeki gaz. Sonuçlar A.physics ve 'motors'/'power' alanına yazılır."""
+    L = A.L; P = L.params; ct = L.s('CTUN'); out = []
+    if not A.flights or not ct.has('ThO'): return out
+    t = ct['t']; th = ct['ThO'].astype(float)
+    if np.nanmax(th) > 1.5: th = th / 100.0
+    fl = A.in_flight(t)
+    phys = {}
+    if A.vehicle in ('Copter', 'Heli') and A.vehicle != 'Heli':
+        crt = ct['CRt'] if ct.has('CRt') else None
+        m = fl & (th > 0.05)
+        if crt is not None: m &= np.abs(crt) < 0.4
+        tb = t[m]
+        if len(tb) < 30: return out
+        # kalkış/iniş geçişlerini dışla: uçuş başı ve sonundan 5 s
+        ok = np.ones(len(tb), bool)
+        for a, b in A.flights: ok &= ~((tb >= a) & (tb < a + 5)) & ~((tb > b - 5) & (tb <= b))
+        h = float(np.nanmedian(th[m][ok])) if ok.sum() >= 20 else float(np.nanmedian(th[m]))
+        if not (0.05 < h < 0.98): return out
+        # CTUN.ThO itki cinsindendir (MOT_THST_EXPO doğrusallaştırması PWM'e çevirirken uygulanır): itki/ağırlık ≈ 1/ThO
+        tw = 1.0 / h
+        phys.update(hover_thr=round(h, 3), tw=round(tw, 2))
+        b = L.s('BAT')
+        if b.has('Volt') and b.has('Curr') and np.nanmax(b['Curr']) > 0.5:
+            mb = A.in_flight(b['t'])
+            if mb.sum() > 20:
+                W = float(np.nanmedian(b['Volt'][mb] * b['Curr'][mb])); I = float(np.nanmedian(b['Curr'][mb]))
+                phys.update(hover_w=round(W), hover_a=round(I, 1))
+                cap = float(P.get('BATT_CAPACITY', 0) or 0)
+                if cap > 0 and I > 0.5:
+                    phys['endurance_min'] = round(cap / 1000.0 * 0.8 / I * 60, 1)   # %80 kullanılabilir kapasite
+        if tw < 1.45:
+            out.append(('motors', _F('tw_low', tw=round(tw, 2), h=round(h * 100)), 25))
+        elif tw < 1.8:
+            out.append(('motors', _F('tw_marginal', tw=round(tw, 2), h=round(h * 100)), 8))
+    elif A.vehicle == 'Plane':
+        m = _fw_mask(A, t) & (th > 0.05)
+        if ct.has('CRt'): m &= np.abs(ct['CRt']) < 1.0
+        if m.sum() >= 60:
+            h = float(np.nanmedian(th[m])); phys['cruise_thr'] = round(h, 3)
+            if h > 0.8: out.append(('motors', _F('fw_thr_high', v=round(h * 100)), 10))
+    if phys:
+        A.physics = phys
+        A.facts.update({('phys_' + k): v for k, v in phys.items()})
+    return out
+
+
 # ------------------------------------------------------------------ titreşim frekansı
 def vib_freq(A):
     L = A.L; P = L.params; im = L.s('IMU')
@@ -186,8 +235,8 @@ def data_gaps(A):
 
 
 def run(A):
-    A.surf_rev = None; A.bat_ir = None; A.vib_peak = None
-    for fn in (surfaces, airspeed, battery_ir, vib_freq):
+    A.surf_rev = None; A.bat_ir = None; A.vib_peak = None; A.physics = {}
+    for fn in (surfaces, airspeed, battery_ir, power_budget, vib_freq):
         try:
             for dom, f, pen in fn(A):
                 _add(A, dom, f, pen)

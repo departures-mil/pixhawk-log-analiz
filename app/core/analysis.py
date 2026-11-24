@@ -57,6 +57,7 @@ class Analysis(ExtMixin):
         self.why = {}
         self.extras = extras
         self.anomalies = []      # ML anomali pencereleri
+        self.baseline = []       # aynı aracın geçmişine göre alışılmadık ölçümler (arşivle doldurulur)
         self.pilot = {}          # pilot performans ölçütleri
         self.wind = {}           # logdan kestirilen rüzgâr
         self.weather = None      # çevrimiçi hava durumu (sonradan eklenir)
@@ -92,6 +93,12 @@ class Analysis(ExtMixin):
         self._root_cause()
         self._params()
         self._facts()
+        self.facts.update({('phys_' + k): v for k, v in (getattr(self, 'physics', None) or {}).items()})
+        try:
+            from . import baseline
+            baseline.collect(self)
+        except Exception:
+            pass
         try:
             from . import why
             self.why = why.build(self)
@@ -135,12 +142,16 @@ class Analysis(ExtMixin):
         for t, a in ev:
             if a and cur is None: cur = t
             elif not a and cur is not None: out.append((cur, t)); cur = None
+            elif not a and cur is None and not out: out.append((0.0, t))   # log kurulu hâlde başlamış (LOG_DISARMED=0)
         if cur is not None: out.append((cur, L.duration))
         if not out:
             st = L.s('STAT')
             if st.has('Armed'):
                 a = st['Armed'] > 0.5
                 out = self._runs(st['t'], a)
+        if not out and any(i in (15, 28) for _, i in L.events):
+            # ARMED kaydı yok ama otopilot 'kendiliğinden kuruldu' / 'yerden kalktı' demiş: log kurulu başlamış
+            out = [(0.0, L.duration)]
         self.armed = out
 
     @staticmethod
@@ -201,6 +212,48 @@ class Analysis(ExtMixin):
             elif tf > self.flights[-1][1]:
                 self.flights[-1] = (self.flights[-1][0], tf)
 
+    def _fall(self, f):
+        """Uçuş içinde kontrolsüz düşüş: barometre irtifası ≥8 m'den yere (≤3 m) hızla iner (çok rotorlu/VTOL Q modu
+        ≥5 m/s, uçak ≥10 m/s ortalama) ve ya öncesinde ≥45° tutum sapması ya da düşüşten sonra araç yerde kalır.
+        Normal iniş (QLAND/LAND ~1–3 m/s) bu hıza ulaşmaz."""
+        L = self.L; b = L.s('BARO')
+        if not b.has('Alt'): return None
+        m = (b['t'] >= f[0] - 2) & (b['t'] <= f[1] + 3)
+        if m.sum() < 20: return None
+        t = b['t'][m]; al = b['Alt'][m].astype(float)
+        ref = float(np.nanmedian(b['Alt'][(b['t'] >= f[0] - 5) & (b['t'] <= f[0] + 1)])) if ((b['t'] >= f[0] - 5) & (b['t'] <= f[0] + 1)).sum() else al[0]
+        h = al - ref
+        dt = float(np.median(np.diff(t))) if len(t) > 2 else 0.1
+        k = max(1, int(round(1.0 / max(dt, 1e-3))))
+        hs = np.convolve(h, np.ones(k) / k, mode='same')
+        ground = np.flatnonzero(hs <= 3.0)
+        q = self.vehicle in ('Copter', 'Heli') or self.profile == 'vtol'
+        vmin = 5.0 if q else 10.0
+        best = None
+        for gi in ground:
+            if gi == 0 or hs[gi - 1] <= 3.0: continue        # yalnız yere varış anları
+            tg = t[gi]
+            w = (t >= tg - 6) & (t <= tg)
+            if w.sum() < 5: continue
+            top = float(np.nanmax(hs[w])); itop = int(np.flatnonzero(w)[np.nanargmax(hs[w])])
+            drop = top - float(hs[gi]); dur = max(tg - t[itop], 0.2)
+            if drop < 8 or drop / dur < vmin: continue
+            best = dict(t=float(tg), h=drop, v=drop / dur, t0=float(t[itop])); break
+        if best is None: return None
+        att = L.s('ATT'); ang = roll = pitch = 0.0
+        if att.has('Roll'):
+            wa = (att['t'] >= best['t0'] - 5) & (att['t'] <= best['t'])
+            if wa.any():
+                roll = float(np.nanmax(np.abs(att['Roll'][wa]))); pitch = float(np.nanmax(np.abs(att['Pitch'][wa])))
+                ang = max(roll, pitch)
+        stay = (t > best['t'] + 1) & (t <= best['t'] + 6)
+        stays = stay.sum() > 3 and float(np.nanmax(hs[stay])) < 4
+        if not (ang > 45 or stays): return None
+        # iniş moduna geçip yavaş alçalan normal inişleri ayır: Q/LAND modunda tutum düzgünse düşüş sayma
+        if ang <= 45 and best['v'] < vmin * 1.6: return None
+        best.update(ang=ang, roll=roll, pitch=pitch)
+        return best
+
     def crash_time(self):
         """Otopilotun kendi kırım tespiti (STAT.Crash, ERR 12, 'Crash' mesajı) zamanı."""
         L = self.L; ts = []
@@ -245,6 +298,16 @@ class Analysis(ExtMixin):
                         k = int(np.argmax(ang > lim)); tf = float(at[k])
                         self.flip = (tf, float(np.nanmax(ang[late])))
                         got.append((a0 + min(2.0, (tf - a0) / 2), a1))
+            # otopilotun kendi kalkış algısı (Copter: NOT_LANDED=28 → LAND_COMPLETE=18 / disarm)
+            if self.vehicle in ('Copter', 'Heli'):
+                es = sorted((t, i) for t, i in L.events if a0 - 0.5 <= t <= a1 + 0.5 and i in (28, 18))
+                st0 = None
+                for t, i in es:
+                    if i == 28 and st0 is None: st0 = t
+                    elif i == 18 and st0 is not None:
+                        if t - st0 >= 2.0: got.append((st0, t))
+                        st0 = None
+                if st0 is not None and a1 - st0 >= 2.0: got.append((st0, a1))
             if got:
                 out.append((min(x[0] for x in got), max(x[1] for x in got)))
         return out
@@ -597,6 +660,17 @@ class Analysis(ExtMixin):
                     score += 15; ev.append(F('cr_impact', v=round(float(np.nanmax(v['VibeZ'][w3])))))
             hard = any(x.get('k') in ('cr_stat', 'cr_err', 'cr_msg') for x in ev) or getattr(self, 'flip', None)
             if landed and not hard: score -= 25; ev.append(F('cr_landed'))
+        # Kontrolsüz düşüş: son uçuşta hızlı irtifa kaybı yere kadar sürdü (motorlar yerde dönmeye devam etse de)
+        self.fall = None
+        if self.flights:
+            fl = self._fall(self.flights[-1])
+            if fl is not None:
+                self.fall = fl
+                score += 40; ev.append(F('cr_fall', h=round(fl['h']), v=round(fl['v'], 1), t=fl['t'], a=round(fl['ang'])))
+                if not any(x.get('k') == 'cr_attitude' for x in ev) and fl['ang'] > 45:
+                    score += 20; ev.append(F('cr_attitude', r=round(fl['roll']), p=round(fl['pitch'])))
+                ev[:] = [x for x in ev if x.get('k') != 'cr_landed']
+                if any(x.get('k') == 'cr_landed' for x in ev): score += 25
         # Çok rotorlu: son 10 s içinde yön (yaw) kontrolü kaybı (istenen/gerçek fark >60°, ≥1 s)
         if tr is not None and self.flights and self.vehicle == 'Copter':
             att = L.s('ATT'); last_f = self.flights[-1]
@@ -627,6 +701,12 @@ class Analysis(ExtMixin):
             kind = 'incident'
         else:
             kind = 'normal'
+        # 'sorunlu' kararının derecesi: ciddi (kaza riski/kanıtı) ya da küçük uyarı (tek başına önemsiz sağlık bulgusu)
+        fs = any(r in K.FAILSAFE_REASONS for _, _, _, r in L.modes)
+        crit_err = any(s in (2, 5, 6, 7, 8, 9, 12, 16, 17) and c != 0 for _, s, c in L.errors)
+        crit = {'gps', 'ekf', 'power', 'motors', 'rc', 'control'}
+        serious = score >= 25 or (score > 0 and bool(bad_dom)) or bool(bad_dom & crit) \
+            or len(bad_dom) >= 3 or ((fs or crit_err) and bool(bad_dom))
         # kullanıcının cevabı (uçuş bilgileri formu)
         uc = self.info.get('crashed')
         hard_ev = any(x.get('k') in ('cr_stat', 'cr_err', 'cr_msg', 'cr_flip') for x in ev)
@@ -640,16 +720,22 @@ class Analysis(ExtMixin):
         elif uc == 'no' and kind == 'crash':
             if hard_ev: ev.append(F('cr_user_conflict'))
             else: kind = 'incident'; ev.append(F('cr_user_no'))
-        self.verdict = {'kind': kind, 'score': max(0, min(100, score)), 'evidence': ev}
+        self.verdict = {'kind': kind, 'score': max(0, min(100, score)), 'evidence': ev,
+                        'severity': ('serious' if serious or uc == 'hard' else 'minor') if kind == 'incident' else None}
         # öğrenen ikinci görüş (uzman etiketli gerçek loglarla eğitildi); yalnız ölçülmüş yararı varsa sınır kararı düzeltir
         self.ml_p = None
         try:
             from . import mlmodel
             self.ml_p = mlmodel.prob({'verdict': self.verdict, 'health': self.health, 'vehicle': self.vehicle})
             if uc not in ('yes', 'no', 'hard'):
-                k2 = mlmodel.adjust(kind, score, self.ml_p)
+                k2 = mlmodel.adjust(kind, score, self.ml_p, self.verdict.get('severity'))
                 if k2 != kind:
-                    self.verdict['kind'] = k2; self.verdict['ml'] = True
+                    self.verdict['ml'] = True
+                    if k2 == 'normal' and self.verdict.get('severity') == 'serious':
+                        self.verdict['severity'] = 'minor'      # bulgular duruyor; ama kaza riski taşımadığı ölçüldü → küçük uyarı
+                    else:
+                        self.verdict['kind'] = k2
+                        self.verdict['severity'] = 'serious' if k2 == 'incident' else None
         except Exception:
             pass
 
@@ -663,6 +749,8 @@ class Analysis(ExtMixin):
         hard_t = [e['a'].get('t') for e in self.verdict.get('evidence', []) if e['k'] in ('cr_stat', 'cr_err', 'cr_msg', 'cr_flip')
                   and isinstance((e.get('a') or {}).get('t'), (int, float))]
         if hard_t and min(hard_t) > end + 2: end = float(min(hard_t))
+        if getattr(self, 'fall', None) and self.vehicle == 'Plane' and self.fall['t'] < end:
+            end = float(self.fall['t'])   # VTOL: çarpmadan sonra kaldırma motorları yerde dönmeye devam edebilir
         win0 = max(0, end - 240) if self.verdict.get('kind') == 'crash' else (self.flights[0][0] if self.flights else 0)
         cands = []
         def first(cond_list):
@@ -688,6 +776,11 @@ class Analysis(ExtMixin):
                 amin = P.get('AIRSPEED_MIN', P.get('ARSPD_FBW_MIN', 9))
                 relh = np.interp(src['t'], self.track['t'], self.track['rel']) if self.track is not None else np.full(len(src['t']), 99.0)
                 m = (src['t'] >= win0) & (src['t'] <= end - 1) & (src[f_] < amin * 0.75) & self.in_flight(src['t']) & (relh > 8)
+                qt = L.s('QTUN')        # VTOL: dikey uçuşta (QTUN kaydı akarken) düşük hava hızı stall değildir
+                if qt.has('ThO') and len(qt['ThO']) > 5:
+                    qi = np.searchsorted(qt['t'], src['t']); qi = np.clip(qi, 1, len(qt['t']) - 1)
+                    near = np.minimum(np.abs(qt['t'][qi] - src['t']), np.abs(qt['t'][qi - 1] - src['t'])) < 1.0
+                    m &= ~near
                 lastph = [p for p in self.phases if p['name'] == 'landing' and p['t0'] > win0]
                 if lastph and self.verdict.get('kind') != 'crash': m &= src['t'] < lastph[-1]['t0']
                 if m.any(): cands.append(('stall', float(src['t'][np.argmax(m)])))
@@ -726,13 +819,20 @@ class Analysis(ExtMixin):
         # Motor / ESC / pervane (çok rotorlu): bir motor tavana dayanırken diğerleri düşük kalır
         # ya da araç kalkıştan hemen sonra devrilir (yanlış motor sırası/yönü, pervane)
         tm = None
-        if self.profile in ('copter', 'heli') or self.vehicle == 'Copter':
+        if self.profile in ('copter', 'heli', 'vtol') or self.vehicle == 'Copter':
             o = L.s('RCOU'); mx, mn = self._mot_limits()
-            fr = int(P.get('FRAME_CLASS', 1) or 1)
-            nm = {1: 4, 2: 6, 3: 8, 4: 8, 5: 6, 7: 3, 10: 2, 12: 12, 14: 10}.get(fr, 4)   # FRAME_CLASS → motor sayısı
-            ch = [f'C{i}' for i in range(1, nm + 1) if o.has(f'C{i}')]
+            mch = self.motor_channels(); ch = [c for _, c in mch]; mno = {c: n for n, c in mch}
             if len(ch) >= 3:
                 w = (o['t'] >= max(win0, end - 15)) & (o['t'] <= end + 1.5)   # doygunluk devrilmeyle aynı anda başlayabilir
+                if self.vehicle == 'Plane' and not getattr(self, 'fall', None):
+                    w &= False                  # VTOL: dikey uçuşta tek motor doygunluğu (yön kontrolü) olağandır; yalnız düşüşle birlikte ara
+                if self.vehicle == 'Plane':     # VTOL: kaldırma motorları yalnız dikey uçuşta (QTUN akarken) anlamlı
+                    qt = L.s('QTUN')
+                    if qt.has('ThO') and len(qt['ThO']) > 5:
+                        qi = np.clip(np.searchsorted(qt['t'], o['t']), 1, len(qt['t']) - 1)
+                        w &= np.minimum(np.abs(qt['t'][qi] - o['t']), np.abs(qt['t'][qi - 1] - o['t'])) < 1.0
+                    else:
+                        w &= False
                 if w.sum() > 5:
                     M = np.vstack([o[c][w] for c in ch]); tt = o['t'][w]
                     # gözlenen tavan (MOT_SPIN_MAX'tan da düşük bir sınır olabilir: ör. PWM aralığı farklı kalibre edilmiş)
@@ -745,14 +845,27 @@ class Analysis(ExtMixin):
                     rs = [r for r in self._runs(tt, sat, 0.4) if r[0] <= end + 0.3][:1]
                     rf = [r for r in self._runs(tt, floor, 1.0) if r[0] <= end][:1]
                     runs = rs + rf
+                    if not runs and self.verdict.get('kind') == 'crash':
+                        # kronik zayıf motor: kırımdan önceki 10 s boyunca aynı motor ötekilerden belirgin yüksek çalışıyor
+                        q = (tt >= end - 10) & (tt <= end - 0.5)
+                        if q.sum() > 10:
+                            Mq = M[:, q]; am = np.argmax(Mq, axis=0)
+                            k0 = int(np.bincount(am, minlength=len(ch)).argmax())
+                            others = np.delete(Mq, k0, axis=0)
+                            gap = float(np.nanmean(Mq[k0]) - np.nanmean(others))
+                            if (am == k0).mean() >= 0.7 and gap >= 130 and np.nanmean(others) > mn + 150:
+                                tm = float(tt[q][0])
+                                self.motor_fault = {'kind': 'weak', 'm': mno[ch[k0]], 'o': None, 't': tm, 'gap': round(gap)}
                     if runs:
                         tm = float(min(r[0] for r in runs))
                         k = int(np.searchsorted(tt, tm)); k = min(k, len(tt) - 1)
                         col = M[:, k]
+                        kw = (tt >= tm) & (tt <= tm + 1.5)
+                        colw = np.nanmean(M[:, kw], axis=1) if kw.sum() > 1 else col   # dengeleyen motor birkaç örnek sonra tabana iner
                         if rs and rs[0][0] == tm:      # tavandaki motor itki kaybediyor; tabandaki onu dengeliyor
-                            self.motor_fault = {'kind': 'sat', 'm': int(ch[int(np.argmax(col))][1:]), 'o': int(ch[int(np.argmin(col))][1:]), 't': tm}
+                            self.motor_fault = {'kind': 'sat', 'm': mno[ch[int(np.argmax(col))]], 'o': mno[ch[int(np.argmin(colw))]], 't': tm}
                         else:                           # tabana çekilen motorun karşısındaki (en yüksek) motor zayıf
-                            self.motor_fault = {'kind': 'floor', 'm': int(ch[int(np.argmax(col))][1:]), 'o': int(ch[int(np.argmin(col))][1:]), 't': tm}
+                            self.motor_fault = {'kind': 'floor', 'm': mno[ch[int(np.argmax(col))]], 'o': mno[ch[int(np.argmin(col))]], 't': tm}
             # ESC telemetrisi: bir motorun devri diğerleri dönerken birden sıfıra iner (motor/ESC durması, pervane kopması)
             te_ = self._esc_stop(max(win0, end - 15), end - 0.2)
             if te_ is not None:
@@ -802,14 +915,31 @@ class Analysis(ExtMixin):
         self.root = {'cause': primary[0], 't': primary[1], 'chain': chain, 'prevent': primary[0], 'motor': mf,
                      'others': [c[0] for c in cands if c[0] != primary[0]]}
 
+    def motor_channels(self):
+        """[(motor_no, 'Cn')]: hangi RCOU kanalının hangi motor olduğu (SERVOn_FUNCTION 33–40 = motor 1–8, 82–85 = 9–12).
+        Parametre yoksa (eski sürümler) FRAME_CLASS'a göre C1..Cn."""
+        P = self.L.params; o = self.L.s('RCOU'); out = []
+        for n in range(1, 17):
+            f = P.get(f'SERVO{n}_FUNCTION', P.get(f'RC{n}_FUNCTION'))
+            if f is None: continue
+            f = int(f)
+            m = f - 32 if 33 <= f <= 40 else (f - 73 if 82 <= f <= 85 else None)
+            if m and o.has(f'C{n}'): out.append((m, f'C{n}'))
+        if len(out) >= 3:
+            return sorted(out)
+        fr = int(P.get('FRAME_CLASS', 1) or 1)
+        nm = {1: 4, 2: 6, 3: 8, 4: 8, 5: 6, 7: 3, 10: 2, 12: 12, 14: 10}.get(fr, 4)   # FRAME_CLASS → motor sayısı
+        return [(i, f'C{i}') for i in range(1, nm + 1) if o.has(f'C{i}')]
+
     def _mot_limits(self):
         """Motor çıkışının gerçek üst/alt sınırı (PWM). ArduCopter çıkışı MOT_SPIN_MAX/MIN ile sınırlar:
         üst = PWM_MIN + (PWM_MAX-PWM_MIN)·SPIN_MAX. Doygunluk bu değere göre aranır (MOT_PWM_MAX'a göre değil)."""
         P = self.L.params
-        lo = float(P.get('MOT_PWM_MIN', 0) or 0) or float(P.get('RC3_MIN', 0) or 0) or 1000.0
-        hi = float(P.get('MOT_PWM_MAX', 0) or 0) or float(P.get('RC3_MAX', 0) or 0) or 2000.0
+        q = 'Q_M_' if self.vehicle == 'Plane' else 'MOT_'      # VTOL (QuadPlane) kaldırma motorları Q_M_* ile sınırlanır
+        lo = float(P.get(q + 'PWM_MIN', 0) or 0) or float(P.get('RC3_MIN', 0) or 0) or 1000.0
+        hi = float(P.get(q + 'PWM_MAX', 0) or 0) or float(P.get('RC3_MAX', 0) or 0) or 2000.0
         if hi - lo < 300: lo, hi = 1000.0, 2000.0
-        smax = float(P.get('MOT_SPIN_MAX', 0.95) or 0.95); smin = float(P.get('MOT_SPIN_MIN', 0.15) or 0.15)
+        smax = float(P.get(q + 'SPIN_MAX', 0.95) or 0.95); smin = float(P.get(q + 'SPIN_MIN', 0.15) or 0.15)
         if not 0.5 < smax <= 1: smax = 0.95
         if not 0 <= smin < 0.5: smin = 0.15
         return lo + (hi - lo) * smax, lo + (hi - lo) * smin

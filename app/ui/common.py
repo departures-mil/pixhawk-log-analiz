@@ -9,7 +9,7 @@ from .i18n import t, lang
 
 # Görünüm v1.1.0'dan beri ortak çekirdekte (fccore.style + app/ui/kabuk.py: 'klasik' şema = eski renkler).
 
-VERDICT_COL = {'normal': '#16A34A', 'incident': '#D97706', 'crash': '#DC2626', 'noflight': '#64748B'}
+VERDICT_COL = {'normal': '#16A34A', 'incident': '#D97706', 'incident_minor': '#CA8A04', 'crash': '#DC2626', 'noflight': '#64748B'}
 STATUS_COL = {'good': '#16A34A', 'warn': '#D97706', 'bad': '#DC2626'}
 
 

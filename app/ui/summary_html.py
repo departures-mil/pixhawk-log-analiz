@@ -21,7 +21,7 @@ def _facts(A, lg):
 def build(A, lg):
     d = 'rtl' if lg == 'ar' else 'ltr'
     al = 'right' if lg == 'ar' else 'left'
-    v = A.verdict.get('kind', 'normal'); vc = VERDICT_COL.get(v, '#64748B')
+    v = texts.vkey(A.verdict); vc = VERDICT_COL.get(v, '#64748B')
     sc = A.overall; scc = STATUS_COL['good' if sc >= 80 else ('warn' if sc >= 55 else 'bad')]
     h = [f'<div dir="{d}" style="text-align:{al}">']
     h.append(f'<table width="100%" cellpadding="12" cellspacing="0"><tr>'
@@ -54,6 +54,14 @@ def build(A, lg):
         h.append('</td></tr></table>')
     else:
         h.append('<p><a href="fb:why" style="color:#86EFAC">' + E(_fbt(lg)) + '</a></p>')
+    # Aynı aracın geçmişiyle karşılaştırma
+    try:
+        from ..core import baseline
+        bh, bl = baseline.render(A, lg)
+    except Exception:
+        bh, bl = None, []
+    if bl:
+        h.append(f'<p><b style="color:#FBBF24">📈 {E(bh)}</b><ul>' + ''.join(f'<li>{E(x)}</li>' for x in bl) + '</ul></p>')
     # Sağlık
     h.append(f'<h3 style="color:#93C5FD">{E(R("summary", lg))}</h3><table width="100%" cellpadding="5" cellspacing="2">')
     for k, x in A.health.items():

@@ -100,6 +100,9 @@ W = {
     'n_mot_sat': ('Motor {m} itki kaybetti: komutu tavana dayandı, karşısındaki motor {o} dengelemek için tabana indi. Motor {m}, ESC\'si, kablosu ve pervanesini kontrol edin.',
                   'Motor {m} lost thrust: its command hit the ceiling while the opposite motor {o} was driven to the floor to compensate. Check motor {m}, its ESC, wiring and propeller.',
                   'فقد المحرك {m} الدفع: وصل أمره إلى الحد الأعلى بينما خُفِّض المحرك المقابل {o} إلى الحد الأدنى للتعويض. افحص المحرك {m} ومنظم سرعته وأسلاكه ومروحته.'),
+    'n_mot_weak': ('Motor {m} kırımdan önceki saniyelerde diğerlerinden sürekli ~{g} µs daha yüksek çalıştı: o kolda itki eksik (motor/ESC, pervane, kol bükülmesi ya da motor eğikliği). Motor {m}, pervanesi ve kolu kontrol edilmeli.',
+                  'In the seconds before the crash motor {m} ran consistently ~{g} µs higher than the others: that arm is short of thrust (motor/ESC, propeller, bent arm or tilted motor). Check motor {m}, its propeller and arm.',
+                  'في الثواني التي سبقت التحطم عمل المحرك {m} باستمرار أعلى من غيره بنحو {g} ميكروثانية: هذا الذراع ينقصه الدفع (المحرك/منظم السرعة، المروحة، انحناء الذراع أو ميلان المحرك). افحص المحرك {m} ومروحته وذراعه.'),
     'n_mot_esc': ('ESC telemetrisi: motor {m} diğerleri dönerken durdu (devir sıfıra indi). ESC {m} (senkron kaçırma, aşırı ısınma, besleme) ve motor {m} kontrol edilmeli.',
                   'ESC telemetry: motor {m} stopped (RPM dropped to zero) while the others kept spinning. Check ESC {m} (desync, overheating, supply) and motor {m}.',
                   'قياس منظم السرعة: توقف المحرك {m} (انخفضت السرعة إلى الصفر) بينما استمرت المحركات الأخرى. افحص منظم السرعة {m} (فقدان التزامن، السخونة، التغذية) والمحرك {m}.'),
@@ -128,8 +131,31 @@ def _end_t(A):
     ev = A.verdict.get('evidence') or []
     ts = [e['a']['t'] for e in ev if e.get('k') in HARD and isinstance(e.get('a'), dict) and 't' in e['a']]
     if ts: return min(ts)
+    fl = getattr(A, 'fall', None)
+    if fl: return fl['t']                     # kontrolsüz düşüşte çarpma anı
     if A.flights: return A.flights[-1][1]
     return A.L.duration
+
+
+_CAL = None
+
+
+def calibrate(raw, cause):
+    """Ham güveni, uzman etiketli gerçek kazalarda ölçülmüş isabet oranına çevir (app/data/calib.json,
+    tools_data/calibrate.py ile leave-one-out doğrulanır). Dosya yoksa ham değer döner."""
+    global _CAL
+    if _CAL is None:
+        try:
+            import json, os
+            _CAL = json.load(open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'calib.json'), encoding='utf-8'))
+        except Exception:
+            _CAL = {}
+    if not _CAL: return raw
+    import math
+    lg = lambda p: math.log(min(max(p, 1e-3), 1 - 1e-3) / (1 - min(max(p, 1e-3), 1 - 1e-3)))
+    pr = _CAL.get('prior', {}).get(cause, _CAL.get('global', 0.5))
+    z = _CAL['a'] * lg(raw) + _CAL['c'] * lg(pr) + _CAL['b']
+    return max(0.1, min(0.95, 1 / (1 + math.exp(-z))))
 
 
 def build(A):
@@ -167,6 +193,7 @@ def build(A):
     mf = root.get('motor') or {}
     if c == 'motor' and mf.get('m'):
         if mf.get('kind') == 'esc': notes.insert(0, ('n_mot_esc', {'m': mf['m']}))
+        elif mf.get('kind') == 'weak': notes.insert(0, ('n_mot_weak', {'m': mf['m'], 'g': mf.get('gap', '')}))
         elif mf.get('o'): notes.insert(0, ('n_mot_sat', {'m': mf['m'], 'o': mf['o']}))
         conf += 0.05
     if getattr(A, 'surf_rev', None) and c == 'control':
@@ -212,10 +239,12 @@ def build(A):
     if dom and A.health.get(dom):
         ev_items += list(A.health[dom].get('findings') or [])[:3]
     conf = max(0.2, min(0.97, conf))
+    conf_raw = conf
+    conf = calibrate(conf, c)
     wxs = {k: wx.get(k) for k in ('time_utc', 'temp', 'rh', 'wind', 'gust', 'dir', 'precip', 'cloud', 't')} if wx else {}
     mlp = getattr(A, 'ml_p', None)
     if mlp is not None: notes.append(('n_ml', {'p': int(round(mlp * 100))}))
-    return {'wx': wxs, 'wx_event': bool(getattr(A, 'weather_event', None)), 'kind': v, 'cause': c, 'tc': float(root.get('t', _end_t(A)) or 0), 'te': float(_end_t(A)), 'conf': round(conf, 2),
+    return {'wx': wxs, 'wx_event': bool(getattr(A, 'weather_event', None)), 'kind': v, 'cause': c, 'tc': float(root.get('t', _end_t(A)) or 0), 'te': float(_end_t(A)), 'conf': round(conf, 2), 'conf_raw': round(conf_raw, 2),
             'hard': hard, 'evidence': ev_items, 'chain': root.get('chain') or [], 'notes': notes, 'others': others}
 
 
@@ -291,8 +320,50 @@ def ai_explain(A, settings, usage, lang, tfmt):
            'health': {k: {'score': h['score'], 'status': h['status']} for k, h in A.health.items()},
            'facts': {k: v for k, v in A.facts.items() if isinstance(v, (int, float, str))}}
     import json
+    ctx['measurements'] = grounding(A, tfmt)
     prompt = (f'Write in {LANG_NAME.get(lang, "Turkish")} a clear, decisive "Why did it crash?" explanation for this ArduPilot flight. '
-              'Start with ONE sentence verdict (cause + time). Then 3-6 bullet points of evidence with times, then the most likely physical '
+              'Start with ONE sentence verdict (cause + time). Then 3-6 bullet points of evidence, then the most likely physical '
               'failure, then numbered fix steps with exact parameter names. If the data is inconclusive say so and say what to check. '
-              'Max 250 words. No tables.\n' + json.dumps(ctx, ensure_ascii=False, default=str)[:12000])
-    return AI.chat(settings, usage, 'You are a senior ArduPilot accident investigator.', prompt, max_tokens=1500)
+              'Max 250 words. No tables.\n'
+              'GROUNDING RULES: use ONLY the numbers, times and messages in the JSON below. Every evidence bullet must end with its '
+              'source in square brackets, e.g. [RCOU.C8 = 1949 µs @ 22:16] or [MSG @ 22:21 "EKF variance"]. Never invent a value, '
+              'time, motor number or parameter value that is not in the data; if something is unknown, write "not in log".\n'
+              + json.dumps(ctx, ensure_ascii=False, default=str)[:14000])
+    out = AI.chat(settings, usage, 'You are a senior ArduPilot accident investigator. You only state facts present in the supplied data.',
+                  prompt, max_tokens=1500)
+    return _check_grounding(out, ctx)
+
+
+def grounding(A, tfmt):
+    """Yapay zekâya verilen ölçüm özeti: kırım anı çevresindeki gerçek değerler (zaman + kaynak alan)."""
+    import numpy as np
+    L = A.L; te = _end_t(A); out = []
+    def add(msg, fld, t0, t1, fn='max'):
+        s = L.s(msg)
+        if not s.has(fld): return
+        m = (s['t'] >= t0) & (s['t'] <= t1)
+        if not m.any(): return
+        x = s[fld][m]; k = int(np.nanargmax(x) if fn == 'max' else np.nanargmin(x))
+        out.append({'src': f'{msg}.{fld}', fn: round(float(x[k]), 2), 'at': tfmt(float(s['t'][m][k]))})
+    w0 = te - 15
+    for f in ('Roll', 'Pitch'): add('ATT', f, w0, te + 2)
+    add('BARO', 'Alt', w0, te + 2, 'min'); add('BAT', 'Volt', w0, te + 2, 'min'); add('BAT', 'Curr', w0, te + 2)
+    add('POWR', 'Vcc', w0, te + 2, 'min'); add('VIBE', 'VibeZ', w0, te + 2)
+    for c in [c for _, c in A.motor_channels()] if hasattr(A, 'motor_channels') else []:
+        add('RCOU', c, w0, te + 2); add('RCOU', c, w0, te + 2, 'min')
+    msgs = [{'at': tfmt(t), 'text': x} for t, x in L.texts if w0 - 45 <= t <= te + 3][:25]
+    modes = [{'at': tfmt(t), 'mode': n, 'reason': r} for t, n, _, r in L.modes if w0 - 60 <= t <= te + 3]
+    return {'crash_time': tfmt(te), 'values': out, 'messages': msgs, 'modes': modes,
+            'motor_fault': (A.root or {}).get('motor'), 'physics': getattr(A, 'physics', None) or {}}
+
+
+def _check_grounding(text, ctx):
+    """Yanıttaki saat damgalarını veriyle karşılaştır; veride olmayan zamanlar varsa yanıtın sonuna uyarı ekle."""
+    if not text: return text
+    import re, json
+    blob = json.dumps(ctx, ensure_ascii=False, default=str)
+    times = set(re.findall(r'\b\d{1,2}:\d{2}(?::\d{2})?(?:\.\d)?\b', text))
+    bad = [t for t in times if t not in blob]
+    if bad:
+        text += '\n\n⚠ ' + ', '.join(sorted(bad)[:5]) + ' — log verisinde bulunamadı / not found in the log data.'
+    return text
