@@ -49,8 +49,11 @@ def build(A, lg):
             h.append(f'<b style="color:#FBBF24">{E(y["ctx_h"])}</b><ul>' + ''.join(f'<li>{E(n)}</li>' for n in y['notes']) + '</ul>')
         if y['prevent']: h.append(f'<b style="color:#86EFAC">{E(y["todo_h"])}</b><br>{E(y["prevent"])}')
         h.append('<br><a href="ai:why" style="color:#60A5FA">🤖 ' + E(R('why_ai', lg)) + '</a> &nbsp; '
-                 '<a href="go:solver" style="color:#60A5FA">🩺 ' + E(R('why_solver', lg)) + '</a>')
+                 '<a href="go:solver" style="color:#60A5FA">🩺 ' + E(R('why_solver', lg)) + '</a> &nbsp; '
+                 '<a href="fb:why" style="color:#86EFAC">' + E(_fbt(lg)) + '</a>')
         h.append('</td></tr></table>')
+    else:
+        h.append('<p><a href="fb:why" style="color:#86EFAC">' + E(_fbt(lg)) + '</a></p>')
     # Sağlık
     h.append(f'<h3 style="color:#93C5FD">{E(R("summary", lg))}</h3><table width="100%" cellpadding="5" cellspacing="2">')
     for k, x in A.health.items():
@@ -149,3 +152,8 @@ def lesson_html(key, lg):
             f'<td bgcolor="#14532D" width="33%"><b>{E(R("th_normal", lg))}</b><br>{E(L["normal"][i])}</td>'
             f'<td bgcolor="#713F12" width="33%"><b>{E(R("th_warn", lg))}</b><br>{E(L["warn"][i])}</td>'
             f'<td bgcolor="#7F1D1D"><b>{E(R("th_danger", lg))}</b><br>{E(L["danger"][i])}</td></tr></table></div>')
+
+
+def _fbt(lg):
+    from .i18n8 import U8
+    return U8['fb_link'][{'tr': 0, 'en': 1, 'ar': 2}.get(lg, 0)]

@@ -1,653 +1,1765 @@
 {
- "_doc": "Expert labels: hand-read from staff/expert forum replies (threads.json.gz). cause=None means crash without an expert-agreed cause.",
- "labels": {
-  "10063": {
-   "label": "crash",
-   "cause": "compass",
-   "alt": [
-    "gps"
-   ]
-  },
-  "101181": {
-   "label": "crash",
-   "cause": "vibration",
-   "alt": [
-    "gps",
-    "ekf"
-   ]
-  },
-  "101517": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": [
-    "vibration"
-   ]
-  },
-  "101553": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "101722": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "102276": {
-   "label": "crash",
-   "cause": null,
-   "alt": []
-  },
-  "102402": {
-   "label": "crash",
-   "cause": "control",
-   "alt": []
-  },
-  "103076": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "103213": {
-   "label": "crash",
-   "cause": "control",
-   "alt": [
-    "motor"
-   ]
-  },
-  "104391": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "107868": {
-   "label": "crash",
-   "cause": "compass",
-   "alt": []
-  },
-  "108349": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "110997": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "112001": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "115513": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "115971": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "11638": {
-   "exclude": true,
-   "note": "FC crash on ground"
-  },
-  "117787": {
-   "label": "crash",
-   "cause": "control",
-   "alt": []
-  },
-  "118356": {
-   "label": "crash",
-   "cause": "power",
-   "alt": []
-  },
-  "118894": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": [
-    "vibration"
-   ]
-  },
-  "120018": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "121201": {
-   "label": "crash",
-   "cause": "control",
-   "alt": []
-  },
-  "121455": {
-   "label": "crash",
-   "cause": "control",
-   "alt": []
-  },
-  "121620": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": []
-  },
-  "122147": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "122473": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "125310": {
-   "label": "crash",
-   "cause": "compass",
-   "alt": [
-    "motor",
-    "gps"
-   ]
-  },
-  "12677": {
-   "label": "crash",
-   "cause": null,
-   "alt": []
-  },
-  "126920": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "12788": {
-   "label": "crash",
-   "cause": null,
-   "alt": []
-  },
-  "12892": {
-   "label": "crash",
-   "cause": null,
-   "alt": []
-  },
-  "130954": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "131480": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "132485": {
-   "label": "crash",
-   "cause": "control",
-   "alt": []
-  },
-  "133605": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": []
-  },
-  "133637": {
-   "label": "crash",
-   "cause": "control",
-   "alt": []
-  },
-  "133895": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "135472": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": []
-  },
-  "135782": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": [
-    "power"
-   ]
-  },
-  "137474": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": []
-  },
-  "137647": {
-   "label": "crash",
-   "cause": "control",
-   "alt": []
-  },
-  "137901": {
-   "label": "crash",
-   "cause": "compass",
-   "alt": []
-  },
-  "137946": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "137978": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "138968": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": [
-    "compass"
-   ]
-  },
-  "140136": {
-   "label": "crash",
-   "cause": null,
-   "alt": []
-  },
-  "141437": {
-   "label": "crash",
-   "cause": "radio",
-   "alt": []
-  },
-  "141829": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "142142": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": [
-    "power"
-   ]
-  },
-  "142574": {
-   "label": "crash",
-   "cause": "control",
-   "alt": []
-  },
-  "142695": {
-   "label": "crash",
-   "cause": null,
-   "alt": []
-  },
-  "142836": {
-   "label": "crash",
-   "cause": "power",
-   "alt": []
-  },
-  "143330": {
-   "label": "crash",
-   "cause": "control",
-   "alt": []
-  },
-  "143577": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": []
-  },
-  "144973": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "145555": {
-   "exclude": true,
-   "note": "no crash"
-  },
-  "145787": {
-   "exclude": true,
-   "note": "wrong log"
-  },
-  "15863": {
-   "label": "crash",
-   "cause": null,
-   "alt": []
-  },
-  "17024": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "17161": {
-   "label": "crash",
-   "cause": null,
-   "alt": []
-  },
-  "18540": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": []
-  },
-  "21863": {
-   "label": "crash",
-   "cause": "vibration",
-   "alt": []
-  },
-  "23148": {
-   "label": "crash",
-   "cause": "power",
-   "alt": []
-  },
-  "25966": {
-   "label": "crash",
-   "cause": "vibration",
-   "alt": [
-    "radio"
-   ]
-  },
-  "26675": {
-   "label": "crash",
-   "cause": "compass",
-   "alt": [
-    "gps"
-   ]
-  },
-  "34453": {
-   "label": "crash",
-   "cause": "control",
-   "alt": []
-  },
-  "37003": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": []
-  },
-  "37800": {
-   "label": "crash",
-   "cause": "power",
-   "alt": []
-  },
-  "39705": {
-   "label": "crash",
-   "cause": "ekf",
-   "alt": [
-    "power"
-   ]
-  },
-  "41509": {
-   "label": "crash",
-   "cause": null,
-   "alt": []
-  },
-  "42085": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": []
-  },
-  "42115": {
-   "label": "crash",
-   "cause": "control",
-   "alt": [
-    "motor"
-   ]
-  },
-  "42527": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": []
-  },
-  "42843": {
-   "label": "crash",
-   "cause": "control",
-   "alt": []
-  },
-  "44042": {
-   "label": "crash",
-   "cause": null,
-   "alt": []
-  },
-  "44903": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": [
-    "radio"
-   ]
-  },
-  "46644": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": [
-    "control"
-   ]
-  },
-  "48069": {
-   "label": "crash",
-   "cause": "control",
-   "alt": []
-  },
-  "54194": {
-   "label": "crash",
-   "cause": "ekf",
-   "alt": []
-  },
-  "54470": {
-   "label": "crash",
-   "cause": "control",
-   "alt": [
-    "ekf"
-   ]
-  },
-  "5457": {
-   "label": "crash",
-   "cause": null,
-   "alt": []
-  },
-  "55749": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": []
-  },
-  "56960": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": []
-  },
-  "57400": {
-   "label": "crash",
-   "cause": "power",
-   "alt": []
-  },
-  "64684": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "66230": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": []
-  },
-  "66822": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "67153": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "68371": {
-   "label": "crash",
-   "cause": "vibration",
-   "alt": [
-    "gps",
-    "radio"
-   ]
-  },
-  "69409": {
-   "label": "crash",
-   "cause": "radio",
-   "alt": [
-    "vibration"
-   ]
-  },
-  "69983": {
-   "label": "crash",
-   "cause": "control",
-   "alt": [
-    "battery"
-   ]
-  },
-  "73403": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "74509": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": []
-  },
-  "75345": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": []
-  },
-  "76391": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": []
-  },
-  "76588": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": [
-    "control"
-   ]
-  },
-  "78394": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "78506": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "8079": {
-   "label": "crash",
-   "cause": "power",
-   "alt": []
-  },
-  "81170": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "81825": {
-   "label": "crash",
-   "cause": "control",
-   "alt": []
-  },
-  "82934": {
-   "label": "crash",
-   "cause": "control",
-   "alt": []
-  },
-  "83297": {
-   "label": "crash",
-   "cause": "power",
-   "alt": []
-  },
-  "83521": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": []
-  },
-  "85880": {
-   "label": "crash",
-   "cause": "ekf",
-   "alt": []
-  },
-  "87171": {
-   "label": "crash",
-   "cause": null,
-   "alt": []
-  },
-  "89501": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "90207": {
-   "label": "crash",
-   "cause": "vibration",
-   "alt": []
-  },
-  "90984": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "92858": {
-   "label": "crash",
-   "cause": "vibration",
-   "alt": [
-    "motor"
-   ]
-  },
-  "93323": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "94084": {
-   "label": "crash",
-   "cause": "control",
-   "alt": []
-  },
-  "96429": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": [
-    "control"
-   ]
-  },
-  "97192": {
-   "label": "crash",
-   "cause": "power",
-   "alt": []
-  },
-  "97318": {
-   "label": "crash",
-   "cause": null,
-   "alt": []
-  },
-  "98578": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  },
-  "98768": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": []
-  },
-  "99897": {
-   "label": "crash",
-   "cause": "motor",
-   "alt": [
-    "control"
-   ]
-  },
-  "99978": {
-   "label": "crash",
-   "cause": "control",
-   "alt": [
-    "stall"
-   ]
-  },
-  "99997": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
-  }
- }
+"_doc": "Expert labels: hand-read from staff/expert forum replies (threads.json.gz). cause=None means crash without an expert-agreed cause.",
+"labels": {
+"10063": {
+"label": "crash",
+"cause": "compass",
+"alt": [
+"gps"
+]
+},
+"101181": {
+"label": "crash",
+"cause": "vibration",
+"alt": [
+"gps",
+"ekf"
+]
+},
+"101517": {
+"label": "crash",
+"cause": "motor",
+"alt": [
+"vibration"
+]
+},
+"101553": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"101722": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"102276": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"102402": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"103076": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"103213": {
+"label": "crash",
+"cause": "control",
+"alt": [
+"motor"
+]
+},
+"104391": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"107868": {
+"label": "crash",
+"cause": "compass",
+"alt": []
+},
+"108349": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"110997": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"112001": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"115513": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"115971": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"11638": {
+"exclude": true,
+"note": "FC crash on ground"
+},
+"117787": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"118356": {
+"label": "crash",
+"cause": "power",
+"alt": []
+},
+"118894": {
+"label": "crash",
+"cause": "motor",
+"alt": [
+"vibration"
+]
+},
+"120018": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"121201": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"121455": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"121620": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"122147": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"122473": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"125310": {
+"label": "crash",
+"cause": "compass",
+"alt": [
+"motor",
+"gps"
+]
+},
+"12677": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"126920": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"12788": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"12892": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"130954": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"131480": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"132485": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"133605": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"133637": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"133895": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"135472": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"135782": {
+"label": "crash",
+"cause": "motor",
+"alt": [
+"power"
+]
+},
+"137474": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"137647": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"137901": {
+"label": "crash",
+"cause": "compass",
+"alt": []
+},
+"137946": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"137978": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"138968": {
+"label": "crash",
+"cause": "motor",
+"alt": [
+"compass"
+]
+},
+"140136": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"141437": {
+"label": "crash",
+"cause": "radio",
+"alt": []
+},
+"141829": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"142142": {
+"label": "crash",
+"cause": "motor",
+"alt": [
+"power"
+]
+},
+"142574": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"142695": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"142836": {
+"label": "crash",
+"cause": "power",
+"alt": []
+},
+"143330": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"143577": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"144973": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"145555": {
+"exclude": true,
+"note": "no crash"
+},
+"145787": {
+"exclude": true,
+"note": "wrong log"
+},
+"15863": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"17024": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"17161": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"18540": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"21863": {
+"label": "crash",
+"cause": "vibration",
+"alt": []
+},
+"23148": {
+"label": "crash",
+"cause": "power",
+"alt": []
+},
+"25966": {
+"label": "crash",
+"cause": "vibration",
+"alt": [
+"radio"
+]
+},
+"26675": {
+"label": "crash",
+"cause": "compass",
+"alt": [
+"gps"
+]
+},
+"34453": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"37003": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"37800": {
+"label": "crash",
+"cause": "power",
+"alt": []
+},
+"39705": {
+"label": "crash",
+"cause": "ekf",
+"alt": [
+"power"
+]
+},
+"41509": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"42085": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"42115": {
+"label": "crash",
+"cause": "control",
+"alt": [
+"motor"
+]
+},
+"42527": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"42843": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"44042": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"44903": {
+"label": "crash",
+"cause": "motor",
+"alt": [
+"radio"
+]
+},
+"46644": {
+"label": "crash",
+"cause": "motor",
+"alt": [
+"control"
+]
+},
+"48069": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"54194": {
+"label": "crash",
+"cause": "ekf",
+"alt": []
+},
+"54470": {
+"label": "crash",
+"cause": "control",
+"alt": [
+"ekf"
+]
+},
+"5457": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"55749": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"56960": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"57400": {
+"label": "crash",
+"cause": "power",
+"alt": []
+},
+"64684": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"66230": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"66822": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"67153": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"68371": {
+"label": "crash",
+"cause": "vibration",
+"alt": [
+"gps",
+"radio"
+]
+},
+"69409": {
+"label": "crash",
+"cause": "radio",
+"alt": [
+"vibration"
+]
+},
+"69983": {
+"label": "crash",
+"cause": "control",
+"alt": [
+"battery"
+]
+},
+"73403": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"74509": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"75345": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"76391": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"76588": {
+"label": "crash",
+"cause": "motor",
+"alt": [
+"control"
+]
+},
+"78394": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"78506": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"8079": {
+"label": "crash",
+"cause": "power",
+"alt": []
+},
+"81170": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"81825": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"82934": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"83297": {
+"label": "crash",
+"cause": "power",
+"alt": []
+},
+"83521": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"85880": {
+"label": "crash",
+"cause": "ekf",
+"alt": []
+},
+"87171": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"89501": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"90207": {
+"label": "crash",
+"cause": "vibration",
+"alt": []
+},
+"90984": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"92858": {
+"label": "crash",
+"cause": "vibration",
+"alt": [
+"motor"
+]
+},
+"93323": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"94084": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"96429": {
+"label": "crash",
+"cause": "motor",
+"alt": [
+"control"
+]
+},
+"97192": {
+"label": "crash",
+"cause": "power",
+"alt": []
+},
+"97318": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"98578": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"98768": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"99897": {
+"label": "crash",
+"cause": "motor",
+"alt": [
+"control"
+]
+},
+"99978": {
+"label": "crash",
+"cause": "control",
+"alt": [
+"stall"
+]
+},
+"99997": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"100104": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"100406": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"100608": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"100654": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"101399": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"101887": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"102361": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"102892": {
+"label": "crash",
+"cause": "stall",
+"alt": [
+"control"
+]
+},
+"104199": {
+"label": "crash",
+"cause": "ekf",
+"alt": [
+"control"
+]
+},
+"104200": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"104302": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"104689": {
+"label": "crash",
+"cause": "motor",
+"alt": [
+"power"
+]
+},
+"105190": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"105480": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"106850": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"107280": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"107364": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"10843": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"10846": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"109490": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"11083": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"110871": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"113718": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"11448": {
+"label": "crash",
+"cause": "vibration",
+"alt": [
+"compass"
+]
+},
+"11603": {
+"label": "crash",
+"cause": "motor",
+"alt": [
+"vibration"
+]
+},
+"116156": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"117102": {
+"label": "crash",
+"cause": "motor",
+"alt": [
+"control",
+"battery"
+]
+},
+"117575": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"11772": {
+"label": "crash",
+"cause": "motor",
+"alt": [
+"vibration"
+]
+},
+"118420": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"119495": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"119994": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"120372": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"120824": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"121336": {
+"label": "crash",
+"cause": "motor",
+"alt": [
+"gps"
+]
+},
+"121766": {
+"label": "crash",
+"cause": "control",
+"alt": [
+"power"
+]
+},
+"122215": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"123223": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"123961": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"124305": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"124552": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"126196": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"127381": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"12771": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"127834": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"127898": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"128353": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"129502": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"129529": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"130060": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"130716": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"13139": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"131783": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"131797": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"132001": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"132168": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"133146": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"133410": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"133808": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"134177": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"134335": {
+"label": "crash",
+"cause": "compass",
+"alt": []
+},
+"134726": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"134793": {
+"label": "crash",
+"cause": "control",
+"alt": [
+"vibration"
+]
+},
+"134805": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"135053": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"137162": {
+"label": "crash",
+"cause": "power",
+"alt": []
+},
+"137243": {
+"label": "crash",
+"cause": "motor",
+"alt": [
+"power"
+]
+},
+"137712": {
+"label": "crash",
+"cause": "control",
+"alt": [
+"vibration"
+]
+},
+"137873": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"138468": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"138534": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"13868": {
+"label": "crash",
+"cause": "battery",
+"alt": []
+},
+"138733": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"139094": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"139585": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"139836": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"140808": {
+"label": "crash",
+"cause": "gps",
+"alt": [
+"ekf"
+]
+},
+"140907": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"140954": {
+"label": "crash",
+"cause": "battery",
+"alt": []
+},
+"141037": {
+"label": "crash",
+"cause": "control",
+"alt": [
+"radio"
+]
+},
+"141345": {
+"label": "crash",
+"cause": "gps",
+"alt": [
+"ekf"
+]
+},
+"141421": {
+"label": "crash",
+"cause": "gps",
+"alt": []
+},
+"141624": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"141817": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"142096": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"142188": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"142346": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"142364": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"142441": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"142491": {
+"label": "crash",
+"cause": "control",
+"alt": [
+"stall"
+]
+},
+"143010": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"143560": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"143642": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"143931": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"144164": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"144522": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"144690": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"145362": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"145881": {
+"label": "crash",
+"cause": "radio",
+"alt": []
+},
+"15940": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"16617": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"16756": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"17266": {
+"label": "crash",
+"cause": "vibration",
+"alt": []
+},
+"17560": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"17679": {
+"label": "crash",
+"cause": "control",
+"alt": [
+"motor"
+]
+},
+"18074": {
+"label": "crash",
+"cause": "motor",
+"alt": [
+"power"
+]
+},
+"18298": {
+"label": "crash",
+"cause": "compass",
+"alt": [
+"motor"
+]
+},
+"18927": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"19550": {
+"label": "crash",
+"cause": "vibration",
+"alt": [
+"motor"
+]
+},
+"20162": {
+"label": "crash",
+"cause": "battery",
+"alt": []
+},
+"20552": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"21885": {
+"label": "crash",
+"cause": "vibration",
+"alt": [
+"power"
+]
+},
+"23543": {
+"label": "crash",
+"cause": "radio",
+"alt": []
+},
+"25187": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"27349": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"30377": {
+"label": "crash",
+"cause": "control",
+"alt": [
+"power"
+]
+},
+"30458": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"30683": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"31376": {
+"label": "crash",
+"cause": "vibration",
+"alt": [
+"gps"
+]
+},
+"31538": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"32040": {
+"label": "crash",
+"cause": "compass",
+"alt": []
+},
+"32542": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"33361": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"34498": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"34898": {
+"label": "crash",
+"cause": "battery",
+"alt": [
+"control"
+]
+},
+"35095": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"35405": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"39146": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"39265": {
+"label": "crash",
+"cause": "power",
+"alt": []
+},
+"39580": {
+"label": "crash",
+"cause": "battery",
+"alt": []
+},
+"39722": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"40392": {
+"label": "crash",
+"cause": "radio",
+"alt": [
+"vibration"
+]
+},
+"40515": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"42329": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"43318": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"43621": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"43660": {
+"label": "crash",
+"cause": "radio",
+"alt": []
+},
+"44912": {
+"label": "crash",
+"cause": "vibration",
+"alt": []
+},
+"44973": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"47298": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"48763": {
+"label": "crash",
+"cause": "battery",
+"alt": [
+"control"
+]
+},
+"49885": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"50401": {
+"label": "crash",
+"cause": "battery",
+"alt": []
+},
+"50812": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"52335": {
+"label": "crash",
+"cause": "compass",
+"alt": [
+"stall"
+]
+},
+"54450": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"54829": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"55193": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"55480": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"55911": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"56145": {
+"label": "crash",
+"cause": "ekf",
+"alt": [
+"battery"
+]
+},
+"56452": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"56949": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"57097": {
+"label": "crash",
+"cause": "compass",
+"alt": [
+"gps"
+]
+},
+"57299": {
+"label": "crash",
+"cause": "battery",
+"alt": [
+"power"
+]
+},
+"59240": {
+"label": "crash",
+"cause": "stall",
+"alt": [
+"control"
+]
+},
+"59255": {
+"label": "crash",
+"cause": "radio",
+"alt": []
+},
+"61014": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"61372": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"63350": {
+"label": "crash",
+"cause": "power",
+"alt": []
+},
+"63639": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"65725": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"67111": {
+"label": "crash",
+"cause": "stall",
+"alt": [
+"control"
+]
+},
+"67267": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"68125": {
+"label": "crash",
+"cause": "control",
+"alt": [
+"ekf"
+]
+},
+"69731": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"70128": {
+"label": "crash",
+"cause": "control",
+"alt": [
+"motor"
+]
+},
+"70698": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"72303": {
+"label": "crash",
+"cause": "ekf",
+"alt": [
+"gps"
+]
+},
+"72523": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"72796": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"72851": {
+"label": "crash",
+"cause": "power",
+"alt": []
+},
+"73304": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"75213": {
+"label": "crash",
+"cause": "control",
+"alt": [
+"battery"
+]
+},
+"78653": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"78816": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"79396": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"79901": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"81354": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"82334": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"82430": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"83626": {
+"label": "crash",
+"cause": "motor",
+"alt": [
+"control"
+]
+},
+"84217": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"85103": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"86761": {
+"label": "crash",
+"cause": "motor",
+"alt": [
+"control"
+]
+},
+"88204": {
+"label": "crash",
+"cause": "control",
+"alt": [
+"stall"
+]
+},
+"88767": {
+"label": "crash",
+"cause": "battery",
+"alt": []
+},
+"88939": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"89816": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"90287": {
+"label": "crash",
+"cause": null,
+"alt": []
+},
+"91113": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"91325": {
+"label": "crash",
+"cause": "motor",
+"alt": []
+},
+"91359": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"92394": {
+"label": "crash",
+"cause": "vibration",
+"alt": []
+},
+"9269": {
+"label": "crash",
+"cause": "motor",
+"alt": [
+"compass"
+]
+},
+"94516": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"95098": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"95759": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"96277": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"96442": {
+"label": "crash",
+"cause": "motor",
+"alt": [
+"vibration"
+]
+},
+"97236": {
+"label": "normal",
+"cause": null,
+"alt": []
+},
+"97877": {
+"label": "crash",
+"cause": "motor",
+"alt": [
+"power"
+]
+},
+"98640": {
+"label": "crash",
+"cause": "control",
+"alt": []
+},
+"98794": {
+"label": "crash",
+"cause": "motor",
+"alt": [
+"control"
+]
+},
+"99685": {
+"label": "normal",
+"cause": null,
+"alt": []
+}
+}
 }

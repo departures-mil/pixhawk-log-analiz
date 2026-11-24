@@ -23,9 +23,15 @@ UA = {'User-Agent': 'Mozilla/5.0 (pixhawk-log-analiz crash benchmark; GitHub Act
 CRASH_Q = ['crash log', 'crashed', 'crash analysis', 'crash help log', 'fell from sky', 'fell out of the sky', 'sudden crash',
            'flipped on takeoff', 'fly away', 'flyaway', 'lost control crash', 'crash bin', 'quadplane crash', 'plane crash log',
            'rover crash', 'crash after takeoff', 'crash in auto', 'crash loiter', 'crash rtl', 'motor failure crash',
-           'vibration crash', 'gps glitch crash', 'ekf failsafe crash', 'battery failsafe crash', 'compass crash', 'stall crash']
+           'vibration crash', 'gps glitch crash', 'ekf failsafe crash', 'battery failsafe crash', 'compass crash', 'stall crash',
+           'crash', 'crash help', 'crash report', 'crash analysis log', 'helicopter crash', 'heli crash', 'vtol crash', 'esc failure',
+           'motor stopped mid air', 'dropped from the sky', 'flipped over', 'crash during autotune', 'crash during landing',
+           'crash poshold', 'crash althold', 'crash stabilize', 'crash guided', 'crashed log attached', 'tailsitter crash']
 NORMAL_Q = ['first flight log review', 'maiden flight log', 'please review my log', 'log review tuning', 'autotune log',
-            'tuning log review', 'hover log review', 'check my log first flight', 'quadplane first flight log', 'plane tuning log']
+            'tuning log review', 'hover log review', 'check my log first flight', 'quadplane first flight log', 'plane tuning log',
+            'log review', 'please check my log', 'vibration log review', 'tuning help log', 'notch filter log', 'autotune results',
+            'althold log', 'loiter log', 'quadplane transition log', 'plane autotune', 'first hover', 'maiden quadplane',
+            'harmonic notch setup log', 'quicktune', 'review my tune', 'log analysis help', 'flight log check', 'maiden flight']
 CRASH_RX = re.compile(r'\b(crash(?:ed|es|ing)?|fell|falls?|fall(?:en|ing)|flip(?:ped|s)?|fly ?away|flew away|lost control|loss of control|'
                       r'went down|dropped (?:out|from)|destroyed|death roll|nose ?dive[ds]?)\b', re.I)
 NORMAL_RX = re.compile(r'\b(first flight|maiden|tun(?:e|ing)|autotune|review|check(?:ing)? my log|hover(?:ing)?|log analysis)\b', re.I)
@@ -109,7 +115,7 @@ def harvest():
     for kind, qs in (('crash', CRASH_Q), ('normal', NORMAL_Q)):
         for q in qs:
             if need[kind] <= 0 or total > TOTAL_MB: break
-            for page in (1, 2, 3):
+            for page in range(1, int(os.environ.get('BENCH_PAGES', '3')) + 1):
                 if need[kind] <= 0: break
                 try:
                     d = get(f'{FORUM}/search.json?q={urllib.parse.quote(q)}&page={page}'); time.sleep(1.2)
@@ -276,7 +282,9 @@ def write(res):
     if os.path.exists(prev):
         try: hist = json.load(open(prev, encoding='utf-8')).get('history', [])
         except Exception: pass
-    hist.append({'date': time.strftime('%Y-%m-%d %H:%M'), 'tag': os.environ.get('BENCH_TAG', ''), **s})
+    hist = [h for h in hist if h.get('tag') not in ('dev', '')]          # geliştirme ara ölçümleri geçmişe yazılmaz
+    tag = os.environ.get('BENCH_TAG', '') or 'dev'
+    hist.append({'date': time.strftime('%Y-%m-%d %H:%M'), 'tag': tag, **s})
     json.dump({'score': s, 'history': hist[-20:], 'results': res}, open(prev, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     lib = [{k: r.get(k) for k in ('id', 'title', 'url', 'log_url', 'label', 'cause_hint', 'mb', 'vehicle', 'got', 'got_cause', 'dur', 'created')}
            for r in res if r.get('got') not in (None, 'error')]
@@ -301,6 +309,18 @@ def write(res):
     for h in hist[-10:]:
         L.append(f"| {h['date']} | {h.get('tag') or h.get('labels') or '-'} | {h['n']} | %{h['accuracy']*100:.0f} | %{h['recall_crash']*100:.0f} | "
                  f"%{h['specificity']*100:.0f} | %{h['cause_acc']*100:.0f} |")
+    try:
+        cv = json.load(open(os.path.join(ROOT, 'app', 'data', 'ml_model.json'), encoding='utf-8'))
+        c = cv['cv']
+        L += ['', '## Öğrenen ikinci görüş (ML)', '',
+              f"Aynı uzman etiketli {cv['n']} log üzerinde, her log dışarıda bırakılarak (leave-one-out) eğitilip ölçüldü. "
+              f"Model {'**kullanımda**' if cv.get('use') else 'henüz kullanılmıyor'}: yalnız sınırdaki kararları düzeltir "
+              "(kanıtsız 'sorunlu' → normal, model çok eminse normal → sorunlu); kesin kırım kanıtına dokunmaz.", '',
+              '| | Doğruluk | Duyarlılık | Özgüllük |', '|---|---|---|---|',
+              f"| Yalnız kurallar | %{c['rule_acc']*100:.0f} | %{c['rule_recall']*100:.0f} | %{c['rule_spec']*100:.0f} |",
+              f"| Kurallar + model | %{c['combined_acc']*100:.0f} | %{c['combined_recall']*100:.0f} | %{c['combined_spec']*100:.0f} |"]
+    except Exception:
+        pass
     L += ['', '## Log listesi', '', '| Konu | Araç | Etiket | Program | Kök neden (program) | Kök neden (uzman) | Süre |', '|---|---|---|---|---|---|---|']
     for r in sorted(res, key=lambda r: (r['label'], r.get('got') or '')):
         mark = '✅' if (r.get('got') in ('crash', 'incident')) == (r['label'] == 'crash') else '❌'

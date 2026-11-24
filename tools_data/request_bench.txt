@@ -1,1 +1,2 @@
 2026-11-24T04:13:31 v1.0.6: konu yanıtlarını indir, seti büyüt (85 kırım + 35 normal)
+v1.0.8 büyük set Tue Nov 24 09:15:28 UTC 2026
