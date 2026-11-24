@@ -22,7 +22,9 @@ Türkçe · English · العربية (sağdan sola).
 - **Arşivde kırım işareti** ve filtre; **üst çubukta** log bilgisi, hızlı işlemler ve dil seçimi
 - **Havacılık terim sözlüğü**: arm/disarm, pre-arm, failsafe, yatış/yunuslama/sapma gibi terimler bütün TR/AR çevirilerde literatüre uygun
 - **Eşitleme**: GitHub (kendi gizli gist'iniz) ve internetsiz **aynı modem (LAN)**; kayıtlar silinmeden birleştirilir
-- **Tek tuşla güncelleme** (yüzde, MB, kalan, hız), ayarların sonunda **admin ile iletişim**
+- **Uçuş öncesi .param risk kontrol listesi** (Parametre Merkezi > ✅): failsafe, batarya eşikleri (hücre sayısına göre), arm kontrolleri, pusula/ivmeölçer kalibrasyonu, servo/motor çıkışları, kumanda kalibrasyonu, mod anahtarı, eve dönüş irtifası, log; UÇUŞA HAZIR / DİKKAT / UÇMAYIN kararı, önerilen düzeltmelerle yeni .param kaydetme
+- **PID / TECS ayar önerileri** (Parametre Merkezi > 🎛): logdaki PIDR/PIDP/PIDY (ya da RATE) ve TECS kayıtlarından kazanç oranı, gecikme, salınım frekansı, I terimi yükü, tırmanma/alçalma kapasitesi, düz uçuş gazı ölçülür; araç tipine göre (sabit kanat, VTOL, multikopter, helikopter) en çok ±%25'lik güvenli adımlarla somut öneri ve .param çıktısı. Kayıt hızı düşük, yerde ya da yanlış modda alınmış veriden öneri üretilmez
+- **Tek tuşla güncelleme** (yüzde, MB, kalan, hız): önce **yalnızca değişen kısımlar** (yama) indirilir — her yayında son 5 sürüm için ayrı yama üretilir, CI'da eski dosyaya uygulanıp yeni sürümle birebir aynı olduğu doğrulanır, tam dosyanın %70'inden büyük yama yayınlanmaz; program yamayı SHA-256 ile doğrulayıp kurulu dosyalarla birleştirir, sorun olursa kendiliğinden tam dosyaya geçer. Ayarların sonunda **admin ile iletişim**
 
 ## İndir
 [Releases](https://github.com/departures-mil/pixhawk-log-analiz/releases/latest) sayfasından `PixhawkLogAnaliz_Setup_x.y.z.exe` kurulum paketini indirip çalıştırın (yönetici izni gerekmez; Başlat menüsü ve masaüstü kısayolu oluşturulur, Denetim Masası'ndan kaldırılabilir). Sonraki sürümler program içindeki **⬇ Güncelle** düğmesiyle tek tıkla, sessizce kurulur ve program yeniden açılır. Kurulum istemeyenler için taşınabilir `PixhawkLogAnaliz.exe` de yayınlanır.
