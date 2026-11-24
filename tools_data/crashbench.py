@@ -282,7 +282,9 @@ def write(res):
     if os.path.exists(prev):
         try: hist = json.load(open(prev, encoding='utf-8')).get('history', [])
         except Exception: pass
-    hist.append({'date': time.strftime('%Y-%m-%d %H:%M'), 'tag': os.environ.get('BENCH_TAG', ''), **s})
+    hist = [h for h in hist if h.get('tag') not in ('dev', '')]          # geliştirme ara ölçümleri geçmişe yazılmaz
+    tag = os.environ.get('BENCH_TAG', '') or 'dev'
+    hist.append({'date': time.strftime('%Y-%m-%d %H:%M'), 'tag': tag, **s})
     json.dump({'score': s, 'history': hist[-20:], 'results': res}, open(prev, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     lib = [{k: r.get(k) for k in ('id', 'title', 'url', 'log_url', 'label', 'cause_hint', 'mb', 'vehicle', 'got', 'got_cause', 'dur', 'created')}
            for r in res if r.get('got') not in (None, 'error')]
@@ -307,6 +309,18 @@ def write(res):
     for h in hist[-10:]:
         L.append(f"| {h['date']} | {h.get('tag') or h.get('labels') or '-'} | {h['n']} | %{h['accuracy']*100:.0f} | %{h['recall_crash']*100:.0f} | "
                  f"%{h['specificity']*100:.0f} | %{h['cause_acc']*100:.0f} |")
+    try:
+        cv = json.load(open(os.path.join(ROOT, 'app', 'data', 'ml_model.json'), encoding='utf-8'))
+        c = cv['cv']
+        L += ['', '## Öğrenen ikinci görüş (ML)', '',
+              f"Aynı uzman etiketli {cv['n']} log üzerinde, her log dışarıda bırakılarak (leave-one-out) eğitilip ölçüldü. "
+              f"Model {'**kullanımda**' if cv.get('use') else 'henüz kullanılmıyor'}: yalnız sınırdaki kararları düzeltir "
+              "(kanıtsız 'sorunlu' → normal, model çok eminse normal → sorunlu); kesin kırım kanıtına dokunmaz.", '',
+              '| | Doğruluk | Duyarlılık | Özgüllük |', '|---|---|---|---|',
+              f"| Yalnız kurallar | %{c['rule_acc']*100:.0f} | %{c['rule_recall']*100:.0f} | %{c['rule_spec']*100:.0f} |",
+              f"| Kurallar + model | %{c['combined_acc']*100:.0f} | %{c['combined_recall']*100:.0f} | %{c['combined_spec']*100:.0f} |"]
+    except Exception:
+        pass
     L += ['', '## Log listesi', '', '| Konu | Araç | Etiket | Program | Kök neden (program) | Kök neden (uzman) | Süre |', '|---|---|---|---|---|---|---|']
     for r in sorted(res, key=lambda r: (r['label'], r.get('got') or '')):
         mark = '✅' if (r.get('got') in ('crash', 'incident')) == (r['label'] == 'crash') else '❌'

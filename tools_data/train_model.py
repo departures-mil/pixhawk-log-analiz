@@ -1,7 +1,7 @@
 """Öğrenen ikinci görüşü eğitir: tools_data/crashbench/results.json (uzman etiketli) → app/data/ml_model.json.
 
 Bire-bir-dışarıda (leave-one-out) çapraz doğrulama ile kural kararı ve 'kural+model' kararı karşılaştırılır;
-model yalnız doğrulukta ölçülmüş bir kazanç sağlıyorsa 'use': true yazılır.
+model yalnız doğrulukta ölçülmüş belirgin bir kazanç sağlıyorsa (kaza yakalamada ≤2 puan kayıpla) 'use': true yazılır.
     python tools_data/train_model.py
 """
 from __future__ import annotations
@@ -60,7 +60,8 @@ def main():
                 if best is None or cand[:2] > best[:2]: best = cand
     acc0 = float((rule == (y == 1)).mean()); rec0 = float(rule[y == 1].mean()); spe0 = float((~rule[y == 0]).mean())
     acc, rec, lam, hi, lo, spe, macc = best
-    use = acc > acc0 + 0.01 and rec >= rec0 - 0.005
+    # kural kararına göre doğrulukta belirgin kazanç; kaza yakalamada en çok 2 puan kayıp kabul edilir
+    use = acc > acc0 + 0.01 and rec >= rec0 - (0.02 if acc > acc0 + 0.03 else 0.005)
     m = fit(X, y, lam)
     out = {'mu': m[0].tolist(), 'sd': m[1].tolist(), 'w': m[2].tolist(), 'b': float(m[3]), 'finds': finds, 'n': int(len(y)),
            'use': bool(use), 'hi': hi, 'lo': lo, 'lam': lam,
