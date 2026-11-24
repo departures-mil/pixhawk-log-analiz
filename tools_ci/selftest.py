@@ -177,8 +177,6 @@ try:
     print('v1.0.6 preflight / tuning / updater OK', r['counts_t'])
 except Exception:
     import traceback; traceback.print_exc(); bad += 1
-sys.exit(1 if bad else 0)
-
 # ---- v1.0.8: derin teşhis, geri bildirim, öğrenen model
 try:
     from app.core import diag2, feedback, mlmodel
@@ -190,3 +188,6 @@ try:
     print('v1.0.8 diag2 / feedback / mlmodel OK')
 except Exception as _e:
     print('v1.0.8 FAIL', _e); raise
+
+sys.exit(1 if bad else 0)
+
