@@ -1,7 +1,7 @@
 """GitHub Releases üzerinden tek tuşla güncelleme (yüzde, MB, kalan, hız)."""
 from __future__ import annotations
 import json, os, subprocess, sys, tempfile, time, urllib.request
-from ..version import VERSION, REPO, APP_ID
+VERSION, REPO, APP_ID = "1.0.7", "departures-mil/pixhawk-log-analiz", "PixhawkLogAnaliz"  # v1.0.7 güncelleyicisinin kopyası (köprü testi)
 
 UA = f'{APP_ID}/{VERSION}'
 

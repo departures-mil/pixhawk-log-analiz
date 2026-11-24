@@ -12,4 +12,3 @@ anthropic>=0.75
 cryptography>=42
 imageio-ffmpeg>=0.5
 edge-tts>=6.1
-bsdiff4
