@@ -100,6 +100,9 @@ W = {
     'n_mot_sat': ('Motor {m} itki kaybetti: komutu tavana dayandı, karşısındaki motor {o} dengelemek için tabana indi. Motor {m}, ESC\'si, kablosu ve pervanesini kontrol edin.',
                   'Motor {m} lost thrust: its command hit the ceiling while the opposite motor {o} was driven to the floor to compensate. Check motor {m}, its ESC, wiring and propeller.',
                   'فقد المحرك {m} الدفع: وصل أمره إلى الحد الأعلى بينما خُفِّض المحرك المقابل {o} إلى الحد الأدنى للتعويض. افحص المحرك {m} ومنظم سرعته وأسلاكه ومروحته.'),
+    'n_mot_weak': ('Motor {m} kırımdan önceki saniyelerde diğerlerinden sürekli ~{g} µs daha yüksek çalıştı: o kolda itki eksik (motor/ESC, pervane, kol bükülmesi ya da motor eğikliği). Motor {m}, pervanesi ve kolu kontrol edilmeli.',
+                  'In the seconds before the crash motor {m} ran consistently ~{g} µs higher than the others: that arm is short of thrust (motor/ESC, propeller, bent arm or tilted motor). Check motor {m}, its propeller and arm.',
+                  'في الثواني التي سبقت التحطم عمل المحرك {m} باستمرار أعلى من غيره بنحو {g} ميكروثانية: هذا الذراع ينقصه الدفع (المحرك/منظم السرعة، المروحة، انحناء الذراع أو ميلان المحرك). افحص المحرك {m} ومروحته وذراعه.'),
     'n_mot_esc': ('ESC telemetrisi: motor {m} diğerleri dönerken durdu (devir sıfıra indi). ESC {m} (senkron kaçırma, aşırı ısınma, besleme) ve motor {m} kontrol edilmeli.',
                   'ESC telemetry: motor {m} stopped (RPM dropped to zero) while the others kept spinning. Check ESC {m} (desync, overheating, supply) and motor {m}.',
                   'قياس منظم السرعة: توقف المحرك {m} (انخفضت السرعة إلى الصفر) بينما استمرت المحركات الأخرى. افحص منظم السرعة {m} (فقدان التزامن، السخونة، التغذية) والمحرك {m}.'),
@@ -167,6 +170,7 @@ def build(A):
     mf = root.get('motor') or {}
     if c == 'motor' and mf.get('m'):
         if mf.get('kind') == 'esc': notes.insert(0, ('n_mot_esc', {'m': mf['m']}))
+        elif mf.get('kind') == 'weak': notes.insert(0, ('n_mot_weak', {'m': mf['m'], 'g': mf.get('gap', '')}))
         elif mf.get('o'): notes.insert(0, ('n_mot_sat', {'m': mf['m'], 'o': mf['o']}))
         conf += 0.05
     if getattr(A, 'surf_rev', None) and c == 'control':

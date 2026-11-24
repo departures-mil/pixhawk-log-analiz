@@ -97,7 +97,7 @@ def _vehicle_from(text):
 
 NONE_KEY = ('ATT', 'POS', 'CTUN', 'NTUN', 'TECS', 'AETR', 'RCIN', 'RCOU', 'PM', 'STAT', 'AHR2', 'AOA', 'POWR', 'RSSI', 'DSF', 'ORGN', 'RATE',
             'CMD', 'PIDR', 'PIDP', 'PIDY', 'RAD', 'MAV')
-LOADER_VER = 5
+LOADER_VER = 7
 
 
 def _fix_vehicle(L):
@@ -242,10 +242,36 @@ def _post(L, t0):
                     break
     if 'BAT' not in L.msgs and 'CURR' in L.msgs:
         L.msgs['BAT'] = L.msgs['CURR']
+    _drop_junk_time(L)
     L.duration = max((s['t'][-1] for s in L.msgs.values() if len(s.get('t', [])) > 0), default=0.0)
     for t, _ in L.texts[-1:]:
         L.duration = max(L.duration, t)
     L.t0_us = t0 or 0
+
+
+def _drop_junk_time(L):
+    """Güç kesilirken yarım yazılan kayıtlar saçma zaman damgası (ör. 10^13 s) ve sahte örnek numarası üretir;
+    bunlar log süresini bozar ve 'log havada kesildi' kanıtını gizler. Çok örnekli akışların son zamanından
+    60 s sonrasındaki örnekler atılır."""
+    import numpy as _np
+    ends = [float(_np.nanmax(s['t'])) for s in L.msgs.values() if len(s.get('t', [])) >= 20]
+    if not ends: return
+    lim = max(ends) + 60.0       # sahte kayıtlar 1–2 örneklik akışlar üretir; çok örnekli akışların sonu güvenilir
+    for k in list(L.msgs):
+        s = L.msgs[k]; t = s.get('t')
+        if t is None or len(t) == 0 or float(_np.nanmax(t)) <= lim: continue
+        m = _np.asarray(t) <= lim
+        if not m.any():
+            del L.msgs[k]; continue
+        for f in list(s.keys()):
+            try:
+                if hasattr(s[f], '__len__') and len(s[f]) == len(t): s[f] = _np.asarray(s[f])[m]
+            except Exception:
+                pass
+    L.texts = [(t, x) for t, x in L.texts if t <= lim]
+    L.events = [e for e in L.events if e[0] <= lim]
+    L.errors = [e for e in L.errors if e[0] <= lim]
+    L.modes = [e for e in L.modes if e[0] <= lim]
 
 
 def _load_bin(path, progress=None, cancel=None) -> LogData:

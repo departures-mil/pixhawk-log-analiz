@@ -58,10 +58,11 @@ def prob(d):
     return float(1.0 / (1.0 + np.exp(-s)))
 
 
-def adjust(kind, score, p):
+def adjust(kind, score, p, severity=None):
     """Ölçülmüş eşiklerle sınırdaki kararı düzelt (model dosyası 'use' içermiyorsa dokunma)."""
     M = load()
     if not M or p is None or not M.get('use'): return kind
     if kind == 'normal' and p >= M.get('hi', 0.9): return 'incident'
+    # yalnız 'küçük uyarı' derecesindeki kanıtsız kararları normale çevir (GPS/EKF/güç/motor gibi ciddi bulgulara dokunma)
     if kind == 'incident' and (score or 0) == 0 and p <= M.get('lo', 0.1): return 'normal'
     return kind
