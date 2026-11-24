@@ -155,45 +155,117 @@ def harvest():
     print('logs:', len(man), 'total MB', round(total))
 
 
-def run():
+def _plain(cooked):
+    t = re.sub(r'<aside class="quote.*?</aside>', ' ', cooked or '', flags=re.S)   # alıntıları at
+    t = re.sub(r'<(br|p|li|div)[^>]*>', '\n', t); t = re.sub('<[^>]+>', ' ', t)
+    return re.sub(r'[ \t]+', ' ', html.unescape(t)).strip()
+
+
+def threads():
+    """Etiket temizliği için her konunun TÜM yanıtlarını (uzman cevapları dahil) indirir →
+    tools_data/crashbench/threads.json.gz. Etiketler bu metinlerden elle çıkarılıp labels.json'a yazılır."""
+    import gzip
     man = json.load(open(os.path.join(BENCH, 'manifest.json')))
-    res = []
-    for tid, m in sorted(man.items()):
-        p = os.path.join(BENCH, f'{tid}.bin'); out = os.path.join(BENCH, f'{tid}.json')
-        if not os.path.exists(p): continue
-        t0 = time.time()
+    out_p = os.path.join(ROOT, 'tools_data', 'crashbench', 'threads.json.gz')
+    out = {}
+    if os.path.exists(out_p):
+        try: out = json.load(gzip.open(out_p, 'rt', encoding='utf-8'))
+        except Exception: out = {}
+    for tid in sorted(man):
+        if tid in out and out[tid].get('posts'): continue
         try:
-            subprocess.run([sys.executable, os.path.join(ROOT, 'run.py'), '--analyze', p, '--json', out], timeout=600, check=True,
-                           capture_output=True)
-            d = json.load(open(out, encoding='utf-8'))
-            v = d.get('verdict') or {}; r = d.get('root') or {}
-            m = dict(m)
-            if m['label'] == 'normal' and any(e.get('k') == 'cr_msg' and 'crash: disarming' in str((e.get('a') or {}).get('msg', '')).lower()
-                                              for e in v.get('evidence', [])):
-                m['label'] = 'crash'; m['label_src'] = 'autopilot'   # otopilot kırımı kendisi kaydetmiş: forum etiketi yanlış
-            res.append({**m, 'vehicle': d.get('vehicle'), 'got': v.get('kind'), 'got_cause': r.get('cause'), 'others': r.get('others'),
-                        'overall': d.get('overall'), 'dur': round(d.get('duration') or 0), 'sec': round(time.time() - t0, 1),
-                        'verdict': v, 'facts': {k: x for k, x in (d.get('facts') or {}).items() if not isinstance(x, (list, dict))},
-                        'health': d.get('health'), 'events': [e for e in d.get('events', []) if e.get('sev', 0) >= 2][:25]})
+            T = get(f'{FORUM}/t/{tid}.json'); time.sleep(1.2)
+            posts = list((T.get('post_stream') or {}).get('posts') or [])
+            ids = [i for i in ((T.get('post_stream') or {}).get('stream') or []) if i not in {p['id'] for p in posts}][:60]
+            for k in range(0, len(ids), 20):
+                q = '&'.join(f'post_ids[]={i}' for i in ids[k:k + 20])
+                try:
+                    more = get(f'{FORUM}/t/{tid}/posts.json?{q}'); time.sleep(1.2)
+                    posts += (more.get('post_stream') or {}).get('posts') or []
+                except Exception as e:
+                    print('  more fail', tid, e)
+            rows = []
+            for p in sorted(posts, key=lambda p: p.get('post_number', 0))[:80]:
+                likes = sum(a.get('count', 0) for a in (p.get('actions_summary') or []) if a.get('id') == 2)
+                rows.append({'n': p.get('post_number'), 'u': p.get('username'), 'tl': p.get('trust_level'),
+                             'staff': bool(p.get('staff') or p.get('moderator') or p.get('admin')), 'likes': likes,
+                             'acc': bool(p.get('accepted_answer')), 'd': (p.get('created_at') or '')[:10], 'x': _plain(p.get('cooked'))[:3500]})
+            out[tid] = {'title': T.get('title'), 'url': man[tid]['url'], 'posts': rows}
+            print(f'{tid}: {len(rows)} posts  {T.get("title", "")[:70]}', flush=True)
         except Exception as e:
-            res.append({**m, 'got': 'error', 'err': str(e)[:300]})
-        print(f"{tid}: label={m['label']} got={res[-1].get('got')} cause={res[-1].get('got_cause')} hint={m.get('cause_hint')}", flush=True)
+            print('thread fail', tid, e)
+    os.makedirs(os.path.dirname(out_p), exist_ok=True)
+    with gzip.open(out_p, 'wt', encoding='utf-8') as f: json.dump(out, f, ensure_ascii=False)
+    print('threads:', len(out))
+
+
+def _one(tid, m):
+    p = os.path.join(BENCH, f'{tid}.bin'); out = os.path.join(BENCH, f'{tid}.json')
+    if not os.path.exists(p): return None
+    t0 = time.time()
+    try:
+        subprocess.run([sys.executable, os.path.join(ROOT, 'run.py'), '--analyze', p, '--json', out], timeout=900, check=True,
+                       capture_output=True)
+        d = json.load(open(out, encoding='utf-8'))
+        v = d.get('verdict') or {}; r = d.get('root') or {}
+        m = dict(m)
+        if m['label'] == 'normal' and any(e.get('k') == 'cr_msg' and 'crash: disarming' in str((e.get('a') or {}).get('msg', '')).lower()
+                                          for e in v.get('evidence', [])):
+            m['label'] = 'crash'; m['label_src'] = 'autopilot'   # otopilot kırımı kendisi kaydetmiş: forum etiketi yanlış
+        return {**m, 'vehicle': d.get('vehicle'), 'got': v.get('kind'), 'got_cause': r.get('cause'), 'others': r.get('others'),
+                'overall': d.get('overall'), 'dur': round(d.get('duration') or 0), 'sec': round(time.time() - t0, 1),
+                'verdict': v, 'facts': {k: x for k, x in (d.get('facts') or {}).items() if not isinstance(x, (list, dict))},
+                'health': d.get('health'), 'events': [e for e in d.get('events', []) if e.get('sev', 0) >= 2][:25]}
+    except Exception as e:
+        return {**m, 'got': 'error', 'err': str(e)[:300]}
+
+
+def labels():
+    """Elle temizlenmiş etiketler (uzman yanıtlarından): {id: {label, cause, alt, src, note}}"""
+    p = os.path.join(ROOT, 'tools_data', 'crashbench', 'labels.json')
+    if not os.path.exists(p): return {}
+    d = json.load(open(p, encoding='utf-8'))
+    return d.get('labels', d) if isinstance(d, dict) else {}
+
+
+def run():
+    from concurrent.futures import ThreadPoolExecutor
+    man = json.load(open(os.path.join(BENCH, 'manifest.json')))
+    lab = labels()
+    for tid, l in lab.items():
+        if tid in man:
+            man[tid] = {**man[tid], 'label_forum': man[tid]['label'], 'hint_forum': man[tid].get('cause_hint'),
+                        'label': l.get('label', man[tid]['label']), 'cause_hint': l.get('cause'), 'cause_alt': l.get('alt') or [],
+                        'label_src': 'expert', 'exclude': l.get('exclude', False), 'note': l.get('note', '')}
+    jobs = int(os.environ.get('BENCH_JOBS', '2'))
+    res = []
+    with ThreadPoolExecutor(jobs) as ex:
+        for r in ex.map(lambda kv: _one(*kv), sorted(man.items())):
+            if r is None: continue
+            res.append(r)
+            print(f"{r['id']}: label={r['label']} got={r.get('got')} cause={r.get('got_cause')} hint={r.get('cause_hint')}", flush=True)
     write(res)
 
 
 def score(res):
-    ok = [r for r in res if r.get('got') not in (None, 'error')]
+    ok = [r for r in res if r.get('got') not in (None, 'error') and not r.get('exclude')]
     def pos(r): return r['got'] in ('crash', 'incident')
     tp = sum(1 for r in ok if r['label'] == 'crash' and pos(r)); fn = sum(1 for r in ok if r['label'] == 'crash' and not pos(r))
     fp = sum(1 for r in ok if r['label'] == 'normal' and pos(r)); tn = sum(1 for r in ok if r['label'] == 'normal' and not pos(r))
     ch = [r for r in ok if r['label'] == 'crash' and r.get('cause_hint')]
-    cm = sum(1 for r in ch if r.get('got_cause') == r['cause_hint'] or r['cause_hint'] in (r.get('others') or []))
+    def hit(r):
+        want = {r['cause_hint'], *(r.get('cause_alt') or [])}
+        return r.get('got_cause') in want
+    cm = sum(1 for r in ch if hit(r))
+    cm2 = sum(1 for r in ch if hit(r) or any(c in (r.get('others') or []) for c in {r['cause_hint'], *(r.get('cause_alt') or [])}))
     hard = sum(1 for r in ok if r['label'] == 'crash' and r['got'] == 'crash')
     fcr = sum(1 for r in ok if r['label'] == 'normal' and r['got'] == 'crash')
     return {'n': len(ok), 'errors': len(res) - len(ok), 'tp': tp, 'fn': fn, 'fp': fp, 'tn': tn,
             'crash_verdict': hard, 'false_crash': fcr,
             'accuracy': round((tp + tn) / max(len(ok), 1), 3), 'recall_crash': round(tp / max(tp + fn, 1), 3),
-            'specificity': round(tn / max(tn + fp, 1), 3), 'cause_n': len(ch), 'cause_match': cm, 'cause_acc': round(cm / max(len(ch), 1), 3)}
+            'specificity': round(tn / max(tn + fp, 1), 3), 'cause_n': len(ch), 'cause_match': cm, 'cause_acc': round(cm / max(len(ch), 1), 3),
+            'cause_any': cm2, 'cause_any_acc': round(cm2 / max(len(ch), 1), 3),
+            'labels': 'expert' if any(r.get('label_src') == 'expert' for r in ok) else 'forum-title'}
 
 
 def write(res):
@@ -204,7 +276,7 @@ def write(res):
     if os.path.exists(prev):
         try: hist = json.load(open(prev, encoding='utf-8')).get('history', [])
         except Exception: pass
-    hist.append({'date': time.strftime('%Y-%m-%d %H:%M'), **s})
+    hist.append({'date': time.strftime('%Y-%m-%d %H:%M'), 'tag': os.environ.get('BENCH_TAG', ''), **s})
     json.dump({'score': s, 'history': hist[-20:], 'results': res}, open(prev, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     lib = [{k: r.get(k) for k in ('id', 'title', 'url', 'log_url', 'label', 'cause_hint', 'mb', 'vehicle', 'got', 'got_cause', 'dur', 'created')}
            for r in res if r.get('got') not in (None, 'error')]
@@ -213,17 +285,23 @@ def write(res):
     os.makedirs(os.path.join(ROOT, 'docs'), exist_ok=True)
     L = ['# Gerçek kırım logları ile teşhis doğruluğu', '',
          f"Kaynak: discuss.ardupilot.org kamuya açık konular · Tarih: {hist[-1]['date']} · Log sayısı: {s['n']} (+{s['errors']} okunamayan)", '',
+         ("Etiket kaynağı: **uzman etiketleri** — her konudaki deneyimli/ekip üyelerinin yanıtları elle okunarak "
+          "kırım/normal ve kök neden belirlendi (tools_data/crashbench/labels.json). Kök neden puanı yalnız uzmanların "
+          "bir nedende birleştiği kırımlar üzerinden hesaplanır." if s.get('labels') == 'expert' else
+          "Etiket kaynağı: forum başlığı (gürültülü)."), '',
          '| Ölçüt | Değer |', '|---|---|',
          f"| Genel doğruluk (kırım/olay ↔ normal) | %{s['accuracy']*100:.0f} |",
          f"| Kırımı yakalama oranı (duyarlılık) | %{s['recall_crash']*100:.0f} ({s['tp']}/{s['tp']+s['fn']}) |",
          f"| Normal uçuşu doğru tanıma (özgüllük) | %{s['specificity']*100:.0f} ({s['tn']}/{s['tn']+s['fp']}) |",
          f"| Kesin 'kırım' kararı verilen kırım logları | {s.get('crash_verdict', '-')}/{s['tp']+s['fn']} |",
          f"| Normal logda yanlış 'kırım' kararı | {s.get('false_crash', '-')} |",
-         f"| Kök neden uyumu (başlıkta ipucu olanlar) | %{s['cause_acc']*100:.0f} ({s['cause_match']}/{s['cause_n']}) |", '',
-         '## Sürüm geçmişi', '', '| Tarih | Log | Doğruluk | Duyarlılık | Özgüllük | Kök neden |', '|---|---|---|---|---|---|']
+         f"| Kök neden uyumu (ana neden) | %{s['cause_acc']*100:.0f} ({s['cause_match']}/{s['cause_n']}) |",
+         f"| Kök neden uyumu (ana veya ikincil nedenlerde) | %{s.get('cause_any_acc', 0)*100:.0f} ({s.get('cause_any', '-')}/{s['cause_n']}) |", '',
+         '## Sürüm geçmişi', '', '| Tarih | Sürüm / etiket | Log | Doğruluk | Duyarlılık | Özgüllük | Kök neden |', '|---|---|---|---|---|---|---|']
     for h in hist[-10:]:
-        L.append(f"| {h['date']} | {h['n']} | %{h['accuracy']*100:.0f} | %{h['recall_crash']*100:.0f} | %{h['specificity']*100:.0f} | %{h['cause_acc']*100:.0f} |")
-    L += ['', '## Log listesi', '', '| Konu | Araç | Etiket | Program | Kök neden (program) | İpucu (başlık) | Süre |', '|---|---|---|---|---|---|---|']
+        L.append(f"| {h['date']} | {h.get('tag') or h.get('labels') or '-'} | {h['n']} | %{h['accuracy']*100:.0f} | %{h['recall_crash']*100:.0f} | "
+                 f"%{h['specificity']*100:.0f} | %{h['cause_acc']*100:.0f} |")
+    L += ['', '## Log listesi', '', '| Konu | Araç | Etiket | Program | Kök neden (program) | Kök neden (uzman) | Süre |', '|---|---|---|---|---|---|---|']
     for r in sorted(res, key=lambda r: (r['label'], r.get('got') or '')):
         mark = '✅' if (r.get('got') in ('crash', 'incident')) == (r['label'] == 'crash') else '❌'
         ttl = (r.get('title') or '').replace('|', '/')[:70]
@@ -234,4 +312,4 @@ def write(res):
 
 
 if __name__ == '__main__':
-    {'harvest': harvest, 'run': run}[sys.argv[1]]()
+    {'harvest': harvest, 'run': run, 'threads': threads}[sys.argv[1]]()

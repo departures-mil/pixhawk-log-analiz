@@ -32,12 +32,18 @@ jobs:
           restore-keys: crashbench-logs-v1-
       - run: pip install -q numpy matplotlib pymavlink python-docx reportlab qrcode pillow arabic-reshaper python-bidi cryptography
       - name: Harvest logs (discuss.ardupilot.org)
+        env:
+          BENCH_N_CRASH: '85'
+          BENCH_N_NORMAL: '35'
+          BENCH_TOTAL_MB: '6000'
         run: python tools_data/crashbench.py harvest
       - name: Save log cache
         uses: actions/cache/save@v4
         with:
           path: /tmp/bench
           key: crashbench-logs-v1-${{ github.run_id }}
+      - name: Download full threads (expert replies, for clean labels)
+        run: python tools_data/crashbench.py threads
       - name: Run diagnosis
         env:
           PYTHONIOENCODING: utf-8
