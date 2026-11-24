@@ -364,7 +364,7 @@ class TopBar(QFrame):
 
     def _upd_click(self):
         st = self.ctl.state
-        if st['status'] == 'available':
+        if st['status'] in ('available', 'ready'):
             self.show_result = False
             self.ctl.run()
         else:
@@ -380,16 +380,28 @@ class TopBar(QFrame):
         us = self.ctl.state
         s, p = us['status'], us.get('plan')
         b, fl, box = self.upd_btn, self.float, self.float.box
-        cls(b, 'btn small top-act update-act' + (' avail' if s == 'available' else '') + (' busy' if self._busy(s) or s == 'checking' else ''))
-        b.setEnabled(not self._busy(s))
+        bg = bool(us.get('bg')) and not self.show_result and (self._busy(s) or s == 'queued')   # arka plan indirmesi: rahatsız etme
+        av = s in ('available', 'ready')
+        cls(b, 'btn small top-act update-act' + (' avail' if av else '') + (' busy' if (self._busy(s) and not bg) or s == 'checking' else ''))
+        b.setEnabled(not self._busy(s) or bool(us.get('bg')))
         b.setText(t('fc.update'))
-        icons.set_icon(b, 'sync' if s == 'checking' else 'download', 'accent' if s == 'available' else 'text', 14)
-        tip = t('fc.update.avail', {'v': p['version']}) if s == 'available' and p else t('fc.update.none', {'v': us.get('current')}) if s == 'none' else t('fc.update.check')
+        icons.set_icon(b, 'sync' if s == 'checking' else 'download', 'accent' if av else 'text', 14)
+        tip = t('fc.update.ready', {'v': p['version']}) if s == 'ready' and p else t('fc.update.avail', {'v': p['version']}) if s == 'available' and p else t('fc.update.none', {'v': us.get('current')}) if s == 'none' else t('fc.update.check')
         b.setToolTip(tip)
-        self.upd_dot.set('•' if s == 'available' else '')
+        self.upd_dot.set('•' if av else '')
         fl.clear_buttons()
         show = False
-        if self._busy(s):
+        if bg:
+            show = False
+        elif s == 'ready' and p:
+            if not getattr(self, '_ready_shown', False) or self.show_result:
+                self._ready_shown = True
+                show = True
+                box.busy(t('fc.update.ready', {'v': p['version']}))
+                box.bar.hide()
+                fl.add_button(button(t('fc.update.now'), 'btn small primary', icon='download', slot=self.ctl.run))
+                self._hide_t.start(10000)
+        elif self._busy(s):
             show = True
             if s == 'downloading' and us.get('progress'):
                 box.set_title(t('fc.update.fallback') if us.get('fallback') else t('fc.update.downloading') + (' v' + p['version'] if p else ''))

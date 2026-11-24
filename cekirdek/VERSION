@@ -1,2 +1,3 @@
-departures-mil/ortak-cekirdek fe5a3d9079d50505e3544c2d0c3ef15a9eff363f (qt/fccore → fccore/; web eşi 87f42f8+ebec004)
+ortak-cekirdek f1d1d850614ee93560181e5a6b15100643b19e14
 Yerel düzeltme (1.1.2): fccore/window.py sürüm rozeti tam sürüm vX.Y.Z (ortak-cekirdek 586781e ile aynı).
+Yerel: Inno kurulumu için Updater(setup_args=None) — sessiz kurulum + yeniden açma app/ui/kabuk.py _spawn'da.
