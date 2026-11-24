@@ -160,6 +160,15 @@ Rules:
 - Reply in {lang}. Use short paragraphs and lists; no tables wider than 4 columns."""
 
 
+def _fc_count(provider):
+    """Ortak çekirdek "Kullanım Limitleri" kartı: sağlayıcı başına bugünkü çağrı sayısı."""
+    try:
+        from fccore import usage as U
+        U.count('ai.' + {'free': 'pollinations'}.get(provider, provider))
+    except Exception:
+        pass
+
+
 class Usage:
     """Kullanıcının kendi API kullanımı ve limitleri (ayarlar ekranında gösterilir)."""
     def __init__(self, path):
@@ -170,6 +179,7 @@ class Usage:
         except Exception: pass
 
     def add_generic(self, provider, it, ot, limits):
+        _fc_count(provider)
         d = self.data
         d['calls'] += 1; d['input_tokens'] += it or 0; d['output_tokens'] += ot or 0
         day = time.strftime('%Y-%m-%d')
@@ -203,6 +213,7 @@ class Usage:
         except Exception: pass
 
     def add(self, usage, headers):
+        _fc_count('anthropic')
         d = self.data
         d['calls'] += 1
         it = getattr(usage, 'input_tokens', 0) or 0; ot = getattr(usage, 'output_tokens', 0) or 0

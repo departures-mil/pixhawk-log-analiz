@@ -1,10 +1,12 @@
-"""Ayarlar sayfası: dil, yapay zekâ + limitler, antet şablonları, harita, eşitleme, güncelleme, arşiv, admin iletişim (en sonda)."""
+"""Ayarlar sayfası: Görünüm (fccore), yapay zekâ + Kullanım Limitleri, analiz, antet, eşitleme, arşiv, …, hata raporu,
+Hakkında (güncelleme, neler yeni, rehber), Asistan Agent, Admin ile iletişim (EN SONDA, fccore)."""
 from __future__ import annotations
 import os, time
 from PySide6.QtCore import Qt, QUrl
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QGroupBox, QFormLayout, QComboBox, QLineEdit, QCheckBox,
                                QScrollArea, QSpinBox, QFileDialog, QPlainTextEdit, QInputDialog, QColorDialog, QLabel)
+from fccore import i18n as fi18n
 from .i18n import t, lang
 from .common import label, button, run_bg, error, info, open_path
 from .pages_a import Page
@@ -21,12 +23,12 @@ class SettingsPage(Page):
         body = QWidget(); body.setObjectName('page'); body.setAttribute(Qt.WA_StyledBackground, True); sc.setWidget(body)
         v = QVBoxLayout(body); v.setContentsMargins(24, 16, 24, 24); v.setSpacing(10)
 
+        # Görünüm (ortak çekirdek: renk şeması, koyu/açık/otomatik, yazı boyutu, dil)
+        from fccore import cards as FC
+        v.addWidget(FC.look_card())
+
         # Genel
         g = QGroupBox(t('s_general')); f = QFormLayout(g)
-        self.lang = QComboBox()
-        for code, name in (('tr', 'Türkçe'), ('en', 'English'), ('ar', 'العربية')): self.lang.addItem(name, code)
-        self.lang.setCurrentIndex(self.lang.findData(s['lang'])); self.lang.currentIndexChanged.connect(self._lang)
-        f.addRow(t('s_lang'), self.lang)
         self.online = QCheckBox(t('s_online')); self.online.setChecked(s.get('online', True))
         self.online.toggled.connect(lambda x: self._set('online', x)); f.addRow(self.online)
         v.addWidget(g)
@@ -58,6 +60,8 @@ class SettingsPage(Page):
         self.usage = label('', wrap=True, sel=True); f.addRow(self.usage)
         v.addWidget(g)
         self._prov_changed(init=True)
+        # Kullanım Limitleri (ortak çekirdek): bulut yok, yapay zekâ çağrıları sağlayıcı başına
+        v.addWidget(FC.usage_card(firebase=False, ai=True, providers=['gemini', 'anthropic', 'pollinations']))
 
         # Analiz: profil, önbellek, hava durumu, anomali modeli
         g = QGroupBox(t('s_analysis')); f = QFormLayout(g)
@@ -131,6 +135,8 @@ class SettingsPage(Page):
         self.b_lan = button('📶 ' + t('s_lan_find'), self.lan_sync); lh.addWidget(self.b_lan)
         f.addRow(t('s_lan_code'), lh)
         self.lan_l = label('', 'muted', wrap=True); f.addRow(self.lan_l)
+        bh2 = QHBoxLayout(); self.bk_l = label('', 'muted', wrap=True); bh2.addWidget(self.bk_l, 1)
+        self.b_bk = button(fi18n.t('px.sync.export'), self._export_backup); bh2.addWidget(self.b_bk); f.addRow(bh2)
         v.addWidget(g)
 
         # Arşiv
@@ -142,14 +148,6 @@ class SettingsPage(Page):
         ah.addWidget(self.copy); ah.addWidget(self.mb); ah.addStretch(1)
         f.addRow(t('s_copy_logs'), ah)
         f.addRow(button('📂 ' + t('s_open_data'), lambda: open_path(data_dir())))
-        v.addWidget(g)
-
-        # Güncelleme
-        g = QGroupBox(t('s_update')); f = QFormLayout(g)
-        f.addRow(label(t('s_version', v=VERSION), 'h2'))
-        self.auto = QCheckBox(t('s_auto_upd')); self.auto.setChecked(s.get('auto_update_check', True))
-        self.auto.toggled.connect(lambda x: self._set('auto_update_check', x)); f.addRow(self.auto)
-        f.addRow(button('⬇ ' + t('s_check_upd'), win.do_update, primary=True))
         v.addWidget(g)
 
         # Rapor şablon düzenleyici (bölümler, kısa/uzun)
@@ -193,38 +191,31 @@ class SettingsPage(Page):
         from .flightform import QuestionEditor
         v.addWidget(QuestionEditor(self.win))
 
-        # Hata raporları
-        g = QGroupBox(t('s_crash')); f = QFormLayout(g)
-        crh = QHBoxLayout(); self.crash_l = label('', 'muted'); crh.addWidget(self.crash_l, 1)
-        self.b_crash = button('✉ ' + t('cr_send'), self._send_crash); crh.addWidget(self.b_crash); f.addRow(crh)
-        v.addWidget(g)
+        # Otomatik hata raporu + Hakkında (sürüm, güncelleme, neler yeni, rehber) — ortak çekirdek
+        v.addWidget(FC.crash_card())
+        ob = (win.core.onboarding if getattr(win, 'core', None) is not None else None) or {'firebase': False, 'ai': True}
+        about = FC.about_card(version=VERSION, on_check=lambda: win.do_update(), onboarding=ob)
+        self.auto = QCheckBox(fi18n.t('px.auto_upd')); self.auto.setChecked(s.get('auto_update_check', True))
+        self.auto.toggled.connect(lambda x: self._set('auto_update_check', x)); about.add(self.auto, 10)
+        v.addWidget(about)
 
         # Asistan Agent (admin iletişimin önünde)
         from . import ajan as _ajan
         if _ajan.AJAN is not None:
             v.addWidget(_ajan.AJAN.card(self))
 
-        # Admin ile iletişim (en sonda)
-        g = QGroupBox(t('s_contact')); f = QFormLayout(g)
-        f.addRow(label(t('s_contact_desc'), 'muted', wrap=True))
-        self.c_name = QLineEdit(); f.addRow(t('c_name'), self.c_name)
-        self.c_mail = QLineEdit(); f.addRow(t('c_mail'), self.c_mail)
-        self.c_msg = QPlainTextEdit(); self.c_msg.setMinimumHeight(110); f.addRow(t('c_msg'), self.c_msg)
-        ch = QHBoxLayout(); self.b_send = button(t('c_send'), self.contact, primary=True); ch.addWidget(self.b_send)
-        self.c_st = label('', 'muted'); ch.addWidget(self.c_st, 1); f.addRow(ch)
-        v.addWidget(g)
+        # Admin ile iletişim (EN SONDA) — ortak çekirdek tek gelen kutusu
+        v.addWidget(FC.contact_card())
         v.addStretch(1)
         self._fill_tpls()
 
     def on_show(self):
-        self._usage(); self._cache(); self._sync_info(); self._an_info(); self._crash_info(); self._dirs(); self._users()
+        self._usage(); self._cache(); self._sync_info(); self._an_info(); self._dirs(); self._users()
         if not self.key.text().strip(): self._paste(silent=True)
 
     def _set(self, k, val):
         self.win.settings[k] = val; self.win.settings.save()
 
-    def _lang(self):
-        self._set('lang', self.lang.currentData()); self.win.apply_lang()
 
     # ---- AI
     def _pkey(self, prov=None):
@@ -514,19 +505,6 @@ class SettingsPage(Page):
         except Exception:
             error(self, t('ex_bad_pw'))
 
-    # ---- Hata raporları
-    def _crash_info(self):
-        from ..core import crash
-        try: n = len(crash.pending())
-        except Exception: n = 0
-        self.crash_l.setText(t('s_crash_n', n=n) if n else t('s_crash_none')); self.b_crash.setEnabled(bool(n))
-
-    def _send_crash(self):
-        from ..core import crash
-        ps = crash.pending()
-        if ps: self.win.crash_dialog(ps)
-        self._crash_info()
-
     # ---- Antet şablonları
     def _fill_tpls(self):
         s = self.win.settings
@@ -665,6 +643,19 @@ class SettingsPage(Page):
         rl = s.get('gh_rate') or {}
         if rl.get('limit'): parts.append(t('s_rate', r=rl.get('remaining'), l=rl.get('limit')))
         self.sync_l.setText('  ·  '.join(parts))
+        try:
+            n = len(self.win.archive.backups())
+        except Exception:
+            n = 0
+        self.bk_l.setText(fi18n.t('px.sync.backup', {'n': n})); self.b_bk.setEnabled(bool(n))
+
+    def _export_backup(self):
+        import json
+        p, _ = QFileDialog.getSaveFileName(self, fi18n.t('px.sync.export'), os.path.join(os.path.expanduser('~'), 'pixhawk-esitleme-yedegi.json'), 'JSON (*.json)')
+        if not p: return
+        with open(p, 'w', encoding='utf-8') as f:
+            json.dump(self.win.archive.backups(), f, ensure_ascii=False, indent=1)
+        info(self, fi18n.t('px.sync.saved', {'p': p}))
 
     def gh_sync(self):
         self._set('gh_token', self.tok.text().strip())
@@ -672,39 +663,8 @@ class SettingsPage(Page):
 
     def lan_sync(self):
         self._set('lan_code', self.code.text().strip())
-        from ..core import sync
-        s = self.win.settings; a = self.win.archive
         self.b_lan.setEnabled(False); self.lan_l.setText('…')
 
-        def job():
-            peers = sync.discover(s)
-            res = []
-            for p in peers:
-                try: res.append((p['name'], sync.lan_sync_with(s, a, p)))
-                except Exception as e: res.append((p['name'], str(e)))
-            return res
-
-        def ok(res):
-            self.b_lan.setEnabled(True)
-            if not res: self.lan_l.setText(t('s_lan_none')); return
-            lines = []
-            for n, r in res:
-                lines.append(f'{n}: ' + (t('s_synced', a=r[0], u=r[1]) if isinstance(r, tuple) else r))
-            self.lan_l.setText('\n'.join(lines)); self.win.pages['archive'].refresh(); self._fill_tpls()
-        run_bg(job, on_done=ok, on_fail=lambda e: (self.b_lan.setEnabled(True), self.lan_l.setText(e)))
-
-    # ---- İletişim
-    def contact(self):
-        import re
-        msg = self.c_msg.toPlainText().strip(); mail = self.c_mail.text().strip()
-        if not msg: self.c_st.setText(t('c_empty')); return
-        if mail and not re.match(r'^[^@\s]+@[^@\s]+\.[^@\s]+$', mail): self.c_st.setText(t('c_fail')); return
-        from ..core import contact
-        self.b_send.setEnabled(False); self.c_st.setText('…')
-
-        def ok(r):
-            self.b_send.setEnabled(True)
-            if r: self.c_msg.clear(); self.c_st.setText(t('c_ok'))
-            else: self.c_st.setText(t('c_fail'))
-        run_bg(contact.send, msg, self.c_name.text().strip(), mail, lang(), on_done=ok,
-               on_fail=lambda e: (self.b_send.setEnabled(True), self.c_st.setText(t('c_fail'))))
+        def done(msg):
+            self.b_lan.setEnabled(True); self.lan_l.setText(msg); self._fill_tpls(); self._sync_info()
+        self.win.do_lan(on_done=done)

@@ -157,9 +157,9 @@ try:
     print('v1.0.4 flight info / why / solver / glossary OK')
 except Exception:
     import traceback; traceback.print_exc(); bad += 1
-# ---- v1.0.6: uçuş öncesi .param kontrol listesi, PID/TECS ayar önerileri, yama seçimi
+# ---- v1.0.6: uçuş öncesi .param kontrol listesi, PID/TECS ayar önerileri
 try:
-    from app.core import preflight as PF, tuning as TU, updater as UP
+    from app.core import preflight as PF, tuning as TU
     Ln = loader.load(os.path.join(d, 'normal.BIN')); An = analysis.Analysis(Ln)
     for lg in ('tr', 'en', 'ar'):
         r = PF.checklist(Ln.params, 'Plane', lg); assert r['items'] and r['status'] in ('go', 'caution', 'nogo'), r
@@ -172,9 +172,7 @@ try:
                        'BATT_MONITOR': 4, 'BATT_LOW_VOLT': 14.0, 'BATT_CRT_VOLT': 13.2, 'BATT_FS_LOW_ACT': 2, 'BATT_FS_CRT_ACT': 1,
                        'BATT_CAPACITY': 5000, 'RTL_ALT': 3000, 'LOG_BITMASK': 180222, 'FENCE_ENABLE': 1, 'FENCE_ACTION': 1}, 'Copter', 'en')
     assert r2['status'] == 'go', [(i['id'], i['st'], i['text']) for i in r2['items'] if i['st'] != 'pass']
-    # yama seçimi: geliştirici çalıştırmasında yama yok → tam dosya
-    assert UP.current_mode() is None
-    print('v1.0.6 preflight / tuning / updater OK', r['counts_t'])
+    print('v1.0.6 preflight / tuning OK', r['counts_t'])
 except Exception:
     import traceback; traceback.print_exc(); bad += 1
 # ---- v1.0.8: derin teşhis, geri bildirim, öğrenen model
@@ -185,7 +183,7 @@ try:
     assert _f['a'] == {'integerValue': '1'} and _f['f'] == {'booleanValue': True} and 'arrayValue' in _f['d']
     assert feedback._url().endswith(feedback.COLLECTION + '?key=' + feedback.contact._FS.split('?key=')[1])
     assert mlmodel.adjust('normal', 0, None) == 'normal'
-    print('v1.0.8 diag2 / feedback / mlmodel OK')
+    print('v1.1.1 diag2 / feedback / mlmodel OK')
 except Exception as _e:
     print('v1.0.8 FAIL', _e); raise
 

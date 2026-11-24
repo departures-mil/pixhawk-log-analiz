@@ -31,6 +31,8 @@ class Archive:
             lang TEXT, fmt TEXT, path TEXT, created TEXT, device TEXT, log_name TEXT);
         CREATE INDEX IF NOT EXISTS rep_sha ON reports(sha256);
         CREATE TABLE IF NOT EXISTS records(kind TEXT, id TEXT, data TEXT, updated_at TEXT, deleted INTEGER DEFAULT 0, PRIMARY KEY(kind, id));
+        CREATE TABLE IF NOT EXISTS sync_backup(n INTEGER PRIMARY KEY AUTOINCREMENT, at TEXT, reason TEXT, tbl TEXT, kind TEXT, id TEXT,
+            data TEXT, source TEXT);
         ''')
         have = {r[1] for r in self.db.execute('PRAGMA table_info(analyses)').fetchall()}
         for c, typ in NEW_COLS.items():
@@ -176,33 +178,87 @@ class Archive:
                     self.db.execute('SELECT kind, id, data, updated_at, deleted FROM records').fetchall()]
         return {'analyses': self.list(), 'reports': self.reports(), 'records': recs}
 
-    def merge(self, data):
-        """Gelen kayıtları ekler; aynı kayıt varsa daha yeni olan kazanır, notlar birleştirilir. Hiçbir şey silinmez."""
+    # ------------------------------------------------------- eşitleme yedeği
+    def backup(self, reason, tbl, kind, rid, data, source=''):
+        """Eşitlemede kaybolabilecek her hal buraya yazılır (çakışmada kaybeden, uzaktan silinip arşivlenen)."""
+        js = json.dumps(data, ensure_ascii=False, default=str, sort_keys=True)
+        with self.lock:
+            if self.db.execute('SELECT 1 FROM sync_backup WHERE tbl=? AND kind=? AND id=? AND data=? LIMIT 1', (tbl, kind, rid, js)).fetchone():
+                return
+            self.db.execute('INSERT INTO sync_backup(at, reason, tbl, kind, id, data, source) VALUES(?,?,?,?,?,?,?)',
+                            (now(), reason, tbl, kind, rid, js, source or ''))
+            self.db.commit()
+
+    def backups(self):
+        with self.lock:
+            rs = self.db.execute('SELECT * FROM sync_backup ORDER BY n').fetchall()
+        return [dict(r) for r in rs]
+
+    def merge(self, data, source=''):
+        """Gelen kayıtları ekler. Ortak çekirdek kuralı (fccore.lanmerge): hiçbir kayıt silinmez ya da sessizce ezilmez —
+        çakışmada yeni olan kalır, eski hal `sync_backup`a; uzak silme yerelde arşivlenir (deleted=1, veri korunur)
+        ve yerel hal yedeğe yazılır. (eklenen, güncellenen) döner."""
+        from fccore import lanmerge
         added = updated = 0
+        source = source or data.get('name') or data.get('device') or ''
         for r in data.get('analyses', []):
             if not r.get('uid'): continue
             cur = self.get(r['uid'])
             if not cur:
-                r = dict(r); r['stored'] = ''  # yerel dosya yolu başka cihazda geçersiz
+                r = {c: r.get(c) for c in COLS}; r['stored'] = ''  # yerel dosya yolu başka cihazda geçersiz
                 self._upsert(r); added += 1; continue
             merged = dict(cur)
-            if (r.get('updated_at') or '') > (cur.get('updated_at') or ''):
-                for c in COLS:
-                    if c in ('stored', 'src_path'): continue
-                    if r.get(c) not in (None, ''): merged[c] = r[c]
+            newer = (r.get('updated_at') or '') > (cur.get('updated_at') or '')
+            lost = {}
+            for c in COLS:
+                if c in ('stored', 'src_path', 'notes', 'tags', 'updated_at'): continue
+                a, b = cur.get(c), r.get(c)
+                if b in (None, '') or a == b: continue
+                if newer:
+                    merged[c] = b
+                    if a not in (None, ''): lost[c] = a          # yerel eski değer
+                else:
+                    lost[c] = b                                  # uzak eski değer
+            if newer: merged['updated_at'] = r.get('updated_at')
             merged['notes'] = _union_text(cur.get('notes'), r.get('notes'))
             merged['tags'] = ','.join(sorted(set(filter(None, (cur.get('tags') or '').split(',') + (r.get('tags') or '').split(',')))))
+            if lost:
+                self.backup('conflict', 'analyses', '', r['uid'], {'lost': lost, 'from': 'local' if newer else 'remote'}, source)
             if merged != cur:
                 self._upsert(merged); updated += 1
-        for r in data.get('records', []):
-            if r.get('kind') not in KINDS or not r.get('id'): continue
-            with self.lock:
-                cur = self.db.execute('SELECT updated_at FROM records WHERE kind=? AND id=?', (r['kind'], r['id'])).fetchone()
-                if cur is None or (r.get('updated_at') or '') > (cur[0] or ''):
-                    self.db.execute('INSERT OR REPLACE INTO records VALUES(?,?,?,?,?)', (r['kind'], r['id'], r.get('data') or '{}', r.get('updated_at') or now(), int(r.get('deleted') or 0)))
-                    self.db.commit()
-                    if cur is None: added += 1
-                    else: updated += 1
+        # genel kayıtlar: fccore.lanmerge (web FC.lanMerge ile aynı kural)
+        with self.lock:
+            rows = self.db.execute('SELECT kind, id, data, updated_at, deleted FROM records').fetchall()
+        def rec(k, i, d, u, x):
+            return {'key': k + '\x1f' + i, 'kind': k, 'id': i, 'data': d or '{}', 'updated_at': u or '', 'deleted': bool(x)}
+        loc = [rec(*tuple(r)) for r in rows]
+        rem = [rec(r['kind'], str(r['id']), r.get('data'), r.get('updated_at'), r.get('deleted'))
+               for r in data.get('records', []) if r.get('kind') in KINDS and r.get('id')]
+        lm = {x['key']: x for x in loc}
+        rm = {x['key']: x for x in rem}
+        res = lanmerge.merge(loc, rem, idKey='key', updatedKey='updated_at')
+        for c in res['conflicts']:
+            lost = c['lost']
+            self.backup('conflict', 'records', lost['kind'], lost['id'], {'data': lost['data'], 'updated_at': lost['updated_at'],
+                                                                          'from': 'remote' if c['keptFrom'] == 'local' else 'local'}, source)
+        for a in res['archived']:
+            x = a['record']
+            self.backup('archived', 'records', x['kind'], x['id'], {'data': x['data'], 'updated_at': x['updated_at'], 'deletedBy': a['from']}, source)
+        with self.lock:
+            for x in res['records']:
+                deleted = 1 if x.get('archived') else 0
+                cur = lm.get(x['key'])
+                upd = _local_ts(x.get('updated_at'))
+                if cur is not None and cur['data'] == x['data'] and bool(cur['deleted']) == bool(deleted) and cur['updated_at'] == upd:
+                    continue
+                self.db.execute('INSERT OR REPLACE INTO records VALUES(?,?,?,?,?)', (x['kind'], x['id'], x['data'], upd or now(), deleted))
+                if cur is None: added += 1
+                else: updated += 1
+            # iki tarafta da silinmiş (yerelde olmayan) kayıtlar: işaret olarak sakla ki geri gelmesin
+            for k, y in rm.items():
+                if k not in lm and y['deleted']:
+                    self.db.execute('INSERT OR IGNORE INTO records VALUES(?,?,?,?,1)', (y['kind'], y['id'], y['data'], _local_ts(y['updated_at']) or now()))
+            self.db.commit()
         for r in data.get('reports', []):
             if not r.get('report_id'): continue
             if not self.find_report(rid=r['report_id']):
@@ -221,6 +277,18 @@ def _fdate(A):
         return time.strftime('%Y-%m-%d %H:%M', time.localtime(u)) if u else ''
     except Exception:
         return ''
+
+
+def _local_ts(v):
+    """lanmerge ISO (…Z) zamanını yerel 'YYYY-MM-DD HH:MM:SS' biçimine çevirir; diğerlerini olduğu gibi bırakır."""
+    v = v or ''
+    if isinstance(v, str) and v.endswith('Z') and 'T' in v:
+        try:
+            from datetime import datetime
+            return datetime.fromisoformat(v[:-1] + '+00:00').astimezone().strftime('%Y-%m-%d %H:%M:%S')
+        except ValueError:
+            return v
+    return str(v)
 
 
 def _union_text(a, b):

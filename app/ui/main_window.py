@@ -1,11 +1,15 @@
-"""Ana pencere: çerçevesiz, açılışta tam ekran; sağ üstte Güncelle, Eşitle, Küçült, Yarım, Kapat."""
+"""Ana pencere (ortak çekirdek fccore): çerçevesiz, her açılışta tam ekran; Falcon kenar çubuğu + üst çubuk
+(Eşitle · Wi-Fi · Güncelle · tema · dil | Küçült · Orta · Tam ekran · Kapat)."""
 from __future__ import annotations
 import json, os, sys, time
 from PySide6.QtCore import Qt, QTimer, Signal
-from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QListWidget, QListWidgetItem, QStackedWidget,
-                               QFileDialog, QDialog, QFormLayout, QComboBox, QCheckBox, QProgressBar, QLabel, QApplication, QSizeGrip)
+from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QStackedWidget, QFrame, QScrollArea,
+                               QFileDialog, QDialog, QFormLayout, QComboBox, QCheckBox, QProgressBar, QLabel, QApplication)
+from fccore import i18n as fi18n, icons as ficons
+from fccore.window import FcWindow, TopBar
+from fccore.widgets import button as fbutton, label as flabel, toast
 from .i18n import t, lang, set_lang
-from .common import TitleBar, label, button, run_bg, error, info, open_path, app_icon
+from .common import label, button, run_bg, error, info, open_path, app_icon
 from . import pages_a as PA, pages_b as PB, pages_c as PC, pages_p as PP, pages_s as PS
 from .settings_page import SettingsPage
 from ..core.settings import Settings
@@ -22,42 +26,47 @@ NAV = [('analysis', '🔎', 'nav_analysis', PA.AnalysisPage), ('solver', '🩺',
        ('pilots', '👨‍✈️', 'nav_pilots', PC.PilotsPage), ('msgs', '📘', 'nav_msgs', PB.MsgLibPage),
        ('params', '🧩', 'nav_params', PP.ParamCenterPage), ('verify', '✅', 'nav_verify', PB.VerifyPage),
        ('settings', '🛠', 'nav_settings', SettingsPage)]
+# kenar çubuğu grupları (ilk anahtar → grup başlığı)
+GROUPS = {'analysis': 'px.grp.analysis', 'practice': 'px.grp.learn', 'batch': 'px.grp.records', 'msgs': 'px.grp.library', 'verify': 'px.grp.system'}
 
 
-class MainWindow(QMainWindow):
+def _upper(s):
+    l = lang()
+    if l == 'ar': return s
+    if l == 'tr': s = s.replace('i', 'İ').replace('ı', 'I')
+    return s.upper()
+
+
+class MainWindow(FcWindow):
     lan_merged = Signal(object, str)
     crashed = Signal(str)
     open_req = Signal(str)
 
-    def __init__(self):
-        super().__init__()
-        self.settings = Settings(); set_lang(self.settings['lang'])
+    def __init__(self, settings=None, core=None):
+        super().__init__('Pixhawk Log Analiz')
+        self.settings = settings or Settings(); set_lang(self.settings['lang'])
+        self.core = core
         self.archive = Archive()
         self.usage = Usage(os.path.join(data_dir(), 'ai_usage.json'))
-        self.A = None; self.uid = None; self._cancel = False; self._half = False
+        self.A = None; self.uid = None; self._cancel = False
         self.role = 'admin'; self.user_name = ''
         self._apply_core_settings()
         self.crashed.connect(self._on_crash); self.open_req.connect(self._open_req)
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.Window)
         self.setWindowIcon(app_icon())
         self.lan_merged.connect(self._lan_merged)
+        self._shell()
         self.build()
+        fi18n.on_change(self._core_lang)
         # LAN eşitleme sunucusu (aynı modemdeki cihazlar için)
         try:
             from ..core.sync import LanServer
             self.lan = LanServer(self.settings, self.archive, on_merged=lambda r, n: self.lan_merged.emit(r, n)); self.lan.start()
         except Exception:
             self.lan = None
-        if '--update-failed' in sys.argv:
-            # Yama kopyalanamadı → tam dosyayla otomatik yeniden dene
-            self._force_full_update = True
-            QTimer.singleShot(2000, lambda: self.do_update(silent=False))
-        elif self.settings.get('auto_update_check', True):
-            QTimer.singleShot(2500, lambda: self.do_update(silent=True))
+        self._draw_sync_state()
         # Mission Planner log klasörü izleme
         self.watcher = None; self.wtimer = QTimer(self); self.wtimer.setInterval(5000); self.wtimer.timeout.connect(self._watch_tick)
         self.setup_watch()
-        QTimer.singleShot(4000, self._pending_crashes)
         QTimer.singleShot(9000, self._flush_feedback)
 
     # ------------------------------------------------------------ v1.0.2 yardımcıları
@@ -91,7 +100,7 @@ class MainWindow(QMainWindow):
         from ..core import security
         hid = security.HIDDEN.get(self.role, set())
         for i, k in enumerate(self.keys):
-            self.nav.item(i).setHidden(k in hid)
+            self.nav_btns[i].setHidden(k in hid)
         if self.user_name:
             self.set_status(t('login_as', n=self.user_name, r=security.role_name(self.role, lang())))
 
@@ -122,12 +131,9 @@ class MainWindow(QMainWindow):
         if p: self.open_log(p)
 
     def _open_req(self, p):
-        self.showMaximized(); self.raise_(); self.activateWindow()
+        if self.isMinimized(): self.setWindowState(self.windowState() & ~Qt.WindowMinimized)
+        self.raise_(); self.activateWindow()
         if p and os.path.isfile(p): self.open_log(p)
-
-    # ------------------------------------------------------------ çökme raporu
-    def _on_crash(self, path):
-        self.crash_dialog([path])
 
     def _flush_feedback(self):
         """İnternetsizken sıraya alınmış teşhis geri bildirimlerini arka planda gönder."""
@@ -138,94 +144,149 @@ class MainWindow(QMainWindow):
         except Exception:
             pass
 
-    def _pending_crashes(self):
-        from ..core import crash
-        try: ps = crash.pending()
-        except Exception: ps = []
-        if ps: self.crash_dialog(ps, prev=True)
+    # ------------------------------------------------------------ çökme raporu (fccore.crash gönderir)
+    def _on_crash(self, path):
+        try: toast(fi18n.t('px.crash.toast'), 'error', 7000)
+        except Exception: pass
+        self.set_status(fi18n.t('px.crash.toast'))
 
-    def crash_dialog(self, paths, prev=False):
-        if getattr(self, '_crash_open', False): return
-        self._crash_open = True
-        try:
-            from PySide6.QtWidgets import QPlainTextEdit
-            from ..core import crash
-            dl = QDialog(self); dl.setWindowTitle(t('cr_title')); dl.setMinimumWidth(560); v = QVBoxLayout(dl)
-            v.addWidget(label((t('cr_prev') + '\n\n' if prev else '') + t('cr_text'), wrap=True))
-            note = QPlainTextEdit(); note.setPlaceholderText(t('cr_note')); note.setMaximumHeight(80); v.addWidget(note)
-            det = QPlainTextEdit(); det.setReadOnly(True); det.setVisible(False); det.setMinimumHeight(220)
-            try: det.setPlainText('\n\n'.join(open(p, encoding='utf-8').read()[-5000:] for p in paths))
-            except Exception: pass
-            v.addWidget(det)
-            h = QHBoxLayout(); h.addWidget(button(t('cr_details'), lambda: det.setVisible(not det.isVisible()))); h.addStretch(1)
-            h.addWidget(button(t('cr_later'), dl.reject)); h.addWidget(button(t('cr_send'), dl.accept, primary=True)); v.addLayout(h)
-            if dl.exec() == QDialog.Accepted:
-                run_bg(crash.send, paths, lang(), note.toPlainText(), on_done=lambda ok: self.set_status(t('cr_sent') if ok else t('c_fail')),
-                       on_fail=lambda e: self.set_status(t('c_fail')))
-        finally:
-            self._crash_open = False
-
-    # ------------------------------------------------------------ kurulum
-    def build(self):
-        rtl = lang() == 'ar'
-        QApplication.instance().setLayoutDirection(Qt.RightToLeft if rtl else Qt.LeftToRight)
-        self.setWindowTitle(t('app'))
-        root = QWidget(); root.setObjectName('root'); self.setCentralWidget(root)
-        v = QVBoxLayout(root); v.setContentsMargins(0, 0, 0, 0); v.setSpacing(0)
-        self.titlebar = TitleBar(self); v.addWidget(self.titlebar)
-        body = QHBoxLayout(); body.setContentsMargins(0, 0, 0, 0); body.setSpacing(0)
-        self.nav = QListWidget(); self.nav.setObjectName('nav'); self.nav.setFixedWidth(250)
-        self.stack = QStackedWidget(); self.pages = {}; self.keys = []
-        for key, ic, tk, cls in NAV:
-            it = QListWidgetItem(f'{ic}  {t(tk)}'); self.nav.addItem(it)
-            p = cls(self); self.pages[key] = p; self.keys.append(key); self.stack.addWidget(p)
-        self.nav.currentRowChanged.connect(self._nav)
-        body.addWidget(self.nav); body.addWidget(self.stack, 1)
-        v.addLayout(body, 1)
-        sb = QHBoxLayout(); sbw = QWidget(); sbw.setObjectName('statusbar'); sbw.setAttribute(Qt.WA_StyledBackground, True); sbw.setLayout(sb)
-        sb.setContentsMargins(10, 2, 2, 2)
+    # ------------------------------------------------------------ kabuk (bir kez)
+    def _shell(self):
+        lay = QHBoxLayout(self.root); lay.setSizeConstraint(QHBoxLayout.SetNoConstraint)
+        lay.setContentsMargins(0, 0, 0, 0); lay.setSpacing(0)
+        # kenar çubuğu
+        self.sidebar = QFrame(); self.sidebar.setObjectName('fcSidebar'); self.sidebar.setFixedWidth(264)
+        sv = QVBoxLayout(self.sidebar); sv.setContentsMargins(0, 0, 0, 0); sv.setSpacing(0)
+        brand = QFrame(); brand.setObjectName('fcBrand')
+        bl = QHBoxLayout(brand); bl.setContentsMargins(20, 22, 20, 18); bl.setSpacing(12)
+        logo = QLabel(); logo.setObjectName('fcBrandLogo'); logo.setFixedSize(38, 38); logo.setAlignment(Qt.AlignCenter)
+        logo.setText('PX'); logo.setStyleSheet('color:white;font-weight:800;font-size:14px')
+        names = QVBoxLayout(); names.setSpacing(2)
+        self.brand_name = flabel('', obj='fcBrandName', wrap=True); self.brand_tag = flabel('', obj='fcBrandTag', wrap=True)
+        names.addWidget(self.brand_name); names.addWidget(self.brand_tag)
+        from ..version import VERSION
+        bl.addWidget(logo, 0, Qt.AlignTop); bl.addLayout(names, 1)
+        bl.addWidget(flabel('v' + VERSION, 'version-badge'), 0, Qt.AlignTop)
+        sv.addWidget(brand)
+        self.nav_scroll = QScrollArea(); self.nav_scroll.setObjectName('fcNavScroll'); self.nav_scroll.setWidgetResizable(True)
+        self.nav_scroll.setFrameShape(QFrame.NoFrame); self.nav_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        sv.addWidget(self.nav_scroll, 1)
+        lay.addWidget(self.sidebar)
+        # ana sütun: üst çubuk + sayfalar + durum çubuğu
+        main = QWidget(); mv = QVBoxLayout(main); mv.setContentsMargins(0, 0, 0, 0); mv.setSpacing(0)
+        self.topbar = TopBar(self)
+        self.topbar.h.setContentsMargins(24, 12, 16, 12)
+        self.q_open = fbutton('📂', 'icon-btn', slot=lambda: self.pick_log())
+        self.q_info = fbutton('✈', 'icon-btn', slot=lambda: self.edit_flight_info())
+        self.q_solve = fbutton('🩺', 'icon-btn', slot=lambda: self.goto('solver'))
+        self.q_rep = fbutton('📄', 'icon-btn', slot=lambda: self.export_report())
+        quick = [self.q_open, self.q_info, self.q_solve, self.q_rep]
+        upd = self.core.updates if self.core is not None else None
+        self.topbar.mount(sync={'on_click': lambda st: self.do_sync()}, lan={'on_click': lambda st: self.do_lan()},
+                          update=upd, before=quick)
+        mv.addWidget(self.topbar)
+        self.stack_host = QWidget(); self.stack_l = QVBoxLayout(self.stack_host); self.stack_l.setContentsMargins(0, 0, 0, 0)
+        mv.addWidget(self.stack_host, 1)
+        sbw = QWidget(); sbw.setObjectName('statusbar'); sbw.setAttribute(Qt.WA_StyledBackground, True)
+        sb = QHBoxLayout(sbw); sb.setContentsMargins(14, 3, 14, 3)
         self.status = QLabel(''); sb.addWidget(self.status, 1)
         self.mp_btn = button('', self._mp_open, primary=True); self.mp_btn.setVisible(False); sb.addWidget(self.mp_btn)
-        self.upd_bar = QProgressBar(); self.upd_bar.setVisible(False); self.upd_bar.setFixedWidth(560); sb.addWidget(self.upd_bar)
-        sb.addWidget(QSizeGrip(sbw))
-        v.addWidget(sbw)
-        self.nav.setCurrentRow(0)
+        self.upd_bar = QProgressBar(); self.upd_bar.setObjectName('appbar'); self.upd_bar.setVisible(False); self.upd_bar.setFixedWidth(560)
+        sb.addWidget(self.upd_bar)
+        mv.addWidget(sbw)
+        lay.addWidget(main, 1)
+        self.titlebar = self   # eski kod uyumu: self.titlebar.set_log(...)
+
+    # ------------------------------------------------------------ sayfalar (dil değişince yeniden)
+    def build(self):
+        self.setWindowTitle(t('app'))
+        self.brand_name.setText(t('app')); self.brand_tag.setText(fi18n.t('px.tag'))
+        old_nav = self.nav_scroll.takeWidget()
+        nav = QWidget(); nav.setObjectName('fcNav'); nl = QVBoxLayout(nav); nl.setContentsMargins(12, 12, 12, 20); nl.setSpacing(2)
+        old_stack = getattr(self, 'stack', None)
+        self.stack = QStackedWidget(); self.stack.setObjectName('fcPages')
+        self.pages = {}; self.keys = []; self.nav_btns = []; self._grp_lbl = {}
+        for key, ic, tk, cls in NAV:
+            if key in GROUPS:
+                if self.keys: nl.addSpacing(10)
+                g = flabel(_upper(fi18n.t(GROUPS[key])), 'nav-title')
+                nl.addWidget(g); self._grp_lbl[key] = g
+            b = fbutton(f'{ic}   ' + t(tk).replace('&', '&&'), 'nav-item'); b.setCheckable(True); b.setFocusPolicy(Qt.NoFocus)
+            idx = len(self.keys); b.clicked.connect(lambda _=False, i=idx: self.setCurrentRow(i))
+            nl.addWidget(b); self.nav_btns.append(b)
+            p = cls(self); self.pages[key] = p; self.keys.append(key); self.stack.addWidget(p)
+        nl.addStretch(1)
+        self.nav_scroll.setWidget(nav)
+        if old_nav is not None: old_nav.deleteLater()
+        self.stack_l.addWidget(self.stack)
+        if old_stack is not None:
+            self.stack_l.removeWidget(old_stack); old_stack.deleteLater()
+        self.q_open.setToolTip(t('open_log')); self.q_info.setToolTip(t('fi_title')); self.q_solve.setToolTip(t('nav_solver'))
+        self.q_rep.setToolTip(t('export'))
+        self._row = -1
+        self.setCurrentRow(0)
         self.apply_role()
         if self.A:
             for p in self.pages.values():
                 try: p.on_analysis(self.A)
                 except Exception: pass
+            self.set_log(self.A, (self.A.info or {}).get('crashed', ''))
+
+    def _core_lang(self, l):
+        """Üst çubuktaki / Ayarlar'daki dil düğmesi (fccore) → uygulama dili."""
+        if l != self.settings.get('lang'):
+            self.settings['lang'] = l; self.settings.save()
+        if l != lang():
+            self.apply_lang()
 
     def apply_lang(self):
         set_lang(self.settings['lang'])
-        cur = self.nav.currentRow()
-        old = self.centralWidget(); self.build(); old.deleteLater()
-        self.nav.setCurrentRow(cur)
+        if fi18n.lang() != self.settings['lang']:
+            fi18n.set(self.settings['lang'])      # _core_lang tekrar çağrılır; lang() artık eşit
+            return
+        cur = max(0, self._row)
+        self.build()
+        self.setCurrentRow(cur)
         self.set_status(t('restart_lang'))
 
-    def _nav(self, i):
+    # eski QListWidget arayüzü (nav.currentRow / setCurrentRow / item(i).setHidden)
+    def setCurrentRow(self, i):
+        if i < 0 or i >= len(self.keys): return
+        self._row = i
+        for k, b in enumerate(self.nav_btns): b.setChecked(k == i)
         self.stack.setCurrentIndex(i)
+        key = self.keys[i]
+        self.topbar.set_title(t(NAV[i][2]), self._loginfo if getattr(self, '_loginfo', '') else '')
         try: self.stack.currentWidget().on_show()
         except Exception: pass
 
+    def currentRow(self):
+        return self._row
+
+    def _nav(self, i):
+        self.setCurrentRow(i)
+
     def goto(self, key):
-        self.nav.setCurrentRow(self.keys.index(key))
+        self.setCurrentRow(self.keys.index(key))
 
     def set_status(self, s):
         self.status.setText(s)
 
+    def set_log(self, A=None, crash_mark=''):
+        """Üst çubuk alt başlığı: dosya · araç · karar · puan (eski başlık çubuğundaki log bilgisi)."""
+        if A is None:
+            self._loginfo = ''
+        else:
+            from ..core import texts
+            v = A.verdict.get('kind', 'normal')
+            icon = {'crash': '💥', 'incident': '⚠', 'normal': '✅', 'noflight': '⏸'}.get(v, '')
+            mark = '  ·  💥 ' + t('fi_crash_mark') if crash_mark == 'yes' and v != 'crash' else ''
+            self._loginfo = f"{os.path.basename(A.L.path)}  ·  {A.vehicle}  ·  {icon} {texts.T('v_' + v, lang())}  ·  {A.overall}/100{mark}"
+        if self._row >= 0: self.topbar.set_title(t(NAV[self._row][2]), self._loginfo)
+
     # ----------------------------------------------------- pencere düğmeleri
     def show_start(self):
-        self.showMaximized()
-
-    def toggle_half(self):
-        scr = self.screen().availableGeometry()
-        if self.isMaximized() or not self._half:
-            self.showNormal()
-            w = scr.width() // 2; self.setGeometry(scr.x() + (scr.width() - w) // 2, scr.y() + scr.height() // 10, w, int(scr.height() * 0.8))
-            self._half = True
-        else:
-            self._half = False; self.showMaximized()
+        self.start()
 
     # ------------------------------------------------------------ log açma
     def pick_log(self):
@@ -408,80 +469,72 @@ class MainWindow(QMainWindow):
             elif m.clickedButton() == bf: open_path(os.path.dirname(outs[0][0]))
         run_bg(job, on_done=ok, on_fail=lambda e: (pg.set_busy(False), error(self, e)))
 
-    # --------------------------------------------------------- güncelleme
+    # --------------------------------------------------------- güncelleme (fccore: latest.json + yama + SHA-256)
     def do_update(self, silent=False):
-        from ..core import updater
-        from ..version import VERSION
-        if getattr(self, '_updating', False): return
-        self._updating = True
-        w = None
-
-        force_full = bool(getattr(self, '_force_full_update', False))
-        mode = {'m': 'full'}
-
-        def job():
-            info_ = updater.check()
-            if not info_: return None
-            if silent: return ('avail', info_)
-            w.progress.emit(('start', info_))
-            p = updater.download(info_, progress=lambda d, n, sp, eta: w.progress.emit(('p', (d, n, sp, eta))),
-                                 on_mode=lambda m, n: w.progress.emit(('mode', (m, n))), force_full=force_full)
-            return ('done', p)
-
-        def prog(x):
-            k, v = x
-            if k == 'start':
-                self.upd_bar.setVisible(True); self.upd_bar.setRange(0, 1000); self.set_status(t('u_found', v=v['version']))
-            elif k == 'mode':
-                mode['m'] = v[0]
-                self.upd_bar.setValue(0)
-                if v[0] == 'delta':
-                    self.set_status(t('u6_delta_st', mb=v[1] / 1e6))
-                else:
-                    self.set_status(t('u6_full_st', mb=v[1] / 1e6))
-            else:
-                d, n, sp, eta = v
-                self.upd_bar.setValue(int(1000 * d / max(n, 1)))
-                e = f'{int(eta // 60)}:{int(eta % 60):02d}'
-                tag = t('u6_delta') if mode['m'] == 'delta' else t('u6_full')
-                self.upd_bar.setFormat(tag + '  ·  ' + t('u_prog', p=100 * d / max(n, 1), d=d / 1e6, t=n / 1e6, r=(n - d) / 1e6, s=sp / 1e6, eta=e))
-
-        def ok(r):
-            self._updating = False
-            if r is None:
-                if not silent: self.set_status(t('u_none', v=VERSION)); info(self, t('u_none', v=VERSION))
-                return
-            if r[0] == 'avail':
-                self.set_status(t('u_avail', v=r[1]['version'])); self.titlebar.b_upd.setStyleSheet('background:#16A34A'); return
-            self._force_full_update = False
-            if isinstance(r[1], dict):
-                self.set_status(t('u6_apply_delta', n=len(r[1].get('files', []))))
-            else:
-                self.set_status(t('u_install') if 'setup' in os.path.basename(r[1]).lower() else t('u_apply'))
-            if updater.apply_and_restart(r[1]):
-                QTimer.singleShot(600, QApplication.instance().quit)
-            else:
-                self.upd_bar.setVisible(False); info(self, t('u_dev'))
-
-        def fail(e):
-            self._updating = False; self.upd_bar.setVisible(False)
-            if not silent: error(self, t('u_fail', e=e))
-        w = run_bg(job, on_done=ok, on_fail=fail, on_progress=prog)
+        """Ayarlar'daki "Güncellemeleri denetle": üst çubuktaki Güncelle düğmesiyle aynı akış."""
+        ctl = self.core.updates if self.core is not None else None
+        if ctl is None: return
+        if ctl.state.get('status') == 'available' and not silent:
+            ctl.run()
+        else:
+            self.topbar.show_result = not silent
+            ctl.check(silent=silent)
 
     # ----------------------------------------------------------- eşitleme
+    def _draw_sync_state(self, st=None):
+        s = self.settings
+        if st is None:
+            st = 'idle' if (s.get('gh_token') or '').strip() else 'off'
+        self.topbar.set_sync(st)
+        self.topbar.set_lan('on' if self.lan is not None else 'off')
+
     def do_sync(self, after=None):
         from ..core import sync
         s = self.settings
         if not (s.get('gh_token') or '').strip():
             info(self, t('sync_need')); self.goto('settings'); return
-        self.set_status('⇅ …')
+        self.set_status('⇅ …'); self.topbar.set_sync('syncing')
 
         def ok(r):
             a, u, rl = r
             self.set_status(t('s_synced', a=a, u=u) + (('  ·  ' + t('s_rate', r=rl.get('remaining'), l=rl.get('limit'))) if rl.get('limit') else ''))
+            self._draw_sync_state('idle')
             self.pages['archive'].refresh()
             if after: after()
-        run_bg(sync.github_sync, s, self.archive, on_done=ok, on_fail=lambda e: (self.set_status(''), error(self, e)))
+
+        def fail(e):
+            self.set_status(''); self._draw_sync_state('error'); error(self, e)
+        run_bg(sync.github_sync, s, self.archive, on_done=ok, on_fail=fail)
+
+    def do_lan(self, on_done=None):
+        """Wi-Fi düğmesi: aynı ağdaki cihazları bul ve hepsiyle eşitle (kayıtlar silinmeden birleştirilir)."""
+        from ..core import sync
+        s = self.settings; a = self.archive
+        self.topbar.set_lan('busy'); self.set_status(fi18n.t('fc.lan.busy'))
+
+        def job():
+            peers = sync.discover(s)
+            res = []
+            for p in peers:
+                try: res.append((p['name'], sync.lan_sync_with(s, a, p)))
+                except Exception as e: res.append((p['name'], str(e)))
+            return res
+
+        def ok(res):
+            self._draw_sync_state()
+            if not res:
+                msg = t('s_lan_none')
+            else:
+                msg = '\n'.join(f'{n}: ' + (t('s_synced', a=r[0], u=r[1]) if isinstance(r, tuple) else r) for n, r in res)
+                try: self.pages['archive'].refresh()
+                except Exception: pass
+            self.set_status(msg.replace('\n', '  ·  '))
+            if on_done: on_done(msg)
+
+        def fail(e):
+            self._draw_sync_state(); self.set_status(e)
+            if on_done: on_done(e)
+        run_bg(job, on_done=ok, on_fail=fail)
 
     def _lan_merged(self, r, name):
         self.set_status(t('lan_merged', n=name, a=r[0], u=r[1]))
