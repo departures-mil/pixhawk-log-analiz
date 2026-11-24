@@ -235,7 +235,7 @@ def init(app, settings, auto_update=True):
     staging = os.path.join(data_dir(), 'guncelleme')
     os.makedirs(staging, exist_ok=True)
     u = Updater(repo=REPO, app=CORE_APP, version=VERSION, channel='win-app', setup_channel='win-setup', staging=staging,
-                spawn=_spawn(staging))
+                spawn=_spawn(staging), setup_args=None)   # Inno kurulumu: sessiz kurulum + yeniden açma _spawn'da (SETUP_ARGS)
     if getattr(sys, 'frozen', False) and not _installed_dir(os.path.dirname(sys.executable)):
         u.cfg['channel'] = 'win-exe'          # taşınabilir tek exe
     confirm_started(staging, VERSION)
