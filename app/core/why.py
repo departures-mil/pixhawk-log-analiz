@@ -135,6 +135,27 @@ def _end_t(A):
     return A.L.duration
 
 
+_CAL = None
+
+
+def calibrate(raw, cause):
+    """Ham güveni, uzman etiketli gerçek kazalarda ölçülmüş isabet oranına çevir (app/data/calib.json,
+    tools_data/calibrate.py ile leave-one-out doğrulanır). Dosya yoksa ham değer döner."""
+    global _CAL
+    if _CAL is None:
+        try:
+            import json, os
+            _CAL = json.load(open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'calib.json'), encoding='utf-8'))
+        except Exception:
+            _CAL = {}
+    if not _CAL: return raw
+    import math
+    lg = lambda p: math.log(min(max(p, 1e-3), 1 - 1e-3) / (1 - min(max(p, 1e-3), 1 - 1e-3)))
+    pr = _CAL.get('prior', {}).get(cause, _CAL.get('global', 0.5))
+    z = _CAL['a'] * lg(raw) + _CAL['c'] * lg(pr) + _CAL['b']
+    return max(0.1, min(0.95, 1 / (1 + math.exp(-z))))
+
+
 def build(A):
     """Dil bağımsız sonuç: anahtarlar + sayılar. render() ile metne çevrilir."""
     v = A.verdict.get('kind')
@@ -216,10 +237,12 @@ def build(A):
     if dom and A.health.get(dom):
         ev_items += list(A.health[dom].get('findings') or [])[:3]
     conf = max(0.2, min(0.97, conf))
+    conf_raw = conf
+    conf = calibrate(conf, c)
     wxs = {k: wx.get(k) for k in ('time_utc', 'temp', 'rh', 'wind', 'gust', 'dir', 'precip', 'cloud', 't')} if wx else {}
     mlp = getattr(A, 'ml_p', None)
     if mlp is not None: notes.append(('n_ml', {'p': int(round(mlp * 100))}))
-    return {'wx': wxs, 'wx_event': bool(getattr(A, 'weather_event', None)), 'kind': v, 'cause': c, 'tc': float(root.get('t', _end_t(A)) or 0), 'te': float(_end_t(A)), 'conf': round(conf, 2),
+    return {'wx': wxs, 'wx_event': bool(getattr(A, 'weather_event', None)), 'kind': v, 'cause': c, 'tc': float(root.get('t', _end_t(A)) or 0), 'te': float(_end_t(A)), 'conf': round(conf, 2), 'conf_raw': round(conf_raw, 2),
             'hard': hard, 'evidence': ev_items, 'chain': root.get('chain') or [], 'notes': notes, 'others': others}
 
 

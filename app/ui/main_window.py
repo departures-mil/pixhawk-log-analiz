@@ -353,6 +353,8 @@ class MainWindow(FcWindow):
                     from ..core import fleet, anomaly
                     fleet.ensure_aircraft(arc, A)
                     anomaly.learn(A, uid)
+                    from ..core import baseline
+                    baseline.compare(A, arc, uid)
                 except Exception as e:
                     crash.note(f'fleet/anomaly: {e}')
             if s.get('online', True) and s.get('weather_online', True):

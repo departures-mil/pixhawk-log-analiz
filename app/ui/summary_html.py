@@ -54,6 +54,14 @@ def build(A, lg):
         h.append('</td></tr></table>')
     else:
         h.append('<p><a href="fb:why" style="color:#86EFAC">' + E(_fbt(lg)) + '</a></p>')
+    # Aynı aracın geçmişiyle karşılaştırma
+    try:
+        from ..core import baseline
+        bh, bl = baseline.render(A, lg)
+    except Exception:
+        bh, bl = None, []
+    if bl:
+        h.append(f'<p><b style="color:#FBBF24">📈 {E(bh)}</b><ul>' + ''.join(f'<li>{E(x)}</li>' for x in bl) + '</ul></p>')
     # Sağlık
     h.append(f'<h3 style="color:#93C5FD">{E(R("summary", lg))}</h3><table width="100%" cellpadding="5" cellspacing="2">')
     for k, x in A.health.items():
