@@ -109,6 +109,13 @@ def harvest():
     man = json.load(open(mf)) if os.path.exists(mf) else {}
     tf = os.path.join(BENCH, 'tried.json')
     seen = set(man) | (set(json.load(open(tf))) if os.path.exists(tf) else set())
+    if os.environ.get('BENCH_SKIP_KNOWN'):      # ayrı (dokunulmamış) test seti: geliştirme setindeki konular alınmaz
+        seen |= set(labels())
+        try:
+            import gzip
+            seen |= set(json.load(gzip.open(os.path.join(ROOT, 'tools_data', 'crashbench', 'threads.json.gz'), 'rt', encoding='utf-8')))
+        except Exception:
+            pass
     total = sum(x.get('mb', 0) for x in man.values())
     need = {'crash': N_CRASH - sum(1 for x in man.values() if x['label'] == 'crash'),
             'normal': N_NORMAL - sum(1 for x in man.values() if x['label'] == 'normal')}
@@ -172,7 +179,7 @@ def threads():
     tools_data/crashbench/threads.json.gz. Etiketler bu metinlerden elle çıkarılıp labels.json'a yazılır."""
     import gzip
     man = json.load(open(os.path.join(BENCH, 'manifest.json')))
-    out_p = os.path.join(ROOT, 'tools_data', 'crashbench', 'threads.json.gz')
+    out_p = os.path.join(ROOT, 'tools_data', 'crashbench', os.environ.get('BENCH_THREADS_OUT', 'threads.json.gz'))
     out = {}
     if os.path.exists(out_p):
         try: out = json.load(gzip.open(out_p, 'rt', encoding='utf-8'))
