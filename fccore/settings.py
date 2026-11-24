@@ -1,4 +1,4 @@
-"""fccore.settings — Falcon ayarlar ızgarası. Sıra: [Görünüm] · uygulamanın kartları · [Kullanım Limitleri] ·
+"""fccore.settings — Falcon ayarlar ızgarası. Sıra: [Görünüm] · uygulamanın kartları · [Asistan Agent] · [Kullanım Limitleri] ·
 [Otomatik hata raporu] · [Hakkında] · Admin ile iletişim (HER ZAMAN SON).
     grid = settings.build(cards=[benim_kartim], usage={'firebase': False, 'ai': False}, about={'version': '2.2.0', 'on_check': ctl.check})
     grid.add(yeni_kart)   # iletişim kartı yine sonda kalır
@@ -18,13 +18,17 @@ class SettingsGrid(Columns):
         return super().add(w, before)
 
 
-def build(cards=None, look=True, usage=None, crash=True, about=None, onboarding=None, contact=True):
+def build(cards=None, look=True, usage=None, crash=True, about=None, onboarding=None, contact=True, agent=True):
     g = SettingsGrid()
     if look:
         g.add(C.look_card())
     for c in cards or []:
         if c is not None:
             g.add(c)
+    if agent:
+        from . import agent as _ag
+        if _ag.instance() is not None:
+            g.add(_ag.instance().card())
     if usage is not False:
         g.add(C.usage_card(**(usage or {})))
     if crash:

@@ -21,10 +21,12 @@ from . import storage, i18n  # noqa: E402
 class Core:
     updates = None
     ann = None
+    agent = None
 
 
 def init(app, app_id, repo=None, version='0.0.0', owner=None, data_dir=None, channel='win-app', setup_channel='win-setup',
-         update=True, crash=True, announcements=False, whatsnew=True, onboarding=None, interval_hours=6, updater_kwargs=None):
+         update=True, crash=True, announcements=False, whatsnew=True, onboarding=None, interval_hours=6, updater_kwargs=None,
+         agent=True):
     """Tek çağrıda: depo, dil + görünüm (yazı tipleri, QSS, RTL), iletişim kuyruğu, çökme raporu, güncelleme denetimi
     (açılış + 6 saat), "neler yeni", isteğe bağlı duyurular ve ilk açılış sihirbazı (after_show() ile)."""
     from . import style, contact, crash as _crash, whatsnew as _wn
@@ -46,6 +48,13 @@ def init(app, app_id, repo=None, version='0.0.0', owner=None, data_dir=None, cha
         from . import announcements as _ann
         core.ann = _ann.start(app=app_id, version=version, on_update=(core.updates.run if core.updates else None))
     core.onboarding = onboarding
+    if agent:   # Asistan Agent: True ya da {'ai': f, 'sync': bool}; üst çubuğa core.agent.button(), ayarlara kart kendiliğinden
+        try:
+            from . import agent as _ag
+            a = agent if isinstance(agent, dict) else {}
+            core.agent = _ag.start(app, app_id, version, ai=a.get('ai'), sync=a.get('sync', True))
+        except Exception:
+            core.agent = None
 
     failed = [a.split('=', 1)[1] for a in sys.argv[1:] if a.startswith('--fc-update-failed=')]
 
