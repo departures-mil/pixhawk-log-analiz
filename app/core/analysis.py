@@ -245,8 +245,9 @@ class Analysis(ExtMixin):
         if tr is None or not self.flights:
             return
         t = tr['t']; rel = tr['rel']
+        if len(t) < 3: return
         # dikey hız (düzgünleştirilmiş)
-        k = max(1, int(len(t) / max(1, (t[-1] - t[0])) * 3))
+        k = min(len(t), max(1, int(len(t) / max(1, (t[-1] - t[0])) * 3)))
         rs = np.convolve(rel, np.ones(k) / k, mode='same')
         vz = np.gradient(rs, t)
         ctun = self.L.s('CTUN')
@@ -256,6 +257,7 @@ class Analysis(ExtMixin):
         labels = np.array(['ground'] * len(t), dtype=object)
         for a, b in self.flights:
             m = (t >= a) & (t <= b)
+            if not m.any() or not np.isfinite(rel[m]).any(): continue   # konum verisi bu uçuşu kapsamıyor
             labels[m] = 'cruise'
             labels[m & (vz > 1.0)] = 'climb'
             labels[m & (vz < -1.0)] = 'descent'
@@ -600,6 +602,10 @@ class Analysis(ExtMixin):
         if self.verdict.get('kind') not in ('crash', 'incident'):
             self.root = {}; return
         end = self.flights[-1][1] if self.flights else L.duration
+        # Kırım anı: otopilotun kendi kırım kaydı uçuş bitişinden sonra ise (uçuş algılanamadıysa) onu esas al
+        hard_t = [e['a'].get('t') for e in self.verdict.get('evidence', []) if e['k'] in ('cr_stat', 'cr_err', 'cr_msg', 'cr_flip')
+                  and isinstance((e.get('a') or {}).get('t'), (int, float))]
+        if hard_t and min(hard_t) > end + 2: end = float(min(hard_t))
         win0 = max(0, end - 240) if self.verdict.get('kind') == 'crash' else (self.flights[0][0] if self.flights else 0)
         cands = []
         def first(cond_list):
@@ -642,9 +648,14 @@ class Analysis(ExtMixin):
                 m = (x['t'] >= win0) & (x['SM'] > 0.6)
                 if m.any(): t_ = float(x['t'][np.argmax(m)])
             cands.append(('compass', t_))
-        # Güç kesintisi (log havada bitti, başka neden yok)
-        if any(e['k'] == 'cr_log_end' for e in self.verdict['evidence']):
-            pw = L.s('POWR')
+        wc0 = min(win0, self.flights[-1][0] - 30) if self.flights else win0     # 'ground mag anomaly' kalkışta yazılır
+        tc = first([t for t, x in L.texts if wc0 <= t <= end + 1 and ('mag anomaly' in x.lower() or 'compass error' in x.lower()
+                                                                   or 'compass variance' in x.lower() or 'mag inconsistent' in x.lower())] +
+                   [t for t, s, c in L.errors if s == 3 and c != 0 and wc0 <= t <= end + 1])
+        if tc is not None and not any(c[0] == 'compass' and c[1] <= tc for c in cands):
+            cands = [c for c in cands if c[0] != 'compass'] + [('compass', tc)]
+        # Güç kesintisi (log havada bitti / kurulu iken kesildi)
+        if any(e['k'] in ('cr_log_end', 'cr_log_cut') for e in self.verdict['evidence']):
             cands.append(('power', end - 0.1))
         # Kontrol kaybı/mekanik (tutum hatası büyük)
         a = L.s('ATT')
@@ -656,18 +667,23 @@ class Analysis(ExtMixin):
         # ya da araç kalkıştan hemen sonra devrilir (yanlış motor sırası/yönü, pervane)
         tm = None
         if self.profile in ('copter', 'heli') or self.vehicle == 'Copter':
-            o = L.s('RCOU'); mx = float(P.get('MOT_PWM_MAX', 0) or 0) or 1950.0
+            o = L.s('RCOU'); mx, mn = self._mot_limits()
             fr = int(P.get('FRAME_CLASS', 1) or 1)
-            nm = {1: 4, 2: 6, 3: 8, 4: 3, 5: 6, 7: 3, 10: 4, 12: 4, 14: 4}.get(fr, 4)
+            nm = {1: 4, 2: 6, 3: 8, 4: 8, 5: 6, 7: 3, 10: 2, 12: 12, 14: 10}.get(fr, 4)   # FRAME_CLASS → motor sayısı
             ch = [f'C{i}' for i in range(1, nm + 1) if o.has(f'C{i}')]
             if len(ch) >= 3:
                 w = (o['t'] >= max(win0, end - 15)) & (o['t'] <= end)
                 if w.sum() > 5:
                     M = np.vstack([o[c][w] for c in ch]); tt = o['t'][w]
-                    hi = M.max(axis=0); lo = np.median(M, axis=0)
-                    sat = (hi >= mx - 40) & (hi - lo > 250)
-                    for i0, i1 in self._runs(tt, sat, 0.4)[:1]:
-                        tm = float(i0)
+                    # gözlenen tavan (MOT_SPIN_MAX'tan da düşük bir sınır olabilir: ör. PWM aralığı farklı kalibre edilmiş)
+                    top = min(mx, float(np.nanmax(M))) if np.nanmax(M) > mn + 300 else mx
+                    hi = M.max(axis=0); med = np.median(M, axis=0); lo = M.min(axis=0)
+                    # bir motor tavana dayanmış, diğerleri çok aşağıda (itki kaybını telafi ediyor)
+                    sat = (hi >= top - 8) & (hi - med > 200)
+                    # ya da bir motor tabana çekilmiş, diğerleri yüksek (karşı koldaki itki kaybı)
+                    floor = (lo <= mn + 8) & (med - lo > 250) & (med > mn + 250)
+                    runs = self._runs(tt, sat, 0.4)[:1] + self._runs(tt, floor, 1.0)[:1]
+                    if runs: tm = float(min(r[0] for r in runs))
             # ESC telemetrisi: bir motorun devri diğerleri dönerken birden sıfıra iner (motor/ESC durması, pervane kopması)
             te_ = self._esc_stop(max(win0, end - 15), end - 0.2)
             if te_ is not None:
@@ -679,13 +695,22 @@ class Analysis(ExtMixin):
                 cands.append(('motor', tm))
         if not cands:
             self.root = {'cause': 'unknown', 'chain': [], 'prevent': 'unknown', 't': end}; return
+        cands = [c for c in cands if c[1] <= end + 2] or cands       # kırımdan sonraki uyarılar neden olamaz
         cands.sort(key=lambda c: c[1])
-        # Öncelik: zincirde ilk ortaya çıkan, ama EKF genelde GPS/pusula/titreşimin sonucudur
-        primary = cands[0]
-        if primary[0] == 'ekf' and len(cands) > 1:
-            primary = next((c for c in cands if c[0] != 'ekf'), primary)
-        if primary[0] == 'control' and tm is not None and tm - primary[1] < (0.5 if getattr(self, 'esc_stop', None) and tm == self.esc_stop[0] else 3):
-            primary = ('motor', tm)   # tutum hatası motor doygunluğunun sonucu
+        # Öncelik: kırımdan önceki son 60 s içinde zincirde ilk ortaya çıkan (eski/kalıcı uyarılar değil);
+        # EKF genelde GPS/pusula/titreşimin, tutum hatası (control) da motor/güç sorununun sonucudur.
+        pool = [c for c in cands if c[1] >= end - 60] or cands
+        nonp = [c for c in pool if c[0] != 'power']
+        if any(c[0] == 'power' for c in pool) and not any(c[1] >= end - 20 for c in nonp):
+            primary = next(c for c in pool if c[0] == 'power')      # log havada aniden kesildi, öncesinde belirti yok
+        else:
+            pool = nonp or pool
+            primary = pool[0]
+            if primary[0] == 'ekf' and len(pool) > 1:
+                primary = next((c for c in pool if c[0] != 'ekf'), primary)
+            if tm is not None and tm >= end - 20 and (primary[0] in ('control', 'compass') or
+                                                     (primary[0] == 'vibration' and primary[1] < end - 30)):
+                primary = ('motor', tm)   # tutum/yön hatası, kırımdan hemen önceki motor doygunluğunun sonucu
         chain = []
         for name, t in cands:
             chain.append({'t': t, 'step': name})
@@ -697,6 +722,18 @@ class Analysis(ExtMixin):
         chain.sort(key=lambda c: c['t'])
         self.root = {'cause': primary[0], 't': primary[1], 'chain': chain, 'prevent': primary[0],
                      'others': [c[0] for c in cands if c[0] != primary[0]]}
+
+    def _mot_limits(self):
+        """Motor çıkışının gerçek üst/alt sınırı (PWM). ArduCopter çıkışı MOT_SPIN_MAX/MIN ile sınırlar:
+        üst = PWM_MIN + (PWM_MAX-PWM_MIN)·SPIN_MAX. Doygunluk bu değere göre aranır (MOT_PWM_MAX'a göre değil)."""
+        P = self.L.params
+        lo = float(P.get('MOT_PWM_MIN', 0) or 0) or float(P.get('RC3_MIN', 0) or 0) or 1000.0
+        hi = float(P.get('MOT_PWM_MAX', 0) or 0) or float(P.get('RC3_MAX', 0) or 0) or 2000.0
+        if hi - lo < 300: lo, hi = 1000.0, 2000.0
+        smax = float(P.get('MOT_SPIN_MAX', 0.95) or 0.95); smin = float(P.get('MOT_SPIN_MIN', 0.15) or 0.15)
+        if not 0.5 < smax <= 1: smax = 0.95
+        if not 0 <= smin < 0.5: smin = 0.15
+        return lo + (hi - lo) * smax, lo + (hi - lo) * smin
 
     def _esc_stop(self, t0, t1):
         """(zaman, motor no) — diğer motorlar >1500 rpm dönerken bir motor ≥0.5 s boyunca ortancanın %15'inin altına düşerse.

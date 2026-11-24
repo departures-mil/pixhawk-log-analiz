@@ -1,1 +1,1 @@
-2026-11-23T11:25:17 logları taslak sürüme yükle
+2026-11-24T04:13:31 v1.0.6: konu yanıtlarını indir, seti büyüt (85 kırım + 35 normal)
