@@ -106,6 +106,9 @@ W = {
     'n_surf_rev': ('Kumanda yüzeyi ters ya da yetersiz ({s}): otopilot bir yöne dönmek istediğinde araç ters yöne döndü. Önce burnu/kanadı elle eğip FBWA modunda yüzeyin doğru yöne gittiğini kontrol edin (SERVOx_REVERSED); yön doğruysa servo hareket aralığını (SERVOx_MIN/MAX) ve mekanik bağlantıyı büyütün.',
                    'Control surface reversed or too weak ({s}): when the autopilot asked for one direction the aircraft rotated the other way. First tilt the aircraft by hand in FBWA and check the surface moves the right way (SERVOx_REVERSED); if it does, increase servo travel (SERVOx_MIN/MAX) and linkage throw.',
                    'سطح التحكم معكوس أو ضعيف ({s}): عندما طلب الطيار الآلي اتجاهاً دارت الطائرة في الاتجاه المعاكس. أمِل الطائرة يدوياً في وضع FBWA وتحقق من اتجاه السطح (SERVOx_REVERSED)؛ إن كان صحيحاً فزد مدى السيرفو (SERVOx_MIN/MAX) وحركة الوصلة.'),
+    'n_ml': ('Öğrenen model görüşü (uzman etiketli gerçek kaza loglarıyla eğitildi): bu logun kaza logu olma olasılığı %{p}.',
+             'Learning-model opinion (trained on expert-labelled real crash logs): probability that this is a crash log {p}%.',
+             'رأي النموذج المتعلّم (مدرّب على سجلات حوادث حقيقية صنّفها خبراء): احتمال أن يكون هذا سجل حادث {p}%.'),
     'n_gaps': ('Bu logda teşhisi sınırlayan eksikler var: {g}. Daha kesin sonuç için LOG_BITMASK varsayılan değerine alınmalı (RCOU, VIBE, PID kayıtları) ve akım sensörü/ESC telemetrisi bağlanmalı.',
                'This log lacks data that limits the diagnosis: {g}. For a more certain result set LOG_BITMASK to default (RCOU, VIBE, PID logging) and connect a current sensor / ESC telemetry.',
                'يفتقر هذا السجل إلى بيانات تحد من التشخيص: {g}. لنتيجة أدق اضبط LOG_BITMASK على القيمة الافتراضية (تسجيل RCOU وVIBE وPID) ووصّل حساس التيار / قياس منظمات السرعة.'),
@@ -210,6 +213,8 @@ def build(A):
         ev_items += list(A.health[dom].get('findings') or [])[:3]
     conf = max(0.2, min(0.97, conf))
     wxs = {k: wx.get(k) for k in ('time_utc', 'temp', 'rh', 'wind', 'gust', 'dir', 'precip', 'cloud', 't')} if wx else {}
+    mlp = getattr(A, 'ml_p', None)
+    if mlp is not None: notes.append(('n_ml', {'p': int(round(mlp * 100))}))
     return {'wx': wxs, 'wx_event': bool(getattr(A, 'weather_event', None)), 'kind': v, 'cause': c, 'tc': float(root.get('t', _end_t(A)) or 0), 'te': float(_end_t(A)), 'conf': round(conf, 2),
             'hard': hard, 'evidence': ev_items, 'chain': root.get('chain') or [], 'notes': notes, 'others': others}
 

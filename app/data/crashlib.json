@@ -12,13 +12,13 @@
 "recall_crash": 0.918,
 "specificity": 0.719,
 "cause_n": 71,
-"cause_match": 41,
-"cause_acc": 0.577,
+"cause_match": 42,
+"cause_acc": 0.592,
 "cause_any": 54,
 "cause_any_acc": 0.761,
 "labels": "expert"
 },
-"date": "2026-11-24 09:20",
+"date": "2026-11-24 09:29",
 "cases": [
 {
 "id": "10063",
@@ -114,7 +114,7 @@
 "mb": 2.7,
 "vehicle": "Plane",
 "got": "incident",
-"got_cause": "stall",
+"got_cause": "control",
 "dur": 23,
 "created": "2023-06-14"
 },

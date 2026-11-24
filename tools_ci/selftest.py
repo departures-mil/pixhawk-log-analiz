@@ -178,3 +178,15 @@ try:
 except Exception:
     import traceback; traceback.print_exc(); bad += 1
 sys.exit(1 if bad else 0)
+
+# ---- v1.0.8: derin teşhis, geri bildirim, öğrenen model
+try:
+    from app.core import diag2, feedback, mlmodel
+    import json as _json
+    _f = feedback._fs_fields({'a': 1, 'b': 1.5, 'c': 'x', 'd': [1, 'y'], 'e': {'k': None}, 'f': True})
+    assert _f['a'] == {'integerValue': '1'} and _f['f'] == {'booleanValue': True} and 'arrayValue' in _f['d']
+    assert feedback._url().endswith(feedback.COLLECTION + '?key=' + feedback.contact._FS.split('?key=')[1])
+    assert mlmodel.adjust('normal', 0, None) == 'normal'
+    print('v1.0.8 diag2 / feedback / mlmodel OK')
+except Exception as _e:
+    print('v1.0.8 FAIL', _e); raise
