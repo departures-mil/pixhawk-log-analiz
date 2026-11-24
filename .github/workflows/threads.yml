@@ -1,0 +1,44 @@
+name: crashbench-threads
+
+# Test setindeki her konunun uzman yanıtlarını indirir (etiket temizliği için) ve yalnız threads.json.gz dosyasını işler.
+# Tetik: tools_data/request_threads.txt değişince ya da elle.
+on:
+  push:
+    paths: ['tools_data/request_threads.txt']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  threads:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Manifest from bench-data release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/bench /tmp/dl && cd /tmp/dl
+          gh release download bench-data --repo "${{ github.repository }}" --pattern 'crashlogs.tgz.part*'
+          cat crashlogs.tgz.part* | tar xz -C /tmp/bench manifest.json
+          python -c "import json;print(len(json.load(open('/tmp/bench/manifest.json'))))"
+      - name: Download full threads
+        run: python tools_data/crashbench.py threads
+      - name: Commit threads
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp tools_data/crashbench/threads.json.gz /tmp/threads.json.gz
+          for i in 1 2 3 4 5; do
+            git fetch -q origin "${{ github.ref_name }}" && git reset -q --hard "origin/${{ github.ref_name }}"
+            cp /tmp/threads.json.gz tools_data/crashbench/threads.json.gz
+            git add tools_data/crashbench/threads.json.gz
+            git commit -qm "crashbench: uzman yanıtları (otomatik)" || exit 0
+            git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            sleep $((i*10))
+          done
+          exit 1

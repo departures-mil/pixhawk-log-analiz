@@ -69,6 +69,14 @@ jobs:
       - name: Commit results
         run: |
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add tools_data/crashbench docs/kirim_test_sonuclari.md app/data/crashlib.json
-          git commit -m "crashbench: gerçek kırım logları doğruluk sonuçları (otomatik)" || exit 0
-          for i in 1 2 3 4; do git pull --rebase -q origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && break; sleep $((i*10)); done
+          mkdir -p /tmp/keep && cp -r tools_data/crashbench docs/kirim_test_sonuclari.md app/data/crashlib.json /tmp/keep/
+          for i in 1 2 3 4 5; do
+            git fetch -q origin "${{ github.ref_name }}" && git reset -q --hard "origin/${{ github.ref_name }}"
+            cp /tmp/keep/crashbench/threads.json.gz tools_data/crashbench/ 2>/dev/null; cp /tmp/keep/crashbench/results.json tools_data/crashbench/
+            cp /tmp/keep/kirim_test_sonuclari.md docs/; cp /tmp/keep/crashlib.json app/data/
+            git add tools_data/crashbench docs/kirim_test_sonuclari.md app/data/crashlib.json
+            git commit -qm "crashbench: gerçek kırım logları doğruluk sonuçları (otomatik)" || exit 0
+            git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            sleep $((i*10))
+          done
+          exit 1
