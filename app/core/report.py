@@ -23,8 +23,8 @@ def _strip_md(s):
     return re.sub(r'\*\*(.+?)\*\*', r'\1', s).replace('`', '')
 
 
-SECTIONS = ['summary', 'facts', 'root', 'ai', 'health', 'anomaly', 'pilot', 'weather', 'phases', 'charts', 'timeline', 'params', 'thresholds', 'verify']
-SHORT = ['summary', 'facts', 'root', 'ai', 'health', 'anomaly', 'weather', 'params', 'verify']
+SECTIONS = ['summary', 'incident', 'facts', 'root', 'ai', 'health', 'anomaly', 'pilot', 'weather', 'phases', 'charts', 'timeline', 'params', 'thresholds', 'verify']
+SHORT = ['summary', 'incident', 'facts', 'root', 'ai', 'health', 'anomaly', 'weather', 'params', 'verify']
 
 
 def resolve_sections(cfg=None, mode='long'):
@@ -82,6 +82,49 @@ class ReportData:
 
     def t(self, key, **a):
         return texts.T(key, self.lang, **a)
+
+    def incident(self):
+        """Resmî olay raporu içeriği (yalnız kaza ya da ciddi sorunlu uçuşta): [(başlık, [satırlar] | tablo)]."""
+        A = self.A; lg = self.lang; v = A.verdict.get('kind')
+        if v not in ('crash', 'incident') or (v == 'incident' and A.verdict.get('severity') == 'minor'): return None
+        y = why_mod.render(A, lg, fmt_t) or {}
+        f = A.facts; tr = A.track
+        place = f"{tr['lat'][-1]:.6f}, {tr['lon'][-1]:.6f}" if tr is not None and len(tr['lat']) else '-'
+        info = getattr(A, 'info', {}) or {}
+        cls = texts.T('v_' + texts.vkey(A.verdict), lg)
+        b1 = [(R('inc_class', lg), cls), (R('f_vehicle', lg), f"{A.vehicle} · {A.L.version or '-'}"),
+              (R('inc_serial', lg), getattr(A, 'serial', '') or '-'), (R('f_date', lg), self.flight_date),
+              (R('inc_time', lg), fmt_t(why_mod._end_t(A))), (R('inc_place', lg), place),
+              (R('inc_operator', lg), info.get('pilot') or ''), (R('report_id', lg), self.id)]
+        b2 = [y['sentence']] if y else [texts.T('v_desc_' + texts.vkey(A.verdict), lg)]
+        b3 = [[fmt_t(s_['t']), texts.chain_step(s_, lg, fmt_t)] for s_ in (A.root or {}).get('chain', [])]
+        b4 = [texts.render(e, lg, fmt_t) for e in A.verdict.get('evidence', []) if e.get('k') != 'cr_landed']
+        if y: b4 += [e for e in y.get('evidence', []) if e not in b4]
+        b5 = list(y.get('notes', [])) if y else []
+        oth = (A.root or {}).get('others') or []
+        if oth: b5.append(R('root_others', lg) + ': ' + ', '.join(self.t('cause_' + o) for o in oth))
+        try:
+            from . import baseline
+            bh, bl = baseline.render(A, lg)
+            if bl: b5.append(R('inc_baseline', lg) + ': ' + '; '.join(bl))
+        except Exception:
+            pass
+        ph = getattr(A, 'physics', None) or {}
+        if ph.get('tw'): b5.append(f"{R('inc_physics', lg)}: T/W ≈ {ph['tw']}, hover {round(ph['hover_thr'] * 100)}%" +
+                                   (f", {ph['hover_w']} W" if ph.get('hover_w') else ''))
+        c = (A.root or {}).get('cause')
+        b6 = [y['prevent']] if y and y.get('prevent') else ([self.t('prevent_' + c)] if c else [])
+        b7 = [y['conf_text']] if y else []
+        gaps = list(getattr(A, 'gaps', []) or [])
+        if gaps:
+            try:
+                b7.append(R('inc_gaps', lg) + ': ' + why_mod._na({'g': gaps}, lg)['g'])
+            except Exception:
+                b7.append(R('inc_gaps', lg) + ': ' + ', '.join(gaps))
+        b7.append(R('inc_limits', lg))
+        sign = [[R(k, lg), '', '', ''] for k in ('inc_prepared', 'inc_reviewed', 'inc_approved')]
+        return {'b1': b1, 'b2': b2, 'b3': b3, 'b4': b4, 'b5': b5, 'b6': b6, 'b7': b7, 'sign': sign,
+                'sign_h': ['', R('inc_name', lg), R('inc_sign', lg), R('inc_date', lg)]}
 
     def facts_rows(self):
         A = self.A; L = A.L; f = A.facts; lg = self.lang
@@ -240,6 +283,21 @@ def build_docx(rd: ReportData, path, lh=None):
             cols = [[None, None, {'good': 'DCFCE7', 'warn': 'FEF3C7', 'bad': 'FEE2E2'}[h['status']]] for _, h in items]
             heading(R('summary', lg), 2)
             table(rows, [R('h_area', lg), R('h_score', lg), R('h_status', lg)], [8, 3, 4], cols)
+
+    def s_incident():
+        d = rd.incident()
+        if not d: return
+        heading(R('inc_title', lg))
+        heading(R('inc_1', lg), 2); table([list(r) for r in d['b1']], None, [6, 11])
+        heading(R('inc_2', lg), 2)
+        for x in d['b2']: para(x, bold=True, size=11)
+        if d['b3']:
+            heading(R('inc_3', lg), 2); table(d['b3'], [R('e_time', lg), R('e_text', lg)], [3, 14])
+        for key, items in (('inc_4', d['b4']), ('inc_5', d['b5']), ('inc_6', d['b6']), ('inc_7', d['b7'])):
+            if not items: continue
+            heading(R(key, lg), 2)
+            for x in items: para('• ' + x, size=9.5, space=2)
+        heading(R('inc_8', lg), 2); table(d['sign'], d['sign_h'], [4, 5, 4, 4])
 
     def s_facts():
         heading(R('facts', lg), 2)
@@ -677,6 +735,24 @@ def build_pdf(rd: ReportData, path, lh=None, encrypt=None):
             items = list(A.health.items())
             story.append(tbl([[rd.t('dom_' + k), str(h['score']), rd.t('st_' + h['status'])] for k, h in items], [R('h_area', lg), R('h_score', lg), R('h_status', lg)],
                              [9 * cm, 3 * cm, W_ - 12 * cm], [[None, None, {'good': 'DCFCE7', 'warn': 'FEF3C7', 'bad': 'FEE2E2'}[h['status']]] for _, h in items]))
+
+    def s_incident():
+        d = rd.incident()
+        if not d: return
+        if long_: story.append(PageBreak())
+        story.append(P(R('inc_title', lg), H1))
+        story.extend([P(R('inc_1', lg), H2), tbl([list(r) for r in d['b1']], None, [5.5 * cm, W_ - 5.5 * cm])])
+        story.append(P(R('inc_2', lg), H2))
+        for x in d['b2']: story.append(P(x, ParagraphStyle('b2', parent=base, fontName='DJB')))
+        if d['b3']:
+            story.extend([P(R('inc_3', lg), H2), tbl(d['b3'], [R('e_time', lg), R('e_text', lg)], [3 * cm, W_ - 3 * cm])])
+        for key, items in (('inc_4', d['b4']), ('inc_5', d['b5']), ('inc_6', d['b6']), ('inc_7', d['b7'])):
+            if not items: continue
+            story.append(P(R(key, lg), H2))
+            for x in items: story.append(P('• ' + x))
+        story.append(P(R('inc_8', lg), H2))
+        sg = [list(r) for r in d['sign']]
+        story.append(tbl(sg, d['sign_h'], [3.5 * cm] + [(W_ - 3.5 * cm) / 3] * 3, fs=9))
 
     def s_facts():
         story.append(P(R('facts', lg), H2))

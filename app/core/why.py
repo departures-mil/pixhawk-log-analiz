@@ -131,6 +131,8 @@ def _end_t(A):
     ev = A.verdict.get('evidence') or []
     ts = [e['a']['t'] for e in ev if e.get('k') in HARD and isinstance(e.get('a'), dict) and 't' in e['a']]
     if ts: return min(ts)
+    fl = getattr(A, 'fall', None)
+    if fl: return fl['t']                     # kontrolsüz düşüşte çarpma anı
     if A.flights: return A.flights[-1][1]
     return A.L.duration
 
@@ -318,8 +320,50 @@ def ai_explain(A, settings, usage, lang, tfmt):
            'health': {k: {'score': h['score'], 'status': h['status']} for k, h in A.health.items()},
            'facts': {k: v for k, v in A.facts.items() if isinstance(v, (int, float, str))}}
     import json
+    ctx['measurements'] = grounding(A, tfmt)
     prompt = (f'Write in {LANG_NAME.get(lang, "Turkish")} a clear, decisive "Why did it crash?" explanation for this ArduPilot flight. '
-              'Start with ONE sentence verdict (cause + time). Then 3-6 bullet points of evidence with times, then the most likely physical '
+              'Start with ONE sentence verdict (cause + time). Then 3-6 bullet points of evidence, then the most likely physical '
               'failure, then numbered fix steps with exact parameter names. If the data is inconclusive say so and say what to check. '
-              'Max 250 words. No tables.\n' + json.dumps(ctx, ensure_ascii=False, default=str)[:12000])
-    return AI.chat(settings, usage, 'You are a senior ArduPilot accident investigator.', prompt, max_tokens=1500)
+              'Max 250 words. No tables.\n'
+              'GROUNDING RULES: use ONLY the numbers, times and messages in the JSON below. Every evidence bullet must end with its '
+              'source in square brackets, e.g. [RCOU.C8 = 1949 µs @ 22:16] or [MSG @ 22:21 "EKF variance"]. Never invent a value, '
+              'time, motor number or parameter value that is not in the data; if something is unknown, write "not in log".\n'
+              + json.dumps(ctx, ensure_ascii=False, default=str)[:14000])
+    out = AI.chat(settings, usage, 'You are a senior ArduPilot accident investigator. You only state facts present in the supplied data.',
+                  prompt, max_tokens=1500)
+    return _check_grounding(out, ctx)
+
+
+def grounding(A, tfmt):
+    """Yapay zekâya verilen ölçüm özeti: kırım anı çevresindeki gerçek değerler (zaman + kaynak alan)."""
+    import numpy as np
+    L = A.L; te = _end_t(A); out = []
+    def add(msg, fld, t0, t1, fn='max'):
+        s = L.s(msg)
+        if not s.has(fld): return
+        m = (s['t'] >= t0) & (s['t'] <= t1)
+        if not m.any(): return
+        x = s[fld][m]; k = int(np.nanargmax(x) if fn == 'max' else np.nanargmin(x))
+        out.append({'src': f'{msg}.{fld}', fn: round(float(x[k]), 2), 'at': tfmt(float(s['t'][m][k]))})
+    w0 = te - 15
+    for f in ('Roll', 'Pitch'): add('ATT', f, w0, te + 2)
+    add('BARO', 'Alt', w0, te + 2, 'min'); add('BAT', 'Volt', w0, te + 2, 'min'); add('BAT', 'Curr', w0, te + 2)
+    add('POWR', 'Vcc', w0, te + 2, 'min'); add('VIBE', 'VibeZ', w0, te + 2)
+    for c in [c for _, c in A.motor_channels()] if hasattr(A, 'motor_channels') else []:
+        add('RCOU', c, w0, te + 2); add('RCOU', c, w0, te + 2, 'min')
+    msgs = [{'at': tfmt(t), 'text': x} for t, x in L.texts if w0 - 45 <= t <= te + 3][:25]
+    modes = [{'at': tfmt(t), 'mode': n, 'reason': r} for t, n, _, r in L.modes if w0 - 60 <= t <= te + 3]
+    return {'crash_time': tfmt(te), 'values': out, 'messages': msgs, 'modes': modes,
+            'motor_fault': (A.root or {}).get('motor'), 'physics': getattr(A, 'physics', None) or {}}
+
+
+def _check_grounding(text, ctx):
+    """Yanıttaki saat damgalarını veriyle karşılaştır; veride olmayan zamanlar varsa yanıtın sonuna uyarı ekle."""
+    if not text: return text
+    import re, json
+    blob = json.dumps(ctx, ensure_ascii=False, default=str)
+    times = set(re.findall(r'\b\d{1,2}:\d{2}(?::\d{2})?(?:\.\d)?\b', text))
+    bad = [t for t in times if t not in blob]
+    if bad:
+        text += '\n\n⚠ ' + ', '.join(sorted(bad)[:5]) + ' — log verisinde bulunamadı / not found in the log data.'
+    return text
