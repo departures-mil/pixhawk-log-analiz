@@ -199,6 +199,11 @@ class SettingsPage(Page):
         self.b_crash = button('✉ ' + t('cr_send'), self._send_crash); crh.addWidget(self.b_crash); f.addRow(crh)
         v.addWidget(g)
 
+        # Asistan Agent (admin iletişimin önünde)
+        from . import ajan as _ajan
+        if _ajan.AJAN is not None:
+            v.addWidget(_ajan.AJAN.card(self))
+
         # Admin ile iletişim (en sonda)
         g = QGroupBox(t('s_contact')); f = QFormLayout(g)
         f.addRow(label(t('s_contact_desc'), 'muted', wrap=True))
