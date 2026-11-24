@@ -157,4 +157,24 @@ try:
     print('v1.0.4 flight info / why / solver / glossary OK')
 except Exception:
     import traceback; traceback.print_exc(); bad += 1
+# ---- v1.0.6: uçuş öncesi .param kontrol listesi, PID/TECS ayar önerileri, yama seçimi
+try:
+    from app.core import preflight as PF, tuning as TU, updater as UP
+    Ln = loader.load(os.path.join(d, 'normal.BIN')); An = analysis.Analysis(Ln)
+    for lg in ('tr', 'en', 'ar'):
+        r = PF.checklist(Ln.params, 'Plane', lg); assert r['items'] and r['status'] in ('go', 'caution', 'nogo'), r
+        assert PF.to_text(r).count('\n') > 5
+        tr_ = TU.analyze(An, lg); assert 'axes' in tr_ and tr_['disclaimer']
+    bad_p = dict(Ln.params); bad_p.update({'ARMING_CHECK': 0, 'THR_FAILSAFE': 0, 'BATT_MONITOR': 0})
+    r = PF.checklist(bad_p, 'Plane', 'tr'); assert r['status'] == 'nogo', r['counts']
+    fixed = PF.apply_fixes(bad_p, r); assert fixed['ARMING_CHECK'] == 1 and fixed['THR_FAILSAFE'] == 1
+    r2 = PF.checklist({'FS_THR_ENABLE': 1, 'FS_THR_VALUE': 975, 'RC3_MIN': 1100, 'FS_EKF_ACTION': 1, 'ARMING_CHECK': 1,
+                       'BATT_MONITOR': 4, 'BATT_LOW_VOLT': 14.0, 'BATT_CRT_VOLT': 13.2, 'BATT_FS_LOW_ACT': 2, 'BATT_FS_CRT_ACT': 1,
+                       'BATT_CAPACITY': 5000, 'RTL_ALT': 3000, 'LOG_BITMASK': 180222, 'FENCE_ENABLE': 1, 'FENCE_ACTION': 1}, 'Copter', 'en')
+    assert r2['status'] == 'go', [(i['id'], i['st'], i['text']) for i in r2['items'] if i['st'] != 'pass']
+    # yama seçimi: geliştirici çalıştırmasında yama yok → tam dosya
+    assert UP.current_mode() is None
+    print('v1.0.6 preflight / tuning / updater OK', r['counts_t'])
+except Exception:
+    import traceback; traceback.print_exc(); bad += 1
 sys.exit(1 if bad else 0)

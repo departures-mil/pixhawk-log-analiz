@@ -46,7 +46,7 @@ jobs:
         env:
           PYTHONIOENCODING: utf-8
           PYTHONUTF8: '1'
-        run: python tools_ci/selftest.py
+        run: python tools_ci/test_delta.py && python tools_ci/test_tuning.py && python tools_ci/selftest.py
 
       - name: Build exe (portable)
         run: pyinstaller --noconfirm --clean PixhawkLogAnaliz.spec
@@ -77,6 +77,24 @@ jobs:
           Start-Sleep 3
           Write-Host "install/upgrade/uninstall OK"
 
+      # "Yalnızca değişen kısımlar": son 5 sürümün her biri için yama üret, CI içinde eski dosyaya uygulayıp
+      # yeni sürümle SHA-256 düzeyinde birebir aynı olduğunu doğrula; tam dosyanın %70'inden büyük yamayı atla.
+      - name: Delta patches (last 5 releases, verified)
+        if: steps.ver.outputs.exists != 'True'
+        continue-on-error: true
+        timeout-minutes: 60
+        env:
+          PYTHONIOENCODING: utf-8
+          GH_TOKEN: ${{ github.token }}
+        run: python tools_ci/make_patches.py --version ${{ steps.ver.outputs.version }} --new-dir dist/PixhawkLogAnaliz --new-portable dist/PixhawkLogAnaliz.exe --setup dist/PixhawkLogAnaliz_Setup_${{ steps.ver.outputs.version }}.exe --out dist/patches
+
+      - uses: actions/upload-artifact@v4
+        if: steps.ver.outputs.exists != 'True'
+        with:
+          name: patches-v${{ steps.ver.outputs.version }}
+          path: dist/patches/
+          if-no-files-found: ignore
+
       - uses: actions/upload-artifact@v4
         with:
           name: PixhawkLogAnaliz-v${{ steps.ver.outputs.version }}
@@ -102,6 +120,11 @@ jobs:
         run: |
           Start-Sleep 2
           gh release upload "v${{ steps.ver.outputs.version }}" "dist/PixhawkLogAnaliz.exe" --repo "${{ github.repository }}" --clobber
+          # yamalar + dizin (adları .exe ile bitmez; eski güncelleyicilerin seçimini etkilemez)
+          if (Test-Path dist/patches/delta-index.json) {
+            $files = Get-ChildItem dist/patches/* | ForEach-Object { $_.FullName }
+            gh release upload "v${{ steps.ver.outputs.version }}" @files --repo "${{ github.repository }}" --clobber
+          }
         env:
           GH_TOKEN: ${{ github.token }}
 

@@ -53,7 +53,9 @@ def make(case, prof='plane', dur=300.0, hz=50.0, seed=1):
         climb = (tt % 120) < 40
         dh = np.where(climb, 2.0 + 0.2 * rnd.standard_normal(len(tt)), 0.1 * rnd.standard_normal(len(tt)))
         h = 100 + np.cumsum(dh) * 0.1
-        hdem = h + np.where(climb, -15, 0) + (6 * np.sin(2 * np.pi * tt / 20.0) if case == 'porp' else 0.3 * rnd.standard_normal(len(tt)))
+        hdem = h + np.where(climb, -15, 0)
+        if case == 'porp': h = h + 6 * np.sin(2 * np.pi * tt / 20.0)        # hedef sabit, uçak inip çıkıyor
+        else: hdem = hdem + 0.3 * rnd.standard_normal(len(tt))
         th = np.where(climb, 1.0, 0.60 + 0.02 * rnd.standard_normal(len(tt)))
         sp = 20 + np.where(climb, -3, 0) + 0.3 * rnd.standard_normal(len(tt))
         L.msgs['TECS'] = Series(t=tt, h=h, hdem=hdem, dh=dh, sp=sp, spdem=np.full_like(tt, 20.0), th=th, f=np.zeros_like(tt))
@@ -106,7 +108,11 @@ def run():
     from app.core.loader import LogData as LD
     A0 = A_(LD(), 'plane', 100); r = tuning.analyze(A0, 'tr')
     check('nodata', all(x['status'] == 'na' for x in r['axes']), r)
-    n = 13
+    A1 = make('good'); A1.flights = []; r = tuning.analyze(A1, 'tr')
+    check('noflight', not r['axes'] and r.get('note'), r)
+    A2 = make('good', hz=10.0); rr, a = recs(tuning.analyze(A2, 'tr'), 'roll')
+    check('lowrate', a['conf'] == 'c_lo' and not rr, a)
+    n = 15
     print(f'tuning: {ok}/{n} OK'); [print('  FAIL', f) for f in fails]
     return ok == n
 

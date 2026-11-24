@@ -1,0 +1,47 @@
+"""v1.0.6 arayüz metinleri: yalnızca değişen kısımlar (yama) güncellemesi, uçuş öncesi .param kontrol listesi,
+PID / TECS ayar önerileri (Türkçe / English / العربية)."""
+
+U6 = {
+    # ---- güncelleme
+    'u6_delta': ('Yalnızca değişen kısımlar', 'Only the changed parts', 'الأجزاء المتغيرة فقط'),
+    'u6_full': ('Tam dosya', 'Full file', 'الملف الكامل'),
+    'u6_delta_st': ('Yalnızca değişen kısımlar indiriliyor ({mb:.1f} MB)…', 'Downloading only the changed parts ({mb:.1f} MB)…', 'جارٍ تنزيل الأجزاء المتغيرة فقط ({mb:.1f} ميغابايت)…'),
+    'u6_full_st': ('Tam dosya indiriliyor ({mb:.1f} MB)…', 'Downloading the full file ({mb:.1f} MB)…', 'جارٍ تنزيل الملف الكامل ({mb:.1f} ميغابايت)…'),
+    'u6_apply_delta': ('Yama doğrulandı (SHA-256), {n} dosya güncelleniyor; program yeniden açılacak…',
+                       'Patch verified (SHA-256), updating {n} files; the program will restart…',
+                       'تم التحقق من التصحيح (SHA-256)، جارٍ تحديث {n} ملفات؛ سيُعاد تشغيل البرنامج…'),
+    # ---- Parametre Merkezi sekmeleri
+    'pc_tab_pre': ('Uçuş öncesi kontrol', 'Pre-flight check', 'فحص ما قبل الطيران'),
+    'pc_tab_tune': ('PID / TECS ayar önerileri', 'PID / TECS tuning advice', 'توصيات ضبط PID / TECS'),
+    # ---- uçuş öncesi kontrol listesi
+    'pf_help': ('Uçuştan önce .param dosyanızı (ya da açık logdaki parametreleri) güvenlik açısından denetler: failsafe, batarya eşikleri, arm kontrolleri, kalibrasyon, çıkışlar, modlar, eve dönüş ve log. ⛔ kritik maddeler düzeltilmeden uçmayın.',
+                'Checks your .param file (or the parameters of the open log) for safety before flight: failsafes, battery thresholds, arming checks, calibration, outputs, modes, RTL and logging. Do not fly until ⛔ critical items are fixed.',
+                'يفحص ملف .param (أو معاملات السجل المفتوح) من ناحية السلامة قبل الطيران: الطوارئ، عتبات البطارية، فحوص التسليح، المعايرة، المخارج، الأوضاع، العودة والتسجيل. لا تطِر قبل إصلاح البنود الحرجة ⛔.'),
+    'pf_cells': ('Hücre:', 'Cells:', 'الخلايا:'),
+    'pf_auto': ('Otomatik', 'Automatic', 'تلقائي'),
+    'pf_fix': ('Önerilen düzeltmeleri uygula ve kaydet', 'Apply suggested fixes and save', 'طبّق الإصلاحات المقترحة واحفظ'),
+    'pf_fix_q': ('Aşağıdaki değişiklikler parametrelerin bir KOPYASINA uygulanıp yeni .param dosyası olarak kaydedilecek (otopilota yazılmaz):\n\n{x}\n\nDevam edilsin mi?',
+                 'The following changes will be applied to a COPY of the parameters and saved as a new .param file (nothing is written to the autopilot):\n\n{x}\n\nContinue?',
+                 'ستُطبَّق التغييرات التالية على نسخة من المعاملات وتُحفظ في ملف .param جديد (لا يُكتب شيء في الطيار الآلي):\n\n{x}\n\nهل تتابع؟'),
+    'pf_nofix': ('Otomatik düzeltilecek madde yok.', 'There is nothing to fix automatically.', 'لا يوجد ما يُصلَح تلقائياً.'),
+    'pf_save': ('Listeyi kaydet', 'Save checklist', 'احفظ القائمة'),
+    'pf_none': ('Bir .param dosyası açın ya da bir log yükleyin; kontrol listesi otomatik hazırlanır.', 'Open a .param file or load a log; the checklist is prepared automatically.', 'افتح ملف .param أو حمّل سجلاً؛ تُعدّ القائمة تلقائياً.'),
+    'pf_note': ('Bu liste parametre dosyasını denetler; pervane, bağlantı, ağırlık merkezi, kumanda menzili gibi fiziksel kontrollerin yerini tutmaz.',
+                'This list checks the parameter file; it does not replace physical checks such as propellers, linkages, centre of gravity and radio range.',
+                'تفحص هذه القائمة ملف المعاملات؛ ولا تغني عن الفحوص الفيزيائية مثل المراوح والوصلات ومركز الثقل ومدى جهاز التحكم.'),
+    # ---- ayar önerileri
+    'tu_help': ('Açık logdaki PID (PIDR/PIDP/PIDY ya da RATE) ve TECS kayıtlarından hız döngüsünün tepkisini, gecikmesini, salınımlarını ve irtifa/hız tutmayı ölçer; araç tipine göre somut parametre önerileri verir. Önerileri tek tek ve güvenli irtifada deneyin.',
+                'Measures rate-loop response, lag, oscillations and height/speed holding from the PID (PIDR/PIDP/PIDY or RATE) and TECS records of the open log, and gives concrete parameter recommendations for the vehicle type. Try recommendations one at a time at a safe altitude.',
+                'يقيس استجابة حلقة المعدل وتأخيرها وتذبذباتها وتثبيت الارتفاع/السرعة من سجلات PID (PIDR/PIDP/PIDY أو RATE) وTECS في السجل المفتوح، ويقدّم توصيات معاملات محددة حسب نوع المركبة. جرّب التوصيات واحدة تلو الأخرى على ارتفاع آمن.'),
+    'tu_run': ('Yeniden hesapla', 'Recalculate', 'أعد الحساب'),
+    'tu_export': ('Seçilenleri .param olarak kaydet', 'Save selected as .param', 'احفظ المحدد كملف .param'),
+    'tu_copy': ('Seçilenleri kopyala', 'Copy selected', 'انسخ المحدد'),
+    'tu_axis': ('Eksen', 'Axis', 'المحور'), 'tu_cur': ('Mevcut', 'Current', 'الحالي'), 'tu_new': ('Önerilen', 'Suggested', 'المقترح'),
+    'tu_conf': ('Güven', 'Confidence', 'الثقة'), 'tu_why': ('Neden', 'Reason', 'السبب'),
+    'tu_nolog': ('Önce bir log açın: öneriler logdaki uçuş verisinden hesaplanır.', 'Open a log first: the recommendations are computed from its flight data.', 'افتح سجلاً أولاً: تُحسب التوصيات من بيانات الطيران فيه.'),
+    'tu_none_sel': ('Seçili öneri yok.', 'No recommendation selected.', 'لا توجد توصية محددة.'),
+    'tu_exported': ('Kaydedildi: {p}\nMission Planner > Config > Full Parameter List > Load from file ile yükleyip yalnız gerekli satırları yazın.',
+                    'Saved: {p}\nLoad it in Mission Planner > Config > Full Parameter List > Load from file and write only the lines you need.',
+                    'تم الحفظ: {p}\nحمّله في Mission Planner > Config > Full Parameter List > Load from file واكتب الأسطر اللازمة فقط.'),
+    'tu_copied': ('{n} öneri panoya kopyalandı.', '{n} recommendations copied to the clipboard.', 'نُسخت {n} توصيات إلى الحافظة.'),
+}
