@@ -31,6 +31,8 @@ def main():
     server = QLocalServer(); server.listen(sname)
     from app.core import crash
     from app.ui.main_window import MainWindow
+    from app.ui import ajan
+    ajan.kur()
     w = MainWindow()
     crash.install(on_crash=lambda p: w.crashed.emit(p))
 
@@ -44,6 +46,7 @@ def main():
     if not w.login():
         crash.shutdown(); return
     w.apply_role(); w.show_start()
+    ajan.baslat(app, w)
     for a in files:
         w.open_log(a); break
     rc = app.exec()

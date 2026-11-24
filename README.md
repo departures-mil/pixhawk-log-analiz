@@ -37,3 +37,8 @@ pip install -r requirements.txt
 python run.py
 ```
 `app/version.py` içindeki sürüm artırılıp `main`e gönderildiğinde GitHub Actions exe'yi ve Inno Setup kurulum paketini derler, sessiz kurulum testini yapar ve yeni sürümü otomatik yayınlar.
+
+## v1.0.7
+- ✦ **Asistan Agent** (`app/ui/fc_agent.py` = ortak-cekirdek/python/fc_agent.py, bağlantı `app/ui/ajan.py`): bütün programlardaki
+  çalışmayı sayılarla izler (içerik yok), çevrim dışı kurallar + kullanıcının kendi Gemini/Claude anahtarıyla öneri; bildirim + sağ altta ✦ panel;
+  Ayarlar'da "Admin ile iletişim"in önünde kart. Aynı bilgisayardaki programlarla %APPDATA%/FalconCekirdek/agent üzerinden paylaşım.
