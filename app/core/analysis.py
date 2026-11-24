@@ -85,6 +85,8 @@ class Analysis(ExtMixin):
         self._events()
         self._health()
         self._profile_checks()
+        from . import diag2
+        diag2.run(self)
         self._overall()
         self._crash()
         self._root_cause()
@@ -165,7 +167,7 @@ class Analysis(ExtMixin):
             spd[1:] = np.where(dt > 0, d / np.maximum(dt, 1e-3), 0)
             m = (tr['rel'] > 3) | (spd > self.th['fly_speed'])
             flights = self._runs(tr['t'], m, 5.0)
-        self.flip = None; self.esc_stop = None; self.yaw_loss = None
+        self.flip = None; self.esc_stop = None; self.yaw_loss = None; self.motor_fault = None
         if not flights:
             flights = self._flying_fallback()
         # Birleştir (kısa kesintiler)
@@ -701,6 +703,9 @@ class Analysis(ExtMixin):
         # Güç kesintisi (log havada bitti / kurulu iken kesildi)
         if any(e['k'] in ('cr_log_end', 'cr_log_cut') for e in self.verdict['evidence']):
             cands.append(('power', end - 0.1))
+        # Ters takılmış kumanda yüzeyi: zincirin en başı (kalkıştan itibaren)
+        if getattr(self, 'surf_rev', None):
+            cands.append(('control', max(win0, self.surf_rev[0])))
         # Kontrol kaybı/mekanik (tutum hatası büyük)
         a = L.s('ATT')
         if a.has('DesRoll'):
@@ -726,13 +731,23 @@ class Analysis(ExtMixin):
                     sat = (hi >= top - 8) & (hi - med > 200)
                     # ya da bir motor tabana çekilmiş, diğerleri yüksek (karşı koldaki itki kaybı)
                     floor = (lo <= mn + 8) & (med - lo > 250) & (med > mn + 250)
-                    runs = [r for r in self._runs(tt, sat, 0.4) if r[0] <= end + 0.3][:1] + \
-                           [r for r in self._runs(tt, floor, 1.0) if r[0] <= end][:1]
-                    if runs: tm = float(min(r[0] for r in runs))
+                    rs = [r for r in self._runs(tt, sat, 0.4) if r[0] <= end + 0.3][:1]
+                    rf = [r for r in self._runs(tt, floor, 1.0) if r[0] <= end][:1]
+                    runs = rs + rf
+                    if runs:
+                        tm = float(min(r[0] for r in runs))
+                        k = int(np.searchsorted(tt, tm)); k = min(k, len(tt) - 1)
+                        col = M[:, k]
+                        if rs and rs[0][0] == tm:      # tavandaki motor itki kaybediyor; tabandaki onu dengeliyor
+                            self.motor_fault = {'kind': 'sat', 'm': int(ch[int(np.argmax(col))][1:]), 'o': int(ch[int(np.argmin(col))][1:]), 't': tm}
+                        else:                           # tabana çekilen motorun karşısındaki (en yüksek) motor zayıf
+                            self.motor_fault = {'kind': 'floor', 'm': int(ch[int(np.argmax(col))][1:]), 'o': int(ch[int(np.argmin(col))][1:]), 't': tm}
             # ESC telemetrisi: bir motorun devri diğerleri dönerken birden sıfıra iner (motor/ESC durması, pervane kopması)
             te_ = self._esc_stop(max(win0, end - 15), end - 0.2)
             if te_ is not None:
                 self.esc_stop = te_
+                if tm is None or te_[0] <= tm:
+                    self.motor_fault = {'kind': 'esc', 'm': int(te_[1]), 'o': None, 't': float(te_[0])}
                 tm = min(tm, te_[0]) if tm is not None else te_[0]
             if self.flip and self.flights and self.flip[0] - self.flights[-1][0] < 6.5:
                 tm = min(tm, self.flip[0]) if tm is not None else self.flip[0]
@@ -769,7 +784,11 @@ class Analysis(ExtMixin):
                 chain.append({'t': t, 'step': 'mode', 'mode': K.mode_name(self.vehicle, num), 'reason': rsn})
         chain.append({'t': end, 'step': 'end_' + self.verdict['kind']})
         chain.sort(key=lambda c: c['t'])
-        self.root = {'cause': primary[0], 't': primary[1], 'chain': chain, 'prevent': primary[0],
+        if primary[0] == 'motor' and self.motor_fault:
+            mf = dict(self.motor_fault)
+        else:
+            mf = None
+        self.root = {'cause': primary[0], 't': primary[1], 'chain': chain, 'prevent': primary[0], 'motor': mf,
                      'others': [c[0] for c in cands if c[0] != primary[0]]}
 
     def _mot_limits(self):

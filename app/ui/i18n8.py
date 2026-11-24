@@ -1,0 +1,20 @@
+"""v1.0.8 arayüz metinleri (TR/EN/AR): teşhis geri bildirimi."""
+U8 = {
+    'fb_link': ('✔ Teşhis doğru muydu? Bildirin', '✔ Was the diagnosis right? Tell us', '✔ هل كان التشخيص صحيحاً؟ أخبرنا'),
+    'fb_title': ('Teşhis geri bildirimi', 'Diagnosis feedback', 'ملاحظات التشخيص'),
+    'fb_intro': ('Programın kararı ve kök nedeni gerçek sonuçla karşılaştırılarak teşhis kuralları iyileştirilir. Log dosyası, konum ve kişisel bilgi GÖNDERİLMEZ; yalnız teşhis özeti gönderilir.',
+                 'Comparing the program\'s verdict and root cause with what really happened improves the diagnosis rules. The log file, location and personal data are NOT sent; only a diagnosis summary is.',
+                 'تُحسَّن قواعد التشخيص بمقارنة حكم البرنامج وسببه الجذري بما حدث فعلاً. لا يُرسل ملف السجل ولا الموقع ولا أي بيانات شخصية؛ يُرسل ملخص التشخيص فقط.'),
+    'fb_prog': ('Programın kararı: {v} · neden: {c}', 'Program verdict: {v} · cause: {c}', 'حكم البرنامج: {v} · السبب: {c}'),
+    'fb_q': ('Teşhis doğru muydu?', 'Was the diagnosis right?', 'هل كان التشخيص صحيحاً؟'),
+    'fb_yes': ('Doğru', 'Right', 'صحيح'), 'fb_part': ('Kısmen', 'Partly', 'جزئياً'), 'fb_no': ('Yanlış', 'Wrong', 'خطأ'),
+    'fb_outcome': ('Gerçekte ne oldu?', 'What really happened?', 'ماذا حدث فعلاً؟'),
+    'fb_cause': ('Gerçek neden (biliyorsanız)', 'Real cause (if known)', 'السبب الحقيقي (إن كان معروفاً)'),
+    'fb_note': ('Not (ne buldunuz, neyi değiştirdiniz) — isteğe bağlı', 'Note (what you found, what you changed) — optional', 'ملاحظة (ماذا وجدت، ماذا غيّرت) — اختياري'),
+    'fb_consent': ('Teşhis özetinin geliştiriciye gönderilmesine izin veriyorum', 'I allow the diagnosis summary to be sent to the developer', 'أسمح بإرسال ملخص التشخيص إلى المطور'),
+    'fb_send': ('Gönder', 'Send', 'إرسال'),
+    'fb_sent': ('Teşekkürler, geri bildiriminiz gönderildi.', 'Thank you, your feedback was sent.', 'شكراً، تم إرسال ملاحظاتك.'),
+    'fb_queued': ('İnternet yok: geri bildirim kaydedildi, bağlantı gelince otomatik gönderilecek.', 'No internet: feedback saved and will be sent automatically when online.', 'لا يوجد إنترنت: حُفظت الملاحظات وستُرسل تلقائياً عند الاتصال.'),
+    'fb_need_consent': ('Göndermek için izin kutusunu işaretleyin.', 'Tick the consent box to send.', 'ضع علامة في مربع الموافقة للإرسال.'),
+    'fb_unknown': ('Bilmiyorum', 'Don\'t know', 'لا أعرف'),
+}
