@@ -27,7 +27,7 @@ Türkçe · English · العربية (sağdan sola).
 - **Tek tuşla güncelleme** (yüzde, MB, kalan, hız): önce **yalnızca değişen kısımlar** (yama) indirilir — her yayında son 5 sürüm için ayrı yama üretilir, CI'da eski dosyaya uygulanıp yeni sürümle birebir aynı olduğu doğrulanır, tam dosyanın %70'inden büyük yama yayınlanmaz; program yamayı SHA-256 ile doğrulayıp kurulu dosyalarla birleştirir, sorun olursa kendiliğinden tam dosyaya geçer. Ayarların sonunda **admin ile iletişim**
 
 ## İndir
-[Releases](https://github.com/departures-mil/pixhawk-log-analiz/releases/latest) sayfasından `PixhawkLogAnaliz_Setup_x.y.z.exe` kurulum paketini indirip çalıştırın (yönetici izni gerekmez; Başlat menüsü ve masaüstü kısayolu oluşturulur, Denetim Masası'ndan kaldırılabilir). Sonraki sürümler program içindeki **⬇ Güncelle** düğmesiyle tek tıkla, sessizce kurulur ve program yeniden açılır. Kurulum istemeyenler için taşınabilir `PixhawkLogAnaliz.exe` de yayınlanır.
+[Releases](https://github.com/departures-mil/pixhawk-log-analiz/releases/latest) sayfasından `PixhawkLogAnaliz_Setup_x.y.z.exe` kurulum paketini indirip çalıştırın (yönetici izni gerekmez, kullanıcı başına `%LOCALAPPDATA%\Programs\Pixhawk Log Analiz`; Başlat menüsü ve masaüstü kısayolu oluşturulur, Denetim Masası'ndan kaldırılabilir). Sonraki sürümler sağ üstteki **Güncelle** düğmesiyle tek tıkla iner (önce yalnızca değişen kısımlar, SHA-256 doğrulamalı) ve program yeniden açılır. Kurulum istemeyenler için taşınabilir `PixhawkLogAnaliz.exe` de yayınlanır.
 
 **Antet:** Ayarlar > *Antet ekle* bölümünden tam sayfa antet görseli (JPG/PNG) veya Word antet şablonu (.docx) yüklenir; DOCX ve PDF raporların tüm sayfalarına arka plan olarak uygulanır, üst boşluk otomatik ayarlanır. Besmele seçeneği yalnızca ilk sayfaya eklenir. Hazır antet: Savunma Bakanlığı – Sabit Kanat.
 
@@ -35,15 +35,24 @@ Türkçe · English · العربية (sağdan sola).
 ```
 pip install -r requirements.txt
 python run.py
+python -m pytest -q tests          # offscreen Qt: pencere, üst çubuk, ayarlar, eşitleme kuralı, güncelleme, köprü
 ```
-`app/version.py` içindeki sürüm artırılıp `main`e gönderildiğinde GitHub Actions exe'yi ve Inno Setup kurulum paketini derler, sessiz kurulum testini yapar ve yeni sürümü otomatik yayınlar.
+`app/version.py` (+ `app/news.py` en üstte notlar) artırılıp `main`e gönderildiğinde GitHub Actions: test → Windows derleme
+(tek exe + klasör, Inno Setup, sessiz kur/yükselt/kaldır, win-app zip'inin kurulu klasörden bayt bayt üretilebildiği denetimi) →
+ortak `reusable-release.yml` (latest.json, son 5 sürümden yamalar) ile yayın. Ayrıntı: `CLAUDE.md`.
+
+## v1.1.0 — ortak çekirdek (fccore)
+- Falcon görünümü + renk şeması seçici (eski görünüm **Klasik**), koyu/açık/otomatik, yazı boyutu; sağ üstte Eşitle · Wi-Fi · Güncelle · tema · dil | Küçült · Orta · Tam ekran · Kapat; her açılış tam ekran
+- Güncelleme `latest.json` + FCD1 yama (win-app = kurulu klasörün zip'i, win-setup = Inno kurulumu, win-exe = taşınabilir exe)
+- Eşitleme (GitHub gist + LAN) ortak kurala uyar: uzak silme arşivlenir, çakışmada eski hal eşitleme yedeğine (Ayarlar → Eşitleme → yedeği dışa aktar)
+- İlk açılış rehberi, Neler yeni, Kullanım Limitleri (AI çağrıları), otomatik hata raporu, Admin ile iletişim (ortak gelen kutusu, en sonda)
 
 ## v1.0.7
 - ✦ **Asistan Agent** (`app/ui/fc_agent.py` = ortak-cekirdek/python/fc_agent.py, bağlantı `app/ui/ajan.py`): bütün programlardaki
   çalışmayı sayılarla izler (içerik yok), çevrim dışı kurallar + kullanıcının kendi Gemini/Claude anahtarıyla öneri; bildirim + sağ altta ✦ panel;
   Ayarlar'da "Admin ile iletişim"in önünde kart. Aynı bilgisayardaki programlarla %APPDATA%/FalconCekirdek/agent üzerinden paylaşım.
 
-## v1.0.8 — daha gerçekçi ve dakik teşhis
+## v1.1.1 — daha gerçekçi ve dakik teşhis
 - **Test seti 326 gerçek loga çıktı** (210 kaza, 116 normal uçuş; her konunun uzman yanıtları elle okunarak etiketlendi). Ayrıntı: [sonuçlar](docs/kirim_test_sonuclari.md)
 - **"Teşhis doğru muydu?"** düğmesi (Neden düştü? bölümü): evet/kısmen/hayır, gerçek sonuç ve neden; kişisel veri göndermez, internet yoksa sıraya alınıp sonra gönderilir
 - **Kaçan kazalar**: kalkıştan/inişten sonraki takla, uçuşta log kesilmesi, iniş algılamada yanılma, son saniyelerde yön (yaw) kontrol kaybı

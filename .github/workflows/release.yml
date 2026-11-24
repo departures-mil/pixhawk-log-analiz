@@ -1,8 +1,9 @@
-name: build-and-release
+name: release
 
-# main'e her gönderimde Windows exe derlenir. app/version.py içindeki sürümün
-# henüz Release'i yoksa vX.Y.Z otomatik yayınlanır; programın içindeki
-# "Güncelle" düğmesi yeni sürümü buradan indirir.
+# Her gönderimde: test (öz-test + pytest/offscreen Qt) → build (Windows: PyInstaller tek exe + klasör, Inno Setup,
+# sessiz kur/yükselt/kaldır duman testi, win-app zip'inin kurulu klasörden bayt bayt yeniden üretilebildiği denetimi).
+# Yalnız main'de: ortak reusable-release (latest.json + son 5 sürümden FCD1 yamaları, SHA-256) ile v<sürüm> yayınlanır.
+# Kurulu v1.0.x programları GitHub API releases/latest'teki "…Setup….exe"yi bulup sessiz kurar (köprü; bkz. tests/test_kopru.py).
 on:
   push:
     branches: ['**']
@@ -12,8 +13,38 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  test:
     runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt pytest
+      - name: Self-test (synthetic scenarios) + tuning
+        env:
+          PYTHONIOENCODING: utf-8
+          PYTHONUTF8: '1'
+        run: python tools_ci/test_tuning.py && python tools_ci/selftest.py
+      - name: pytest (offscreen Qt — pencere, üst çubuk, ayarlar, eşitleme kuralı, güncelleme, köprü)
+        env:
+          PYTHONIOENCODING: utf-8
+          PYTHONUTF8: '1'
+          QT_QPA_PLATFORM: offscreen
+        run: python -m pytest -q tests
+
+  build:
+    needs: test
+    runs-on: windows-latest
+    env:
+      PYTHONUTF8: '1'                 # fccore.fcpack Türkçe çıktı yazar (cp1252 konsolda hata verir)
+      PYTHONIOENCODING: utf-8
+    outputs:
+      version: ${{ steps.ver.outputs.version }}
     steps:
       - uses: actions/checkout@v4
 
@@ -27,34 +58,21 @@ jobs:
         shell: pwsh
         run: |
           $v = ([regex]::Match((Get-Content app/version.py -Raw), 'VERSION\s*=\s*"([^"]+)"')).Groups[1].Value
+          if ($v -notmatch '^\d+\.\d+\.\d+$') { Write-Error "version X.Y.Z olmali: $v"; exit 1 }
           "version=$v" >> $env:GITHUB_OUTPUT
-          $exists = $false
-          gh release view "v$v" --repo "${{ github.repository }}" 2>&1 | Out-Null
-          if ($LASTEXITCODE -eq 0) { $exists = $true }
-          "exists=$exists" >> $env:GITHUB_OUTPUT
-          Write-Host "version=$v exists=$exists"
-          exit 0
-        env:
-          GH_TOKEN: ${{ github.token }}
 
       - name: Install
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt pyinstaller
 
-      - name: Self-test (synthetic scenarios)
-        env:
-          PYTHONIOENCODING: utf-8
-          PYTHONUTF8: '1'
-        run: python tools_ci/test_delta.py && python tools_ci/test_tuning.py && python tools_ci/selftest.py
-
-      - name: Build exe (portable)
+      - name: Build exe (portable, win-exe)
         run: pyinstaller --noconfirm --clean PixhawkLogAnaliz.spec
 
-      - name: Build folder (for Setup)
+      - name: Build folder (win-app + Setup)
         run: pyinstaller --noconfirm PixhawkLogAnaliz_dir.spec
 
-      - name: Build Setup (Inno Setup)
+      - name: Build Setup (Inno Setup, per-user)
         shell: pwsh
         run: |
           $iscc = (Get-Command iscc.exe -ErrorAction SilentlyContinue).Source
@@ -64,7 +82,10 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit 1 }
           Get-ChildItem dist\*.exe | Format-Table Name, Length
 
-      - name: Smoke test (silent install + uninstall)
+      - name: win-app package (fcpack, deterministic)
+        run: python -m fccore.fcpack dist/PixhawkLogAnaliz dist/PixhawkLogAnaliz-win-app.zip
+
+      - name: Smoke test (silent install + upgrade + win-app base + uninstall)
         shell: pwsh
         run: |
           $s = "dist\PixhawkLogAnaliz_Setup_${{ steps.ver.outputs.version }}.exe"
@@ -72,73 +93,51 @@ jobs:
           $d = "$env:LOCALAPPDATA\Programs\Pixhawk Log Analiz"
           if (-not (Test-Path "$d\PixhawkLogAnaliz.exe")) { Write-Error 'install failed'; exit 1 }
           if (-not (Test-Path "$d\_internal\app\data\letterheads\mod_fixed_wing.jpg")) { Write-Error 'letterhead missing'; exit 1 }
+          if (-not (Test-Path "$d\_internal\fccore\fonts\Inter-400.ttf")) { Write-Error 'fccore fonts missing'; exit 1 }
+          if (Test-Path "$d\unins000.exe") { Write-Error 'uninstaller must live outside the app folder'; exit 1 }
+          if (-not (Test-Path "$d-uninstall\unins000.exe")) { Write-Error 'uninstaller missing'; exit 1 }
+          # istemci yama tabanını kurulu klasörden yeniden üretir: CI zip'iyle bayt bayt aynı olmalı
+          python -m fccore.fcpack "$d" installed.zip
+          $a = (Get-FileHash dist\PixhawkLogAnaliz-win-app.zip -Algorithm SHA256).Hash
+          $b = (Get-FileHash installed.zip -Algorithm SHA256).Hash
+          if ($a -ne $b) { Write-Error "win-app zip not reproducible from install dir ($a vs $b)"; exit 1 }
+          # program yazılabilir mi (win-app takası için)
+          New-Item -ItemType File "$d\.fc-w-test" | Out-Null; Remove-Item "$d\.fc-w-test"
           Start-Process $s -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/SP-' -Wait
-          Start-Process "$d\unins000.exe" -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART' -Wait
+          Start-Process "$d-uninstall\unins000.exe" -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART' -Wait
           Start-Sleep 3
-          Write-Host "install/upgrade/uninstall OK"
+          if (Test-Path "$d\PixhawkLogAnaliz.exe") { Write-Error 'uninstall left files'; exit 1 }
+          Write-Host "install/upgrade/win-app base/uninstall OK"
 
-      # "Yalnızca değişen kısımlar": son 5 sürümün her biri için yama üret, CI içinde eski dosyaya uygulayıp
-      # yeni sürümle SHA-256 düzeyinde birebir aynı olduğunu doğrula; tam dosyanın %70'inden büyük yamayı atla.
-      - name: Delta patches (last 5 releases, verified)
-        if: steps.ver.outputs.exists != 'True'
-        continue-on-error: true
-        timeout-minutes: 60
-        env:
-          PYTHONIOENCODING: utf-8
-          GH_TOKEN: ${{ github.token }}
-        run: python tools_ci/make_patches.py --version ${{ steps.ver.outputs.version }} --new-dir dist/PixhawkLogAnaliz --new-portable dist/PixhawkLogAnaliz.exe --setup dist/PixhawkLogAnaliz_Setup_${{ steps.ver.outputs.version }}.exe --out dist/patches
-
-      - uses: actions/upload-artifact@v4
-        if: steps.ver.outputs.exists != 'True'
-        with:
-          name: patches-v${{ steps.ver.outputs.version }}
-          path: dist/patches/
-          if-no-files-found: ignore
+      - name: Collect release files
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory release | Out-Null
+          Copy-Item dist\PixhawkLogAnaliz-win-app.zip, dist\PixhawkLogAnaliz.exe, "dist\PixhawkLogAnaliz_Setup_${{ steps.ver.outputs.version }}.exe" release\
+          python tools_ci/release_notes.py release/release-notes.json
+          Get-ChildItem release | Format-Table Name, Length
 
       - uses: actions/upload-artifact@v4
         with:
-          name: PixhawkLogAnaliz-v${{ steps.ver.outputs.version }}
-          path: |
-            dist/PixhawkLogAnaliz.exe
-            dist/PixhawkLogAnaliz_Setup_*.exe
+          name: release-win
+          path: release/
+          retention-days: 3
 
-      # GitHub varlıkları ada göre sıralar; v1.0.0'daki eski güncelleyici listedeki ilk .exe'yi alır.
-      # "PixhawkLogAnaliz.exe" < "PixhawkLogAnaliz_Setup_…" olduğundan taşınabilir exe hep ilk sırada kalır.
-      - name: Publish release
-        if: github.ref == 'refs/heads/main' && steps.ver.outputs.exists != 'True'
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ steps.ver.outputs.version }}
-          name: Pixhawk Log Analiz v${{ steps.ver.outputs.version }}
-          files: dist/PixhawkLogAnaliz_Setup_${{ steps.ver.outputs.version }}.exe
-          generate_release_notes: true
-          make_latest: true
-
-      - name: Attach portable exe (listed first)
-        if: github.ref == 'refs/heads/main' && steps.ver.outputs.exists != 'True'
-        shell: pwsh
-        run: |
-          Start-Sleep 2
-          gh release upload "v${{ steps.ver.outputs.version }}" "dist/PixhawkLogAnaliz.exe" --repo "${{ github.repository }}" --clobber
-          # yamalar + dizin (adları .exe ile bitmez; eski güncelleyicilerin seçimini etkilemez)
-          if (Test-Path dist/patches/delta-index.json) {
-            $files = Get-ChildItem dist/patches/* | ForEach-Object { $_.FullName }
-            gh release upload "v${{ steps.ver.outputs.version }}" @files --repo "${{ github.repository }}" --clobber
-          }
-        env:
-          GH_TOKEN: ${{ github.token }}
-
-      # Mevcut sürümde Setup ilk sıradaysa onu yeni adla yeniden yükleyip eskisini sil.
-      - name: Fix asset order of existing release
-        if: github.ref == 'refs/heads/main' && steps.ver.outputs.exists == 'True'
-        shell: pwsh
-        run: |
-          $first = gh api "repos/${{ github.repository }}/releases/tags/v${{ steps.ver.outputs.version }}" --jq '[.assets[] | select(.name | endswith(".exe"))][0].name'
-          Write-Host "first exe asset: $first"
-          if ($first -like '*Setup*') {
-            gh release upload "v${{ steps.ver.outputs.version }}" "dist/PixhawkLogAnaliz_Setup_${{ steps.ver.outputs.version }}.exe" --repo "${{ github.repository }}" --clobber
-            gh release delete-asset "v${{ steps.ver.outputs.version }}" "$first" --repo "${{ github.repository }}" --yes
-            gh api "repos/${{ github.repository }}/releases/tags/v${{ steps.ver.outputs.version }}" --jq '.assets[].name'
-          }
-        env:
-          GH_TOKEN: ${{ github.token }}
+  release:
+    needs: [test, build]
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+    uses: departures-mil/ortak-cekirdek/.github/workflows/reusable-release.yml@main
+    with:
+      app_id: pixhawk-log-analiz
+      version: ${{ needs.build.outputs.version }}
+      file_prefix: PixhawkLogAnaliz
+      # Asset adları sabit: eski (v1.0.x) güncelleyiciler 'setup' içeren .exe'yi, v1.0.0 ilk .exe'yi (taşınabilir) alır.
+      files: |
+        win-app=PixhawkLogAnaliz-win-app.zip=PixhawkLogAnaliz-{version}-win-app.zip
+        win-setup=PixhawkLogAnaliz_Setup_*.exe=PixhawkLogAnaliz_Setup_{version}.exe
+        win-exe=PixhawkLogAnaliz.exe=PixhawkLogAnaliz.exe
+      notes_json: release-notes.json
+      release_title: Pixhawk Log Analiz v${{ needs.build.outputs.version }}
+      core_ref: main

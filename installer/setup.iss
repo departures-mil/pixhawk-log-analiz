@@ -1,5 +1,8 @@
 ﻿; Pixhawk Log Analiz — Windows kurulum paketi (Inno Setup 6)
-; Kullanıcı başına kurulum (yönetici izni gerekmez) → program içinden sessiz, tek tık güncelleme.
+; Kullanıcı başına kurulum (yönetici izni gerekmez, %LOCALAPPDATA%\Programs) → program kurulum klasörüne yazabilir:
+; ortak çekirdek güncelleyicisi (fccore) win-app kanalında klasörü yamayla/zip'le değiştirir, gerekirse bu kurulumu sessiz çalıştırır.
+; Kaldırıcı (unins000.*) kurulum klasörünün DIŞINDA tutulur: klasör takası kaldırıcıyı silmesin ve
+; istemcinin yeniden ürettiği win-app zip'i CI'dakiyle bayt bayt aynı olsun (yama tabanı).
 #ifndef AppVersion
   #define AppVersion "1.0.0"
 #endif
@@ -21,7 +24,7 @@ DisableProgramGroupPage=yes
 DisableDirPage=auto
 DisableReadyPage=yes
 PrivilegesRequired=lowest
-PrivilegesRequiredOverridesAllowed=dialog
+UninstallFilesDir={app}-uninstall
 OutputDir=..\dist
 OutputBaseFilename=PixhawkLogAnaliz_Setup_{#AppVersion}
 SetupIconFile=..\app\data\app.ico
@@ -70,6 +73,17 @@ Root: HKA; Subkey: "Software\Classes\.tlog\OpenWithProgids"; ValueType: none; Va
 [InstallDelete]
 ; Eski sürümden kalan kütüphaneler yenileriyle karışmasın (kullanıcı verisi %APPDATA%'da, silinmez)
 Type: filesandordirs; Name: "{app}\_internal"
+; v1.0.x kaldırıcısı kurulum klasöründeydi; yenisi {app}-uninstall içinde
+Type: files; Name: "{app}\unins*.*"
+; yarım kalmış güncelleme takası artıkları
+Type: filesandordirs; Name: "{app}.new"
+Type: filesandordirs; Name: "{app}.bak"
+
+[UninstallDelete]
+; program içi güncellemeyle gelen dosyalar kaldırıcının kaydında yok: klasörü bütünüyle kaldır (kullanıcı verisi %APPDATA%'da)
+Type: filesandordirs; Name: "{app}"
+Type: filesandordirs; Name: "{app}.new"
+Type: filesandordirs; Name: "{app}.bak"
 
 [Files]
 Source: "..\dist\PixhawkLogAnaliz\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
