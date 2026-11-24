@@ -23,9 +23,15 @@ UA = {'User-Agent': 'Mozilla/5.0 (pixhawk-log-analiz crash benchmark; GitHub Act
 CRASH_Q = ['crash log', 'crashed', 'crash analysis', 'crash help log', 'fell from sky', 'fell out of the sky', 'sudden crash',
            'flipped on takeoff', 'fly away', 'flyaway', 'lost control crash', 'crash bin', 'quadplane crash', 'plane crash log',
            'rover crash', 'crash after takeoff', 'crash in auto', 'crash loiter', 'crash rtl', 'motor failure crash',
-           'vibration crash', 'gps glitch crash', 'ekf failsafe crash', 'battery failsafe crash', 'compass crash', 'stall crash']
+           'vibration crash', 'gps glitch crash', 'ekf failsafe crash', 'battery failsafe crash', 'compass crash', 'stall crash',
+           'crash', 'crash help', 'crash report', 'crash analysis log', 'helicopter crash', 'heli crash', 'vtol crash', 'esc failure',
+           'motor stopped mid air', 'dropped from the sky', 'flipped over', 'crash during autotune', 'crash during landing',
+           'crash poshold', 'crash althold', 'crash stabilize', 'crash guided', 'crashed log attached', 'tailsitter crash']
 NORMAL_Q = ['first flight log review', 'maiden flight log', 'please review my log', 'log review tuning', 'autotune log',
-            'tuning log review', 'hover log review', 'check my log first flight', 'quadplane first flight log', 'plane tuning log']
+            'tuning log review', 'hover log review', 'check my log first flight', 'quadplane first flight log', 'plane tuning log',
+            'log review', 'please check my log', 'vibration log review', 'tuning help log', 'notch filter log', 'autotune results',
+            'althold log', 'loiter log', 'quadplane transition log', 'plane autotune', 'first hover', 'maiden quadplane',
+            'harmonic notch setup log', 'quicktune', 'review my tune', 'log analysis help', 'flight log check', 'maiden flight']
 CRASH_RX = re.compile(r'\b(crash(?:ed|es|ing)?|fell|falls?|fall(?:en|ing)|flip(?:ped|s)?|fly ?away|flew away|lost control|loss of control|'
                       r'went down|dropped (?:out|from)|destroyed|death roll|nose ?dive[ds]?)\b', re.I)
 NORMAL_RX = re.compile(r'\b(first flight|maiden|tun(?:e|ing)|autotune|review|check(?:ing)? my log|hover(?:ing)?|log analysis)\b', re.I)
@@ -109,7 +115,7 @@ def harvest():
     for kind, qs in (('crash', CRASH_Q), ('normal', NORMAL_Q)):
         for q in qs:
             if need[kind] <= 0 or total > TOTAL_MB: break
-            for page in (1, 2, 3):
+            for page in range(1, int(os.environ.get('BENCH_PAGES', '3')) + 1):
                 if need[kind] <= 0: break
                 try:
                     d = get(f'{FORUM}/search.json?q={urllib.parse.quote(q)}&page={page}'); time.sleep(1.2)
