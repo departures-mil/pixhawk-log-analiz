@@ -199,45 +199,71 @@ def threads():
     print('threads:', len(out))
 
 
+def _one(tid, m):
+    p = os.path.join(BENCH, f'{tid}.bin'); out = os.path.join(BENCH, f'{tid}.json')
+    if not os.path.exists(p): return None
+    t0 = time.time()
+    try:
+        subprocess.run([sys.executable, os.path.join(ROOT, 'run.py'), '--analyze', p, '--json', out], timeout=900, check=True,
+                       capture_output=True)
+        d = json.load(open(out, encoding='utf-8'))
+        v = d.get('verdict') or {}; r = d.get('root') or {}
+        m = dict(m)
+        if m['label'] == 'normal' and any(e.get('k') == 'cr_msg' and 'crash: disarming' in str((e.get('a') or {}).get('msg', '')).lower()
+                                          for e in v.get('evidence', [])):
+            m['label'] = 'crash'; m['label_src'] = 'autopilot'   # otopilot kırımı kendisi kaydetmiş: forum etiketi yanlış
+        return {**m, 'vehicle': d.get('vehicle'), 'got': v.get('kind'), 'got_cause': r.get('cause'), 'others': r.get('others'),
+                'overall': d.get('overall'), 'dur': round(d.get('duration') or 0), 'sec': round(time.time() - t0, 1),
+                'verdict': v, 'facts': {k: x for k, x in (d.get('facts') or {}).items() if not isinstance(x, (list, dict))},
+                'health': d.get('health'), 'events': [e for e in d.get('events', []) if e.get('sev', 0) >= 2][:25]}
+    except Exception as e:
+        return {**m, 'got': 'error', 'err': str(e)[:300]}
+
+
+def labels():
+    """Elle temizlenmiş etiketler (uzman yanıtlarından): {id: {label, cause, alt, src, note}}"""
+    p = os.path.join(ROOT, 'tools_data', 'crashbench', 'labels.json')
+    return json.load(open(p, encoding='utf-8')) if os.path.exists(p) else {}
+
+
 def run():
+    from concurrent.futures import ThreadPoolExecutor
     man = json.load(open(os.path.join(BENCH, 'manifest.json')))
+    lab = labels()
+    for tid, l in lab.items():
+        if tid in man:
+            man[tid] = {**man[tid], 'label_forum': man[tid]['label'], 'hint_forum': man[tid].get('cause_hint'),
+                        'label': l.get('label', man[tid]['label']), 'cause_hint': l.get('cause'), 'cause_alt': l.get('alt') or [],
+                        'label_src': 'expert', 'exclude': l.get('exclude', False), 'note': l.get('note', '')}
+    jobs = int(os.environ.get('BENCH_JOBS', '2'))
     res = []
-    for tid, m in sorted(man.items()):
-        p = os.path.join(BENCH, f'{tid}.bin'); out = os.path.join(BENCH, f'{tid}.json')
-        if not os.path.exists(p): continue
-        t0 = time.time()
-        try:
-            subprocess.run([sys.executable, os.path.join(ROOT, 'run.py'), '--analyze', p, '--json', out], timeout=600, check=True,
-                           capture_output=True)
-            d = json.load(open(out, encoding='utf-8'))
-            v = d.get('verdict') or {}; r = d.get('root') or {}
-            m = dict(m)
-            if m['label'] == 'normal' and any(e.get('k') == 'cr_msg' and 'crash: disarming' in str((e.get('a') or {}).get('msg', '')).lower()
-                                              for e in v.get('evidence', [])):
-                m['label'] = 'crash'; m['label_src'] = 'autopilot'   # otopilot kırımı kendisi kaydetmiş: forum etiketi yanlış
-            res.append({**m, 'vehicle': d.get('vehicle'), 'got': v.get('kind'), 'got_cause': r.get('cause'), 'others': r.get('others'),
-                        'overall': d.get('overall'), 'dur': round(d.get('duration') or 0), 'sec': round(time.time() - t0, 1),
-                        'verdict': v, 'facts': {k: x for k, x in (d.get('facts') or {}).items() if not isinstance(x, (list, dict))},
-                        'health': d.get('health'), 'events': [e for e in d.get('events', []) if e.get('sev', 0) >= 2][:25]})
-        except Exception as e:
-            res.append({**m, 'got': 'error', 'err': str(e)[:300]})
-        print(f"{tid}: label={m['label']} got={res[-1].get('got')} cause={res[-1].get('got_cause')} hint={m.get('cause_hint')}", flush=True)
+    with ThreadPoolExecutor(jobs) as ex:
+        for r in ex.map(lambda kv: _one(*kv), sorted(man.items())):
+            if r is None: continue
+            res.append(r)
+            print(f"{r['id']}: label={r['label']} got={r.get('got')} cause={r.get('got_cause')} hint={r.get('cause_hint')}", flush=True)
     write(res)
 
 
 def score(res):
-    ok = [r for r in res if r.get('got') not in (None, 'error')]
+    ok = [r for r in res if r.get('got') not in (None, 'error') and not r.get('exclude')]
     def pos(r): return r['got'] in ('crash', 'incident')
     tp = sum(1 for r in ok if r['label'] == 'crash' and pos(r)); fn = sum(1 for r in ok if r['label'] == 'crash' and not pos(r))
     fp = sum(1 for r in ok if r['label'] == 'normal' and pos(r)); tn = sum(1 for r in ok if r['label'] == 'normal' and not pos(r))
     ch = [r for r in ok if r['label'] == 'crash' and r.get('cause_hint')]
-    cm = sum(1 for r in ch if r.get('got_cause') == r['cause_hint'] or r['cause_hint'] in (r.get('others') or []))
+    def hit(r):
+        want = {r['cause_hint'], *(r.get('cause_alt') or [])}
+        return r.get('got_cause') in want
+    cm = sum(1 for r in ch if hit(r))
+    cm2 = sum(1 for r in ch if hit(r) or any(c in (r.get('others') or []) for c in {r['cause_hint'], *(r.get('cause_alt') or [])}))
     hard = sum(1 for r in ok if r['label'] == 'crash' and r['got'] == 'crash')
     fcr = sum(1 for r in ok if r['label'] == 'normal' and r['got'] == 'crash')
     return {'n': len(ok), 'errors': len(res) - len(ok), 'tp': tp, 'fn': fn, 'fp': fp, 'tn': tn,
             'crash_verdict': hard, 'false_crash': fcr,
             'accuracy': round((tp + tn) / max(len(ok), 1), 3), 'recall_crash': round(tp / max(tp + fn, 1), 3),
-            'specificity': round(tn / max(tn + fp, 1), 3), 'cause_n': len(ch), 'cause_match': cm, 'cause_acc': round(cm / max(len(ch), 1), 3)}
+            'specificity': round(tn / max(tn + fp, 1), 3), 'cause_n': len(ch), 'cause_match': cm, 'cause_acc': round(cm / max(len(ch), 1), 3),
+            'cause_any': cm2, 'cause_any_acc': round(cm2 / max(len(ch), 1), 3),
+            'labels': 'expert' if any(r.get('label_src') == 'expert' for r in ok) else 'forum-title'}
 
 
 def write(res):
