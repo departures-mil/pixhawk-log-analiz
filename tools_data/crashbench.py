@@ -262,7 +262,7 @@ def run():
 
 def score(res):
     ok = [r for r in res if r.get('got') not in (None, 'error') and not r.get('exclude')]
-    def pos(r): return r['got'] in ('crash', 'incident')
+    def pos(r): return r['got'] == 'crash' or (r['got'] == 'incident' and (r.get('verdict') or {}).get('severity') != 'minor')
     tp = sum(1 for r in ok if r['label'] == 'crash' and pos(r)); fn = sum(1 for r in ok if r['label'] == 'crash' and not pos(r))
     fp = sum(1 for r in ok if r['label'] == 'normal' and pos(r)); tn = sum(1 for r in ok if r['label'] == 'normal' and not pos(r))
     ch = [r for r in ok if r['label'] == 'crash' and r.get('cause_hint')]
@@ -330,7 +330,8 @@ def write(res):
         pass
     L += ['', '## Log listesi', '', '| Konu | Araç | Etiket | Program | Kök neden (program) | Kök neden (uzman) | Süre |', '|---|---|---|---|---|---|---|']
     for r in sorted(res, key=lambda r: (r['label'], r.get('got') or '')):
-        mark = '✅' if (r.get('got') in ('crash', 'incident')) == (r['label'] == 'crash') else '❌'
+        ps = r.get('got') == 'crash' or (r.get('got') == 'incident' and (r.get('verdict') or {}).get('severity') != 'minor')
+        mark = '✅' if ps == (r['label'] == 'crash') else '❌'
         ttl = (r.get('title') or '').replace('|', '/')[:70]
         L.append(f"| [{ttl}]({r['url']}) | {r.get('vehicle') or '-'} | {r['label']} | {mark} {r.get('got')} | {r.get('got_cause') or '-'} | "
                  f"{r.get('cause_hint') or '-'} | {r.get('dur') or '-'} sn |")
