@@ -40,6 +40,9 @@ jobs:
   build:
     needs: test
     runs-on: windows-latest
+    env:
+      PYTHONUTF8: '1'                 # fccore.fcpack Türkçe çıktı yazar (cp1252 konsolda hata verir)
+      PYTHONIOENCODING: utf-8
     outputs:
       version: ${{ steps.ver.outputs.version }}
     steps:
