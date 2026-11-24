@@ -278,8 +278,8 @@ class MainWindow(FcWindow):
             self._loginfo = ''
         else:
             from ..core import texts
-            v = A.verdict.get('kind', 'normal')
-            icon = {'crash': '💥', 'incident': '⚠', 'normal': '✅', 'noflight': '⏸'}.get(v, '')
+            v = texts.vkey(A.verdict)
+            icon = {'crash': '💥', 'incident': '⚠', 'incident_minor': 'ℹ', 'normal': '✅', 'noflight': '⏸'}.get(v, '')
             mark = '  ·  💥 ' + t('fi_crash_mark') if crash_mark == 'yes' and v != 'crash' else ''
             self._loginfo = f"{os.path.basename(A.L.path)}  ·  {A.vehicle}  ·  {icon} {texts.T('v_' + v, lang())}  ·  {A.overall}/100{mark}"
         if self._row >= 0: self.topbar.set_title(t(NAV[self._row][2]), self._loginfo)
@@ -353,6 +353,8 @@ class MainWindow(FcWindow):
                     from ..core import fleet, anomaly
                     fleet.ensure_aircraft(arc, A)
                     anomaly.learn(A, uid)
+                    from ..core import baseline
+                    baseline.compare(A, arc, uid)
                 except Exception as e:
                     crash.note(f'fleet/anomaly: {e}')
             if s.get('online', True) and s.get('weather_online', True):

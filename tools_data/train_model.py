@@ -1,7 +1,7 @@
 """Öğrenen ikinci görüşü eğitir: tools_data/crashbench/results.json (uzman etiketli) → app/data/ml_model.json.
 
 Bire-bir-dışarıda (leave-one-out) çapraz doğrulama ile kural kararı ve 'kural+model' kararı karşılaştırılır;
-model yalnız doğrulukta ölçülmüş belirgin bir kazanç sağlıyorsa (kaza yakalamada ≤2 puan kayıpla) 'use': true yazılır.
+model yalnız doğrulukta ölçülmüş belirgin bir kazanç sağlıyorsa (kaza yakalamada ≤1 puan kayıpla) 'use': true yazılır.
     python tools_data/train_model.py
 """
 from __future__ import annotations
@@ -38,9 +38,12 @@ def main():
     fc = Counter(f.get('k') for r in R for dom in (r.get('health') or {}).values() for f in ((dom or {}).get('findings') or []))
     finds = [k for k, n in fc.most_common() if n >= 4][:25]
     X = np.array([MM.features(r, finds) for r in R]); y = np.array([1.0 if r['label'] == 'crash' else 0.0 for r in R])
-    rule = np.array([r['got'] in ('crash', 'incident') for r in R])
+    pos = lambda r: r['got'] == 'crash' or (r['got'] == 'incident' and (r.get('verdict') or {}).get('severity') != 'minor')
+    rule = np.array([pos(r) for r in R])
+    sev = [(r.get('verdict') or {}).get('severity') for r in R]
     sc = np.array([r['verdict'].get('score') or 0 for r in R]); kind = [r['got'] for r in R]
-    best = None
+    best = None; best_ok = False
+    rec_rule = float(rule[y == 1].mean())
     for lam in (0.3, 1.0, 3.0, 10.0):
         P = np.zeros(len(y))
         for i in range(len(y)):
@@ -49,19 +52,21 @@ def main():
         for hi in (0.8, 0.85, 0.9, 0.95):
             for lo in (0.05, 0.1, 0.15, 0.2):
                 dec = []
-                for k, p, s in zip(kind, P, sc):
-                    if k == 'normal' and p >= hi: k = 'incident'
-                    elif k == 'incident' and s == 0 and p <= lo: k = 'normal'
-                    dec.append(k in ('crash', 'incident'))
+                for k, p, s, sv in zip(kind, P, sc, sev):
+                    if k == 'normal' and p >= hi: k = 'incident'; sv = 'serious'
+                    elif k == 'incident' and s == 0 and p <= lo: sv = 'minor'
+                    dec.append(k == 'crash' or (k == 'incident' and sv != 'minor'))
                 dec = np.array(dec)
                 acc = float((dec == (y == 1)).mean())
                 rec = float(dec[y == 1].mean()); spe = float((~dec[y == 0]).mean())
                 cand = (acc, rec, lam, hi, lo, spe, float(((P >= 0.5) == (y == 1)).mean()))
-                if best is None or cand[:2] > best[:2]: best = cand
+                # kaza yakalamayı kural kararına göre en çok 1 puan düşüren eşikler arasından en doğrusu
+                ok = rec >= rec_rule - 0.01
+                if best is None or (ok, cand[:2]) > (best_ok, best[:2]): best = cand; best_ok = ok
     acc0 = float((rule == (y == 1)).mean()); rec0 = float(rule[y == 1].mean()); spe0 = float((~rule[y == 0]).mean())
     acc, rec, lam, hi, lo, spe, macc = best
-    # kural kararına göre doğrulukta belirgin kazanç; kaza yakalamada en çok 2 puan kayıp kabul edilir
-    use = acc > acc0 + 0.01 and rec >= rec0 - (0.02 if acc > acc0 + 0.03 else 0.005)
+    # kural kararına göre doğrulukta belirgin kazanç; kaza yakalamada en çok 1 puan kayıp kabul edilir
+    use = acc > acc0 + 0.01 and rec >= rec0 - 0.01
     m = fit(X, y, lam)
     out = {'mu': m[0].tolist(), 'sd': m[1].tolist(), 'w': m[2].tolist(), 'b': float(m[3]), 'finds': finds, 'n': int(len(y)),
            'use': bool(use), 'hi': hi, 'lo': lo, 'lam': lam,

@@ -1,0 +1,56 @@
+name: crashbench-holdout
+
+# Dokunulmamış ayrı test seti: geliştirme setinde OLMAYAN yeni forum logları + uzman yanıtları.
+# Kurallar bu setle ayarlanmaz; yalnız yayın öncesi bir kez ölçülür. Tetik: tools_data/request_holdout.txt
+on:
+  push:
+    paths: ['tools_data/request_holdout.txt']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  holdout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Harvest new logs (not in dev set)
+        env:
+          BENCH_DIR: /tmp/hold
+          BENCH_SKIP_KNOWN: '1'
+          BENCH_N_CRASH: '110'
+          BENCH_N_NORMAL: '80'
+          BENCH_TOTAL_MB: '6000'
+          BENCH_MAX_MB: '100'
+          BENCH_PAGES: '12'
+        run: python tools_data/crashbench.py harvest
+      - name: Expert replies
+        env:
+          BENCH_DIR: /tmp/hold
+          BENCH_THREADS_OUT: holdout_threads.json.gz
+        run: python tools_data/crashbench.py threads
+      - name: Upload logs to draft release bench-holdout
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd /tmp/hold && tar czf /tmp/holdout.tgz *.bin manifest.json && cd /tmp && split -b 1900m -d holdout.tgz holdout.tgz.part
+          gh release view bench-holdout --repo "${{ github.repository }}" >/dev/null 2>&1 || gh release create bench-holdout --draft --repo "${{ github.repository }}" --target "${{ github.sha }}" --title "bench-holdout (taslak, kullanıcıya görünmez)" --notes "ayrı test seti"
+          gh release upload bench-holdout /tmp/holdout.tgz.part* --clobber --repo "${{ github.repository }}"
+      - name: Commit threads
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp tools_data/crashbench/holdout_threads.json.gz /tmp/ht.json.gz
+          for i in 1 2 3 4 5; do
+            git fetch -q origin "${{ github.ref_name }}" && git reset -q --hard "origin/${{ github.ref_name }}"
+            cp /tmp/ht.json.gz tools_data/crashbench/holdout_threads.json.gz
+            git add tools_data/crashbench/holdout_threads.json.gz
+            git commit -qm "crashbench: ayrı test seti uzman yanıtları (otomatik)" || exit 0
+            git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            sleep $((i*10))
+          done
+          exit 1

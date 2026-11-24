@@ -52,6 +52,16 @@ ortak `reusable-release.yml` (latest.json, son 5 sürümden yamalar) ile yayın.
   çalışmayı sayılarla izler (içerik yok), çevrim dışı kurallar + kullanıcının kendi Gemini/Claude anahtarıyla öneri; bildirim + sağ altta ✦ panel;
   Ayarlar'da "Admin ile iletişim"in önünde kart. Aynı bilgisayardaki programlarla %APPDATA%/FalconCekirdek/agent üzerinden paylaşım.
 
+## v1.1.4 — dört seviyeli karar, fizik modeli, resmî olay raporu
+- **Kaza · Ciddi sorun · Küçük uyarı · Normal**: kanıtı zayıf sorunlar "küçük uyarı" olarak ayrılır
+- **Kontrolsüz düşüş** (irtifa kaybı, düşüş hızı, açı) ve **VTOL motor kaybı**; motor numarası SERVOn_FUNCTION eşlemesinden, kronik zayıf motor
+- **Fizik modeli**: itki/ağırlık (askı gazından), askı gücü/akımı, tahmini uçuş süresi; sabit kanatta seyir gazı
+- **Aynı aracın geçmişi**: seri numarasına göre arşivdeki uçuşlarla karşılaştırma (alışılmadık titreşim, akım, gaz…)
+- **Kalibre güven**: kök neden güveni gerçek kazalardaki isabete çevrildi (ECE 0,17 → 0,02)
+- **Kanıta dayalı YZ**: açıklama yalnız logdaki ölçümleri kullanır; veride olmayan zaman damgası işaretlenir
+- **Resmî olay raporu** (DOCX/PDF, TR/EN/AR): olay bilgileri, zaman çizelgesi, kök neden, katkı faktörleri, öneriler, imza/onay
+- Ölçüm (323 uzman etiketli log, yalnız kurallar): doğruluk %81 → %86, kaza yakalama %89 → %92, özgüllük %66 → %75. Öğrenen model kaza yakalamayı düşürdüğü için karar vermiyor, yalnız görüş gösteriyor
+
 ## v1.1.1 — daha gerçekçi ve dakik teşhis
 - **Test seti 326 gerçek loga çıktı** (210 kaza, 116 normal uçuş; her konunun uzman yanıtları elle okunarak etiketlendi). Ayrıntı: [sonuçlar](docs/kirim_test_sonuclari.md)
 - **"Teşhis doğru muydu?"** düğmesi (Neden düştü? bölümü): evet/kısmen/hayır, gerçek sonuç ve neden; kişisel veri göndermez, internet yoksa sıraya alınıp sonra gönderilir
