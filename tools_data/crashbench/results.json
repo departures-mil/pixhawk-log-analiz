@@ -2,20 +2,20 @@
  "score": {
   "n": 117,
   "errors": 3,
-  "tp": 74,
-  "fn": 11,
-  "fp": 13,
-  "tn": 19,
-  "crash_verdict": 35,
+  "tp": 78,
+  "fn": 7,
+  "fp": 9,
+  "tn": 23,
+  "crash_verdict": 45,
   "false_crash": 0,
-  "accuracy": 0.795,
-  "recall_crash": 0.871,
-  "specificity": 0.594,
+  "accuracy": 0.863,
+  "recall_crash": 0.918,
+  "specificity": 0.719,
   "cause_n": 71,
-  "cause_match": 36,
-  "cause_acc": 0.507,
-  "cause_any": 48,
-  "cause_any_acc": 0.676,
+  "cause_match": 41,
+  "cause_acc": 0.577,
+  "cause_any": 54,
+  "cause_any_acc": 0.761,
   "labels": "expert"
  },
  "history": [
@@ -78,6 +78,132 @@
    "cause_any": 48,
    "cause_any_acc": 0.676,
    "labels": "expert"
+  },
+  {
+   "date": "2026-11-24 09:17",
+   "tag": "dev",
+   "n": 117,
+   "errors": 3,
+   "tp": 79,
+   "fn": 6,
+   "fp": 13,
+   "tn": 19,
+   "crash_verdict": 45,
+   "false_crash": 0,
+   "accuracy": 0.838,
+   "recall_crash": 0.929,
+   "specificity": 0.594,
+   "cause_n": 71,
+   "cause_match": 37,
+   "cause_acc": 0.521,
+   "cause_any": 52,
+   "cause_any_acc": 0.732,
+   "labels": "expert"
+  },
+  {
+   "date": "2026-11-24 09:18",
+   "tag": "dev",
+   "n": 117,
+   "errors": 3,
+   "tp": 79,
+   "fn": 6,
+   "fp": 13,
+   "tn": 19,
+   "crash_verdict": 45,
+   "false_crash": 0,
+   "accuracy": 0.838,
+   "recall_crash": 0.929,
+   "specificity": 0.594,
+   "cause_n": 71,
+   "cause_match": 38,
+   "cause_acc": 0.535,
+   "cause_any": 51,
+   "cause_any_acc": 0.718,
+   "labels": "expert"
+  },
+  {
+   "date": "2026-11-24 09:19",
+   "tag": "dev",
+   "n": 114,
+   "errors": 6,
+   "tp": 79,
+   "fn": 6,
+   "fp": 10,
+   "tn": 19,
+   "crash_verdict": 45,
+   "false_crash": 0,
+   "accuracy": 0.86,
+   "recall_crash": 0.929,
+   "specificity": 0.655,
+   "cause_n": 71,
+   "cause_match": 41,
+   "cause_acc": 0.577,
+   "cause_any": 54,
+   "cause_any_acc": 0.761,
+   "labels": "expert"
+  },
+  {
+   "date": "2026-11-24 09:19",
+   "tag": "dev",
+   "n": 117,
+   "errors": 3,
+   "tp": 79,
+   "fn": 6,
+   "fp": 13,
+   "tn": 19,
+   "crash_verdict": 45,
+   "false_crash": 0,
+   "accuracy": 0.838,
+   "recall_crash": 0.929,
+   "specificity": 0.594,
+   "cause_n": 71,
+   "cause_match": 41,
+   "cause_acc": 0.577,
+   "cause_any": 54,
+   "cause_any_acc": 0.761,
+   "labels": "expert"
+  },
+  {
+   "date": "2026-11-24 09:20",
+   "tag": "dev",
+   "n": 117,
+   "errors": 3,
+   "tp": 76,
+   "fn": 9,
+   "fp": 7,
+   "tn": 25,
+   "crash_verdict": 45,
+   "false_crash": 0,
+   "accuracy": 0.863,
+   "recall_crash": 0.894,
+   "specificity": 0.781,
+   "cause_n": 71,
+   "cause_match": 40,
+   "cause_acc": 0.563,
+   "cause_any": 53,
+   "cause_any_acc": 0.746,
+   "labels": "expert"
+  },
+  {
+   "date": "2026-11-24 09:20",
+   "tag": "dev",
+   "n": 117,
+   "errors": 3,
+   "tp": 78,
+   "fn": 7,
+   "fp": 9,
+   "tn": 23,
+   "crash_verdict": 45,
+   "false_crash": 0,
+   "accuracy": 0.863,
+   "recall_crash": 0.918,
+   "specificity": 0.719,
+   "cause_n": 71,
+   "cause_match": 41,
+   "cause_acc": 0.577,
+   "cause_any": 54,
+   "cause_any_acc": 0.761,
+   "labels": "expert"
   }
  ],
  "results": [
@@ -105,7 +231,7 @@
    "others": [],
    "overall": 47,
    "dur": 89,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -315,16 +441,11 @@
    ],
    "overall": 81,
    "dur": 2681,
-   "sec": 0.7,
+   "sec": 0.9,
    "verdict": {
     "kind": "incident",
     "score": 0,
-    "evidence": [
-     {
-      "k": "cr_landed",
-      "a": {}
-     }
-    ]
+    "evidence": []
    },
    "facts": {
     "duration": 2681.236246,
@@ -695,17 +816,18 @@
    "exclude": false,
    "note": "",
    "vehicle": "Copter",
-   "got": "incident",
+   "got": "crash",
    "got_cause": "motor",
    "others": [
-    "control"
+    "control",
+    "power"
    ],
    "overall": 46,
    "dur": 417,
    "sec": 0.6,
    "verdict": {
-    "kind": "incident",
-    "score": 20,
+    "kind": "crash",
+    "score": 75,
     "evidence": [
      {
       "k": "cr_sink",
@@ -715,15 +837,18 @@
       }
      },
      {
+      "k": "cr_log_end",
+      "a": {
+       "alt": 8,
+       "t": 417.060673
+      }
+     },
+     {
       "k": "cr_attitude",
       "a": {
        "r": 179,
        "p": 87
       }
-     },
-     {
-      "k": "cr_landed",
-      "a": {}
      }
     ]
    },
@@ -1044,7 +1169,7 @@
    ],
    "overall": 63,
    "dur": 567,
-   "sec": 0.8,
+   "sec": 0.9,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -1632,7 +1757,7 @@
    ],
    "overall": 47,
    "dur": 460,
-   "sec": 1.1,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -1899,7 +2024,7 @@
    ],
    "overall": 44,
    "dur": 23,
-   "sec": 0.6,
+   "sec": 0.9,
    "verdict": {
     "kind": "incident",
     "score": 55,
@@ -2137,7 +2262,7 @@
    "others": null,
    "overall": 46,
    "dur": 215,
-   "sec": 0.5,
+   "sec": 1.0,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -2726,7 +2851,7 @@
    ],
    "overall": 31,
    "dur": 36,
-   "sec": 0.5,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -2749,6 +2874,13 @@
       "a": {
        "r": 180,
        "p": 83
+      }
+     },
+     {
+      "k": "cr_yaw",
+      "a": {
+       "v": 165,
+       "t": 18.900981
       }
      }
     ]
@@ -3058,7 +3190,7 @@
    "others": null,
    "overall": 43,
    "dur": 27,
-   "sec": 0.7,
+   "sec": 0.8,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -3219,14 +3351,14 @@
    "exclude": false,
    "note": "",
    "vehicle": "Copter",
-   "got": "incident",
-   "got_cause": "unknown",
+   "got": "normal",
+   "got_cause": null,
    "others": null,
    "overall": 52,
    "dur": 507,
-   "sec": 0.6,
+   "sec": 0.8,
    "verdict": {
-    "kind": "incident",
+    "kind": "normal",
     "score": 0,
     "evidence": [
      {
@@ -3410,20 +3542,15 @@
    "note": "",
    "vehicle": "Copter",
    "got": "incident",
-   "got_cause": "battery",
-   "others": [],
+   "got_cause": "unknown",
+   "others": null,
    "overall": 83,
    "dur": 575,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
-    "evidence": [
-     {
-      "k": "cr_landed",
-      "a": {}
-     }
-    ]
+    "evidence": []
    },
    "facts": {
     "duration": 574.843706,
@@ -3640,14 +3767,14 @@
    "exclude": false,
    "note": "",
    "vehicle": "Plane",
-   "got": "incident",
-   "got_cause": "unknown",
+   "got": "normal",
+   "got_cause": null,
    "others": null,
    "overall": 54,
    "dur": 134,
-   "sec": 1.0,
+   "sec": 0.7,
    "verdict": {
-    "kind": "incident",
+    "kind": "normal",
     "score": 0,
     "evidence": []
    },
@@ -3836,16 +3963,11 @@
    "others": null,
    "overall": 85,
    "dur": 707,
-   "sec": 0.7,
+   "sec": 0.8,
    "verdict": {
     "kind": "normal",
     "score": 0,
-    "evidence": [
-     {
-      "k": "cr_landed",
-      "a": {}
-     }
-    ]
+    "evidence": []
    },
    "facts": {
     "duration": 706.637671,
@@ -4049,7 +4171,7 @@
    "others": null,
    "overall": 94,
    "dur": 155,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -4245,7 +4367,7 @@
    ],
    "overall": 45,
    "dur": 13,
-   "sec": 0.7,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 75,
@@ -4484,16 +4606,11 @@
    "others": null,
    "overall": 97,
    "dur": 12033899678709,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
-    "evidence": [
-     {
-      "k": "cr_landed",
-      "a": {}
-     }
-    ]
+    "evidence": []
    },
    "facts": {
     "duration": 12033899678709.213,
@@ -4657,7 +4774,7 @@
    ],
    "overall": 49,
    "dur": 524,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -4926,16 +5043,11 @@
    "others": null,
    "overall": 98,
    "dur": 256,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
-    "evidence": [
-     {
-      "k": "cr_landed",
-      "a": {}
-     }
-    ]
+    "evidence": []
    },
    "facts": {
     "duration": 255.858439,
@@ -5362,7 +5474,7 @@
    ],
    "overall": 50,
    "dur": 694,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -5913,7 +6025,7 @@
    "others": null,
    "overall": 86,
    "dur": 207,
-   "sec": 1.0,
+   "sec": 0.7,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -6075,7 +6187,7 @@
    "others": null,
    "overall": 44,
    "dur": 92,
-   "sec": 1.1,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -6303,7 +6415,7 @@
    ],
    "overall": 36,
    "dur": 1708,
-   "sec": 0.7,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -6326,6 +6438,13 @@
       "a": {
        "r": 175,
        "p": 68
+      }
+     },
+     {
+      "k": "cr_yaw",
+      "a": {
+       "v": 119,
+       "t": 1700.401547
       }
      }
     ]
@@ -7071,7 +7190,7 @@
    "others": null,
    "overall": 99,
    "dur": 87,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -7232,15 +7351,15 @@
    "exclude": false,
    "note": "",
    "vehicle": "Copter",
-   "got": "normal",
-   "got_cause": null,
-   "others": null,
+   "got": "incident",
+   "got_cause": "power",
+   "others": [],
    "overall": 98,
    "dur": 87,
    "sec": 0.6,
    "verdict": {
-    "kind": "normal",
-    "score": 10,
+    "kind": "incident",
+    "score": 35,
     "evidence": [
      {
       "k": "cr_log_end",
@@ -7248,10 +7367,6 @@
        "alt": 57,
        "t": 87.014669
       }
-     },
-     {
-      "k": "cr_landed",
-      "a": {}
      }
     ]
    },
@@ -7377,12 +7492,7 @@
    "verdict": {
     "kind": "normal",
     "score": 0,
-    "evidence": [
-     {
-      "k": "cr_landed",
-      "a": {}
-     }
-    ]
+    "evidence": []
    },
    "facts": {
     "duration": 173.196772,
@@ -7509,7 +7619,7 @@
    "others": null,
    "overall": 77,
    "dur": 200,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -7734,20 +7844,15 @@
    "note": "",
    "vehicle": "Copter",
    "got": "incident",
-   "got_cause": "radio",
-   "others": [],
+   "got_cause": "unknown",
+   "others": null,
    "overall": 79,
    "dur": 7133983284583,
-   "sec": 2.6,
+   "sec": 0.9,
    "verdict": {
     "kind": "incident",
     "score": 0,
-    "evidence": [
-     {
-      "k": "cr_landed",
-      "a": {}
-     }
-    ]
+    "evidence": []
    },
    "facts": {
     "duration": 7133983284582.895,
@@ -7960,17 +8065,17 @@
    "exclude": false,
    "note": "",
    "vehicle": "Copter",
-   "got": "incident",
+   "got": "crash",
    "got_cause": "control",
    "others": [
     "power"
    ],
    "overall": 46,
    "dur": 82,
-   "sec": 0.6,
+   "sec": 0.8,
    "verdict": {
-    "kind": "incident",
-    "score": 50,
+    "kind": "crash",
+    "score": 100,
     "evidence": [
      {
       "k": "cr_sink",
@@ -7987,8 +8092,11 @@
       }
      },
      {
-      "k": "cr_landed",
-      "a": {}
+      "k": "cr_flip",
+      "a": {
+       "t": 78.992603,
+       "a": 106
+      }
      },
      {
       "k": "cr_log_cut",
@@ -8217,7 +8325,7 @@
    "others": null,
    "overall": 30,
    "dur": 29,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -8758,7 +8866,7 @@
    "others": [],
    "overall": 50,
    "dur": 151,
-   "sec": 1.1,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -9048,7 +9156,7 @@
    ],
    "overall": 67,
    "dur": 180,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -9364,7 +9472,7 @@
    "sec": 0.7,
    "verdict": {
     "kind": "incident",
-    "score": 0,
+    "score": 45,
     "evidence": [
      {
       "k": "cr_attitude",
@@ -9374,8 +9482,11 @@
       }
      },
      {
-      "k": "cr_landed",
-      "a": {}
+      "k": "cr_yaw",
+      "a": {
+       "v": 112,
+       "t": 46.736938
+      }
      }
     ]
    },
@@ -9633,18 +9744,15 @@
    "exclude": false,
    "note": "",
    "vehicle": "Copter",
-   "got": "incident",
+   "got": "crash",
    "got_cause": "control",
-   "others": [
-    "ekf",
-    "compass"
-   ],
+   "others": [],
    "overall": 43,
    "dur": 1164,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
-    "kind": "incident",
-    "score": 20,
+    "kind": "crash",
+    "score": 90,
     "evidence": [
      {
       "k": "cr_sink",
@@ -9661,8 +9769,11 @@
       }
      },
      {
-      "k": "cr_landed",
-      "a": {}
+      "k": "cr_flip",
+      "a": {
+       "t": 1098.302019,
+       "a": 180
+      }
      }
     ]
    },
@@ -9931,7 +10042,7 @@
    ],
    "overall": 44,
    "dur": 414,
-   "sec": 0.6,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -10190,7 +10301,7 @@
    "others": [],
    "overall": 37,
    "dur": 258,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -10445,15 +10556,23 @@
    "note": "",
    "vehicle": "Copter",
    "got": "incident",
-   "got_cause": "unknown",
-   "others": null,
+   "got_cause": "power",
+   "others": [],
    "overall": 51,
    "dur": 170,
-   "sec": 0.6,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
-    "score": 0,
-    "evidence": []
+    "score": 30,
+    "evidence": [
+     {
+      "k": "cr_log_end",
+      "a": {
+       "alt": 5,
+       "t": 170.075236
+      }
+     }
+    ]
    },
    "facts": {
     "duration": 170.075236,
@@ -10828,19 +10947,29 @@
    "exclude": false,
    "note": "",
    "vehicle": "Copter",
-   "got": "normal",
-   "got_cause": null,
-   "others": null,
-   "overall": 91,
+   "got": "crash",
+   "got_cause": "motor",
+   "others": [],
+   "overall": 66,
    "dur": 899,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
-    "kind": "normal",
-    "score": 0,
+    "kind": "crash",
+    "score": 65,
     "evidence": [
      {
-      "k": "cr_landed",
-      "a": {}
+      "k": "cr_attitude",
+      "a": {
+       "r": 66,
+       "p": 23
+      }
+     },
+     {
+      "k": "cr_flip",
+      "a": {
+       "t": 750.00172,
+       "a": 66
+      }
      }
     ]
    },
@@ -10849,9 +10978,9 @@
     "vehicle": "Copter",
     "version": "ArduCopter V4.6.0 (9cc2b9d5)",
     "takeoff_t": 184.601729,
-    "land_t": 201.301774,
-    "flight_time": 16.70004499999999,
-    "n_flights": 1,
+    "land_t": 750.00172,
+    "flight_time": 22.70004499999999,
+    "n_flights": 2,
     "arm_t": 19.799086,
     "disarm_t": 749.299269,
     "max_alt": 2.004528760910034,
@@ -10878,7 +11007,7 @@
      "status": "good",
      "metrics": {
       "min_sats": 10.0,
-      "mean_sats": 10.0,
+      "mean_sats": 10.530973451327434,
       "max_hdop": 0.92,
       "bad_pct": 0.0,
       "glitches": 0
@@ -10889,9 +11018,9 @@
      "score": 96,
      "status": "good",
      "metrics": {
-      "p95": 9.175350189208984,
-      "max": 20.79987335205078,
-      "z_mean": 4.936174549742373,
+      "p95": 9.798135757446289,
+      "max": 80.3342514038086,
+      "z_mean": 4.990001516720272,
       "clip": 36.0
      },
      "findings": [
@@ -10904,13 +11033,13 @@
      ]
     },
     "power": {
-     "score": 85,
-     "status": "good",
+     "score": 40,
+     "status": "bad",
      "metrics": {
-      "vmin": 23.107297897338867,
+      "vmin": 19.021371841430664,
       "vmax": 25.09908103942871,
       "cells": 6,
-      "per_cell_min": 3.8512163162231445,
+      "per_cell_min": 3.170228640238444,
       "current_sensor": false,
       "used_mah": null,
       "capacity": 3300.0,
@@ -10918,6 +11047,13 @@
       "max_curr": null
      },
      "findings": [
+      {
+       "k": "bat_low_cell",
+       "a": {
+        "v": 3.17,
+        "n": 6
+       }
+      },
       {
        "k": "bat_no_current",
        "a": {}
@@ -10928,10 +11064,10 @@
      "score": 88,
      "status": "good",
      "metrics": {
-      "SV": 0.2,
+      "SV": 0.62,
       "SP": 0.09,
       "SH": 0.15,
-      "SM": 0.02,
+      "SM": 0.28,
       "mag_var_pct": 35.110161540251674
      },
      "findings": [
@@ -10944,15 +11080,35 @@
      ]
     },
     "control": {
-     "score": 100,
-     "status": "good",
+     "score": 41,
+     "status": "bad",
      "metrics": {
-      "roll_rms": 0.371687123009519,
-      "pitch_rms": 0.5603161048241873,
-      "roll_max": 4.974191188812256,
-      "pitch_max": 5.307333469390869
+      "roll_rms": 7.936093167259356,
+      "pitch_rms": 4.764203759047691,
+      "roll_max": 66.28717041015625,
+      "pitch_max": 22.843097686767578
      },
-     "findings": []
+     "findings": [
+      {
+       "k": "att_roll_err",
+       "a": {
+        "v": 7.9
+       }
+      },
+      {
+       "k": "att_pitch_err",
+       "a": {
+        "v": 4.8
+       }
+      },
+      {
+       "k": "att_roll_exceed",
+       "a": {
+        "v": 66,
+        "lim": 45
+       }
+      }
+     ]
     },
     "servo": {
      "score": 100,
@@ -10962,7 +11118,7 @@
       "C2": 0.0,
       "C4": 0.0,
       "thr_full_pct": 0.0,
-      "thr_mean": 12.012363143800618
+      "thr_mean": 13.520844526063765
      },
      "findings": []
     },
@@ -10989,9 +11145,9 @@
      "score": 100,
      "status": "good",
      "metrics": {
-      "motor_pwm_mean": 1392.7934131736527,
-      "motor_imbalance_us": 18.008982035928057,
-      "motor_headroom_us": 468.92814371257487,
+      "motor_pwm_mean": 1407.9427312775329,
+      "motor_imbalance_us": 10.343612334801946,
+      "motor_headroom_us": 455.7136563876652,
       "hover_thr": 0.14639845490455627
      },
      "findings": []
@@ -11025,7 +11181,7 @@
    ],
    "overall": 43,
    "dur": 53,
-   "sec": 0.8,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -11286,7 +11442,7 @@
    "others": [],
    "overall": 45,
    "dur": 694,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -11309,6 +11465,13 @@
       "a": {
        "r": 181,
        "p": 11
+      }
+     },
+     {
+      "k": "cr_yaw",
+      "a": {
+       "v": 101,
+       "t": 668.302145
       }
      },
      {
@@ -11545,20 +11708,15 @@
    "note": "",
    "vehicle": "Copter",
    "got": "incident",
-   "got_cause": "radio",
-   "others": [],
+   "got_cause": "unknown",
+   "others": null,
    "overall": 80,
    "dur": 185,
-   "sec": 0.9,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
-    "evidence": [
-     {
-      "k": "cr_landed",
-      "a": {}
-     }
-    ]
+    "evidence": []
    },
    "facts": {
     "duration": 184.544062,
@@ -11797,7 +11955,7 @@
    "others": null,
    "overall": 46,
    "dur": 17798507202233,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -12021,7 +12179,7 @@
    "others": [],
    "overall": 36,
    "dur": 536,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -12343,7 +12501,7 @@
    ],
    "overall": 50,
    "dur": 998,
-   "sec": 1.1,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -12644,7 +12802,7 @@
    ],
    "overall": 79,
    "dur": 1618,
-   "sec": 0.7,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -12946,7 +13104,7 @@
    "others": [],
    "overall": 51,
    "dur": 235,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -12969,6 +13127,13 @@
       "a": {
        "r": 180,
        "p": 12
+      }
+     },
+     {
+      "k": "cr_yaw",
+      "a": {
+       "v": 158,
+       "t": 196.902048
       }
      },
      {
@@ -13222,7 +13387,7 @@
    "sec": 0.7,
    "verdict": {
     "kind": "incident",
-    "score": 0,
+    "score": 20,
     "evidence": [
      {
       "k": "cr_attitude",
@@ -13230,10 +13395,6 @@
        "r": 93,
        "p": 70
       }
-     },
-     {
-      "k": "cr_landed",
-      "a": {}
      }
     ]
    },
@@ -13553,7 +13714,7 @@
    ],
    "overall": 47,
    "dur": 600,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 55,
@@ -13781,16 +13942,11 @@
    "others": [],
    "overall": 56,
    "dur": 216,
-   "sec": 0.9,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
-    "evidence": [
-     {
-      "k": "cr_landed",
-      "a": {}
-     }
-    ]
+    "evidence": []
    },
    "facts": {
     "duration": 215.800056,
@@ -14008,16 +14164,14 @@
    "exclude": true,
    "note": "wrong log",
    "vehicle": "Plane",
-   "got": "incident",
-   "got_cause": "stall",
-   "others": [
-    "control"
-   ],
+   "got": "normal",
+   "got_cause": null,
+   "others": null,
    "overall": 51,
    "dur": 946,
-   "sec": 1.2,
+   "sec": 0.9,
    "verdict": {
-    "kind": "incident",
+    "kind": "normal",
     "score": 0,
     "evidence": []
    },
@@ -14244,7 +14398,7 @@
    ],
    "overall": 41,
    "dur": 489,
-   "sec": 0.6,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -14473,18 +14627,23 @@
    "note": "",
    "vehicle": "Copter",
    "got": "incident",
-   "got_cause": "vibration",
-   "others": [],
+   "got_cause": "power",
+   "others": [
+    "vibration"
+   ],
    "overall": 46,
    "dur": 642,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
-    "score": 0,
+    "score": 30,
     "evidence": [
      {
-      "k": "cr_landed",
-      "a": {}
+      "k": "cr_log_end",
+      "a": {
+       "alt": 5,
+       "t": 642.187037
+      }
      }
     ]
    },
@@ -14940,8 +15099,9 @@
       }
      },
      {
-      "k": "cr_log_cut",
+      "k": "cr_log_end",
       "a": {
+       "alt": 6,
        "t": 273809.8
       }
      }
@@ -15100,10 +15260,10 @@
    ],
    "overall": 40,
    "dur": 654,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
-    "score": 10,
+    "score": 35,
     "evidence": [
      {
       "k": "cr_log_end",
@@ -15111,10 +15271,6 @@
        "alt": 512,
        "t": 654.289904
       }
-     },
-     {
-      "k": "cr_landed",
-      "a": {}
      }
     ]
    },
@@ -15295,15 +15451,15 @@
    "exclude": false,
    "note": "",
    "vehicle": "Copter",
-   "got": "normal",
-   "got_cause": null,
-   "others": null,
+   "got": "incident",
+   "got_cause": "power",
+   "others": [],
    "overall": 98,
    "dur": 2023,
-   "sec": 0.6,
+   "sec": 0.9,
    "verdict": {
-    "kind": "normal",
-    "score": 10,
+    "kind": "incident",
+    "score": 35,
     "evidence": [
      {
       "k": "cr_log_end",
@@ -15311,10 +15467,6 @@
        "alt": 30,
        "t": 2022.569579
       }
-     },
-     {
-      "k": "cr_landed",
-      "a": {}
      }
     ]
    },
@@ -15463,7 +15615,7 @@
    "exclude": false,
    "note": "",
    "vehicle": "Copter",
-   "got": "incident",
+   "got": "crash",
    "got_cause": "vibration",
    "others": [
     "control",
@@ -15473,10 +15625,10 @@
    ],
    "overall": 31,
    "dur": 29,
-   "sec": 0.6,
+   "sec": 0.9,
    "verdict": {
-    "kind": "incident",
-    "score": 55,
+    "kind": "crash",
+    "score": 80,
     "evidence": [
      {
       "k": "cr_log_end",
@@ -15490,6 +15642,13 @@
       "a": {
        "r": 177,
        "p": 69
+      }
+     },
+     {
+      "k": "cr_yaw",
+      "a": {
+       "v": 177,
+       "t": 22.78479
       }
      }
     ]
@@ -15832,7 +15991,7 @@
    ],
    "overall": 34,
    "dur": 139,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -16144,7 +16303,7 @@
    ],
    "overall": 40,
    "dur": 17,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 75,
@@ -16372,19 +16531,26 @@
    "note": "",
    "vehicle": "Copter",
    "got": "incident",
-   "got_cause": "unknown",
-   "others": null,
+   "got_cause": "power",
+   "others": [],
    "overall": 87,
    "dur": 424325,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
-    "score": 25,
+    "score": 55,
     "evidence": [
      {
       "k": "cr_sink",
       "a": {
        "v": 12.2,
+       "t": 424325.2
+      }
+     },
+     {
+      "k": "cr_log_end",
+      "a": {
+       "alt": 6,
        "t": 424325.2
       }
      }
@@ -16509,18 +16675,22 @@
    "got": "incident",
    "got_cause": "gps",
    "others": [
-    "ekf"
+    "ekf",
+    "power"
    ],
    "overall": 71,
    "dur": 175,
-   "sec": 0.7,
+   "sec": 0.9,
    "verdict": {
     "kind": "incident",
-    "score": 0,
+    "score": 30,
     "evidence": [
      {
-      "k": "cr_landed",
-      "a": {}
+      "k": "cr_log_end",
+      "a": {
+       "alt": 6,
+       "t": 175.177912
+      }
      }
     ]
    },
@@ -17232,7 +17402,7 @@
    "exclude": false,
    "note": "",
    "vehicle": "Copter",
-   "got": "incident",
+   "got": "crash",
    "got_cause": "motor",
    "others": [
     "compass",
@@ -17240,10 +17410,10 @@
    ],
    "overall": 66,
    "dur": 642,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
-    "kind": "incident",
-    "score": 35,
+    "kind": "crash",
+    "score": 100,
     "evidence": [
      {
       "k": "cr_sink",
@@ -17266,8 +17436,11 @@
       }
      },
      {
-      "k": "cr_landed",
-      "a": {}
+      "k": "cr_flip",
+      "a": {
+       "t": 639.54356,
+       "a": 117
+      }
      }
     ]
    },
@@ -17495,7 +17668,7 @@
    ],
    "overall": 83,
    "dur": 836,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -17518,6 +17691,13 @@
       "a": {
        "r": 51,
        "p": 75
+      }
+     },
+     {
+      "k": "cr_flip",
+      "a": {
+       "t": 192.832834,
+       "a": 75
       }
      }
     ]
@@ -17733,7 +17913,7 @@
    ],
    "overall": 42,
    "dur": 80,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -18065,7 +18245,7 @@
    "others": [],
    "overall": 42,
    "dur": 1146,
-   "sec": 0.8,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -18380,16 +18560,23 @@
    ],
    "overall": 70,
    "dur": 369,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
-    "score": 75,
+    "score": 100,
     "evidence": [
      {
       "k": "cr_sink",
       "a": {
        "v": 14.9,
        "t": 368.470557
+      }
+     },
+     {
+      "k": "cr_log_end",
+      "a": {
+       "alt": 8,
+       "t": 368.657016
       }
      },
      {
@@ -18400,9 +18587,10 @@
       }
      },
      {
-      "k": "cr_log_cut",
+      "k": "cr_flip",
       "a": {
-       "t": 368.657016
+       "t": 365.75721,
+       "a": 110
       }
      }
     ]
@@ -18621,16 +18809,14 @@
    "note": "",
    "vehicle": "Copter",
    "got": "crash",
-   "got_cause": "motor",
-   "others": [
-    "control"
-   ],
-   "overall": 100,
+   "got_cause": "control",
+   "others": [],
+   "overall": 78,
    "dur": 40,
    "sec": 0.5,
    "verdict": {
     "kind": "crash",
-    "score": 80,
+    "score": 100,
     "evidence": [
      {
       "k": "cr_err",
@@ -18644,6 +18830,20 @@
        "t": 40.458814,
        "msg": "Crash: Disarming"
       }
+     },
+     {
+      "k": "cr_attitude",
+      "a": {
+       "r": 79,
+       "p": 23
+      }
+     },
+     {
+      "k": "cr_flip",
+      "a": {
+       "t": 37.464175,
+       "a": 72
+      }
      }
     ]
    },
@@ -18652,8 +18852,8 @@
     "vehicle": "Copter",
     "version": "APM:Copter V3.5.7 (b11c6af3)",
     "takeoff_t": 15.739233,
-    "land_t": 34.917674,
-    "flight_time": 19.178441,
+    "land_t": 37.464175,
+    "flight_time": 21.724942,
     "n_flights": 1,
     "arm_t": 0.005748,
     "disarm_t": 40.459058,
@@ -18677,7 +18877,7 @@
      "status": "good",
      "metrics": {
       "min_sats": 12.0,
-      "mean_sats": 13.46875,
+      "mean_sats": 13.65137614678899,
       "max_hdop": 0.8,
       "bad_pct": 0.0,
       "glitches": 0
@@ -18688,9 +18888,9 @@
      "score": 100,
      "status": "good",
      "metrics": {
-      "p95": 6.845254421234131,
-      "max": 11.373626708984375,
-      "z_mean": 5.4592372732735726,
+      "p95": 7.231893539428711,
+      "max": 59.411373138427734,
+      "z_mean": 6.017493772046001,
       "clip": 0.0
      },
      "findings": []
@@ -18699,24 +18899,38 @@
      "score": 100,
      "status": "good",
      "metrics": {
-      "SV": 0.09,
-      "SP": 0.02,
+      "SV": 0.3,
+      "SP": 0.03,
       "SH": 0.07,
-      "SM": 0.08,
+      "SM": 0.22,
       "mag_var_pct": 5.459301475491363
      },
      "findings": []
     },
     "control": {
-     "score": 100,
-     "status": "good",
+     "score": 54,
+     "status": "bad",
      "metrics": {
-      "roll_rms": 0.42964665714980255,
-      "pitch_rms": 0.22842987618377186,
-      "roll_max": 3.41,
-      "pitch_max": 0.65
+      "roll_rms": 7.42430949700731,
+      "pitch_rms": 2.7776818651742046,
+      "roll_max": 78.60000000000001,
+      "pitch_max": 23.48
      },
-     "findings": []
+     "findings": [
+      {
+       "k": "att_roll_err",
+       "a": {
+        "v": 7.4
+       }
+      },
+      {
+       "k": "att_roll_exceed",
+       "a": {
+        "v": 79,
+        "lim": 45
+       }
+      }
+     ]
     },
     "servo": {
      "score": 100,
@@ -18726,7 +18940,7 @@
       "C2": 0.0,
       "C4": 0.0,
       "thr_full_pct": 0.0,
-      "thr_mean": 40.83262952299066
+      "thr_mean": 39.66190399458775
      },
      "findings": []
     },
@@ -18743,9 +18957,9 @@
      "score": 100,
      "status": "good",
      "metrics": {
-      "motor_pwm_mean": 1612.9446721311474,
-      "motor_imbalance_us": 35.66598360655735,
-      "motor_headroom_us": 302.9726775956285,
+      "motor_pwm_mean": 1610.165458937198,
+      "motor_imbalance_us": 42.23309178743966,
+      "motor_headroom_us": 298.75362318840575,
       "hover_thr": 0.5489369034767151
      },
      "findings": []
@@ -18825,6 +19039,20 @@
       "a": {
        "r": 176,
        "p": 85
+      }
+     },
+     {
+      "k": "cr_yaw",
+      "a": {
+       "v": 178,
+       "t": 724.0701
+      }
+     },
+     {
+      "k": "cr_flip",
+      "a": {
+       "t": 723.461961,
+       "a": 176
       }
      }
     ]
@@ -19145,29 +19373,33 @@
    "note": "",
    "vehicle": "Copter",
    "got": "incident",
-   "got_cause": "vibration",
+   "got_cause": "power",
    "others": [
     "gps",
     "ekf",
+    "vibration",
     "control"
    ],
    "overall": 30,
    "dur": 690,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
-    "score": 0,
+    "score": 50,
     "evidence": [
+     {
+      "k": "cr_log_end",
+      "a": {
+       "alt": 12,
+       "t": 690.239286
+      }
+     },
      {
       "k": "cr_attitude",
       "a": {
        "r": 96,
        "p": 9
       }
-     },
-     {
-      "k": "cr_landed",
-      "a": {}
      }
     ]
    },
@@ -19708,7 +19940,7 @@
    "others": [],
    "overall": 64,
    "dur": 1304,
-   "sec": 0.6,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -19731,6 +19963,20 @@
       "a": {
        "r": 180,
        "p": 85
+      }
+     },
+     {
+      "k": "cr_yaw",
+      "a": {
+       "v": 175,
+       "t": 1289.947942
+      }
+     },
+     {
+      "k": "cr_flip",
+      "a": {
+       "t": 1289.647948,
+       "a": 180
       }
      }
     ]
@@ -19958,10 +20204,10 @@
    "others": [],
    "overall": 68,
    "dur": 301851,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
-    "score": 30,
+    "score": 55,
     "evidence": [
      {
       "k": "cr_sink",
@@ -19971,12 +20217,9 @@
       }
      },
      {
-      "k": "cr_landed",
-      "a": {}
-     },
-     {
-      "k": "cr_log_cut",
+      "k": "cr_log_end",
       "a": {
+       "alt": 8,
        "t": 301850.6
       }
      }
@@ -20238,15 +20481,13 @@
    "vehicle": "Copter",
    "got": "crash",
    "got_cause": "motor",
-   "others": [
-    "control"
-   ],
-   "overall": 85,
+   "others": [],
+   "overall": 70,
    "dur": 251,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
-    "score": 80,
+    "score": 100,
     "evidence": [
      {
       "k": "cr_err",
@@ -20260,6 +20501,20 @@
        "t": 199.220722,
        "msg": "Crash: Disarming"
       }
+     },
+     {
+      "k": "cr_attitude",
+      "a": {
+       "r": 177,
+       "p": 37
+      }
+     },
+     {
+      "k": "cr_flip",
+      "a": {
+       "t": 196.398385,
+       "a": 177
+      }
      }
     ]
    },
@@ -20268,9 +20523,9 @@
     "vehicle": "Copter",
     "version": "ArduCopter V4.0.3 (ffd08628)",
     "takeoff_t": 13.881109,
-    "land_t": 20.686928,
-    "flight_time": 6.805819000000001,
-    "n_flights": 1,
+    "land_t": 196.398385,
+    "flight_time": 12.805819000000001,
+    "n_flights": 2,
     "arm_t": 0.0,
     "disarm_t": 199.220822,
     "max_alt": 3.8169236183166504,
@@ -20296,7 +20551,7 @@
      "status": "good",
      "metrics": {
       "min_sats": 11.0,
-      "mean_sats": 11.941176470588236,
+      "mean_sats": 11.96875,
       "max_hdop": 0.85,
       "bad_pct": 0.0,
       "glitches": 1
@@ -20314,9 +20569,9 @@
      "score": 99,
      "status": "good",
      "metrics": {
-      "p95": 8.66324119567871,
-      "max": 9.507259368896484,
-      "z_mean": 7.766526916447808,
+      "p95": 9.456247329711914,
+      "max": 45.87436294555664,
+      "z_mean": 8.635036220700721,
       "clip": 6.0
      },
      "findings": [
@@ -20332,10 +20587,10 @@
      "score": 100,
      "status": "good",
      "metrics": {
-      "vmin": 11.615260124206543,
+      "vmin": 10.961379051208496,
       "vmax": 12.556060791015625,
       "cells": 3,
-      "per_cell_min": 3.871753374735514,
+      "per_cell_min": 3.6537930170694985,
       "current_sensor": true,
       "used_mah": 1182.0035400390625,
       "capacity": 5300.0,
@@ -20357,25 +20612,45 @@
      "findings": []
     },
     "control": {
-     "score": 100,
-     "status": "good",
+     "score": 42,
+     "status": "bad",
      "metrics": {
-      "roll_rms": 0.18180872301599252,
-      "pitch_rms": 0.2832090269415445,
-      "roll_max": 1.42,
-      "pitch_max": 0.99
+      "roll_rms": 8.002431515248974,
+      "pitch_rms": 4.524781417372556,
+      "roll_max": 77.97,
+      "pitch_max": 37.25
      },
-     "findings": []
+     "findings": [
+      {
+       "k": "att_roll_err",
+       "a": {
+        "v": 8.0
+       }
+      },
+      {
+       "k": "att_pitch_err",
+       "a": {
+        "v": 4.5
+       }
+      },
+      {
+       "k": "att_roll_exceed",
+       "a": {
+        "v": 78,
+        "lim": 45
+       }
+      }
+     ]
     },
     "servo": {
-     "score": 100,
+     "score": 96,
      "status": "good",
      "metrics": {
       "C1": 0.0,
       "C2": 0.0,
-      "C4": 0.0,
-      "thr_full_pct": 0.0,
-      "thr_mean": 17.712377833531182
+      "C4": 1.574803149606299,
+      "thr_full_pct": 1.5625,
+      "thr_mean": 20.007946394616738
      },
      "findings": []
     },
@@ -20401,9 +20676,9 @@
      "score": 70,
      "status": "warn",
      "metrics": {
-      "motor_pwm_mean": 1526.5882352941176,
-      "motor_imbalance_us": 103.44117647058829,
-      "motor_headroom_us": 319.97058823529414,
+      "motor_pwm_mean": 1554.0216535433071,
+      "motor_imbalance_us": 106.8838582677165,
+      "motor_headroom_us": 289.09448818897636,
       "hover_thr": 0.19570130109786987
      },
      "findings": [
@@ -20411,7 +20686,7 @@
        "k": "mot_imbalance",
        "a": {
         "ch": "C4",
-        "v": 103
+        "v": 107
        }
       }
      ]
@@ -20472,21 +20747,41 @@
    "exclude": false,
    "note": "",
    "vehicle": "Copter",
-   "got": "incident",
-   "got_cause": "gps",
+   "got": "crash",
+   "got_cause": "motor",
    "others": [
-    "ekf"
+    "control",
+    "gps",
+    "ekf",
+    "power"
    ],
    "overall": 44,
    "dur": 1857,
-   "sec": 1.9,
+   "sec": 9.1,
    "verdict": {
-    "kind": "incident",
-    "score": 0,
+    "kind": "crash",
+    "score": 100,
     "evidence": [
      {
-      "k": "cr_landed",
-      "a": {}
+      "k": "cr_log_end",
+      "a": {
+       "alt": 61,
+       "t": 1856.652885
+      }
+     },
+     {
+      "k": "cr_attitude",
+      "a": {
+       "r": 64,
+       "p": 36
+      }
+     },
+     {
+      "k": "cr_flip",
+      "a": {
+       "t": 1867.384401,
+       "a": 64
+      }
      }
     ]
    },
@@ -20495,9 +20790,9 @@
     "vehicle": "Copter",
     "version": "ArduCopter V4.0.3 (ffd08628)",
     "takeoff_t": 315.85695,
-    "land_t": 25.255047,
-    "flight_time": -1262.9329119999998,
-    "n_flights": 8,
+    "land_t": 1867.384401,
+    "flight_time": -1256.9329119999998,
+    "n_flights": 9,
     "arm_t": 306.949789,
     "disarm_t": 1866.956652,
     "max_alt": 210.9039306640625,
@@ -20523,9 +20818,9 @@
      "status": "bad",
      "metrics": {
       "min_sats": 7.0,
-      "mean_sats": 13.576833073322932,
+      "mean_sats": 13.552043176561295,
       "max_hdop": 1.61,
-      "bad_pct": 0.4290171606864275,
+      "bad_pct": 0.4240555127216654,
       "glitches": 6
      },
      "findings": [
@@ -20547,9 +20842,9 @@
      "score": 91,
      "status": "good",
      "metrics": {
-      "p95": 8.502427482604979,
+      "p95": 8.490198612213135,
       "max": 77.10869598388672,
-      "z_mean": 4.1878371829392504,
+      "z_mean": 4.152688011072565,
       "clip": 91.0
      },
      "findings": [
@@ -20636,11 +20931,11 @@
      ]
     },
     "control": {
-     "score": 62,
+     "score": 60,
      "status": "warn",
      "metrics": {
-      "roll_rms": 5.1972229793088145,
-      "pitch_rms": 3.4356850072154477,
+      "roll_rms": 5.5798669080005325,
+      "pitch_rms": 3.515570843118748,
       "roll_max": 85.11,
       "pitch_max": 69.76
      },
@@ -20648,7 +20943,7 @@
       {
        "k": "att_roll_err",
        "a": {
-        "v": 5.2
+        "v": 5.6
        }
       },
       {
@@ -20661,21 +20956,21 @@
      ]
     },
     "servo": {
-     "score": 54,
+     "score": 52,
      "status": "bad",
      "metrics": {
-      "C1": 13.47545472325445,
-      "C2": 2.7185605319773125,
-      "C4": 18.501858008996674,
-      "thr_full_pct": 0.31292783101897126,
-      "thr_mean": 33.932063534947645
+      "C1": 14.40448569218871,
+      "C2": 3.7703016241299308,
+      "C4": 19.37354988399072,
+      "thr_full_pct": 0.3092982795283201,
+      "thr_mean": 33.559806387142004
      },
      "findings": [
       {
        "k": "servo_sat",
        "a": {
         "ch": "C4",
-        "v": 18.5
+        "v": 19.4
        }
       }
      ]
@@ -20703,9 +20998,9 @@
      "score": 70,
      "status": "warn",
      "metrics": {
-      "motor_pwm_mean": 1498.5730490905535,
-      "motor_imbalance_us": 84.36221396440442,
-      "motor_headroom_us": 367.0647369450421,
+      "motor_pwm_mean": 1493.2990139211138,
+      "motor_imbalance_us": 83.5377996906418,
+      "motor_headroom_us": 373.1631863882444,
       "hover_thr": 0.3238189220428467
      },
      "findings": [
@@ -20912,7 +21207,7 @@
    "others": [],
    "overall": 89,
    "dur": 111,
-   "sec": 0.8,
+   "sec": 1.0,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -21095,7 +21390,7 @@
    "others": null,
    "overall": 46,
    "dur": 47,
-   "sec": 0.8,
+   "sec": 0.9,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -21275,7 +21570,7 @@
    "exclude": false,
    "note": "",
    "vehicle": "Copter",
-   "got": "incident",
+   "got": "crash",
    "got_cause": "motor",
    "others": [
     "control",
@@ -21284,10 +21579,10 @@
    ],
    "overall": 69,
    "dur": 801,
-   "sec": 1.2,
+   "sec": 0.8,
    "verdict": {
-    "kind": "incident",
-    "score": 20,
+    "kind": "crash",
+    "score": 90,
     "evidence": [
      {
       "k": "cr_sink",
@@ -21304,8 +21599,11 @@
       }
      },
      {
-      "k": "cr_landed",
-      "a": {}
+      "k": "cr_flip",
+      "a": {
+       "t": 798.409001,
+       "a": 177
+      }
      }
     ]
    },
@@ -21534,16 +21832,11 @@
    "others": null,
    "overall": 84,
    "dur": 189,
-   "sec": 1.2,
+   "sec": 1.3,
    "verdict": {
     "kind": "normal",
     "score": 0,
-    "evidence": [
-     {
-      "k": "cr_landed",
-      "a": {}
-     }
-    ]
+    "evidence": []
    },
    "facts": {
     "duration": 189.122721,
@@ -21719,16 +22012,11 @@
    "others": null,
    "overall": 85,
    "dur": 241,
-   "sec": 0.8,
+   "sec": 1.2,
    "verdict": {
     "kind": "normal",
     "score": 0,
-    "evidence": [
-     {
-      "k": "cr_landed",
-      "a": {}
-     }
-    ]
+    "evidence": []
    },
    "facts": {
     "duration": 240.811561,
@@ -21902,7 +22190,7 @@
    ],
    "overall": 32,
    "dur": 811,
-   "sec": 0.6,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -22398,7 +22686,7 @@
    ],
    "overall": 40,
    "dur": 33,
-   "sec": 0.6,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -22699,7 +22987,7 @@
    ],
    "overall": 48,
    "dur": 147,
-   "sec": 0.7,
+   "sec": 1.0,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -23132,15 +23420,14 @@
    "got": "crash",
    "got_cause": "motor",
    "others": [
-    "control",
     "gps"
    ],
-   "overall": 50,
+   "overall": 48,
    "dur": 98,
-   "sec": 0.6,
+   "sec": 0.9,
    "verdict": {
     "kind": "crash",
-    "score": 80,
+    "score": 100,
     "evidence": [
      {
       "k": "cr_err",
@@ -23154,6 +23441,20 @@
        "t": 88.863648,
        "msg": "Crash: Disarming"
       }
+     },
+     {
+      "k": "cr_attitude",
+      "a": {
+       "r": 181,
+       "p": 29
+      }
+     },
+     {
+      "k": "cr_flip",
+      "a": {
+       "t": 85.904944,
+       "a": 181
+      }
      }
     ]
    },
@@ -23162,8 +23463,8 @@
     "vehicle": "Copter",
     "version": "ArduCopter V4.0.3 (ffd08628)",
     "takeoff_t": 41.893993,
-    "land_t": 79.552463,
-    "flight_time": 24.651424,
+    "land_t": 85.904944,
+    "flight_time": 31.003904999999996,
     "n_flights": 2,
     "arm_t": 0.0,
     "disarm_t": 88.864135,
@@ -23220,9 +23521,9 @@
      "score": 95,
      "status": "good",
      "metrics": {
-      "p95": 9.002831268310548,
-      "max": 11.039443016052246,
-      "z_mean": 5.016724395163266,
+      "p95": 8.992825889587403,
+      "max": 12.764642715454102,
+      "z_mean": 5.0821799554076845,
       "clip": 50.0
      },
      "findings": [
@@ -23238,10 +23539,10 @@
      "score": 100,
      "status": "good",
      "metrics": {
-      "vmin": 14.349773406982422,
+      "vmin": 14.14132022857666,
       "vmax": 16.28553009033203,
       "cells": 4,
-      "per_cell_min": 3.5874433517456055,
+      "per_cell_min": 3.535330057144165,
       "current_sensor": true,
       "used_mah": 344.64752197265625,
       "capacity": 9000.0,
@@ -23256,32 +23557,46 @@
      "metrics": {
       "SV": 0.42,
       "SP": 0.02,
-      "SH": 0.06,
-      "SM": 0.09,
+      "SH": 0.08,
+      "SM": 0.19,
       "mag_var_pct": 14.719326918425878
      },
      "findings": []
     },
     "control": {
-     "score": 100,
-     "status": "good",
+     "score": 72,
+     "status": "warn",
      "metrics": {
-      "roll_rms": 0.40367167311087254,
-      "pitch_rms": 0.668360484847001,
-      "roll_max": 6.55,
-      "pitch_max": 17.61
+      "roll_rms": 4.619916204099272,
+      "pitch_rms": 1.654939502126989,
+      "roll_max": 62.910000000000004,
+      "pitch_max": 28.84
      },
-     "findings": []
+     "findings": [
+      {
+       "k": "att_roll_err",
+       "a": {
+        "v": 4.6
+       }
+      },
+      {
+       "k": "att_roll_exceed",
+       "a": {
+        "v": 63,
+        "lim": 45
+       }
+      }
+     ]
     },
     "servo": {
-     "score": 100,
+     "score": 98,
      "status": "good",
      "metrics": {
       "C1": 0.0,
-      "C2": 0.0,
+      "C2": 0.6535947712418301,
       "C4": 0.0,
-      "thr_full_pct": 0.0,
-      "thr_mean": 22.842278825157464
+      "thr_full_pct": 0.32679738562091504,
+      "thr_mean": 23.7996636895962
      },
      "findings": []
     },
@@ -23308,9 +23623,9 @@
      "score": 70,
      "status": "warn",
      "metrics": {
-      "motor_pwm_mean": 1439.4351851851852,
-      "motor_imbalance_us": 82.76028806584372,
-      "motor_headroom_us": 450.25925925925935,
+      "motor_pwm_mean": 1443.9771241830065,
+      "motor_imbalance_us": 82.57843137254895,
+      "motor_headroom_us": 447.58823529411757,
       "hover_thr": 0.3276832401752472
      },
      "findings": [
@@ -23387,7 +23702,7 @@
    ],
    "overall": 61,
    "dur": 320,
-   "sec": 0.6,
+   "sec": 1.0,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -23699,19 +24014,22 @@
    "exclude": false,
    "note": "",
    "vehicle": "Copter",
-   "got": "normal",
-   "got_cause": null,
-   "others": null,
+   "got": "incident",
+   "got_cause": "motor",
+   "others": [],
    "overall": 92,
    "dur": 657,
-   "sec": 0.5,
+   "sec": 1.0,
    "verdict": {
-    "kind": "normal",
-    "score": 0,
+    "kind": "incident",
+    "score": 25,
     "evidence": [
      {
-      "k": "cr_landed",
-      "a": {}
+      "k": "cr_yaw",
+      "a": {
+       "v": 84,
+       "t": 635.179131
+      }
      }
     ]
    },
@@ -23889,23 +24207,31 @@
    "exclude": false,
    "note": "",
    "vehicle": "Copter",
-   "got": "incident",
+   "got": "crash",
    "got_cause": "motor",
    "others": [
-    "control"
+    "control",
+    "power"
    ],
    "overall": 51,
    "dur": 398,
-   "sec": 0.6,
+   "sec": 0.8,
    "verdict": {
-    "kind": "incident",
-    "score": 20,
+    "kind": "crash",
+    "score": 100,
     "evidence": [
      {
       "k": "cr_sink",
       "a": {
        "v": 16.1,
        "t": 397.602161
+      }
+     },
+     {
+      "k": "cr_log_end",
+      "a": {
+       "alt": 4,
+       "t": 397.702004
       }
      },
      {
@@ -23916,8 +24242,18 @@
       }
      },
      {
-      "k": "cr_landed",
-      "a": {}
+      "k": "cr_yaw",
+      "a": {
+       "v": 173,
+       "t": 396.601997
+      }
+     },
+     {
+      "k": "cr_flip",
+      "a": {
+       "t": 396.302061,
+       "a": 178
+      }
      }
     ]
    },
@@ -24137,7 +24473,7 @@
    "others": null,
    "overall": 55,
    "dur": 87,
-   "sec": 0.6,
+   "sec": 1.0,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -24290,7 +24626,7 @@
    "others": null,
    "overall": 81,
    "dur": 167,
-   "sec": 0.7,
+   "sec": 1.1,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -24493,10 +24829,10 @@
    "others": [],
    "overall": 48,
    "dur": 230928,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
-    "score": 10,
+    "score": 35,
     "evidence": [
      {
       "k": "cr_log_end",
@@ -24504,10 +24840,6 @@
        "alt": 54,
        "t": 230928.0
       }
-     },
-     {
-      "k": "cr_landed",
-      "a": {}
      }
     ]
    },
@@ -24639,14 +24971,14 @@
    "exclude": false,
    "note": "",
    "vehicle": "Plane",
-   "got": "incident",
-   "got_cause": "stall",
-   "others": [],
+   "got": "normal",
+   "got_cause": null,
+   "others": null,
    "overall": 48,
    "dur": 74,
-   "sec": 0.8,
+   "sec": 1.3,
    "verdict": {
-    "kind": "incident",
+    "kind": "normal",
     "score": 0,
     "evidence": []
    },
@@ -24842,7 +25174,7 @@
    ],
    "overall": 44,
    "dur": 34,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 95,
@@ -25084,14 +25416,14 @@
    "exclude": false,
    "note": "",
    "vehicle": "Plane",
-   "got": "incident",
-   "got_cause": "unknown",
+   "got": "normal",
+   "got_cause": null,
    "others": null,
    "overall": 53,
    "dur": 285,
-   "sec": 0.8,
+   "sec": 1.4,
    "verdict": {
-    "kind": "incident",
+    "kind": "normal",
     "score": 0,
     "evidence": []
    },
@@ -25256,16 +25588,24 @@
    "exclude": false,
    "note": "",
    "vehicle": "Copter",
-   "got": "normal",
-   "got_cause": null,
-   "others": null,
+   "got": "incident",
+   "got_cause": "power",
+   "others": [],
    "overall": 92,
    "dur": 124,
-   "sec": 0.7,
+   "sec": 1.1,
    "verdict": {
-    "kind": "normal",
-    "score": 0,
-    "evidence": []
+    "kind": "incident",
+    "score": 30,
+    "evidence": [
+     {
+      "k": "cr_log_end",
+      "a": {
+       "alt": 5,
+       "t": 124.000825
+      }
+     }
+    ]
    },
    "facts": {
     "duration": 124.000825,
@@ -25425,17 +25765,17 @@
    "exclude": false,
    "note": "",
    "vehicle": "Copter",
-   "got": "incident",
+   "got": "crash",
    "got_cause": "motor",
    "others": [
     "control"
    ],
    "overall": 55,
    "dur": 339,
-   "sec": 0.7,
+   "sec": 1.0,
    "verdict": {
-    "kind": "incident",
-    "score": 0,
+    "kind": "crash",
+    "score": 65,
     "evidence": [
      {
       "k": "cr_attitude",
@@ -25445,8 +25785,11 @@
       }
      },
      {
-      "k": "cr_landed",
-      "a": {}
+      "k": "cr_flip",
+      "a": {
+       "t": 190.029517,
+       "a": 168
+      }
      }
     ]
    },
@@ -25651,7 +25994,7 @@
    ],
    "overall": 43,
    "dur": 104,
-   "sec": 0.7,
+   "sec": 0.9,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -25891,7 +26234,7 @@
    "others": [],
    "overall": 44,
    "dur": 1041,
-   "sec": 0.6,
+   "sec": 1.1,
    "verdict": {
     "kind": "incident",
     "score": 45,
@@ -26216,16 +26559,11 @@
    "others": null,
    "overall": 92,
    "dur": 249,
-   "sec": 0.7,
+   "sec": 1.0,
    "verdict": {
     "kind": "normal",
     "score": 0,
-    "evidence": [
-     {
-      "k": "cr_landed",
-      "a": {}
-     }
-    ]
+    "evidence": []
    },
    "facts": {
     "duration": 248.930829,
@@ -26407,7 +26745,7 @@
    ],
    "overall": 38,
    "dur": 138,
-   "sec": 0.7,
+   "sec": 1.0,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -26670,21 +27008,16 @@
    "exclude": false,
    "note": "",
    "vehicle": "Copter",
-   "got": "incident",
-   "got_cause": "unknown",
+   "got": "normal",
+   "got_cause": null,
    "others": null,
    "overall": 52,
    "dur": 171,
-   "sec": 1.0,
+   "sec": 0.7,
    "verdict": {
-    "kind": "incident",
+    "kind": "normal",
     "score": 0,
-    "evidence": [
-     {
-      "k": "cr_landed",
-      "a": {}
-     }
-    ]
+    "evidence": []
    },
    "facts": {
     "duration": 170.603963,
@@ -26847,20 +27180,27 @@
    "note": "",
    "vehicle": "Copter",
    "got": "incident",
-   "got_cause": "unknown",
-   "others": null,
+   "got_cause": "power",
+   "others": [],
    "overall": 79,
    "dur": 1034,
-   "sec": 0.7,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
-    "score": 25,
+    "score": 55,
     "evidence": [
      {
       "k": "cr_sink",
       "a": {
        "v": 34.5,
        "t": 1033.754865
+      }
+     },
+     {
+      "k": "cr_log_end",
+      "a": {
+       "alt": 12,
+       "t": 1033.797012
       }
      }
     ]
@@ -27269,7 +27609,7 @@
    ],
    "overall": 43,
    "dur": 72,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 75,
@@ -27770,7 +28110,7 @@
    "others": null,
    "overall": 55,
    "dur": 96,
-   "sec": 0.7,
+   "sec": 0.8,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -28206,6 +28546,13 @@
       "k": "cr_impact",
       "a": {
        "v": 92
+      }
+     },
+     {
+      "k": "cr_yaw",
+      "a": {
+       "v": 179,
+       "t": 32.72941
       }
      },
      {
@@ -28766,7 +29113,7 @@
    ],
    "overall": 30,
    "dur": 17,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -29005,7 +29352,7 @@
    "others": null,
    "overall": 76,
    "dur": 175,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "noflight",
     "score": 0,

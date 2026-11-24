@@ -165,7 +165,7 @@ class Analysis(ExtMixin):
             spd[1:] = np.where(dt > 0, d / np.maximum(dt, 1e-3), 0)
             m = (tr['rel'] > 3) | (spd > self.th['fly_speed'])
             flights = self._runs(tr['t'], m, 5.0)
-        self.flip = None; self.esc_stop = None
+        self.flip = None; self.esc_stop = None; self.yaw_loss = None
         if not flights:
             flights = self._flying_fallback()
         # Birleştir (kısa kesintiler)
@@ -176,6 +176,28 @@ class Analysis(ExtMixin):
             else:
                 merged.append(f)
         self.flights = merged
+        if self.flip is None and merged and self.vehicle == 'Copter':
+            self._late_flip()
+
+    def _late_flip(self):
+        """Çok rotorlu: son kurulum döneminin sonunda (≤3 s) araç devrildiyse (öncesinde düz uçuyordu) kırım say.
+        Uçuş algılaması (isFlying) alçak irtifada devrilmeyi kaçırabiliyor."""
+        L = self.L; att = L.s('ATT')
+        if not att.has('Roll') or not self.armed: return
+        a0, a1 = self.armed[-1]
+        if a1 - a0 < 5 or a1 < self.flights[-1][0]: return
+        m = (att['t'] >= a0) & (att['t'] <= a1 + 1)
+        if m.sum() < 20: return
+        at = att['t'][m]; ang = np.maximum(np.abs(att['Roll'][m]), np.abs(att['Pitch'][m]))
+        lim = max(self.th['roll_crash'], 60)
+        late = at >= a1 - 3.0; before = (at >= a1 - 15) & (at < a1 - 3.0)
+        if late.any() and before.sum() > 5 and np.nanmax(ang[late]) > lim and np.nanpercentile(ang[before], 90) < 35:
+            k = int(np.argmax(late & (ang > lim))); tf = float(at[k])
+            self.flip = (tf, float(np.nanmax(ang[late])))
+            if tf > self.flights[-1][1] + 10:      # ayrı (algılanmamış) bir uçuş: ayrı uçuş olarak ekle
+                self.flights.append((max(a0, self.flights[-1][1], tf - 6), tf))
+            elif tf > self.flights[-1][1]:
+                self.flights[-1] = (self.flights[-1][0], tf)
 
     def crash_time(self):
         """Otopilotun kendi kırım tespiti (STAT.Crash, ERR 12, 'Crash' mesajı) zamanı."""
@@ -545,10 +567,19 @@ class Analysis(ExtMixin):
                 vz = np.gradient(rel[w], t[w]); min_vz = float(np.nanmin(vz))
                 if min_vz < -self.th['sink_crash']: score += 25; ev.append(F('cr_sink', v=round(-min_vz, 1), t=float(last_f[1])))
             # log uçuş halinde bitti mi
+            land_ev = [t_ for t_, i in L.events if i == 18 and last_f[0] <= t_ <= last_f[1] + 5]
             if L.duration - last_f[1] < 3 and rel[-1] > 15:
                 score += 35; ev.append(F('cr_log_end', alt=round(float(rel[-1])), t=float(L.duration)))
-            # uçuş modunda iniş olmadan bitiş
-            landed = any(i == 18 for _, i in L.events)
+            elif L.duration - last_f[1] < 3 and rel[-1] > 3 and not land_ev and self.vehicle == 'Copter':
+                score += 30; ev.append(F('cr_log_end', alt=round(float(rel[-1])), t=float(L.duration)))
+            # iniş tamamlandı olayı yalnız son uçuşta ve alçakta, yumuşak alçalmayla gelmişse 'normal iniş' sayılır
+            # (kırımda ArduCopter yere çarpınca da 'iniş tamamlandı' yazar; havada yazılan olay iniş değildir)
+            landed = False
+            for t_ in land_ev:
+                k = max(0, min(int(np.searchsorted(t, t_)), len(t) - 1))
+                w_ = (t > t_ - 4) & (t <= t_)
+                vz_ = float(np.nanmin(np.gradient(rel[w_], t[w_]))) if w_.sum() > 3 else 0.0
+                if rel[k] < 5 and vz_ > -self.th['sink_crash']: landed = True
             mode_last = L.modes[-1][1] if L.modes else None
             att = L.s('ATT')
             if att.has('Roll'):
@@ -564,18 +595,31 @@ class Analysis(ExtMixin):
                     score += 15; ev.append(F('cr_impact', v=round(float(np.nanmax(v['VibeZ'][w3])))))
             hard = any(x.get('k') in ('cr_stat', 'cr_err', 'cr_msg') for x in ev) or getattr(self, 'flip', None)
             if landed and not hard: score -= 25; ev.append(F('cr_landed'))
+        # Çok rotorlu: son 10 s içinde yön (yaw) kontrolü kaybı (istenen/gerçek fark >60°, ≥1 s)
+        if tr is not None and self.flights and self.vehicle == 'Copter':
+            att = L.s('ATT'); last_f = self.flights[-1]
+            if att.has('DesYaw') and att.has('Yaw'):
+                w = (att['t'] > last_f[1] - 10) & (att['t'] <= last_f[1] + 1)
+                if w.sum() > 5:
+                    e = np.abs((att['DesYaw'][w] - att['Yaw'][w] + 180) % 360 - 180)
+                    runs = self._runs(att['t'][w], e > 60, 1.0)
+                    if runs:
+                        self.yaw_loss = float(runs[0][0])
+                        score += 25; ev.append(F('cr_yaw', v=round(float(np.nanmax(e))), t=self.yaw_loss))
         if self.flights and getattr(self, 'flip', None):
             score += 45; ev.append(F('cr_flip', t=self.flip[0], a=round(self.flip[1])))
-        if self.flights and self.armed and L.duration - self.armed[-1][1] < 1.0 and \
+        if self.flights and (L.duration - self.armed[-1][1] < 1.0 if self.armed else True) and \
                 L.duration - self.flights[-1][1] < 2.0 and not any(x.get('k') == 'cr_log_end' for x in ev) and \
                 not any(i == 11 for _, i in L.events):
             # kurulu ve uçuşta iken log kesildi (güç kaybı / ani düşüş)
             score += 30; ev.append(F('cr_log_cut', t=float(L.duration)))
+        # 'kötü' sağlık alanları: tek başına servo/hava hızı/kontrol uyarısı (ör. ayar aşamasındaki uçuş) olay sayılmaz
+        bad_dom = {k for k, h in self.health.items() if h.get('status') == 'bad'}
         if not self.flights:
             kind = 'noflight'
         elif score >= 60:
             kind = 'crash'
-        elif score >= 25 or any(h['status'] == 'bad' for h in self.health.values()) or \
+        elif score >= 25 or (score > 0 and bad_dom) or len(bad_dom) >= 2 or bad_dom & {'gps', 'ekf', 'vibration', 'power', 'motors'} or \
                 any(r in K.FAILSAFE_REASONS for _, _, _, r in L.modes) or \
                 any(s in (2, 5, 6, 7, 8, 9, 12, 16, 17) and c != 0 for _, s, c in L.errors):
             kind = 'incident'
@@ -672,7 +716,7 @@ class Analysis(ExtMixin):
             nm = {1: 4, 2: 6, 3: 8, 4: 8, 5: 6, 7: 3, 10: 2, 12: 12, 14: 10}.get(fr, 4)   # FRAME_CLASS → motor sayısı
             ch = [f'C{i}' for i in range(1, nm + 1) if o.has(f'C{i}')]
             if len(ch) >= 3:
-                w = (o['t'] >= max(win0, end - 15)) & (o['t'] <= end)
+                w = (o['t'] >= max(win0, end - 15)) & (o['t'] <= end + 1.5)   # doygunluk devrilmeyle aynı anda başlayabilir
                 if w.sum() > 5:
                     M = np.vstack([o[c][w] for c in ch]); tt = o['t'][w]
                     # gözlenen tavan (MOT_SPIN_MAX'tan da düşük bir sınır olabilir: ör. PWM aralığı farklı kalibre edilmiş)
@@ -682,20 +726,25 @@ class Analysis(ExtMixin):
                     sat = (hi >= top - 8) & (hi - med > 200)
                     # ya da bir motor tabana çekilmiş, diğerleri yüksek (karşı koldaki itki kaybı)
                     floor = (lo <= mn + 8) & (med - lo > 250) & (med > mn + 250)
-                    runs = self._runs(tt, sat, 0.4)[:1] + self._runs(tt, floor, 1.0)[:1]
+                    runs = [r for r in self._runs(tt, sat, 0.4) if r[0] <= end + 0.3][:1] + \
+                           [r for r in self._runs(tt, floor, 1.0) if r[0] <= end][:1]
                     if runs: tm = float(min(r[0] for r in runs))
             # ESC telemetrisi: bir motorun devri diğerleri dönerken birden sıfıra iner (motor/ESC durması, pervane kopması)
             te_ = self._esc_stop(max(win0, end - 15), end - 0.2)
             if te_ is not None:
                 self.esc_stop = te_
                 tm = min(tm, te_[0]) if tm is not None else te_[0]
-            if self.flip and self.flights and self.flip[0] - self.flights[-1][0] < 6:
+            if self.flip and self.flights and self.flip[0] - self.flights[-1][0] < 6.5:
                 tm = min(tm, self.flip[0]) if tm is not None else self.flip[0]
             if tm is not None:
                 cands.append(('motor', tm))
+        if not cands and getattr(self, 'yaw_loss', None) is not None:
+            cands.append(('motor', self.yaw_loss))     # başka belirti yokken yön kaybı: çoğunlukla motor/ESC itki kaybı
         if not cands:
             self.root = {'cause': 'unknown', 'chain': [], 'prevent': 'unknown', 't': end}; return
-        cands = [c for c in cands if c[1] <= end + 2] or cands       # kırımdan sonraki uyarılar neden olamaz
+        cands = [c for c in cands if c[1] <= end + 2]       # kırımdan sonraki uyarılar neden olamaz
+        if not cands:
+            self.root = {'cause': 'unknown', 'chain': [], 'prevent': 'unknown', 't': end}; return
         cands.sort(key=lambda c: c[1])
         # Öncelik: kırımdan önceki son 60 s içinde zincirde ilk ortaya çıkan (eski/kalıcı uyarılar değil);
         # EKF genelde GPS/pusula/titreşimin, tutum hatası (control) da motor/güç sorununun sonucudur.
