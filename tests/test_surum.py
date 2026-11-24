@@ -37,7 +37,7 @@ def test_installer_per_user_and_uninstaller_outside_app():
 def test_specs_bundle_core():
     for f in ('PixhawkLogAnaliz.spec', 'PixhawkLogAnaliz_dir.spec'):
         s = rd(f)
-        assert "collect_data_files('fccore')" in s and 'PySide6.QtSvg' in s
+        assert "('fccore/fonts', 'fccore/fonts')" in s and 'PySide6.QtSvg' in s
         assert "'PySide6.QtSvg'" not in s.split('excl =')[1]
 
 
