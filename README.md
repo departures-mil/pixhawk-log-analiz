@@ -51,3 +51,13 @@ ortak `reusable-release.yml` (latest.json, son 5 sürümden yamalar) ile yayın.
 - ✦ **Asistan Agent** (`app/ui/fc_agent.py` = ortak-cekirdek/python/fc_agent.py, bağlantı `app/ui/ajan.py`): bütün programlardaki
   çalışmayı sayılarla izler (içerik yok), çevrim dışı kurallar + kullanıcının kendi Gemini/Claude anahtarıyla öneri; bildirim + sağ altta ✦ panel;
   Ayarlar'da "Admin ile iletişim"in önünde kart. Aynı bilgisayardaki programlarla %APPDATA%/FalconCekirdek/agent üzerinden paylaşım.
+
+## v1.1.1 — daha gerçekçi ve dakik teşhis
+- **Test seti 326 gerçek loga çıktı** (210 kaza, 116 normal uçuş; her konunun uzman yanıtları elle okunarak etiketlendi). Ayrıntı: [sonuçlar](docs/kirim_test_sonuclari.md)
+- **"Teşhis doğru muydu?"** düğmesi (Neden düştü? bölümü): evet/kısmen/hayır, gerçek sonuç ve neden; kişisel veri göndermez, internet yoksa sıraya alınıp sonra gönderilir
+- **Kaçan kazalar**: kalkıştan/inişten sonraki takla, uçuşta log kesilmesi, iniş algılamada yanılma, son saniyelerde yön (yaw) kontrol kaybı
+- **Motor/ESC**: MOT_SPIN_MAX'a göre motor doygunluğu, karşı motorun tabana düşmesi, ESC telemetrisi; motor numarasıyla kanıt
+- **Sabit kanat**: ters ya da yetersiz kumanda yüzeyi, ağırlık merkezi (burun/kuyruk ağır), hava hızı sensörü kalibrasyonu
+- **Batarya iç direnci** (hücre başına mΩ), **titreşim frekansı** ve çentik filtresi değerlendirmesi
+- **Veri yetersizliği uyarısı**: eksik log kayıtları (RCOU, VIBE, ATT, akım, PID, ESC, GPS) listelenir, güven yüzdesi buna göre düşer
+- **Öğrenen ikinci görüş (ML)**: uzman etiketli 323 logla eğitildi; leave-one-out ölçümünde doğruluk %81 → %86, özgüllük %66 → %85 (duyarlılık %89 → %87). Yalnız sınırdaki kararları düzeltir

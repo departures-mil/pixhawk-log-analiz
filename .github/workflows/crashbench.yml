@@ -17,7 +17,7 @@ concurrency:
 jobs:
   bench:
     runs-on: ubuntu-latest
-    timeout-minutes: 300
+    timeout-minutes: 340
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -33,9 +33,11 @@ jobs:
       - run: pip install -q numpy matplotlib pymavlink python-docx reportlab qrcode pillow arabic-reshaper python-bidi cryptography
       - name: Harvest logs (discuss.ardupilot.org)
         env:
-          BENCH_N_CRASH: '85'
-          BENCH_N_NORMAL: '35'
-          BENCH_TOTAL_MB: '6000'
+          BENCH_N_CRASH: '210'
+          BENCH_N_NORMAL: '130'
+          BENCH_TOTAL_MB: '9000'
+          BENCH_MAX_MB: '100'
+          BENCH_PAGES: '5'
         run: python tools_data/crashbench.py harvest
       - name: Save log cache
         uses: actions/cache/save@v4
@@ -50,22 +52,31 @@ jobs:
           MPLBACKEND: Agg
         run: python tools_data/crashbench.py run
       - name: Pack logs for review
-        run: cd /tmp/bench && tar czf /tmp/crashlogs.tgz *.bin manifest.json
+        # GitHub release varlığı 2 GB ile sınırlı: arşiv 1,9 GB'lık parçalara bölünür (cat crashlogs.tgz.part* > crashlogs.tgz)
+        run: cd /tmp/bench && tar czf /tmp/crashlogs.tgz *.bin manifest.json && cd /tmp && split -b 1900m -d crashlogs.tgz crashlogs.tgz.part && ls -la /tmp/crashlogs.tgz*
       - name: Upload logs to draft release (for offline rule tuning; drafts are not visible to the updater)
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release view bench-data --repo "${{ github.repository }}" >/dev/null 2>&1 || gh release create bench-data --draft --repo "${{ github.repository }}" --target "${{ github.sha }}" --title "bench-data (taslak, kullanıcıya görünmez)" --notes "crashbench log önbelleği"
-          gh release upload bench-data /tmp/crashlogs.tgz --clobber --repo "${{ github.repository }}"
+          gh release upload bench-data /tmp/crashlogs.tgz.part* --clobber --repo "${{ github.repository }}"
       - uses: actions/upload-artifact@v4
         with:
           name: crashlogs
-          path: /tmp/crashlogs.tgz
+          path: /tmp/crashlogs.tgz.part*
           retention-days: 10
           compression-level: 0
       - name: Commit results
         run: |
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add tools_data/crashbench docs/kirim_test_sonuclari.md app/data/crashlib.json
-          git commit -m "crashbench: gerçek kırım logları doğruluk sonuçları (otomatik)" || exit 0
-          for i in 1 2 3 4; do git pull --rebase -q origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && break; sleep $((i*10)); done
+          mkdir -p /tmp/keep && cp -r tools_data/crashbench docs/kirim_test_sonuclari.md app/data/crashlib.json /tmp/keep/
+          for i in 1 2 3 4 5; do
+            git fetch -q origin "${{ github.ref_name }}" && git reset -q --hard "origin/${{ github.ref_name }}"
+            cp /tmp/keep/crashbench/threads.json.gz tools_data/crashbench/ 2>/dev/null; cp /tmp/keep/crashbench/results.json tools_data/crashbench/
+            cp /tmp/keep/kirim_test_sonuclari.md docs/; cp /tmp/keep/crashlib.json app/data/
+            git add tools_data/crashbench docs/kirim_test_sonuclari.md app/data/crashlib.json
+            git commit -qm "crashbench: gerçek kırım logları doğruluk sonuçları (otomatik)" || exit 0
+            git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            sleep $((i*10))
+          done
+          exit 1

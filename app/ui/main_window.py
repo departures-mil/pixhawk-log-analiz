@@ -67,6 +67,7 @@ class MainWindow(FcWindow):
         # Mission Planner log klasörü izleme
         self.watcher = None; self.wtimer = QTimer(self); self.wtimer.setInterval(5000); self.wtimer.timeout.connect(self._watch_tick)
         self.setup_watch()
+        QTimer.singleShot(9000, self._flush_feedback)
 
     # ------------------------------------------------------------ v1.0.2 yardımcıları
     def _apply_core_settings(self):
@@ -133,6 +134,15 @@ class MainWindow(FcWindow):
         if self.isMinimized(): self.setWindowState(self.windowState() & ~Qt.WindowMinimized)
         self.raise_(); self.activateWindow()
         if p and os.path.isfile(p): self.open_log(p)
+
+    def _flush_feedback(self):
+        """İnternetsizken sıraya alınmış teşhis geri bildirimlerini arka planda gönder."""
+        try:
+            from ..core import feedback
+            from .common import run_bg
+            run_bg(feedback.flush)
+        except Exception:
+            pass
 
     # ------------------------------------------------------------ çökme raporu (fccore.crash gönderir)
     def _on_crash(self, path):
