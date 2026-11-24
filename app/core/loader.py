@@ -13,7 +13,7 @@ WANT = {
     'CTUN': 10, 'NTUN': 10, 'TECS': 10, 'AETR': 10, 'ARSP': 10, 'AOA': 5, 'VIBE': 10, 'IMU': 25,
     'MAG': 10, 'RCIN': 10, 'RCOU': 10, 'RSSI': 2, 'POWR': 2, 'PM': 0, 'STAT': 0, 'XKF4': 5, 'NKF4': 5,
     'XKF1': 5, 'XKF3': 5, 'XKFS': 0, 'MODE': 0, 'MSG': 0, 'ERR': 0, 'EV': 0, 'ARM': 0, 'PARM': 0,
-    'VER': 0, 'CMD': 0, 'ORGN': 0, 'RPM': 5, 'ESC': 5, 'DSF': 0, 'PIDR': 10, 'PIDP': 10, 'PIDY': 10,
+    'VER': 0, 'CMD': 0, 'ORGN': 0, 'RPM': 5, 'ESC': 5, 'DSF': 0, 'PIDR': 50, 'PIDP': 50, 'PIDY': 50, 'RATE': 50,
     'RAD': 2, 'MAV': 2, 'XKF2': 2, 'NKF2': 2, 'QTUN': 10, 'TSYN': 0,
 }
 
@@ -95,9 +95,9 @@ def _vehicle_from(text):
     return None
 
 
-NONE_KEY = ('ATT', 'POS', 'CTUN', 'NTUN', 'TECS', 'AETR', 'RCIN', 'RCOU', 'PM', 'STAT', 'AHR2', 'AOA', 'POWR', 'RSSI', 'DSF', 'ORGN',
+NONE_KEY = ('ATT', 'POS', 'CTUN', 'NTUN', 'TECS', 'AETR', 'RCIN', 'RCOU', 'PM', 'STAT', 'AHR2', 'AOA', 'POWR', 'RSSI', 'DSF', 'ORGN', 'RATE',
             'CMD', 'PIDR', 'PIDP', 'PIDY', 'RAD', 'MAV')
-LOADER_VER = 3
+LOADER_VER = 4
 
 
 def load(path: str, progress=None, cancel=None, use_cache=True) -> LogData:
