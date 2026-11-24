@@ -187,5 +187,20 @@ try:
 except Exception as _e:
     print('v1.0.8 FAIL', _e); raise
 
+# ---- v1.1.4: dört seviyeli karar, kalibrasyon, geçmişle karşılaştırma, kanıta dayalı YZ, olay raporu
+try:
+    from app.core import baseline as BL, why as WY, texts as TX
+    assert TX.vkey({'kind': 'incident', 'severity': 'minor'}) == 'incident_minor'
+    assert TX.vkey({'kind': 'incident', 'severity': 'serious'}) == 'incident' and TX.vkey(None) == 'normal'
+    c = WY.calibrate(0.9, 'motor'); assert 0.1 <= c <= 0.95, c
+    assert '⚠' in WY._check_grounding('12:34 anında', {'t': '10:00'}) and '⚠' not in WY._check_grounding('10:00', {'t': '10:00'})
+    An = analysis.Analysis(loader.load(os.path.join(d, 'normal.BIN')))
+    assert any(k.startswith('bl_') for k in An.facts), 'baseline facts'
+    assert An.verdict.get('kind') != 'crash' and An.fall is None, An.verdict
+    BL.compare(An, None)
+    print('v1.1.4 vkey / calibrate / grounding / baseline OK')
+except Exception:
+    import traceback; traceback.print_exc(); bad += 1
+
 sys.exit(1 if bad else 0)
 
