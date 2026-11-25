@@ -52,6 +52,11 @@ ortak `reusable-release.yml` (latest.json, son 5 sürümden yamalar) ile yayın.
   çalışmayı sayılarla izler (içerik yok), çevrim dışı kurallar + kullanıcının kendi Gemini/Claude anahtarıyla öneri; bildirim + sağ altta ✦ panel;
   Ayarlar'da "Admin ile iletişim"in önünde kart. Aynı bilgisayardaki programlarla %APPDATA%/FalconCekirdek/agent üzerinden paylaşım.
 
+## v1.1.7 — her değerin kaynağı (log alanı + parametre)
+- Grafik çizgileri MESAJ.ALAN adıyla, eşik çizgileri parametre adı ve değeriyle; her grafiğin altında kaynak şeridi.
+- Grafikler sayfasında "Kaynak" sekmesi: alan/parametre anlamı, değer, varsayılan ve Mission Planner'da yolu (`app/core/sources.py`).
+- Analiz özeti, temel bilgiler, aşamalar, mod tablosu ve motor olaylarında kaynak satırı (rapor dahil).
+
 ## v1.1.6 — güncelleme düzeltmesi
 - Güncellerken açılan siyah "find" penceresi ve takılma giderildi (takas betiği gizli konsolda çalışır).
 

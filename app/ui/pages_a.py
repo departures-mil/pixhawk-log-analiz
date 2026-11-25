@@ -162,6 +162,7 @@ CHART_KEYS = [k for k, _ in charts.ALL] + ['c_health', 'c_timeline']
 CT = {
     'tab_info': ('Açıklama', 'Explanation', 'الشرح'), 'tab_modes': ('Uçuş modları', 'Flight modes', 'أوضاع الطيران'),
     'tab_mp': ('Mission Planner', 'Mission Planner', 'Mission Planner'),
+    'tab_src': ('Kaynak: log alanı + parametre', 'Source: log field + parameter', 'المصدر: حقل السجل + المعامل'),
     'm_desc': ('Mod ne yapar', 'What the mode does', 'ماذا يفعل الوضع'),
     'm_help': ('Satıra tıklayın: imleç o ana gider · çift tıklayın: grafik o moda yakınlaşır', 'Click a row: cursor jumps there · double-click: chart zooms to that mode',
                'انقر صفاً: ينتقل المؤشر · انقر مرتين: يقترب الرسم من ذلك الوضع'),
@@ -201,6 +202,7 @@ class ChartsPage(Page):
         self.view = ChartView(); self.view.clicked.connect(self._clicked); sp.addWidget(self.view)
         self.tabs = QTabWidget()
         self.lesson = QTextBrowser(); self.tabs.addTab(self.lesson, 'ⓘ ' + ct('tab_info'))
+        self.src = QTextBrowser(); self.tabs.addTab(self.src, '🔎 ' + ct('tab_src'))
         mw = QWidget(); mv = QVBoxLayout(mw); mv.setContentsMargins(4, 4, 4, 4)
         mv.addWidget(label(ct('m_help'), 'muted', wrap=True))
         self.mt = QTableWidget(0, 7)
@@ -210,6 +212,7 @@ class ChartsPage(Page):
         self.mt.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.mt.cellClicked.connect(self._mode_click); self.mt.cellDoubleClicked.connect(self._mode_dbl)
         mv.addWidget(self.mt, 1)
+        self.mt_src = label('', 'muted', wrap=True); self.mt_src.setTextInteractionFlags(Qt.TextSelectableByMouse); mv.addWidget(self.mt_src)
         self.tabs.addTab(mw, '🎛 ' + ct('tab_modes'))
         pw = QWidget(); pv = QVBoxLayout(pw); pv.setContentsMargins(4, 4, 4, 4)
         pb = QHBoxLayout()
@@ -254,7 +257,7 @@ class ChartsPage(Page):
     def _show(self, it, *_):
         if not it: return
         k = it.data(Qt.UserRole)
-        self.lesson.setHtml(summary_html.lesson_html(k, lang()) + self._extra_html(k))
+        self.lesson.setHtml(summary_html.lesson_html(k, lang()) + self._extra_html(k)); self.src.setHtml(self._src_html(k))
         self._fill_mp(k)
         if self.A is None: return
         if k in self.cache: self.view.set_figure(self.cache[k], self.A)
@@ -265,7 +268,7 @@ class ChartsPage(Page):
         if k not in CHART_KEYS: return
         i = CHART_KEYS.index(k)
         self.list.blockSignals(True); self.list.setCurrentRow(i); self.list.blockSignals(False)
-        self.lesson.setHtml(summary_html.lesson_html(k, lang()) + self._extra_html(k)); self._fill_mp(k)
+        self.lesson.setHtml(summary_html.lesson_html(k, lang()) + self._extra_html(k)); self.src.setHtml(self._src_html(k)); self._fill_mp(k)
         if self.A is None: return
         if t_ is None and span is None:
             if k in self.cache: self.view.set_figure(self.cache[k], self.A)
@@ -297,6 +300,13 @@ class ChartsPage(Page):
                 if j == 5 and s_['fs']: it.setBackground(QColor('#7F1D1D'))
                 self.mt.setItem(i, j, it)
         for j in range(6): self.mt.resizeColumnToContents(j)
+        from ..core import sources
+        try: self.mt_src.setText('🔎 ' + sources.short(self.A, 'sec_modes', lg) + '\n' + sources.t('pix', lg))
+        except Exception: self.mt_src.setText('')
+        tips = {0: 'MODE.TimeUS', 1: 'GPS.GWk + GPS.GMS', 2: 'MODE.TimeUS', 4: 'MODE.Mode · MODE.ModeNum', 5: 'MODE.Rsn'}
+        for j, tip in tips.items():
+            h_ = self.mt.horizontalHeaderItem(j)
+            if h_: h_.setToolTip(tip)
 
     def _mode_click(self, r, _c):
         if 0 <= r < len(self.segs):
@@ -319,6 +329,14 @@ class ChartsPage(Page):
         d = 'rtl' if lg == 'ar' else 'ltr'
         return (f'<div dir="{d}"><p><b>{E(viz.frame_text(self.A, lg))}</b></p>' + (f'<ul>{evs}</ul>' if evs else '') +
                 f'<table cellpadding="3">{rows}</table></div>')
+
+    def _src_html(self, k):
+        if self.A is None: return ''
+        from ..core import sources
+        try:
+            return sources.html(self.A, k, lang(), dark=True)
+        except Exception:
+            return ''
 
     def _fill_mp(self, k):
         from ..core import viz

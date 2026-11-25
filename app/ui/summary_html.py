@@ -18,6 +18,35 @@ def _facts(A, lg):
     return ReportData.facts_rows(rd)
 
 
+def _src_line(A, key, lg):
+    """Tablo/bölüm altı: değerlerin okunduğu log alanları ve parametreler (Mission Planner'da aynısını bulmak için)."""
+    try:
+        from ..core import sources
+        x = sources.short(A, key, lg)
+    except Exception:
+        x = ''
+    return f'<br><span style="color:#64748B;font-size:9pt">🔎 <code>{E(x)}</code></span>' if x else ''
+
+
+def _brief(A, key):
+    try:
+        from ..core import sources
+        return sources.fields_brief(A, key)
+    except Exception:
+        return ''
+
+
+def _fact_src(A, lg):
+    tr = (A.track or {}).get('src', 'GPS.Alt') if A.track is not None else 'GPS.Alt'
+    m = {'f_file': '', 'f_vehicle': 'MSG.Message (ilk satırlar) · VER', 'f_date': 'GPS.GWk · GPS.GMS', 'f_logdur': 'TimeUS (ilk → son)',
+         'f_flight': 'EV.Id (ARMED/DISARMED) · GPS.Spd · ' + tr, 'f_takeoff': 'EV.Id · ' + tr, 'f_land': 'EV.Id · ' + tr, 'f_maxalt': tr,
+         'f_dist': 'POS.Lat · POS.Lng', 'f_speed': 'GPS.Spd · ARSP.Airspeed', 'f_batt': 'BAT.Volt · BAT.CurrTot · BATT_CAPACITY',
+         'f_board': 'MSG.Message', 'f_profile': 'FRAME_CLASS · Q_ENABLE · SERVOn_FUNCTION', 'f_serial': 'MSG.Message (UID)'}
+    if lg != 'tr':
+        m['f_vehicle'] = 'MSG.Message · VER'; m['f_logdur'] = 'TimeUS'
+    return {R(k, lg): v for k, v in m.items()}
+
+
 def build(A, lg):
     d = 'rtl' if lg == 'ar' else 'ltr'
     al = 'right' if lg == 'ar' else 'left'
@@ -69,13 +98,16 @@ def build(A, lg):
         w = max(2, int(x['score']))
         h.append(f'<tr><td width="28%">{E(texts.T("dom_" + k, lg))}</td><td width="8%" align="center"><b style="color:{c}">{x["score"]}</b></td>'
                  f'<td><table width="{w}%" cellspacing="0" cellpadding="0"><tr><td bgcolor="{c}" height="10"></td></tr></table></td>'
-                 f'<td width="14%" style="color:{c}">{E(texts.T("st_" + x["status"], lg))}</td></tr>')
+                 f'<td width="14%" style="color:{c}">{E(texts.T("st_" + x["status"], lg))}</td>'
+                 f'<td width="22%" style="color:#64748B;font-size:8pt"><code>{E(_brief(A, "dom_" + k))}</code></td></tr>')
     h.append('</table>')
     # Temel bilgiler
     h.append(f'<h3 style="color:#93C5FD">{E(R("facts", lg))}</h3><table width="100%" cellpadding="4" cellspacing="0" border="0">')
+    fsrc = _fact_src(A, lg)
     for i, (a, b) in enumerate(_facts(A, lg)):
         bg = '#111C33' if i % 2 else '#0F1A30'
-        h.append(f'<tr bgcolor="{bg}"><td width="35%" style="color:#94A3B8">{E(a)}</td><td>{E(chr(0x2066) + str(b) + chr(0x2069)) if lg == "ar" else E(str(b))}</td></tr>')
+        h.append(f'<tr bgcolor="{bg}"><td width="35%" style="color:#94A3B8">{E(a)}</td><td>{E(chr(0x2066) + str(b) + chr(0x2069)) if lg == "ar" else E(str(b))}</td>'
+                 f'<td width="30%" style="color:#64748B"><code>{E(fsrc.get(a, ""))}</code></td></tr>')
     h.append('</table>')
     if A.verdict.get('evidence'):
         h.append(f'<h3 style="color:#93C5FD">{E(R("evidence", lg))}</h3><ul>')
@@ -100,7 +132,8 @@ def build(A, lg):
         c = STATUS_COL[x['status']]
         fs = x['findings']
         h.append(f'<p><b style="color:{c}">{E(texts.T("dom_" + k, lg))} · {x["score"]}</b><br>' +
-                 ('<br>'.join('• ' + E(texts.render(f, lg)) for f in fs) if fs else f'<span style="color:#94A3B8">{E(R("no_find", lg))}</span>') + '</p>')
+                 ('<br>'.join('• ' + E(texts.render(f, lg)) for f in fs) if fs else f'<span style="color:#94A3B8">{E(R("no_find", lg))}</span>') +
+                 _src_line(A, 'dom_' + k, lg) + '</p>')
     if A.phases:
         h.append(f'<h3 style="color:#93C5FD">{E(R("phases", lg))}</h3><table width="100%" cellpadding="4" cellspacing="0">')
         h.append('<tr bgcolor="#162238">' + ''.join(f'<th align="{al}">{E(R(k, lg))}</th>' for k in ('p_phase', 'p_time', 'p_dur', 'p_alt', 'p_spd', 'p_thr', 'p_att')) + '</tr>')
@@ -111,7 +144,7 @@ def build(A, lg):
             h.append(f'<tr bgcolor="{bg}"><td>{E(texts.T("ph_" + p["name"], lg))}</td><td>{fmt_t(p["t0"])}–{fmt_t(p["t1"])}</td><td>{fmt_t(s.get("dur", 0))}</td>'
                      f'<td>{f1(s.get("alt_mean"))}/{f1(s.get("alt_max"))} m</td><td>{f1(spd, " m/s")}</td><td>{f1(s.get("thr_mean"), "%")}</td>'
                      f'<td>{f1(s.get("roll_max"))}°/{f1(s.get("pitch_max"))}°</td></tr>')
-        h.append('</table>')
+        h.append('</table>' + _src_line(A, 'sec_phases', lg))
     # Yapay zekâ anomali tespiti
     info_ = getattr(A, 'anomaly_info', None)
     if info_:

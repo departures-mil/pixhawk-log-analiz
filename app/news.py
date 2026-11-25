@@ -1,6 +1,19 @@
 """Sürüm notları ("Neler yeni" + release-notes.json). Yeni sürümde EN ÜSTE eklenir; tr/en/ar zorunlu."""
 
 NEWS = [
+    {'v': '1.1.7',
+     'tr': 'Her değerin kaynağı: grafiklerdeki her çizgi logdaki MESAJ.ALAN adıyla (ör. RCOU.C3, ATT.Roll), eşik çizgileri parametre adı ve değeriyle (ör. Q_M_SPIN_MAX, BATT_CAPACITY) yazılı\n'
+           'Her grafiğin altında kaynak şeridi: kullanılan log alanları ve bu logdaki parametre değerleri (rapora da girer)\n'
+           'Yeni "Kaynak" sekmesi: her alanın ve parametrenin anlamı, değeri, varsayılanı ve Mission Planner\'da nerede bulunduğu (Review a Log / Full Parameter List)\n'
+           'Tablolarda kaynak: sağlık özeti, temel bilgiler, uçuş aşamaları, mod tablosu ve motor olayları hangi alan ve parametreden okunuyor',
+     'en': 'Source of every value: each chart line is labelled with its log MESSAGE.FIELD (e.g. RCOU.C3, ATT.Roll), limit lines with the parameter name and value (e.g. Q_M_SPIN_MAX, BATT_CAPACITY)\n'
+           'A source strip under every chart: the log fields used and this log\'s parameter values (also in the report)\n'
+           'New "Source" tab: meaning, value, default of each field and parameter and where to find it in Mission Planner (Review a Log / Full Parameter List)\n'
+           'Sources in tables: health summary, key facts, flight phases, mode table and motor events show which field and parameter they come from',
+     'ar': 'مصدر كل قيمة: كل خط في الرسوم موسوم باسم رسالة.حقل من السجل (مثل RCOU.C3 وATT.Roll)، وخطوط الحدود باسم المعامل وقيمته (مثل Q_M_SPIN_MAX وBATT_CAPACITY)\n'
+           'شريط المصدر أسفل كل رسم: حقول السجل المستخدمة وقيم المعاملات في هذا السجل (ويظهر في التقرير أيضاً)\n'
+           'تبويب "المصدر" الجديد: معنى كل حقل ومعامل وقيمته وقيمته الافتراضية ومكانه في Mission Planner (Review a Log / Full Parameter List)\n'
+           'المصادر في الجداول: ملخص الصحة والمعلومات الأساسية ومراحل الطيران وجدول الأوضاع وأحداث المحركات تبيّن الحقل والمعامل المقروء منه'},
     {'v': '1.1.6',
      'tr': 'Güncelleme düzeltmesi: güncellerken açılan siyah "find" penceresi ve takılma giderildi; güncelleme arka planda sessizce biter ve program yeni sürümle açılır',
      'en': 'Update fix: the black "find" window that opened and hung during updating is gone; the update finishes silently in the background and the app reopens on the new version',

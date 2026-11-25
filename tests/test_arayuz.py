@@ -109,3 +109,8 @@ def test_interactive_charts_modes_mp(win, qapp, tmp_path):
     assert 'GPS.Alt' in pg.mp.toPlainText() or 'ATT' in pg.mp.toPlainText()
     pg.view.set_cursor(50.0); pg._mode_dbl(0, 0)
     assert win.pages['map'].mcol.count() == 2
+    # v1.1.7: kaynak sekmesi log alanını ve Mission Planner yolunu gösterir; grafiğin altında kaynak şeridi var
+    src = pg.src.toPlainText()
+    assert 'GPS.Alt' in src and 'Review a Log' in src
+    assert any('GPS.Alt' in t_.get_text() for t_ in pg.view.fig.texts)
+    assert 'MODE.Mode' in pg.mt_src.text()

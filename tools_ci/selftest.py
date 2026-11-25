@@ -220,6 +220,19 @@ try:
             fn(An, lg)
     xm = viz.mavgraphs_xml(An); assert '<graphs>' in xm and 'ATT.Roll' in xm
     print('v1.1.5 viz / charts OK', len(CH.ALL), 'grafik')
+    # v1.1.7: her grafik/tablonun kaynağı (log alanı + parametre + Mission Planner yolu)
+    from app.core import sources as SRC
+    for lg in ('tr', 'en', 'ar'):
+        for k in [k for k, _ in CH.ALL] + ['sec_modes', 'sec_phases', 'dom_gps', 'dom_power', 'c_map', 'c_health']:
+            SRC.html(An, k, lg); SRC.footer(An, k, lg)
+    r = SRC.rows(An, 'c_att', 'tr'); assert any(x['name'] == 'ATT.Roll' and x['meaning'] for x in r['fields'])
+    assert 'Review a Log' in SRC.html(An, 'c_att', 'en') and 'ATT.Roll' in SRC.footer(An, 'c_att', 'tr')
+    CH.want_fig(True)
+    try:
+        fg = dict(CH.ALL)['c_att'](An, 'tr'); assert any('ATT.Roll' in t.get_text() for t in fg.texts), 'grafik altı kaynak şeridi yok'
+    finally:
+        CH.want_fig(False)
+    print('v1.1.7 sources OK')
 except Exception:
     import traceback; traceback.print_exc(); bad += 1
 
