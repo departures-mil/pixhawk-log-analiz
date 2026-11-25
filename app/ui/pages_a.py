@@ -159,57 +159,212 @@ class AnalysisPage(Page):
 # ------------------------------------------------------------------ Grafikler
 CHART_KEYS = [k for k, _ in charts.ALL] + ['c_health', 'c_timeline']
 
+CT = {
+    'tab_info': ('Açıklama', 'Explanation', 'الشرح'), 'tab_modes': ('Uçuş modları', 'Flight modes', 'أوضاع الطيران'),
+    'tab_mp': ('Mission Planner', 'Mission Planner', 'Mission Planner'),
+    'm_desc': ('Mod ne yapar', 'What the mode does', 'ماذا يفعل الوضع'),
+    'm_help': ('Satıra tıklayın: imleç o ana gider · çift tıklayın: grafik o moda yakınlaşır', 'Click a row: cursor jumps there · double-click: chart zooms to that mode',
+               'انقر صفاً: ينتقل المؤشر · انقر مرتين: يقترب الرسم من ذلك الوضع'),
+    'mp_fields': ('Review Log\'da işaretlenecek alanlar', 'Fields to tick in Review Log', 'الحقول التي تُحدَّد في Review Log'),
+    'mp_params': ('İlgili ayarlar (bu logdaki değerler)', 'Related parameters (values in this log)', 'المعاملات المرتبطة (القيم في هذا السجل)'),
+    'mp_times': ('Önemli anlar (TimeUS ile Review Log\'da bulun)', 'Key moments (find them by TimeUS in Review Log)', 'لحظات مهمة (ابحث عنها بـ TimeUS)'),
+    'mp_copy': ('Alanları kopyala', 'Copy fields', 'نسخ الحقول'), 'mp_copyp': ('Ayarları kopyala', 'Copy parameters', 'نسخ المعاملات'),
+    'mp_xml': ('Mission Planner grafik dosyası kaydet', 'Save Mission Planner graph file', 'حفظ ملف رسوم Mission Planner'),
+    'mp_xml_ok': ('Kaydedildi: {p}\n\nMission Planner kurulum klasöründeki "graphs" klasörüne kopyalayın (ör. C:\\Program Files (x86)\\Mission Planner\\graphs). '
+                  'Review Log\'da sağ tık menüsündeki hazır grafikler arasında "Pixhawk Log Analiz" başlığıyla görünür. Aynı dosya MAVExplorer ile de çalışır.',
+                  'Saved: {p}\n\nCopy it into the "graphs" folder of the Mission Planner install (e.g. C:\\Program Files (x86)\\Mission Planner\\graphs). '
+                  'In Review Log it appears among the preset graphs (right-click) under "Pixhawk Log Analiz". The same file works with MAVExplorer.',
+                  'تم الحفظ: {p}\n\nانسخه إلى مجلد "graphs" في مجلد تثبيت Mission Planner. يظهر في Review Log ضمن الرسوم الجاهزة (النقر الأيمن) باسم "Pixhawk Log Analiz".'),
+    'mp_copied': ('Panoya kopyalandı', 'Copied to clipboard', 'نُسخ إلى الحافظة'),
+    't_mode': ('Mod değişimi', 'Mode change', 'تغيير الوضع'), 't_crash': ('Kırım/son', 'Crash/end', 'التحطم/النهاية'),
+    't_root': ('İlk belirti (kök neden)', 'First symptom (root cause)', 'أول عرض (السبب الجذري)'), 't_motor': ('Motor olayı', 'Motor event', 'حدث محرك'),
+}
+
+
+def ct(k):
+    from ..core import viz
+    return viz.tx(CT[k], lang())
+
 
 class ChartsPage(Page):
     def __init__(self, win):
         super().__init__(win)
+        from PySide6.QtWidgets import QApplication
+        from .chartview import ChartView
         h = QHBoxLayout(self); h.setContentsMargins(16, 12, 16, 12)
-        self.list = QListWidget(); self.list.setFixedWidth(260)
+        self.list = QListWidget(); self.list.setFixedWidth(300)
         for k in CHART_KEYS:
             it = QListWidgetItem(R(k, lang())); it.setData(Qt.UserRole, k); self.list.addItem(it)
         self.list.currentItemChanged.connect(self._show)
         h.addWidget(self.list)
-        r = QVBoxLayout()
-        self.img = ImageView(); r.addWidget(self.img, 3)
-        self.lesson = QTextBrowser(); self.lesson.setMaximumHeight(230); r.addWidget(self.lesson, 1)
-        h.addLayout(r, 1)
-        self.cache = {}
+        sp = QSplitter(Qt.Vertical)
+        self.view = ChartView(); self.view.clicked.connect(self._clicked); sp.addWidget(self.view)
+        self.tabs = QTabWidget()
+        self.lesson = QTextBrowser(); self.tabs.addTab(self.lesson, 'ⓘ ' + ct('tab_info'))
+        mw = QWidget(); mv = QVBoxLayout(mw); mv.setContentsMargins(4, 4, 4, 4)
+        mv.addWidget(label(ct('m_help'), 'muted', wrap=True))
+        self.mt = QTableWidget(0, 7)
+        self.mt.setHorizontalHeaderLabels([R(k, lang()) for k in ('m_start', 'm_clock', 'm_end', 'm_dur', 'm_mode', 'm_why')] + [ct('m_desc')])
+        self.mt.horizontalHeader().setSectionResizeMode(6, QHeaderView.Stretch)
+        self.mt.verticalHeader().setVisible(False); self.mt.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.mt.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.mt.cellClicked.connect(self._mode_click); self.mt.cellDoubleClicked.connect(self._mode_dbl)
+        mv.addWidget(self.mt, 1)
+        self.tabs.addTab(mw, '🎛 ' + ct('tab_modes'))
+        pw = QWidget(); pv = QVBoxLayout(pw); pv.setContentsMargins(4, 4, 4, 4)
+        pb = QHBoxLayout()
+        pb.addWidget(button('📋 ' + ct('mp_copy'), self._copy_fields)); pb.addWidget(button('📋 ' + ct('mp_copyp'), self._copy_params))
+        pb.addWidget(button('💾 ' + ct('mp_xml'), self._save_xml, primary=True)); pb.addStretch(1)
+        pv.addLayout(pb)
+        self.mp = QTextBrowser(); pv.addWidget(self.mp, 1)
+        self.tabs.addTab(pw, '🛩 ' + ct('tab_mp'))
+        sp.addWidget(self.tabs); sp.setSizes([680, 260])
+        h.addWidget(sp, 1)
+        self.cache = {}; self.A = None; self.segs = []; self._fields = []; self._params = []; self._pending = None
 
     def on_analysis(self, A):
-        self.cache = {}
-        lg = lang()
-
-        def make():
-            out = {}
-            for k, fn in charts.ALL:
-                try: out[k] = fn(A, lg)
-                except Exception: out[k] = None
-            out['c_health'] = charts.chart_health(A, lg); out['c_timeline'] = charts.chart_timeline(A, lg)
-            return out
-        run_bg(make, on_done=self._ready)
-
-    def _ready(self, d):
-        self.cache = d
+        self.cache = {}; self.A = A
+        from ..core import viz
+        self.segs = viz.segments(A, lang())
+        self._fill_modes()
         if self.list.currentRow() < 0: self.list.setCurrentRow(0)
         else: self._show(self.list.currentItem())
+
+    # ------------------------------------------------------------ grafik üretimi (arka planda, Figure olarak)
+    def _make(self, k, t_=None, span=None):
+        A = self.A; lg = lang()
+
+        def job():
+            charts.want_fig(True)
+            try:
+                if t_ is not None or span is not None: return charts.render_marked(k, A, lg, t_, span)
+                fn = dict(list(charts.ALL) + [('c_health', charts.chart_health), ('c_timeline', charts.chart_timeline)]).get(k)
+                return fn(A, lg) if fn else None
+            finally:
+                charts.want_fig(False)
+
+        def done(fig):
+            if t_ is None and span is None: self.cache[k] = fig
+            cur = self.list.currentItem()
+            if cur and cur.data(Qt.UserRole) == k: self.view.set_figure(fig, A)
+
+        self.view.busy()
+        run_bg(job, on_done=done, on_fail=lambda e: self.view.set_message(str(e)))
 
     def _show(self, it, *_):
         if not it: return
         k = it.data(Qt.UserRole)
-        self.img.set_png(self.cache.get(k))
-        self.lesson.setHtml(summary_html.lesson_html(k, lang()))
+        self.lesson.setHtml(summary_html.lesson_html(k, lang()) + self._extra_html(k))
+        self._fill_mp(k)
+        if self.A is None: return
+        if k in self.cache: self.view.set_figure(self.cache[k], self.A)
+        else: self._make(k)
 
     def show_key(self, k, t_=None, span=None):
         """Grafiği seç; t_/span verilirse ilgili an turuncu işaretli çizilir (alıştırma / ders rehberi)."""
         if k not in CHART_KEYS: return
         i = CHART_KEYS.index(k)
         self.list.blockSignals(True); self.list.setCurrentRow(i); self.list.blockSignals(False)
-        self.lesson.setHtml(summary_html.lesson_html(k, lang()))
-        A = self.win.A
-        if A is None: return
-        if t_ is None and span is None: self.img.set_png(self.cache.get(k)); return
+        self.lesson.setHtml(summary_html.lesson_html(k, lang()) + self._extra_html(k)); self._fill_mp(k)
+        if self.A is None: return
+        if t_ is None and span is None:
+            if k in self.cache: self.view.set_figure(self.cache[k], self.A)
+            else: self._make(k)
+            return
+        self._make(k, t_, span)
+
+    # ------------------------------------------------------------ imleç eşitleme
+    def _clicked(self, t):
+        try: self.win.pages['map'].goto_time(t, switch=False)
+        except Exception: pass
+
+    def set_cursor(self, t):
+        self.view.set_cursor(t)
+
+    # ------------------------------------------------------------ mod tablosu
+    def _fill_modes(self):
+        from ..core import viz
+        from ..core.report import mode_rows, _tint
+        lg = lang(); rows = mode_rows(self.A, lg)
+        self.mt.setRowCount(len(rows))
+        for i, (r, s_) in enumerate(zip(rows, self.segs)):
+            vals = r[:6] + [viz.mode_desc(s_['name'], lg)]
+            for j, v in enumerate(vals):
+                it = QTableWidgetItem(str(v))
+                if j == 4:
+                    it.setBackground(QColor(s_['col'])); it.setForeground(QColor('white'))
+                    f = it.font(); f.setBold(True); it.setFont(f)
+                if j == 5 and s_['fs']: it.setBackground(QColor('#7F1D1D'))
+                self.mt.setItem(i, j, it)
+        for j in range(6): self.mt.resizeColumnToContents(j)
+
+    def _mode_click(self, r, _c):
+        if 0 <= r < len(self.segs):
+            t = self.segs[r]['t0']; self.view.set_cursor(t); self._clicked(t)
+
+    def _mode_dbl(self, r, _c):
+        if 0 <= r < len(self.segs):
+            s_ = self.segs[r]; self.view.zoom_to(s_['t0'], s_['t1'])
+
+    # ------------------------------------------------------------ Mission Planner
+    def _extra_html(self, k):
+        if k != 'c_motors' or self.A is None: return ''
+        from ..core import viz
         lg = lang()
-        run_bg(charts.render_marked, k, A, lg, t_, span, on_done=lambda b: self.img.set_png(b) if b else None)
+        try: ev = viz.motor_events(self.A, lg)
+        except Exception: return ''
+        M = viz.motors(self.A, lg)
+        rows = ''.join(f'<tr><td><b>{E(m["name"])}</b></td><td>{E(m["ch"])}</td><td>{E(str(m["kind"]))}</td></tr>' for m in M)
+        evs = ''.join(f'<li style="color:#F87171"><b>{E(viz.event_text(self.A, e, lg))}</b></li>' for e in ev.get('events', [])[:10])
+        d = 'rtl' if lg == 'ar' else 'ltr'
+        return (f'<div dir="{d}"><p><b>{E(viz.frame_text(self.A, lg))}</b></p>' + (f'<ul>{evs}</ul>' if evs else '') +
+                f'<table cellpadding="3">{rows}</table></div>')
+
+    def _fill_mp(self, k):
+        from ..core import viz
+        A = self.A; lg = lang(); d = 'rtl' if lg == 'ar' else 'ltr'
+        if A is None: self.mp.setHtml(''); return
+        f, pv = viz.mp_info(A, k)
+        self._fields = f; self._params = pv
+        moments = []
+        for s_ in self.segs[1:30]:
+            moments.append((s_['t0'], f"{ct('t_mode')}: {s_['prev']} → {s_['name']} ({s_['why']})"))
+        root = (A.root or {}).get('t')
+        if root is not None: moments.append((root, ct('t_root')))
+        if A.verdict.get('kind') == 'crash' and A.flights: moments.append((A.flights[-1][1], ct('t_crash')))
+        if k in ('c_motors', 'c_rcou', 'c_esc'):
+            try:
+                for e in viz.motor_events(A, lg).get('events', [])[:6]:
+                    moments.append((e['t'], f"{ct('t_motor')}: {viz.event_text(A, e, lg)}"))
+            except Exception: pass
+        moments.sort()
+        tm = ''.join(f'<tr><td>{fmt_t(t_)}</td><td>{E(viz.clock(A, t_) or "-")}</td><td><code>{viz.time_us(A, t_)}</code></td><td>{E(x)}</td></tr>' for t_, x in moments)
+        pr = ''.join(f'<tr><td><code>{E(n)}</code></td><td>{v:g}</td></tr>' for n, v in pv)
+        self.mp.setHtml(f'<div dir="{d}"><p><b>{E(ct("mp_fields"))}</b><br><code style="font-size:11pt">{E("  ".join(f)) or "-"}</code></p>'
+                        f'<p><b>{E(ct("mp_params"))}</b></p><table cellpadding="2">{pr}</table>'
+                        f'<p><b>{E(ct("mp_times"))}</b></p><table cellpadding="2"><tr><th>t</th><th>🕘</th><th>TimeUS</th><th></th></tr>{tm}</table></div>')
+
+    def _copy_fields(self):
+        from PySide6.QtWidgets import QApplication
+        QApplication.clipboard().setText(' '.join(self._fields)); self.win.set_status(ct('mp_copied'))
+
+    def _copy_params(self):
+        from PySide6.QtWidgets import QApplication
+        QApplication.clipboard().setText('\n'.join(f'{n},{v:g}' for n, v in self._params)); self.win.set_status(ct('mp_copied'))
+
+    def _save_xml(self):
+        from ..core import viz
+        if self.A is None: return error(self, t('no_log'))
+        start = os.path.join(os.path.expanduser('~'), 'Documents', 'pixhawk_log_analiz_graphs.xml')
+        for cand in (r'C:\Program Files (x86)\Mission Planner\graphs', r'C:\Program Files\Mission Planner\graphs'):
+            if os.path.isdir(cand) and os.access(cand, os.W_OK): start = os.path.join(cand, 'pixhawk_log_analiz_graphs.xml'); break
+        p, _ = QFileDialog.getSaveFileName(self, ct('mp_xml'), start, 'XML (*.xml)')
+        if not p: return
+        try:
+            with open(p, 'w', encoding='utf-8') as fh: fh.write(viz.mavgraphs_xml(self.A, lang()))
+            info(self, ct('mp_xml_ok').format(p=p))
+        except Exception as e:
+            error(self, e)
 
 
 # --------------------------------------------------------------- Harita + 3B
@@ -226,6 +381,11 @@ class MapPage(Page):
         for s in ('osm', 'sat', 'topo'): self.src.addItem(t('src_' + s), s)
         i = self.src.findData(win.settings.get('map_src', 'osm')); self.src.setCurrentIndex(max(0, i))
         bar.addWidget(self.src)
+        from ..core import viz as _viz
+        self.mcol = QComboBox()
+        self.mcol.addItem(_viz.tx(('Renk: uçuş modu', 'Colour: flight mode', 'اللون: وضع الطيران'), lang()), 'mode')
+        self.mcol.addItem(_viz.tx(('Renk: irtifa', 'Colour: altitude', 'اللون: الارتفاع'), lang()), 'alt')
+        self.mcol.currentIndexChanged.connect(lambda *_: self.render_map()); bar.addWidget(self.mcol)
         bar.addWidget(button(t('refresh'), self.render_map))
         self.b_pre = button('⬇ ' + t('prefetch'), self.prefetch); bar.addWidget(self.b_pre)
         self.pp = QProgressBar(); self.pp.setVisible(False); bar.addWidget(self.pp, 1)
@@ -240,7 +400,10 @@ class MapPage(Page):
         from matplotlib.figure import Figure
         self.fig = Figure(figsize=(8, 6), facecolor='#0F172A')
         self.canvas = FigureCanvasQTAgg(self.fig)
-        rv.addWidget(self.canvas, 1)
+        from .chartview import StickView
+        r3 = QHBoxLayout(); r3.addWidget(self.canvas, 1)
+        self.sticks = StickView(); r3.addWidget(self.sticks)
+        rv.addLayout(r3, 1)
         ctl = QHBoxLayout()
         self.b_play = button(t('play'), self.toggle_play); ctl.addWidget(self.b_play)
         self.slider = QSlider(Qt.Horizontal); self.slider.valueChanged.connect(self._frame); ctl.addWidget(self.slider, 1)
@@ -265,7 +428,7 @@ class MapPage(Page):
         self.tabs.addTab(sp3, '✈ 3D')
         self.lsteps = []; self.gtimer = QTimer(self); self.gtimer.setInterval(6500); self.gtimer.timeout.connect(self._guide_next)
         self.timer = QTimer(self); self.timer.setInterval(50); self.timer.timeout.connect(self._tick)
-        self.A = None; self.tr = None
+        self.A = None; self.tr = None; self.rc = None; self.segs = []
 
     def on_analysis(self, A):
         self.A = A
@@ -285,9 +448,9 @@ class MapPage(Page):
         self.steps.blockSignals(False)
         self.step_txt.setHtml(''); self.step_img.set_png(None)
 
-    def goto_time(self, tt):
+    def goto_time(self, tt, switch=True):
         if self.tr is None: return
-        self.tabs.setCurrentIndex(1)
+        if switch: self.tabs.setCurrentIndex(1)
         i = int(np.clip(np.searchsorted(self.tr['t'], tt), 0, len(self.tr['t']) - 1))
         self.slider.setValue(i)
 
@@ -318,7 +481,8 @@ class MapPage(Page):
         if not self.A: return
         A = self.A; lg = lang(); src = self.src.currentData(); online = self.win.settings.get('online', True)
         self.win.settings['map_src'] = src; self.win.settings.save()
-        run_bg(lambda: charts.chart_map(A, lg, online=online, src=src), on_done=lambda b: self.map.set_png(b) if b else None)
+        col = self.mcol.currentData() if hasattr(self, 'mcol') else 'mode'
+        run_bg(lambda: charts.chart_map(A, lg, online=online, src=src, color=col), on_done=lambda b: self.map.set_png(b) if b else None)
 
     def prefetch(self):
         if not self.A or self.A.track is None: return error(self, t('no_log'))
@@ -361,7 +525,19 @@ class MapPage(Page):
             a.set_pane_color((0.07, 0.1, 0.18, 1)); a.label.set_color('#CBD5E1')
         ax.tick_params(colors='#94A3B8', labelsize=7)
         ax.plot(x, y, np.zeros_like(alt), color='#334155', lw=0.8)
-        ax.plot(x, y, alt, color='#3B82F6', lw=1.2)
+        from ..core import viz
+        segs = viz.segments(A, lang()); self.segs = segs
+        drawn = False
+        for sg in segs:
+            k = (t_ >= sg['t0']) & (t_ <= sg['t1'] + 1e-6)
+            if k.sum() >= 2: ax.plot(x[k], y[k], alt[k], color=sg['col'], lw=1.5); drawn = True
+        if not drawn: ax.plot(x, y, alt, color='#3B82F6', lw=1.2)
+        rc = A.L.s('RCIN'); m = viz.rc_map(A)
+        self.rc = None
+        if rc.has(f"C{m['roll']}") and viz.rc_active(A):
+            g = lambda k, c=True: np.interp(t_, rc['t'], viz.stick_norm(A, m[k], rc[f"C{m[k]}"], centred=c)) if rc.has(f"C{m[k]}") else np.zeros_like(t_)
+            self.rc = {'roll': g('roll'), 'pitch': g('pitch'), 'thr': g('thr', False), 'yaw': g('yaw')}
+        self.sticks.set_values(None)
         if A.verdict.get('kind') == 'crash':
             ax.scatter([x[-1]], [y[-1]], [alt[-1]], color='#DC2626', s=60, marker='X')
         ax.scatter([0], [0], [0], color='#16A34A', s=40, marker='^')
@@ -407,6 +583,11 @@ class MapPage(Page):
         m = '-'
         for mt, n, _, _ in self.A.L.modes:
             if mt <= tt: m = K.mode_name(self.A.vehicle, n)
+        from ..core import viz
+        ck = viz.clock(self.A, tt)
+        if ck: m = f'{m}  ·  🕘 {ck}'
+        if self.rc is not None:
+            self.sticks.set_values((self.rc['yaw'][i], self.rc['thr'][i] * 2 - 100, self.rc['roll'][i], -self.rc['pitch'][i]))
         self.info.setText(t('replay_info', t=fmt_t(tt), a=float(z), s=float(tr['gs'][i]), r=float(tr['roll'][i]), p=float(tr['pitch'][i]), m=m))
 
 

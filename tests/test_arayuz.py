@@ -87,3 +87,25 @@ def test_onboarding_offers_only_supported_ai(win):
     from app.ui import kabuk
     kabuk._on_ai(win.settings, {'provider': 'gemini', 'key': 'AIzaTEST123456789'})
     assert win.settings['gemini_key'] == 'AIzaTEST123456789' and win.settings['ai_provider'] == 'gemini'
+
+
+def test_interactive_charts_modes_mp(win, qapp, tmp_path):
+    """v1.1.5: grafikler etkileşimli tuvalde (Figure), mod tablosu dolu, Mission Planner sekmesi alanları gösteriyor."""
+    import time
+    from app.core import synth, loader, analysis
+    p = str(tmp_path / 'n.BIN'); synth.generate(p, 'normal', duration=300.0)
+    A = analysis.Analysis(loader.load(p)); win.A = A
+    pg = win.pages['charts']; pg.on_analysis(A)
+    pg.show_key('c_motors')
+    for _ in range(200):
+        qapp.processEvents(); time.sleep(0.02)
+        if pg.view.canvas is not None or pg.view.msg.isVisible() and 'yok' in pg.view.msg.text(): break
+    pg.show_key('c_alt')
+    for _ in range(200):
+        qapp.processEvents(); time.sleep(0.02)
+        if pg.view.canvas is not None and pg.view.fig is not None: break
+    assert pg.view.canvas is not None and pg.view.taxes
+    assert pg.mt.rowCount() >= 1
+    assert 'GPS.Alt' in pg.mp.toPlainText() or 'ATT' in pg.mp.toPlainText()
+    pg.view.set_cursor(50.0); pg._mode_dbl(0, 0)
+    assert win.pages['map'].mcol.count() == 2
