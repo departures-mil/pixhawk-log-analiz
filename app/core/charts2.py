@@ -54,6 +54,13 @@ def _first(L, *names):
 
 
 # ------------------------------------------------------------------ özet panosu
+def _plim(ax, y, txt, col, ls=':', lw=0.6, x=0.004, va='bottom'):
+    """Parametreden gelen eşik çizgisi + üstünde parametre adı (Full Parameter List'te aranacak ad)."""
+    ax.axhline(y, color=col, lw=lw, ls=ls)
+    ax.text(x, y, ' ' + txt, transform=ax.get_yaxis_transform(), fontsize=4.8, color=col, va=va, ha='left',
+            family='DejaVu Sans Mono', clip_on=True, zorder=25, bbox=dict(fc='white', ec='none', alpha=0.7, pad=0.3))
+
+
 def chart_overview(A, lg):
     L = A.L
     fig = B._fig(5.6, 8.2)
@@ -74,27 +81,33 @@ def chart_overview(A, lg):
              (_t(('Sağlık', 'Health', 'الصحة'), lg), f"{A.overall}/100", C['green'] if A.overall >= 80 else (C['amber'] if A.overall >= 55 else C['red']))]
     c0 = viz.clock(A, A.flights[0][0]) if A.flights else None
     if c0: cards.append((_t(('Kalkış saati', 'Takeoff time', 'وقت الإقلاع'), lg), f'{viz.date_of(A) or ""} {c0}'.strip(), C['ink']))
+    tsrc = (A.track or {}).get('src', 'GPS.Alt') if A.track is not None else '-'
+    csrc = [_t(('analiz: tüm alanlar', 'analysis: all fields', 'التحليل: كل الحقول'), lg), 'EV.Id · GPS.Spd', tsrc, 'MODE.Mode',
+            'VIBE·GPS·BAT·XKF4', 'GPS.GWk·GMS']
     n = len(cards)
     for i, (k, val, col) in enumerate(cards):
+        axk.text(i / n + 0.5 / n, 0.14, B.mshape(csrc[i], lg) if i < len(csrc) else '', transform=axk.transAxes, ha='center', va='center', fontsize=4.6,
+                 color='#64748B', family='DejaVu Sans Mono' if lg != 'ar' or i else None)
         x = i / n
         axk.add_patch(B.matplotlib.patches.FancyBboxPatch((x + 0.006, 0.08), 1 / n - 0.012, 0.84, boxstyle='round,pad=0.01,rounding_size=0.04',
                                                            transform=axk.transAxes, fc=col, alpha=0.12, ec=col, lw=1))
-        axk.text(x + 0.5 / n, 0.66, k, transform=axk.transAxes, ha='center', va='center', fontsize=6.5, color='#374151')
-        axk.text(x + 0.5 / n, 0.32, val, transform=axk.transAxes, ha='center', va='center', fontsize=8.5 if len(val) < 14 else 6.5, color=col, fontweight='bold')
+        axk.text(x + 0.5 / n, 0.72, k, transform=axk.transAxes, ha='center', va='center', fontsize=6.5, color='#374151')
+        axk.text(x + 0.5 / n, 0.42, val, transform=axk.transAxes, ha='center', va='center', fontsize=8.5 if len(val) < 14 else 6.5, color=col, fontweight='bold')
     panels = []
-    if A.track is not None: panels.append(('l_alt', A.track['t'], A.track['rel'], C['blue'], 'm'))
+    if A.track is not None: panels.append(('l_alt', A.track['t'], A.track['rel'], C['blue'], 'm', A.track.get('src', '')))
     g = L.s('GPS')
-    if g.has('Spd'): panels.append(('l_gs', g['t'], g['Spd'], C['orange'], 'm/s'))
+    if g.has('Spd'): panels.append(('l_gs', g['t'], g['Spd'], C['orange'], 'm/s', 'GPS.Spd'))
     b = L.s('BAT')
-    if b.has('Volt'): panels.append(('l_volt', b['t'], np.where(b['Volt'] > 1, b['Volt'], np.nan), C['green'], 'V'))
-    if b.has('Curr') and np.nanmax(np.abs(b['Curr'])) > 0.5: panels.append(('l_curr', b['t'], b['Curr'], C['red'], 'A'))
+    if b.has('Volt'): panels.append(('l_volt', b['t'], np.where(b['Volt'] > 1, b['Volt'], np.nan), C['green'], 'V', 'BAT.Volt'))
+    if b.has('Curr') and np.nanmax(np.abs(b['Curr'])) > 0.5: panels.append(('l_curr', b['t'], b['Curr'], C['red'], 'A', 'BAT.Curr'))
     vb = L.s('VIBE')
-    if vb.has('VibeZ'): panels.append(('c_vibe', vb['t'], vb['VibeZ'], C['amber'], 'Z m/s²'))
-    if g.has('NSats'): panels.append(('ax_sats', g['t'], g['NSats'], C['purple'], ''))
-    for i, (k, t, y, col, u) in enumerate(panels[:6]):
+    if vb.has('VibeZ'): panels.append(('c_vibe', vb['t'], vb['VibeZ'], C['amber'], 'Z m/s²', 'VIBE.VibeZ'))
+    if g.has('NSats'): panels.append(('ax_sats', g['t'], g['NSats'], C['purple'], '', 'GPS.NSats'))
+    for i, (k, t, y, col, u, fsrc) in enumerate(panels[:6]):
         ax = fig.add_subplot(gs[1 + i // 2, i % 2]); B._style(ax, lg); B._phases(ax, A)
         ax.plot(*_g(t, y), color=col, lw=0.8)
         ax.set_title(rt(k, lg).split(' ')[0] + (f' ({u})' if u else '') if k == 'c_vibe' else rt(k, lg) + (f' ({u})' if u else ''), fontsize=7, loc='left', pad=2)
+        if fsrc: ax.set_title(fsrc, fontsize=5.5, loc='right', pad=2, color='#64748B', family='DejaVu Sans Mono')
         ax.tick_params(labelsize=5.5); B._modes(ax, A, lg, label=False); B._crash(ax, A)
         ax.set_xlim(0, max(1.0, float(L.duration or 1)))
     fig.suptitle(rt('c_overview', lg), fontsize=10, x=0.02, ha='left')
@@ -111,11 +124,11 @@ def chart_sticks(A, lg):
     for k, col, lab in (('roll', C['blue'], ('Roll (sağ stick ↔)', 'Roll (right stick ↔)', 'الدوران (العصا اليمنى ↔)')),
                         ('pitch', C['orange'], ('Pitch (sağ stick ↕)', 'Pitch (right stick ↕)', 'الميلان (العصا اليمنى ↕)'))):
         ch = f"C{m[k]}"
-        if r.has(ch): ax1.plot(*_g(r['t'], viz.stick_norm(A, m[k], r[ch])), color=col, lw=0.7, label=_t(lab, lg) + f' · RCIN.{ch}')
+        if r.has(ch): ax1.plot(*_g(r['t'], viz.stick_norm(A, m[k], r[ch])), color=col, lw=0.7, label=_t(lab, lg) + f' · RCIN.{ch} (RCMAP_{k.upper().replace("THR", "THROTTLE")}={m[k]})')
     for k, col, lab, cen in (('thr', C['red'], ('Gaz (sol stick ↕)', 'Throttle (left stick ↕)', 'الخانق (العصا اليسرى ↕)'), False),
                              ('yaw', C['purple'], ('Yaw (sol stick ↔)', 'Yaw (left stick ↔)', 'الانعراج (العصا اليسرى ↔)'), True)):
         ch = f"C{m[k]}"
-        if r.has(ch): ax2.plot(*_g(r['t'], viz.stick_norm(A, m[k], r[ch], centred=cen)), color=col, lw=0.7, label=_t(lab, lg) + f' · RCIN.{ch}')
+        if r.has(ch): ax2.plot(*_g(r['t'], viz.stick_norm(A, m[k], r[ch], centred=cen)), color=col, lw=0.7, label=_t(lab, lg) + f' · RCIN.{ch} (RCMAP_{k.upper().replace("THR", "THROTTLE")}={m[k]})')
     if not viz.rc_active(A):
         ax1.text(0.5, 0.45, _t(('Logda kumanda sinyali yok (RCIN = 0): araç kumandasız, yer istasyonu / otomatik görevle uçmuş ya da alıcı bağlı değil.',
                                'No RC signal in the log (RCIN = 0): flown without a transmitter (ground station / auto mission) or receiver not connected.',
@@ -137,13 +150,13 @@ def chart_sticks(A, lg):
             num = P.get(f'{pre}{j + 1}')
             if num is None: continue
             from . import knowledge as K
-            ax3.text(1.002, (lo + hi) / 2, f'{j + 1}: {K.mode_name(A.vehicle, num)}', transform=ax3.get_yaxis_transform(), fontsize=5.2, va='center', color='#374151', clip_on=False)
+            ax3.text(1.002, (lo + hi) / 2, f'{j + 1}: {K.mode_name(A.vehicle, num)} ({pre}{j + 1}={num:g})', transform=ax3.get_yaxis_transform(), fontsize=4.8, va='center', color='#374151', clip_on=False)
         ax3.set_ylim(900, 2100)
     if fs and r.has(f"C{m['thr']}"):
         ch = f"C{m['thr']}"
-        ax3.plot(*_g(r['t'], np.where(r[ch] < 800, np.nan, r[ch])), color=C['red'], lw=0.6, alpha=0.7, label=_t(('Gaz PWM', 'Throttle PWM', 'PWM الخانق'), lg))
-        ax3.axhline(float(fs), color=C['red'], lw=0.8, ls='--')
-        ax3.text(0.001, float(fs), ' failsafe ' + f'{fs:.0f}', transform=ax3.get_yaxis_transform(), fontsize=5.5, color=C['red'], va='bottom')
+        ax3.plot(*_g(r['t'], np.where(r[ch] < 800, np.nan, r[ch])), color=C['red'], lw=0.6, alpha=0.7, label=_t(('Gaz PWM', 'Throttle PWM', 'PWM الخانق'), lg) + f' · RCIN.{ch}')
+        fsn = 'THR_FS_VALUE' if 'THR_FS_VALUE' in P else 'FS_THR_VALUE'
+        _plim(ax3, float(fs), f'failsafe {fsn}={fs:.0f}', C['red'], ls='--', lw=0.8, x=0.001)
     ax3.set_ylabel('PWM', fontsize=7); _leg(ax3, ncol=3, loc='lower left')
     _end(ax1, A, lg, True); _end(ax2, A, lg, False); _end(ax3, A, lg, False)
     _title(ax1, 'c_sticks', lg)
@@ -169,7 +182,7 @@ def chart_rcou(A, lg):
         ax = fig.add_subplot(len(used), 1, i + 1, sharex=axs[0] if axs else None); axs.append(ax); _base(ax, A, lg)
         rs = [r for r in roles if (g and g in r['axes']) or (not g and not r['axes'])]
         for j, r in enumerate(rs):
-            if o.has(r['ch']): ax.plot(*_g(o['t'], o[r['ch']]), lw=0.6, color=pal[j % len(pal)], label=B.mshape(viz.role_label(r, lg, A), lg))
+            if o.has(r['ch']): ax.plot(*_g(o['t'], o[r['ch']]), lw=0.6, color=pal[j % len(pal)], label=B.mshape('RCOU.' + viz.role_label(r, lg, A), lg))
         if g and ae.has(aef[g]):    # otopilotun istediği (normalleştirilmiş) çıkış: sağ eksen
             a2 = ax.twinx(); a2.tick_params(labelsize=6)
             a2.plot(*_g(ae['t'], ae[aef[g]]), color='#111827', lw=0.5, alpha=0.45, label=f'AETR.{aef[g]}')
@@ -237,7 +250,11 @@ def chart_motors(A, lg):
         col = C['red'] if any(e.get('root') or e['kind'] == 'stop' for e in mine) else (C['amber'] if mine else (C['orange'] if m['kind'] == 'push' else C['blue']))
         ax.plot(*_g(o['t'], o[m['ch']]), color=col, lw=0.7)
         if m['kind'] == 'lift' and hi:
-            ax.axhline(hi, color=C['red'], lw=0.5, ls=':'); ax.axhline(lo, color=C['gray'], lw=0.5, ls=':')
+            q = 'Q_M_' if A.vehicle == 'Plane' else 'MOT_'
+            if i == 0:
+                _plim(ax, hi, f'{q}SPIN_MAX → {hi:.0f}', C['red'], lw=0.5, va='top', x=0.25); _plim(ax, lo, f'{q}SPIN_MIN → {lo:.0f}', C['gray'], lw=0.5, x=0.25)
+            else:
+                ax.axhline(hi, color=C['red'], lw=0.5, ls=':'); ax.axhline(lo, color=C['gray'], lw=0.5, ls=':')
         if m['kind'] == 'lift' and m['m'] and m['m'] - 1 < len(esc) and esc[m['m'] - 1].has('RPM'):
             e = esc[m['m'] - 1]; a2 = ax.twinx(); a2.tick_params(labelsize=5)
             a2.plot(*_g(e['t'], e['RPM']), color=C['green'], lw=0.5, alpha=0.6); a2.set_ylabel('RPM', fontsize=5)
@@ -246,9 +263,9 @@ def chart_motors(A, lg):
             ax.annotate(B.mshape(viz.tx(viz.EV_TXT[e['kind']], lg), lg), (e['t'], 0.9), xycoords=('data', 'axes fraction'), fontsize=5.5,
                         color=C['red'], ha='right', va='top', fontweight='bold')
         rev = L.params.get(f"SERVO{m['ch'][1:]}_REVERSED") in (1, 1.0)
-        ax.set_ylabel(B.mshape(m['name'].replace(' · ', '\n'), lg) + f"\n({m['ch']})" +
+        ax.set_ylabel(B.mshape(m['name'].replace(' · ', '\n'), lg) + f"\nRCOU.{m['ch']}" +
                       ('\n' + B.mshape(viz.tx(('[ters: düşük PWM = çok gaz]', '[reversed: low PWM = more]', '[معكوس]'), lg), lg) if rev else ''),
-                      fontsize=6, rotation=0, ha='right', va='center', labelpad=6)
+                      fontsize=5.6, rotation=0, ha='right', va='center', labelpad=6)
         ax.tick_params(labelsize=5.5)
         if i < n - 1: ax.tick_params(labelbottom=False)
     for i, ax in enumerate(axs): _end(ax, A, lg, i == 0)
@@ -268,7 +285,7 @@ def chart_motors(A, lg):
             if m['ch'] in bad: c, lw = C['red'], 1.6
             elif m['ch'] == opp: c, lw = C['amber'], 1.3
             else: c, lw = pal[j % len(pal)], 0.8; j += 1
-            az.plot(o['t'][k], o[m['ch']][k], color=c, lw=lw, label=B.mshape(m['name'], lg) + f" ({m['ch']})")
+            az.plot(o['t'][k], o[m['ch']][k], color=c, lw=lw, label=B.mshape(m['name'], lg) + f" (RCOU.{m['ch']})")
         if hi: az.axhline(hi, color=C['red'], lw=0.5, ls=':')
         az.axvline(root['t'], color=C['red'], lw=1, ls='--')
         B._modes(az, A, lg, label=False); B._crash(az, A); az.set_xlim(z0, z1)
@@ -277,6 +294,7 @@ def chart_motors(A, lg):
         az.set_ylabel('PWM', fontsize=7); az.tick_params(labelsize=6)
         _leg(az, ncol=4, loc='lower left')
     _layout_inset(fig, A, lg, ev, [0.81, 0.45, 0.18, 0.36])
+    B._src_footer(fig)
     if getattr(B._TL, 'fig', False): return fig
     import io
     b = io.BytesIO(); fig.savefig(b, format='png', dpi=150); return b.getvalue()
@@ -298,7 +316,7 @@ def chart_speed(A, lg):
     P = L.params
     for k, col in (('AIRSPEED_MIN', C['red']), ('ARSPD_FBW_MIN', C['red']), ('AIRSPEED_MAX', C['amber']), ('ARSPD_FBW_MAX', C['amber']), ('AIRSPEED_CRUISE', C['blue'])):
         if P.get(k) and A.vehicle == 'Plane':
-            ax.axhline(float(P[k]) / (100 if k.endswith('CRUISE') and P[k] > 200 else 1), color=col, lw=0.6, ls=':')
+            _plim(ax, float(P[k]) / (100 if k.endswith('CRUISE') and P[k] > 200 else 1), f'{k}={P[k]:g}', col)
     ax.set_ylabel(rt('ax_spd', lg), fontsize=8); _leg(ax, ncol=3, loc='lower left')
     _end(ax, A, lg, True)
     if wind:
@@ -486,7 +504,7 @@ def chart_fft(A, lg):
         if P.get('INS_HNTCH_ENABLE') and P.get('INS_HNTCH_FREQ'):
             nf = float(P['INS_HNTCH_FREQ']); bw = float(P.get('INS_HNTCH_BW', nf / 2) or nf / 2)
             ax.axvspan(nf - bw / 2, nf + bw / 2, color=C['purple'], alpha=0.12)
-            ax.axvline(nf, color=C['purple'], lw=1, ls='--', label=_t(('Çentik filtresi', 'Notch filter', 'مرشح الشق'), lg) + f' {nf:.0f} Hz')
+            ax.axvline(nf, color=C['purple'], lw=1, ls='--', label=_t(('Çentik filtresi', 'Notch filter', 'مرشح الشق'), lg) + f' {nf:.0f} Hz · INS_HNTCH_FREQ')
         vp = getattr(A, 'vib_peak', None)
         if vp: ax.axvline(vp['f'], color=C['red'], lw=0.8, ls=':', label=_t(('Tepe', 'Peak', 'الذروة'), lg) + f" {vp['f']} Hz")
         ax.set_xlim(0, hz / 2)
@@ -535,7 +553,7 @@ def chart_bat(A, lg):
     ax.plot(*_g(b['t'], vv), color=C['blue'], lw=1, label=rt('l_volt', lg) + ' · BAT.Volt'); ax.set_ylabel(rt('ax_volt', lg), fontsize=8)
     P = L.params
     for k, c in (('BATT_LOW_VOLT', C['amber']), ('BATT_CRT_VOLT', C['red'])):
-        if P.get(k): ax.axhline(P[k], color=c, lw=0.7, ls='--')
+        if P.get(k): _plim(ax, P[k], f'{k}={P[k]:g}', c, ls='--', lw=0.7, x=0.3)
     if cells and cells > 1:
         sec = ax.secondary_yaxis('right', functions=(lambda x: x / cells, lambda x: x * cells))
         sec.set_ylabel(_t((f'Hücre başına V ({cells}S)', f'V per cell ({cells}S)', f'فولت لكل خلية ({cells}S)'), lg), fontsize=7); sec.tick_params(labelsize=6)
@@ -548,7 +566,7 @@ def chart_bat(A, lg):
     cap = float(P.get('BATT_CAPACITY', 0) or 0)
     if b.has('CurrTot') and np.nanmax(b['CurrTot']) > 1:
         a3.plot(*_g(b['t'], b['CurrTot']), color=C['red'], lw=0.9, label=_t(('Harcanan mAh', 'Used mAh', 'المستهلك mAh'), lg) + ' · BAT.CurrTot')
-        if cap: a3.axhline(cap, color=C['red'], lw=0.6, ls=':'); a3.axhline(cap * 0.8, color=C['amber'], lw=0.6, ls=':')
+        if cap: _plim(a3, cap, f'BATT_CAPACITY={cap:g}', C['red']); _plim(a3, cap * 0.8, '%80 · BATT_CAPACITY', C['amber'])
         a3.set_ylabel('mAh', fontsize=7)
         if has_c and cap and A.flights:
             tl = A.flights[-1][1]; used = float(np.interp(tl, b['t'], b['CurrTot']))
@@ -578,7 +596,7 @@ def chart_esc(A, lg):
     pal = [C['blue'], C['orange'], C['green'], C['purple'], C['teal'], C['red'], C['amber'], C['gray']]
     for j, (i, e) in enumerate(E):
         nm = M.get(i + 1, f'ESC{i + 1}').split(' · ')[-1]
-        ax1.plot(*_g(e['t'], e['RPM']), color=pal[j % 8], lw=0.5, label=f'{i + 1} {nm}')
+        ax1.plot(*_g(e['t'], e['RPM']), color=pal[j % 8], lw=0.5, label=f'ESC[{i}].RPM · {nm}')
         if e.has('Temp'): ax2.plot(*_g(e['t'], e['Temp']), color=pal[j % 8], lw=0.6)
         if e.has('Curr'): ax3.plot(*_g(e['t'], e['Curr']), color=pal[j % 8], lw=0.5)
     ax1.set_ylabel('RPM', fontsize=7); ax2.set_ylabel('°C', fontsize=7); ax3.set_ylabel('A', fontsize=7)

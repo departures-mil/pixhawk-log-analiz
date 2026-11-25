@@ -112,8 +112,55 @@ def _png(fig):
         warnings.simplefilter('ignore')
         try: fig.tight_layout()
         except Exception: pass
+    _src_footer(fig)
     if getattr(_TL, 'fig', False): return fig
     b = io.BytesIO(); fig.savefig(b, format='png', dpi=150); return b.getvalue()
+
+
+def _src_footer(fig):
+    """Grafiğin altına 'Kaynak · log: MESAJ.ALAN … · parametre: AD=değer …' şeridi (Mission Planner'da aynısını bulmak için)."""
+    src = getattr(_TL, 'src', None)
+    if not src or getattr(fig, '_src_done', False): return
+    A, key, lang = src
+    try:
+        from . import sources
+        txt = sources.footer(A, key, lang, width=int(fig.get_figwidth() * 19))
+    except Exception:
+        txt = ''
+    if not txt: return
+    n = txt.count('\n') + 1
+    W, H = fig.get_figwidth(), fig.get_figheight()
+    dh = 0.105 * n + 0.09; Hn = H + dh
+    fig.set_figheight(Hn)
+    k = H / Hn; off = dh / Hn
+    for ax in fig.axes:
+        p = ax.get_position()
+        ax.set_position([p.x0, p.y0 * k + off, p.width, p.height * k])
+    for tx_ in list(fig.texts):
+        x, y = tx_.get_position(); tx_.set_position((x, y * k + off))
+    for lg_ in list(getattr(fig, 'legends', [])):
+        try:
+            bb = lg_.get_bbox_to_anchor().transformed(fig.transFigure.inverted())
+            if bb.y0 != 0 or bb.y1 != 1: lg_.set_bbox_to_anchor((bb.x0, bb.y0 * k + off, bb.width, bb.height * k), transform=fig.transFigure)
+        except Exception: pass
+    rtl = lang == 'ar'
+    fig.text(0.99 if rtl else 0.01, 0.012, mshape(txt, lang), fontsize=5.6, color='#475569', family='DejaVu Sans Mono' if not rtl else None,
+             ha='right' if rtl else 'left', va='bottom', linespacing=1.35,
+             bbox=dict(boxstyle='round,pad=0.25', fc='#F1F5F9', ec='#CBD5E1', lw=0.5))
+    fig._src_done = True
+
+
+def with_src(key, fn):
+    """Grafik fonksiyonunu kaynak şeridi ekleyecek biçimde sarar (iç içe çağrıda dıştaki anahtar geçerli)."""
+    def w(A, lang, *a, **kw):
+        outer = getattr(_TL, 'src', None)
+        if outer is None: _TL.src = (A, key, lang)
+        try:
+            return fn(A, lang, *a, **kw)
+        finally:
+            if outer is None: _TL.src = None
+    w.__name__ = getattr(fn, '__name__', key); w.__wrapped__ = fn
+    return w
 
 
 PH_STRIP = {'ground': '#9CA3AF', 'takeoff': '#2563EB', 'climb': '#0EA5E9', 'cruise': '#16A34A', 'descent': '#D97706', 'landing': '#DB2777'}
@@ -185,16 +232,19 @@ def chart_alt(A: Analysis, lang):
     L = A.L; fig = _fig(3.4); ax = fig.add_subplot(111); _style(ax, lang)
     _phases(ax, A)
     if A.track is not None:
-        ax.plot(*_g(A.track['t'], A.track['rel']), color=C['blue'], lw=1.3, label=rt('l_alt', lang))
+        ax.plot(*_g(A.track['t'], A.track['rel']), color=C['blue'], lw=1.3, label=rt('l_alt', lang) + ' · ' + A.track.get('src', ''))
     ax.set_ylabel(rt('ax_alt', lang), fontsize=8)
     ax2 = ax.twinx(); ax2.tick_params(labelsize=7)
     g = L.s('GPS')
-    if g.has('Spd'): ax2.plot(*_g(g['t'], g['Spd']), color=C['orange'], lw=0.8, alpha=0.9, label=rt('l_gs', lang))
+    if g.has('Spd'): ax2.plot(*_g(g['t'], g['Spd']), color=C['orange'], lw=0.8, alpha=0.9, label=rt('l_gs', lang) + ' · GPS.Spd')
     a = L.s('ARSP') if L.s('ARSP').has('Airspeed') else L.s('CTUN')
     f = 'Airspeed' if a.has('Airspeed') else ('As' if a.has('As') else None)
-    if f and A.vehicle == 'Plane': ax2.plot(*_g(a['t'], a[f]), color=C['green'], lw=0.8, alpha=0.9, label=rt('l_as', lang))
+    if f and A.vehicle == 'Plane': ax2.plot(*_g(a['t'], a[f]), color=C['green'], lw=0.8, alpha=0.9, label=rt('l_as', lang) + f" · {'ARSP' if f == 'Airspeed' else 'CTUN'}.{f}")
     amin = L.params.get('AIRSPEED_MIN', L.params.get('ARSPD_FBW_MIN'))
-    if amin and A.vehicle == 'Plane': ax2.axhline(amin, color=C['green'], lw=0.6, ls=':')
+    if amin and A.vehicle == 'Plane':
+        ax2.axhline(amin, color=C['green'], lw=0.6, ls=':')
+        ax2.text(0.004, amin, ' ' + ('AIRSPEED_MIN' if 'AIRSPEED_MIN' in L.params else 'ARSPD_FBW_MIN') + f'={amin:g}', transform=ax2.get_yaxis_transform(),
+                 fontsize=4.8, color=C['green'], va='bottom', family='DejaVu Sans Mono')
     ax2.set_ylabel(rt('ax_spd', lang), fontsize=8)
     _modes(ax, A, lang); _crash(ax, A)
     h1, l1 = ax.get_legend_handles_labels(); h2, l2 = ax2.get_legend_handles_labels()
@@ -396,8 +446,10 @@ ALL = [('c_alt', chart_alt), ('c_att', chart_att), ('c_gps', chart_gps), ('c_vib
 
 
 from . import charts2 as _c2   # noqa: E402  (v1.1.5 grafik seti; charts2 bu modülün yardımcılarını kullanır)
-ALL = _c2.ALL
-chart_timeline = _c2.chart_timeline
+ALL = [(k, with_src(k, f)) for k, f in _c2.ALL]
+chart_timeline = with_src('c_timeline', _c2.chart_timeline)
+chart_map = with_src('c_map', chart_map)
+chart_health = with_src('c_health', chart_health)
 REPORT_DEFAULT = {'c_alt', 'c_att', 'c_sticks', 'c_rcou', 'c_motors', 'c_speed', 'c_gps', 'c_vibe', 'c_bat', 'c_ekf', 'c_mag'}
 
 
