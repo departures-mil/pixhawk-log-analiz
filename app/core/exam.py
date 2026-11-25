@@ -19,10 +19,10 @@ def create_class(archive, name, instructor, students=()):
     return cid
 
 
-def create_exam(archive, class_id, title, A, lang='tr', n=10, time_limit_min=20, pass_mark=70, source=None):
+def create_exam(archive, class_id, title, A, lang='tr', n=10, time_limit_min=20, pass_mark=70, source=None, questions=None):
     from .practice import generate
     seed = int(time.time())
-    qs = generate(A, lang, n, seed)
+    qs = list(questions) if questions is not None else generate(A, lang, n, seed)
     for q in qs:  # grafik/kütüphane bağlantılarını koru, numpy değerlerini temizle
         if q.get('t') is not None: q['t'] = float(q['t'])
     eid = new_id(10)
@@ -30,6 +30,21 @@ def create_exam(archive, class_id, title, A, lang='tr', n=10, time_limit_min=20,
                                   'time_limit_min': int(time_limit_min), 'pass_mark': int(pass_mark), 'source': source or {},
                                   'log_name': os.path.basename(A.L.path) if A is not None else '', 'created': time.strftime('%Y-%m-%d %H:%M')})
     return eid
+
+
+def bank_questions(archive, lang='tr', n=10, topics=None, levels=None, A=None, mix_log=False, seed=None):
+    """Soru bankasından sınav soruları (konu/seviye süzgeçli); mix_log ise açık logdan da en fazla üçte biri eklenir."""
+    import random
+    from . import qbank as QB
+    from .practice import generate
+    seed = int(time.time()) if seed is None else seed
+    nl = n // 3 if (mix_log and A is not None) else 0
+    rnd = random.Random(seed)
+    qs = [QB.to_item(q, lang, rnd) for q in QB.pick(QB.load(archive), topics, levels, n - nl, seed)]
+    if nl:
+        qs += [x for x in generate(A, lang, n, seed) if not x.get('lib')][:nl]
+        rnd.shuffle(qs)
+    return qs
 
 
 def grade(exam, answers):

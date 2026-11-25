@@ -261,5 +261,18 @@ try:
 except Exception:
     import traceback; traceback.print_exc(); bad += 1
 
-sys.exit(1 if bad else 0)
+try:
+    # v1.1.10: soru bankası — tüm yerleşik sorular geçerli, kimlikler tekil, üç dil dolu
+    from app.core import qbank as QB
+    qb_ = QB.builtin(); assert len(qb_) > 400 and len({q['id'] for q in qb_}) == len(qb_)
+    for q in qb_:
+        assert QB.validate(q) is None, q['id']
+        if q['origin'] == 'builtin':
+            assert all(q['q'][k] and q['exp'][k] for k in QB.LANGS), q['id']
+            assert all(o[k] for o in q['opts'] for k in QB.LANGS), q['id']
+        assert q['topic'] in QB.TOPICS, q['id']
+    print('v1.1.10 question bank OK', len(qb_))
+except Exception:
+    import traceback; traceback.print_exc(); bad += 1
 
+sys.exit(1 if bad else 0)
