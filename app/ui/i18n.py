@@ -260,6 +260,8 @@ from .i18n6 import U6 as _U6  # noqa: E402
 U.update(_U6)
 from .i18n8 import U8 as _U8  # noqa: E402
 U.update(_U8)
+from .i18n9 import U9 as _U9  # noqa: E402
+U.update(_U9)
 
 
 def t(key, **a):

@@ -52,6 +52,11 @@ ortak `reusable-release.yml` (latest.json, son 5 sürümden yamalar) ile yayın.
   çalışmayı sayılarla izler (içerik yok), çevrim dışı kurallar + kullanıcının kendi Gemini/Claude anahtarıyla öneri; bildirim + sağ altta ✦ panel;
   Ayarlar'da "Admin ile iletişim"in önünde kart. Aynı bilgisayardaki programlarla %APPDATA%/FalconCekirdek/agent üzerinden paylaşım.
 
+## v1.1.8 — video eşleme, OSD ve kendi grafiğim
+- **Video ve OSD** (`app/ui/pages_v.py`, `app/core/vidsync.py`): ana video + ikinci (FPV/DVR) video, log ile eşleme (kayıt saati / olay / ince ayar), grafik-harita-mod tablosu tıklaması videoyu o ana götürür; oynatırken imleç, harita ve 3B izler.
+- Logdan çizilen OSD (öğeler seçilebilir) ve birleştirilmiş MP4 (tek / resim içinde resim / yan yana, harita + irtifa paneli; ffmpeg = imageio-ffmpeg).
+- **Kendi Grafiğim** (`app/core/customchart.py`): log alanları ve güvenli formüller, parametre eşik çizgileri, görünen aralık istatistikleri ve eşik üstü/altı süre; grafikler `settings['custom_charts']`'a kaydedilir.
+
 ## v1.1.7 — her değerin kaynağı (log alanı + parametre)
 - Grafik çizgileri MESAJ.ALAN adıyla, eşik çizgileri parametre adı ve değeriyle; her grafiğin altında kaynak şeridi.
 - Grafikler sayfasında "Kaynak" sekmesi: alan/parametre anlamı, değer, varsayılan ve Mission Planner'da yolu (`app/core/sources.py`).
