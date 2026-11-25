@@ -1,6 +1,25 @@
 """Sürüm notları ("Neler yeni" + release-notes.json). Yeni sürümde EN ÜSTE eklenir; tr/en/ar zorunlu."""
 
 NEWS = [
+    {'v': '1.1.8',
+     'tr': 'Yeni "Video ve OSD" sayfası: kamera / yer çekimi videosu logla eşlenir (kayıt saatinden otomatik, olay seçerek ya da ±0,1 sn ince ayarla)\n'
+           'Grafiğe, haritaya ya da mod tablosuna tıklayınca video o ana gider; video oynarken grafik imleci, harita ve 3B tekrar birlikte ilerler\n'
+           'İkinci video girişi (FPV gözlük / DVR, OSD\'li) ve logdan çizilen OSD: mod, irtifa, hız, batarya, yapay ufuk, GPS, stickler, uyarılar (öğeler seçilebilir)\n'
+           'Birleştirilmiş MP4 kaydetme: tek video, resim içinde resim ya da yan yana; isteğe bağlı harita + irtifa paneli; tüm video, yalnız uçuş ya da kırım anı ±30 sn\n'
+           'Yeni "Kendi Grafiğim" sayfası: istediğin log alanlarını ya da formülleri (ör. RCOU.C3 - RCOU.C1, BAT.Volt * BAT.Curr) çiz; mod bantları ve saat dahil; grafikler kaydedilir\n'
+           'Full Parameter List\'ten istediğin parametreyi grafiğe eşik çizgisi olarak ekle; görünen aralıkta en düşük / en yüksek / ortalama ve eşiğin üstünde / altında geçen süre',
+     'en': 'New "Video & OSD" page: a camera / ground video is synced to the log (automatically from its recording time, by picking an event or by ±0.1 s nudges)\n'
+           'Click a chart, the map or the mode table and the video jumps there; while the video plays the chart cursor, map and 3D replay move with it\n'
+           'Second video input (FPV goggles / DVR with OSD) and an OSD drawn from the log: mode, altitude, speed, battery, horizon, GPS, sticks, warnings (items selectable)\n'
+           'Save a merged MP4: single video, picture-in-picture or side by side; optional map + altitude panel; whole video, flight only or crash moment ±30 s\n'
+           'New "My Chart" page: plot any log fields or formulas (e.g. RCOU.C3 - RCOU.C1, BAT.Volt * BAT.Curr) with mode bands and clock time; charts are saved\n'
+           'Add any Full Parameter List parameter as a limit line; min / max / mean in the visible range and time spent above / below the limit',
+     'ar': 'صفحة جديدة "الفيديو و OSD": يُزامَن فيديو الكاميرا / التصوير الأرضي مع السجل (تلقائياً من وقت التسجيل أو باختيار حدث أو بضبط ±0.1 ث)\n'
+           'انقر على الرسم أو الخريطة أو جدول الأوضاع فينتقل الفيديو إلى تلك اللحظة؛ وأثناء التشغيل يتحرك مؤشر الرسم والخريطة والإعادة ثلاثية الأبعاد معه\n'
+           'مدخل فيديو ثانٍ (نظارة FPV / DVR مع OSD) وOSD مرسوم من السجل: الوضع والارتفاع والسرعة والبطارية والأفق الاصطناعي وGPS والعصي والتحذيرات (عناصر قابلة للاختيار)\n'
+           'حفظ MP4 مدمج: فيديو واحد أو صورة داخل صورة أو جنباً إلى جنب؛ لوحة خريطة + ارتفاع اختيارية؛ الفيديو كاملاً أو الطيران فقط أو لحظة السقوط ±30 ث\n'
+           'صفحة جديدة "رسمي الخاص": ارسم أي حقول من السجل أو صيغ (مثل RCOU.C3 - RCOU.C1 وBAT.Volt * BAT.Curr) مع أشرطة الأوضاع والوقت؛ تُحفظ الرسوم\n'
+           'أضف أي معامل من Full Parameter List كخط حدّ؛ الأدنى / الأعلى / المتوسط في النطاق الظاهر والزمن فوق / تحت الحد'},
     {'v': '1.1.7',
      'tr': 'Her değerin kaynağı: grafiklerdeki her çizgi logdaki MESAJ.ALAN adıyla (ör. RCOU.C3, ATT.Roll), eşik çizgileri parametre adı ve değeriyle (ör. Q_M_SPIN_MAX, BATT_CAPACITY) yazılı\n'
            'Her grafiğin altında kaynak şeridi: kullanılan log alanları ve bu logdaki parametre değerleri (rapora da girer)\n'

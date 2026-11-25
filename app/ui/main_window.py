@@ -10,7 +10,7 @@ from fccore.window import FcWindow, TopBar
 from fccore.widgets import button as fbutton, label as flabel, toast
 from .i18n import t, lang, set_lang
 from .common import label, button, run_bg, error, info, open_path, app_icon
-from . import pages_a as PA, pages_b as PB, pages_c as PC, pages_p as PP, pages_s as PS
+from . import pages_a as PA, pages_b as PB, pages_c as PC, pages_p as PP, pages_s as PS, pages_v as PV
 from .settings_page import SettingsPage
 from ..core.settings import Settings
 from ..core.archive import Archive, file_uid
@@ -18,7 +18,8 @@ from ..core.advisor import Usage
 from ..core.paths import data_dir
 
 NAV = [('analysis', '🔎', 'nav_analysis', PA.AnalysisPage), ('solver', '🩺', 'nav_solver', PS.SolverPage), ('charts', '📈', 'nav_charts', PA.ChartsPage),
-       ('map', '🗺', 'nav_map', PA.MapPage), ('timeline', '🕒', 'nav_timeline', PA.TimelinePage),
+       ('map', '🗺', 'nav_map', PA.MapPage), ('custom', '📐', 'nav_custom', PV.CustomChartPage),
+       ('video', '🎞', 'nav_video', PV.VideoPage), ('timeline', '🕒', 'nav_timeline', PA.TimelinePage),
        ('advisor', '🤖', 'nav_advisor', PA.AdvisorPage), ('practice', '🎓', 'nav_practice', PA.PracticePage),
        ('exam', '📝', 'nav_exam', PC.ExamPage),
        ('scen', '🧪', 'nav_scen', PB.ScenarioPage), ('crashlib', '💥', 'nav_crashlib', PP.CrashLibPage), ('batch', '🗂', 'nav_batch', PB.BatchPage),
