@@ -1,6 +1,16 @@
 """Sürüm notları ("Neler yeni" + release-notes.json). Yeni sürümde EN ÜSTE eklenir; tr/en/ar zorunlu."""
 
 NEWS = [
+    {'v': '1.1.9',
+     'tr': 'Log Mesajları Kütüphanesi araması güçlendi: yalnız mesaj ve alan adlarında değil, açıklamalarda ve alan açıklamalarında da arar; Türkçe, İngilizce ve Arapça çevirilerin üçünde birden\n'
+           'Harf/aksan duyarsız (titresim = titreşim) ve eş anlamlılarla (gerilim = voltaj = voltage, pusula = compass…); çok kelimeli aramada hepsini içerenler en üstte\n'
+           'Listede eşleşen alanlar gösterilir (ör. VIBE ↳ VibeX, VibeY); ayrıntıda aranan kelimeler sarıyla vurgulanır, eşleşen alan satırları işaretlenir ve kelime başka dilde bulunduysa o dildeki açıklama da yazılır',
+     'en': 'Stronger Log Messages Library search: it looks not only in message and field names but in descriptions and field descriptions too, in Turkish, English and Arabic at once\n'
+           'Accent-insensitive (titresim = titreşim) with synonyms (voltage = gerilim = voltaj, compass = pusula…); with several words, messages containing all of them come first\n'
+           'The list shows the matching fields (e.g. VIBE ↳ VibeX, VibeY); the details highlight the searched words, mark matching field rows and show the description in the language where the word was found',
+     'ar': 'بحث أقوى في مكتبة رسائل السجل: لا يبحث في أسماء الرسائل والحقول فقط بل في الشروح وشروح الحقول أيضاً، باللغات التركية والإنجليزية والعربية معاً\n'
+           'لا يتأثر بالتشكيل والحروف الخاصة (titresim = titreşim) ويدعم المرادفات (الجهد = voltage = gerilim، البوصلة = compass…)؛ وعند البحث بعدة كلمات تظهر الرسائل التي تحويها كلها أولاً\n'
+           'تعرض القائمة الحقول المطابقة (مثل VIBE ↳ VibeX، VibeY)؛ وفي التفاصيل تُظلَّل الكلمات المبحوث عنها وتُميَّز صفوف الحقول المطابقة ويُعرض الشرح باللغة التي وُجدت فيها الكلمة'},
     {'v': '1.1.8',
      'tr': 'Yeni "Video ve OSD" sayfası: kamera / yer çekimi videosu logla eşlenir (kayıt saatinden otomatik, olay seçerek ya da ±0,1 sn ince ayarla)\n'
            'Grafiğe, haritaya ya da mod tablosuna tıklayınca video o ana gider; video oynarken grafik imleci, harita ve 3B tekrar birlikte ilerler\n'

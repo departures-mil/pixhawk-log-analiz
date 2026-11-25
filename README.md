@@ -52,6 +52,10 @@ ortak `reusable-release.yml` (latest.json, son 5 sürümden yamalar) ile yayın.
   çalışmayı sayılarla izler (içerik yok), çevrim dışı kurallar + kullanıcının kendi Gemini/Claude anahtarıyla öneri; bildirim + sağ altta ✦ panel;
   Ayarlar'da "Admin ile iletişim"in önünde kart. Aynı bilgisayardaki programlarla %APPDATA%/FalconCekirdek/agent üzerinden paylaşım.
 
+## v1.1.9 — log mesajlarında açıklama araması (TR/EN/AR)
+- Log Mesajları Kütüphanesi araması mesaj/alan adlarına ek olarak açıklamalarda ve alan açıklamalarında, üç dilde birden arar (`app/core/msgsearch.py`): aksan duyarsız, eş anlamlılar, çok kelime = hepsi, puanlı sıralama.
+- Listede eşleşen alanlar, ayrıntıda vurgulama ve eşleşmenin bulunduğu dildeki açıklama.
+
 ## v1.1.8 — video eşleme, OSD ve kendi grafiğim
 - **Video ve OSD** (`app/ui/pages_v.py`, `app/core/vidsync.py`): ana video + ikinci (FPV/DVR) video, log ile eşleme (kayıt saati / olay / ince ayar), grafik-harita-mod tablosu tıklaması videoyu o ana götürür; oynatırken imleç, harita ve 3B izler.
 - Logdan çizilen OSD (öğeler seçilebilir) ve birleştirilmiş MP4 (tek / resim içinde resim / yan yana, harita + irtifa paneli; ffmpeg = imageio-ffmpeg).
