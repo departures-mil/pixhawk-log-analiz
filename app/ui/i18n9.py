@@ -1,6 +1,7 @@
 """v1.1.8 arayüz metinleri (TR/EN/AR): kendi grafiğim, video ve OSD."""
 U9 = {
     'nav_custom': ('Kendi Grafiğim', 'My Chart', 'رسمي الخاص'),
+    'nav_qbank': ('Soru Bankası', 'Question Bank', 'بنك الأسئلة'),
     'nav_video': ('Video ve OSD', 'Video & OSD', 'الفيديو و OSD'),
     'ms_ph': ('Ara: ad, alan ya da açıklama, üç dilde (VIBE, HDop, titreşim, batarya gerilim, اهتزاز…)',
               'Search name, field or description in all three languages (VIBE, HDop, vibration, battery voltage, اهتزاز…)',

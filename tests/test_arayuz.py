@@ -174,3 +174,47 @@ def test_msglib_search_descriptions_all_languages(win, qapp):
     assert ks[0] == 'VIBE' and 'VibeX' in pg.list.item(0).text()
     assert '<span' in pg.view.toHtml() or 'FDE047' in pg.view.toHtml()
     pg.q.setText('')
+
+
+def test_question_bank_edit_practice_exam(win, qapp, tmp_path):
+    """v1.1.10: soru bankası (öğretici + kütüphane soruları), düzenleme/gizleme/geri alma, içe/dışa aktarma, alıştırma ve sınav."""
+    from app.core import qbank as QB, exam as X
+    ar = win.archive
+    bank = QB.load(ar)
+    assert len(bank) > 400 and len({q['id'] for q in bank}) == len(bank)
+    assert sum(1 for q in bank if q['origin'] == 'builtin') >= 120
+    for q in bank:
+        assert QB.validate(q) is None, q['id']
+    assert QB.validate({'q': QB.tri(''), 'opts': [], 'ans': 0}) == 'q'
+    # düzenle: yerleşik soru değişir, 'mod' işaretlenir, geri alınır
+    e = dict(next(q for q in bank if q['id'] == 'e02')); e['q'] = QB.tri('Değişmiş soru')
+    QB.save(ar, e)
+    assert next(q for q in QB.load(ar) if q['id'] == 'e02').get('mod')
+    QB.delete(ar, 'g01'); assert 'g01' not in {q['id'] for q in QB.load(ar)}
+    assert next(q for q in QB.load(ar, include_hidden=True) if q['id'] == 'g01').get('hidden')
+    QB.restore(ar, 'e02'); QB.restore(ar, 'g01')
+    b2 = {q['id']: q for q in QB.load(ar)}
+    assert 'g01' in b2 and not b2['e02'].get('mod')
+    # yeni kullanıcı sorusu + dışa/içe aktarma
+    u = {'id': QB.new_id(), 'topic': 'gps', 'level': 1, 'src': 'GPS.NSats',
+         'q': QB.tri('Kaç uydu?'), 'opts': [QB.tri('10'), QB.tri(''), QB.tri('3')], 'ans': 0, 'exp': QB.tri('Açıklama')}
+    QB.save(ar, u)
+    uq = next(q for q in QB.load(ar) if q['id'] == u['id'])
+    assert uq['origin'] == 'user' and len(uq['opts']) == 2
+    p = str(tmp_path / 'b.pxbank'); QB.export_file(p, [uq])
+    assert QB.import_file(ar, p) == (1, 0)
+    it = QB.to_item(uq, 'ar')
+    assert it['opts'][it['ans']] == '10' and it['bank_id'] == u['id']
+    # sayfa: arama, seçim (Arapça dahil)
+    pg = win.pages['qbank']; win.goto('qbank'); qapp.processEvents()
+    pg.q.setText('titreşim'); qapp.processEvents()
+    assert pg.rows and pg._cur() is not None and pg.view.toPlainText()
+    pg.q.setText(''); qapp.processEvents()
+    for q in QB.load(ar):
+        if q['origin'] == 'user': QB.delete(ar, q['id'])
+    # alıştırma: bankadan
+    pr = win.pages['practice']; pr.start_bank(ids={'e02', 'g01', 'v01', 'c01', 'p01'}); qapp.processEvents()
+    assert 1 <= len(pr.qs) <= 5 and all(x.get('bank_id') in {'e02', 'g01', 'v01', 'c01', 'p01'} for x in pr.qs)
+    # sınav: bankadan, konu süzgeçli
+    qs = X.bank_questions(ar, 'tr', 12, topics={'gps'})
+    assert len(qs) == 12 and all(x['topic'] == 'gps' for x in qs)
