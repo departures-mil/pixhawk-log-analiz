@@ -52,6 +52,11 @@ ortak `reusable-release.yml` (latest.json, son 5 sürümden yamalar) ile yayın.
   çalışmayı sayılarla izler (içerik yok), çevrim dışı kurallar + kullanıcının kendi Gemini/Claude anahtarıyla öneri; bildirim + sağ altta ✦ panel;
   Ayarlar'da "Admin ile iletişim"in önünde kart. Aynı bilgisayardaki programlarla %APPDATA%/FalconCekirdek/agent üzerinden paylaşım.
 
+## v1.1.10 — soru bankası ve sınav sistemi
+- **Soru Bankası** (`app/ui/pages_q.py`, `app/core/qbank.py`, sorular `app/core/qbank_d1..d4.py`): 16 konu × 3 seviyede 126 elle yazılmış öğretici soru (TR/EN/AR, açıklamalı) + log mesajı / kritik parametre kütüphanelerinden üretilen ~400 soru.
+- Tamamı görüntülenir ve düzenlenir: arama, süzgeç, ekle/düzenle/kopyala/sil/geri al, `.pxbank` dışa/içe aktarma. Değişiklikler arşivde `qbank` kaydı olarak tutulur ve GitHub/LAN ile eşitlenir.
+- Alıştırma Modu: kaynak (karışık / banka / log / yanlışlarım; `settings['qbank_stats']`), konu, seviye, soru sayısı. Sınav: bankadan (isteğe bağlı logla karışık) konu/seviye seçimli 3–100 soru (`exam.bank_questions`).
+
 ## v1.1.9 — log mesajlarında açıklama araması (TR/EN/AR)
 - Log Mesajları Kütüphanesi araması mesaj/alan adlarına ek olarak açıklamalarda ve alan açıklamalarında, üç dilde birden arar (`app/core/msgsearch.py`): aksan duyarsız, eş anlamlılar, çok kelime = hepsi, puanlı sıralama.
 - Listede eşleşen alanlar, ayrıntıda vurgulama ve eşleşmenin bulunduğu dildeki açıklama.

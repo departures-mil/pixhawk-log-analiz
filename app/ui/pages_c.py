@@ -390,8 +390,18 @@ class ExamPage(Page):
         from ..core import synth
         for sc in synth.SCENARIOS if hasattr(synth, 'SCENARIOS') else ['normal', 'gps_loss', 'battery', 'vibration', 'radio_loss', 'stall', 'compass']:
             src.addItem(t('ex_src_scen') + ': ' + sc, 'scen:' + sc)
-        src.addItem(t('ex_src_file'), 'file'); f.addRow(t('ex_source'), src)
-        n = QSpinBox(); n.setRange(3, 30); n.setValue(10); f.addRow(t('ex_nq'), n)
+        src.addItem(t('ex_src_file'), 'file')
+        from .pages_q import tx as qtx
+        from ..core import qbank as QB
+        src.insertItem(0, '🗃 ' + qtx('ex_bank'), 'bank'); src.insertItem(1, '🗃 ' + qtx('ex_bank_log'), 'bank_log'); src.setCurrentIndex(0)
+        f.addRow(t('ex_source'), src)
+        btop = QComboBox(); btop.addItem(qtx('all_t'), None)
+        for k in QB.TOPICS: btop.addItem(QB.topic_name(k, lang()), k)
+        blvl = QComboBox(); blvl.addItem(qtx('all_l'), None)
+        for n_ in (1, 2, 3): blvl.addItem(QB.level_name(n_, lang()), n_)
+        f.addRow(qtx('ed_topic'), btop); f.addRow(qtx('ed_level'), blvl)
+        src.currentIndexChanged.connect(lambda *_: (btop.setEnabled(src.currentData() in ('bank', 'bank_log')), blvl.setEnabled(src.currentData() in ('bank', 'bank_log'))))
+        n = QSpinBox(); n.setRange(3, 100); n.setValue(20); f.addRow(t('ex_nq'), n)
         tl = QSpinBox(); tl.setRange(1, 240); tl.setValue(20); f.addRow(t('ex_limit'), tl)
         pm = QSpinBox(); pm.setRange(1, 100); pm.setValue(70); f.addRow(t('ex_pass'), pm)
         lc = QComboBox()
@@ -400,7 +410,8 @@ class ExamPage(Page):
         h = QHBoxLayout(); h.addWidget(button(t('cancel'), dl.reject)); h.addWidget(button(t('save'), dl.accept, primary=True)); f.addRow(h)
         if dl.exec() != QDialog.Accepted: return
         s = src.currentData(); path = None
-        if s == 'open' and not self.win.A: return error(self, t('no_log'))
+        if s in ('open', 'bank_log') and not self.win.A: return error(self, t('no_log'))
+        bt = {btop.currentData()} if btop.currentData() else None; bl = {blvl.currentData()} if blvl.currentData() else None
         if s == 'file':
             path, _ = QFileDialog.getOpenFileName(self, t('open_log'), '', 'Pixhawk log (*.bin *.BIN *.tlog)')
             if not path: return
@@ -409,6 +420,10 @@ class ExamPage(Page):
 
         def job():
             from ..core import exam as X, loader, analysis
+            if s in ('bank', 'bank_log'):
+                qs = X.bank_questions(arc, lc.currentData(), n.value(), bt, bl, A0, s == 'bank_log')
+                source = {'type': 'bank', 'topics': sorted(bt) if bt else 'all', 'levels': sorted(bl) if bl else 'all'}
+                return X.create_exam(arc, c['id'], title, A0 if s == 'bank_log' else None, lc.currentData(), n.value(), tl.value(), pm.value(), source, questions=qs)
             if s == 'open': A = A0; source = {'type': 'open', 'name': os.path.basename(A.L.path)}
             elif s == 'file': A = analysis.Analysis(loader.load(path)); source = {'type': 'file', 'name': os.path.basename(path)}
             else:
