@@ -1,8 +1,9 @@
 """Rapor ve arayüz grafikleri (matplotlib). Her grafik PNG bayt dizisi olarak üretilir."""
 from __future__ import annotations
-import io, math, re
+import io, math, re, threading
 import numpy as np
 import matplotlib
+import matplotlib.patches
 matplotlib.use('Agg')
 matplotlib.rcParams['font.family'] = 'DejaVu Sans'
 from matplotlib.figure import Figure
@@ -49,10 +50,29 @@ def rt(key, lang):
     return mshape(RT[key][i], lang)
 
 
+MAXPTS = 9000
+
+
+def _dec(t, y, n=MAXPTS):
+    """Çok uzun seriyi sivri uçları kaybetmeden seyrelt (her kovada min ve max)."""
+    if len(t) <= n: return t, y
+    k = int(math.ceil(len(t) / (n / 2)))
+    m = len(t) // k * k
+    tt = t[:m].reshape(-1, k); yy = y[:m].reshape(-1, k)
+    with np.errstate(all='ignore'):
+        bad = np.all(np.isnan(yy), axis=1)
+        yy2 = np.where(np.isnan(yy), np.nanmean(np.where(bad[:, None], 0, yy), axis=1, keepdims=True), yy)
+        i0 = np.argmin(yy2, axis=1); i1 = np.argmax(yy2, axis=1)
+    lo = np.minimum(i0, i1); hi = np.maximum(i0, i1); r = np.arange(len(tt))
+    T = np.column_stack([tt[r, lo], tt[r, hi]]).ravel(); Y = np.column_stack([yy[r, lo], yy[r, hi]]).ravel()
+    return np.r_[T, t[m:]], np.r_[Y, y[m:]]
+
+
 def _g(t, y):
     """Logdaki boşlukları (kayıt yok) düz çizgiyle birleştirme: büyük zaman aralığına NaN koy."""
     t = np.asarray(t, float); y = np.asarray(y, float)
     if len(t) < 3: return t, y
+    t, y = _dec(t, y)
     dt = np.diff(t); med = float(np.median(dt[dt > 0])) if (dt > 0).any() else 0.0
     lim = max(2.0, med * 20)
     k = np.where(dt > lim)[0]
@@ -74,6 +94,11 @@ def _style(ax, lang):
 
 
 MARK = {'t': None, 'span': None}
+_TL = threading.local()   # _TL.fig = True → grafik fonksiyonları PNG yerine Figure döndürür (etkileşimli arayüz)
+
+
+def want_fig(on=True):
+    _TL.fig = on
 
 
 def _png(fig):
@@ -82,21 +107,73 @@ def _png(fig):
             if getattr(ax, 'name', '') != 'rectilinear' or not isinstance(ax.xaxis.get_major_formatter(), FuncFormatter): continue
             if MARK['span']: ax.axvspan(MARK['span'][0], MARK['span'][1], color='#F59E0B', alpha=0.22, zorder=5)
             if MARK['t'] is not None: ax.axvline(MARK['t'], color='#F59E0B', lw=2.4, zorder=6)
-    b = io.BytesIO(); fig.tight_layout(); fig.savefig(b, format='png', dpi=150); return b.getvalue()
+    import warnings
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        try: fig.tight_layout()
+        except Exception: pass
+    if getattr(_TL, 'fig', False): return fig
+    b = io.BytesIO(); fig.savefig(b, format='png', dpi=150); return b.getvalue()
+
+
+PH_STRIP = {'ground': '#9CA3AF', 'takeoff': '#2563EB', 'climb': '#0EA5E9', 'cruise': '#16A34A', 'descent': '#D97706', 'landing': '#DB2777'}
+
+
+def _segs(A):
+    from . import viz
+    c = getattr(A, '_viz_segs', None)
+    if c is None:
+        c = viz.segments(A); A._viz_segs = c
+    return c
 
 
 def _phases(ax, A):
+    """Arka plan: uçuş modu bantları (her mod kendi renginde) + altta ince uçuş aşaması şeridi."""
+    from matplotlib.transforms import blended_transform_factory as btf
+    tr = btf(ax.transData, ax.transAxes)
+    for s in _segs(A):
+        ax.axvspan(s['t0'], s['t1'], color=s['col'], alpha=0.13, lw=0, zorder=0)
     for p in A.phases:
-        ax.axvspan(p['t0'], p['t1'], color=PH_COL.get(p['name'], '#fff'), lw=0, zorder=0)
+        ax.add_patch(matplotlib.patches.Rectangle((p['t0'], 0), p['t1'] - p['t0'], 0.025, transform=tr, color=PH_STRIP.get(p['name'], '#ccc'),
+                                                  lw=0, zorder=1, alpha=0.9, clip_on=True))
 
 
 def _modes(ax, A, lang, label=True):
-    ylim = ax.get_ylim()
-    for t, n, _, r in A.L.modes:
-        col = C['red'] if r in K.FAILSAFE_REASONS else C['purple']
-        ax.axvline(t, color=col, lw=0.8, ls='--', alpha=0.7, zorder=1)
+    """Mod değişim çizgileri; label=True ise bandın üstüne mod adı ve gerçek saat (yer varsa) + üstte saat ekseni."""
+    from . import viz
+    from matplotlib.transforms import blended_transform_factory as btf
+    segs = _segs(A); tr = btf(ax.transData, ax.transAxes)
+    x0, x1 = 0.0, max(1.0, float(A.L.duration or 1))
+    for i, s in enumerate(segs):
+        col = C['red'] if s['fs'] else s['col']
+        if i: ax.axvline(s['t0'], color=col, lw=1.4 if s['fs'] else 0.8, ls='-' if s['fs'] else '--', alpha=0.85, zorder=2)
         if label:
-            ax.text(t, ylim[1], ' ' + K.mode_name(A.vehicle, n), rotation=90, va='top', ha='left', fontsize=6, color=col)
+            frac = (s['t1'] - s['t0']) / (x1 - x0); c = viz.clock(A, s['t0'], sec=False)
+            txt = ' ' + s['name'] + (f' {c}' if c else '')
+            if frac < len(txt) * 0.0062: txt = ' ' + s['name']
+            if frac >= len(txt) * 0.0062:
+                ax.text(s['t0'], 1.004, txt, transform=tr, va='bottom', ha='left', fontsize=5.6,
+                        color=_dark(s['col']), zorder=7, fontweight='bold', clip_on=False,
+                        bbox=dict(fc=s['col'], alpha=0.18, lw=0, pad=0.6))
+    if label: _clock_axis(ax, A)
+
+
+def _dark(h):
+    h = h.lstrip('#'); r, g, b = (int(h[i:i + 2], 16) for i in (0, 2, 4))
+    return '#%02X%02X%02X' % (int(r * 0.55), int(g * 0.55), int(b * 0.55))
+
+
+def _clock_axis(ax, A):
+    """Üst eksende gerçek saat (GPS zamanı varsa, bilgisayarın saat dilimine göre)."""
+    from . import viz
+    if viz.clock(A, 0) is None or getattr(ax, '_has_clock', False): return
+    try:
+        sx = ax.secondary_xaxis('top')
+        sx.xaxis.set_major_formatter(FuncFormatter(lambda x, _: viz.clock(A, x) or ''))
+        sx.tick_params(labelsize=5.5, colors='#6B7280', length=2, pad=9)
+        ax._has_clock = True
+    except Exception:
+        pass
 
 
 def _crash(ax, A):
@@ -230,7 +307,7 @@ def chart_mag(A, lang):
     return _png(fig)
 
 
-def chart_map(A, lang, online=True, src='osm'):
+def chart_map(A, lang, online=True, src='osm', color='mode'):
     tr = A.track
     if tr is None: return None
     lat, lon = tr['lat'], tr['lon']
@@ -248,19 +325,35 @@ def chart_map(A, lang, online=True, src='osm'):
         ax.imshow(img, extent=ext, aspect='auto', zorder=0)
         attribution = '© OpenStreetMap' if src == 'osm' else ('© Esri' if src == 'sat' else '© OpenTopoMap')
         ax.text(0.99, 0.01, attribution, transform=ax.transAxes, fontsize=5, ha='right', va='bottom', color='#333', bbox=dict(fc='white', alpha=0.6, lw=0))
-    sc = ax.scatter(lon, lat, c=tr['rel'], s=2, cmap='viridis', zorder=3)
-    cb = fig.colorbar(sc, ax=ax, fraction=0.03, pad=0.01); cb.ax.tick_params(labelsize=6); cb.set_label(rt('ax_alt', lang), fontsize=7)
+    if color == 'mode' and A.L.modes:
+        from . import viz
+        segs = viz.segments(A, lang); seen = set()
+        for sg in segs:
+            k = (tr['t'] >= sg['t0']) & (tr['t'] <= sg['t1'] + 1e-6)
+            if k.sum() < 1: continue
+            ax.scatter(lon[k], lat[k], color=sg['col'], s=3, zorder=3)
+            if sg['name'] not in seen:
+                ax.plot([], [], 'o', color=sg['col'], ms=5, label=sg['name'])
+            seen.add(sg['name'])
+    else:
+        sc = ax.scatter(lon, lat, c=tr['rel'], s=2, cmap='viridis', zorder=3)
+        cb = fig.colorbar(sc, ax=ax, fraction=0.03, pad=0.01); cb.ax.tick_params(labelsize=6); cb.set_label(rt('ax_alt', lang), fontsize=7)
     ax.plot(lon[0], lat[0], marker='*', color=C['amber'], ms=12, mec='k', zorder=5, label=rt('l_home', lang))
     for t, n, _, r in A.L.modes:
         if t < tr['t'][0] or t > tr['t'][-1]: continue
         i = int(np.searchsorted(tr['t'], t)); i = min(i, len(lat) - 1)
-        col = C['red'] if r in K.FAILSAFE_REASONS else C['purple']
-        ax.plot(lon[i], lat[i], 'o', color=col, ms=4, zorder=4); ax.text(lon[i], lat[i], ' ' + K.mode_name(A.vehicle, n), fontsize=6, color=col, zorder=6)
+        from . import viz
+        col = C['red'] if r in viz.FS_REASONS else C['purple']
+        c_ = viz.clock(A, t, sec=False)
+        ax.plot(lon[i], lat[i], 'o', color=col, ms=4, mec='white', zorder=4)
+        ax.text(lon[i], lat[i], ' ' + K.mode_name(A.vehicle, n) + (f' {c_}' if c_ else ''), fontsize=6, color=col, zorder=6,
+                bbox=dict(fc='white', alpha=0.6, lw=0, pad=0.5))
     if A.verdict.get('kind') == 'crash':
         ax.plot(lon[-1], lat[-1], 'X', color=C['red'], ms=12, mec='k', zorder=6, label=rt('l_crash', lang))
     ax.set_xlim(lo0, lo1); ax.set_ylim(la0, la1)
     ax.set_aspect(1 / math.cos(math.radians((la0 + la1) / 2)))
-    ax.tick_params(labelsize=6); ax.legend(fontsize=6, loc='upper left')
+    ax.tick_params(labelsize=6); ax.legend(fontsize=6, loc='upper left', ncol=2)
+    ax.ticklabel_format(useOffset=False, style='plain')
     ax.set_title(rt('c_map', lang), fontsize=9, loc='left')
     return _png(fig)
 
@@ -302,9 +395,15 @@ ALL = [('c_alt', chart_alt), ('c_att', chart_att), ('c_gps', chart_gps), ('c_vib
        ('c_rcou', chart_rcou), ('c_ekf', chart_ekf), ('c_mag', chart_mag)]
 
 
+from . import charts2 as _c2   # noqa: E402  (v1.1.5 grafik seti; charts2 bu modülün yardımcılarını kullanır)
+ALL = _c2.ALL
+chart_timeline = _c2.chart_timeline
+REPORT_DEFAULT = {'c_alt', 'c_att', 'c_sticks', 'c_rcou', 'c_motors', 'c_speed', 'c_gps', 'c_vibe', 'c_bat', 'c_ekf', 'c_mag'}
+
+
 def render_marked(key, A, lang, t=None, span=None):
     """Belirtilen grafiği, ilgili an/aralık turuncu işaretli olarak üretir (alıştırma ve ders rehberi)."""
-    fn = dict(ALL + [('c_health', chart_health), ('c_timeline', chart_timeline)]).get(key)
+    fn = dict(list(ALL) + [('c_health', chart_health), ('c_timeline', chart_timeline)]).get(key)
     if not fn: return None
     MARK['t'] = t; MARK['span'] = span
     try:

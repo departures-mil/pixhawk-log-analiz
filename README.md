@@ -52,6 +52,14 @@ ortak `reusable-release.yml` (latest.json, son 5 sürümden yamalar) ile yayın.
   çalışmayı sayılarla izler (içerik yok), çevrim dışı kurallar + kullanıcının kendi Gemini/Claude anahtarıyla öneri; bildirim + sağ altta ✦ panel;
   Ayarlar'da "Admin ile iletişim"in önünde kart. Aynı bilgisayardaki programlarla %APPDATA%/FalconCekirdek/agent üzerinden paylaşım.
 
+## v1.1.5 — log canavarı: modlar, isimli motorlar, stickler, 20 etkileşimli grafik
+- **Uçuş modları** her grafikte renkli bant + ad + gerçek saat; mod tablosu (başlangıç/bitiş/süre/değişim nedeni/modun görevi), haritada moda göre renk
+- **Motor çıkışları**: motorlar yeriyle isimli (FRAME_CLASS/TYPE, Q_FRAME_*), yerleşim çizimi, durma/doyma uyarısı ve olay anı yakın çekimi; VTOL'de kaldırma + itiş motoru
+- **Görevli kanallar** (SERVOn_FUNCTION): Roll/Pitch/Yaw/Gaz, ters kanal işareti; **stick hareketleri** (RCMAP) ve mod anahtarı; 3B tekrarda canlı stick
+- **Yeni grafikler**: özet panosu, hız/rüzgâr, TECS, PID, navigasyon, GPS doğruluğu, FFT, IMU/baro, batarya mAh ve kalan süre, ESC, EKF yenilikleri
+- **Etkileşim**: yakınlaştırma, kaydırma, PNG, ortak imleç (harita/3B), Shift+tıklama cetvel, fareyle saat/mod/TimeUS
+- **Mission Planner**: her grafik için Review Log alanları, ilgili parametreler, önemli anların TimeUS değeri, `mavgraphs` biçiminde hazır grafik dosyası
+
 ## v1.1.4 — dört seviyeli karar, fizik modeli, resmî olay raporu
 - **Kaza · Ciddi sorun · Küçük uyarı · Normal**: kanıtı zayıf sorunlar "küçük uyarı" olarak ayrılır
 - **Kontrolsüz düşüş** (irtifa kaybı, düşüş hızı, açı) ve **VTOL motor kaybı**; motor numarası SERVOn_FUNCTION eşlemesinden, kronik zayıf motor
