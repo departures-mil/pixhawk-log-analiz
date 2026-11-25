@@ -23,6 +23,32 @@ def _strip_md(s):
     return re.sub(r'\*\*(.+?)\*\*', r'\1', s).replace('`', '')
 
 
+def mode_head(lg):
+    return [R(k, lg) for k in ('m_start', 'm_clock', 'm_end', 'm_dur', 'm_mode', 'm_why')]
+
+
+def mode_rows(A, lg):
+    """[[başlangıç, saat, bitiş, süre, mod, neden, renk, failsafe]] — uçuş modu tablosu (rapor ve arayüz)."""
+    from . import viz
+    out = []
+    for s_ in viz.segments(A, lg):
+        out.append([fmt_t(s_['t0']), viz.clock(A, s_['t0']) or '-', fmt_t(s_['t1']), fmt_t(s_['dur']), s_['name'], s_['why'],
+                    _tint(s_['col']), s_['fs']])
+    return out
+
+
+def _tint(h, k=0.72):
+    h = h.lstrip('#'); r, g, b = (int(h[i:i + 2], 16) for i in (0, 2, 4))
+    return '%02X%02X%02X' % tuple(int(c + (255 - c) * k) for c in (r, g, b))
+
+
+def motor_rows(A, lg):
+    from . import viz
+    try: ev = viz.motor_events(A, lg)
+    except Exception: return []
+    return [viz.event_text(A, e, lg) for e in ev.get('events', [])[:8]]
+
+
 SECTIONS = ['summary', 'incident', 'facts', 'root', 'ai', 'health', 'anomaly', 'pilot', 'weather', 'phases', 'charts', 'timeline', 'params', 'thresholds', 'verify']
 SHORT = ['summary', 'incident', 'facts', 'root', 'ai', 'health', 'anomaly', 'weather', 'params', 'verify']
 
@@ -54,6 +80,7 @@ class ReportData:
         if 'charts' in self.sections:
             for key, fn in charts.ALL:
                 if charts_on and key not in charts_on: continue
+                if not charts_on and key not in charts.REPORT_DEFAULT: continue
                 try:
                     b = fn(A, lang)
                 except Exception:
@@ -385,6 +412,14 @@ def build_docx(rd: ReportData, path, lh=None):
                          f"{f1(s_.get('alt_mean'))}/{f1(s_.get('alt_max'))} m", f1(s_.get('as_mean') if s_.get('as_mean') is not None else s_.get('gs_mean'), ' m/s'),
                          f1(s_.get('thr_mean'), '%'), f"{f1(s_.get('roll_max'))}°/{f1(s_.get('pitch_max'))}°"])
         table(rows, [R(k, lg) for k in ('p_phase', 'p_time', 'p_dur', 'p_alt', 'p_spd', 'p_thr', 'p_att')], [2.4, 3.4, 1.8, 2.6, 2.2, 2, 2.6])
+        mr = mode_rows(A, lg)
+        if mr:
+            heading(R('sec_modes', lg))
+            table([r[:6] for r in mr], mode_head(lg), [2.0, 1.9, 1.9, 1.7, 2.6, 6.9], [[None, None, None, None, r[6], 'FEE2E2' if r[7] else None] for r in mr])
+        me = motor_rows(A, lg)
+        if me:
+            heading(R('sec_motors', lg))
+            for line in me: para('⚠ ' + line)
 
     def s_charts():
         heading(R('charts', lg))
@@ -840,6 +875,15 @@ def build_pdf(rd: ReportData, path, lh=None, encrypt=None):
                  f"{f1(p_['stats'].get('alt_mean'))}/{f1(p_['stats'].get('alt_max'))} m", f1(p_['stats'].get('as_mean') if p_['stats'].get('as_mean') is not None else p_['stats'].get('gs_mean'), ' m/s'),
                  f1(p_['stats'].get('thr_mean'), '%'), f"{f1(p_['stats'].get('roll_max'))}°/{f1(p_['stats'].get('pitch_max'))}°"] for p_ in A.phases]
         story.append(tbl(rows, [R(k, lg) for k in ('p_phase', 'p_time', 'p_dur', 'p_alt', 'p_spd', 'p_thr', 'p_att')], [2.2 * cm, 3.4 * cm, 1.8 * cm, 2.5 * cm, 2.2 * cm, 2 * cm, W_ - 14.1 * cm], fs=7.5))
+        mr = mode_rows(A, lg)
+        if mr:
+            story.append(P(R('sec_modes', lg), H2))
+            story.append(tbl([r[:6] for r in mr], mode_head(lg), [2.0 * cm, 1.9 * cm, 1.9 * cm, 1.7 * cm, 2.6 * cm, W_ - 10.1 * cm],
+                             [[None, None, None, None, r[6], 'FEE2E2' if r[7] else None] for r in mr], fs=7.2))
+        me = motor_rows(A, lg)
+        if me:
+            story.append(P(R('sec_motors', lg), H2))
+            for line in me: story.append(P('⚠ ' + line, ParagraphStyle('mw', parent=small, textColor=colors.HexColor('#B91C1C'))))
 
     def lesson(key):
         Ls = LESSON.get(key)

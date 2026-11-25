@@ -153,8 +153,84 @@ LESSON = {
         'warn': ('%10–25 değişim.', '10–25% variation.', 'تغير بنسبة 10–25%.'),
         'danger': ('%25 üstü değişim veya gazla güçlü korelasyon: yön hatası, "tuvalet suyu" (toilet bowl) dönüşleri.', 'Over 25% variation or strong correlation with throttle: heading error, "toilet bowling".', 'تغير أكثر من 25% أو ارتباط قوي بالخانق: خطأ في الاتجاه ودوران حلزوني.')},
     'c_map': {
-        'what': ('GPS rotası; renk irtifayı gösterir. Ev noktası, mod değişimleri ve varsa kırım noktası işaretlidir.', 'GPS track; colour shows altitude. Home, mode changes and the crash point (if any) are marked.', 'مسار GPS؛ يُظهر اللون الارتفاع. نقطة الإقلاع وتغييرات الوضع ونقطة التحطم (إن وجدت) معلّمة.'),
+        'what': ('GPS rotası; renk o anki uçuş modunu (ya da seçilirse irtifayı) gösterir. Ev noktası, mod değişimleri (saatleriyle) ve varsa kırım noktası işaretlidir.', 'GPS track; colour shows the active flight mode (or altitude if selected). Home, mode changes (with clock time) and the crash point (if any) are marked.', 'مسار GPS؛ يُظهر اللون وضع الطيران الحالي (أو الارتفاع إن اختير). نقطة الإقلاع وتغييرات الوضع (مع الوقت) ونقطة التحطم (إن وجدت) معلّمة.'),
         'normal': ('Düzgün, planlanan görevle uyumlu rota.', 'Smooth track matching the planned mission.', 'مسار سلس متوافق مع المهمة المخطط لها.'),
         'warn': ('Zikzaklar, rota dışına sapmalar, beklenmedik dönüşler.', 'Zig-zags, drifting off track, unexpected turns.', 'تعرجات، انحراف عن المسار، انعطافات غير متوقعة.'),
         'danger': ('Konum sıçramaları (GPS glitch), daireler çizerek sürüklenme veya rotanın aniden bitmesi.', 'Position jumps (GPS glitch), drifting in circles, or the track ending abruptly.', 'قفزات في الموقع (خلل GPS)، انجراف دائري، أو انتهاء المسار فجأة.')},
 }
+
+
+# ---- v1.1.5: yeni grafik başlıkları ve ders notları
+RT.update({
+    'c_overview': ('Uçuş özeti panosu', 'Flight summary dashboard', 'لوحة ملخص الرحلة'),
+    'c_sticks': ('Kumanda stick hareketleri', 'Transmitter stick movements', 'حركات عصي جهاز التحكم'),
+    'c_motors': ('Motor çıkışları', 'Motor outputs', 'مخارج المحركات'),
+    'c_speed': ('Hava hızı, yer hızı ve rüzgâr', 'Airspeed, ground speed and wind', 'السرعة الجوية والأرضية والرياح'),
+    'c_tecs': ('İrtifa ve hız kontrolü (TECS)', 'Height and speed control (TECS)', 'التحكم بالارتفاع والسرعة (TECS)'),
+    'c_pid': ('PID: hedef ve gerçek dönüş hızları', 'PID: target vs actual rates', 'PID: المعدلات المستهدفة والفعلية'),
+    'c_nav': ('Navigasyon ve görev noktaları', 'Navigation and waypoints', 'الملاحة ونقاط المسار'),
+    'c_fft': ('Titreşim spektrumu (FFT)', 'Vibration spectrum (FFT)', 'طيف الاهتزاز (FFT)'),
+    'c_imu': ('IMU\'lar ve irtifa kaynakları', 'IMUs and altitude sources', 'وحدات IMU ومصادر الارتفاع'),
+    'c_esc': ('ESC telemetrisi (devir, sıcaklık, akım)', 'ESC telemetry (RPM, temperature, current)', 'قياسات ESC (الدوران، الحرارة، التيار)'),
+    'c_bat': ('Batarya: gerilim, akım ve harcanan mAh', 'Battery: voltage, current and used mAh', 'البطارية: الجهد والتيار والمستهلك'),
+    'c_rcou': ('Kumanda yüzeyleri ve gaz (görevli kanallar)', 'Control surfaces and throttle (by function)', 'أسطح التحكم والخانق (حسب الوظيفة)'),
+    'c_gps': ('GPS uydu sayısı, HDOP ve doğruluk', 'GPS satellites, HDOP and accuracy', 'أقمار GPS وHDOP والدقة'),
+    'c_ekf': ('EKF sağlık oranları ve yenilikler', 'EKF health ratios and innovations', 'نسب سلامة EKF والابتكارات'),
+})
+
+_L = lambda w, n, a, d: {'what': w, 'normal': n, 'warn': a, 'danger': d}
+LESSON.update({
+    'c_overview': _L(('Uçuşun tek ekranda özeti: karar, süre, irtifa, mod sayısı, sağlık puanı ve küçük grafikler. Her küçük grafikte arka plan rengi o anki uçuş modudur.', 'One-screen summary: verdict, duration, altitude, mode changes, health score and small charts. Background colour in each panel is the active flight mode.', 'ملخص الرحلة في شاشة واحدة: القرار والمدة والارتفاع وعدد تغييرات الوضع ودرجة الصحة ورسوم صغيرة. لون الخلفية هو وضع الطيران الحالي.'),
+                     ('Sağlık 80 üstü, karar normal, grafikler düzgün.', 'Health above 80, verdict normal, smooth charts.', 'الصحة فوق 80، القرار طبيعي، الرسوم سلسة.'),
+                     ('Sağlık 55–80 ya da küçük uyarılar.', 'Health 55–80 or minor warnings.', 'الصحة 55–80 أو تحذيرات بسيطة.'),
+                     ('Kaza / ciddi sorun kararı, sağlık 55 altı.', 'Crash / serious problem verdict, health below 55.', 'قرار تحطم / مشكلة خطيرة، الصحة دون 55.')),
+    'c_sticks': _L(('Pilotun kumanda çubuklarını log boyunca nasıl oynattığı (-100…+100 %, gaz 0…100 %) ve mod anahtarının konumu. Üstte hangi kanalın hangi stick olduğu yazar (RCMAP).', 'How the pilot moved the sticks through the log (-100…+100 %, throttle 0…100 %) and the mode switch position. Labels show which RC channel is which stick (RCMAP).', 'كيف حرّك الطيار العصي طوال السجل (-100…+100٪، الخانق 0…100٪) وموضع مفتاح الوضع. تبيّن التسميات أي قناة هي أي عصا (RCMAP).'),
+                   ('Otomatik modlarda stickler ortada; elle modlarda yumuşak hareketler.', 'Sticks centred in auto modes; smooth movements in manual modes.', 'العصي في المنتصف في الأوضاع الآلية؛ حركات سلسة في الأوضاع اليدوية.'),
+                   ('Sert, tam stick hareketleri; sınırda uzun süre tutma.', 'Abrupt full-stick inputs; holding at the limit for long.', 'حركات حادة كاملة؛ إبقاء العصا عند الحد طويلاً.'),
+                   ('Sinyal kesilmesi (boşluk), gazın failsafe değerine düşmesi ya da kazadan hemen önce pilot müdahalesi.', 'Signal loss (gaps), throttle dropping to the failsafe value or pilot input just before the crash.', 'انقطاع الإشارة (فجوات)، هبوط الخانق إلى قيمة الطوارئ أو تدخل الطيار قبل التحطم مباشرة.')),
+    'c_motors': _L(('Her motorun PWM çıkışı ayrı satırda, yeriyle birlikte (ör. M1 · Ön sağ). Sağdaki çizimde sorunlu motor kırmızı, karşısındaki motor turuncu yanar. Kırmızı noktalı çizgi motorun çıkabileceği en yüksek değerdir (SPIN_MAX).', 'Each motor\'s PWM on its own row with its position (e.g. M1 · Front right). In the drawing the faulty motor is red, its opposite orange. Red dotted line = highest possible output (SPIN_MAX).', 'خرج PWM لكل محرك في صف مستقل مع موقعه (مثل M1 · أمامي أيمن). في الرسم يظهر المحرك المعطل بالأحمر ومقابله بالبرتقالي. الخط الأحمر المنقط = أعلى خرج ممكن.'),
+                   ('Motorlar birbirine yakın değerlerde, aynı şekilde salınıyor.', 'Motors at similar values, moving together.', 'المحركات بقيم متقاربة وتتحرك معاً.'),
+                   ('Bir motor sürekli diğerlerinden 100 µs+ yüksek: o motor/pervane zayıf ya da ağırlık merkezi kaymış.', 'One motor constantly 100 µs+ higher: weak motor/prop or CG offset.', 'محرك أعلى باستمرار بـ100 ميكروثانية+: محرك/مروحة ضعيف أو مركز ثقل منحرف.'),
+                   ('Bir motorun tam güce kilitlenmesi (karşısı tabana düşer) ya da durması: motor, ESC, pervane arızası.', 'A motor pinned at full power (its opposite drops to minimum) or stopping: motor, ESC or propeller failure.', 'علوق محرك عند القدرة القصوى (مقابله ينخفض للحد الأدنى) أو توقفه: عطل محرك أو ESC أو مروحة.')),
+    'c_speed': _L(('Hava hızı (sensör), yer hızı (GPS), otopilotun istediği hız ve EKF\'nin tahmin ettiği rüzgâr. Yer hızı − hava hızı farkı rüzgârdır.', 'Airspeed (sensor), ground speed (GPS), demanded speed and EKF wind estimate. Ground minus air speed is the wind.', 'السرعة الجوية (الحساس) والأرضية (GPS) والسرعة المطلوبة وتقدير الرياح من EKF. الفرق بينهما هو الرياح.'),
+                  ('Hava hızı asgari değerin üstünde, hedefe yakın; rüzgâr 8 m/s altı.', 'Airspeed above minimum, close to target; wind below 8 m/s.', 'السرعة فوق الحد الأدنى وقريبة من الهدف؛ الرياح أقل من 8 م/ث.'),
+                  ('Rüzgâr seyir hızının yarısına yaklaşıyor; hava hızı sık sık hedefin altında.', 'Wind near half the cruise speed; airspeed often below target.', 'الرياح تقارب نصف سرعة الطيران؛ السرعة غالباً دون الهدف.'),
+                  ('Hava hızının asgari değerin (kırmızı) altına düşmesi: stall; ya da sensörün sıfır/donmuş okuması.', 'Airspeed below the minimum (red): stall; or a zero/frozen sensor reading.', 'هبوط السرعة دون الحد الأدنى (الأحمر): انهيار؛ أو قراءة حساس صفرية/متجمدة.')),
+    'c_tecs': _L(('Otopilotun istediği irtifa/hız ile gerçekleşen ve bunun için verdiği gaz ve yunuslama komutları (sabit kanatta TECS; çok motorluda CTUN/QTUN).', 'Demanded vs actual height/speed and the throttle and pitch commands used (TECS on planes; CTUN/QTUN on multirotors).', 'الارتفاع/السرعة المطلوبة مقابل الفعلية وأوامر الخانق والميلان (TECS للطائرات؛ CTUN/QTUN للمتعددة).'),
+                 ('İstenen ve gerçek eğriler üst üste; gaz %40–70.', 'Demanded and actual curves overlap; throttle 40–70%.', 'المنحنيان متطابقان؛ الخانق 40–70٪.'),
+                 ('Sürekli 5 m+ irtifa ya da 2 m/s+ hız farkı; gaz sık sık %100.', 'Persistent 5 m+ height or 2 m/s+ speed error; throttle often 100%.', 'فرق مستمر 5 م+ في الارتفاع أو 2 م/ث+ في السرعة؛ الخانق غالباً 100٪.'),
+                 ('Gaz %100 iken irtifa ve hız birlikte düşüyor: güç yetersiz ya da motor kaybı.', 'Height and speed both falling at 100% throttle: insufficient power or motor loss.', 'الارتفاع والسرعة ينخفضان معاً مع خانق 100٪: قدرة غير كافية أو فقدان محرك.')),
+    'c_pid': _L(('Her eksende otopilotun istediği dönüş hızı (Tar) ile gerçekleşen (Act); sağ eksende P, I, D ve FF katkıları. Ayar (tuning) kalitesini gösterir.', 'Target (Tar) vs actual (Act) rotation rate per axis; P, I, D and FF contributions on the right. Shows tuning quality.', 'معدل الدوران المستهدف (Tar) مقابل الفعلي (Act) لكل محور؛ ومساهمات P وI وD وFF على اليمين. يُظهر جودة الضبط.'),
+                ('Act, Tar\'ı küçük gecikmeyle izliyor; I terimi küçük ve sabit.', 'Act follows Tar with little lag; I term small and steady.', 'Act يتبع Tar بتأخير بسيط؛ حد I صغير وثابت.'),
+                ('Salınım, aşma ya da I teriminin sürekli bir yöne birikmesi (trim/ağırlık sorunu).', 'Oscillation, overshoot or I term winding up one way (trim/weight issue).', 'تذبذب أو تجاوز أو تراكم حد I باتجاه واحد (مشكلة تريم/وزن).'),
+                ('Act, Tar\'ın tersine gidiyor ya da hiç izlemiyor: ters servo, kontrol yüzeyi/motor arızası.', 'Act moves opposite to or ignores Tar: reversed servo, surface or motor failure.', 'Act يتحرك عكس Tar أو لا يتبعه: سيرفو معكوس أو عطل سطح/محرك.')),
+    'c_nav': _L(('Sıradaki görev noktasına uzaklık, rotadan yana sapma (XT) ve irtifa/hız hataları. Dikey noktalı çizgiler görev noktası değişimleridir (WP).', 'Distance to the next waypoint, cross-track error (XT) and altitude/speed errors. Dotted lines are waypoint changes (WP).', 'المسافة إلى نقطة المسار التالية وخطأ المسار العرضي (XT) وأخطاء الارتفاع/السرعة. الخطوط المنقطة هي تغييرات نقاط المسار.'),
+                ('XT birkaç metre içinde; uzaklık her WP\'de sıfıra iniyor.', 'XT within a few metres; distance reaches zero at each WP.', 'XT ضمن بضعة أمتار؛ المسافة تصل للصفر عند كل نقطة.'),
+                ('XT 20 m+ salınım (L1/NAVL1 ayarı), noktaları ıskalama.', 'XT oscillating 20 m+ (L1 tuning), missing waypoints.', 'تذبذب XT بأكثر من 20 م (ضبط L1)، تفويت النقاط.'),
+                ('Uzaklık sürekli artıyor (sürüklenme) ya da XT\'nin büyümesi: rüzgâr gücü yetmiyor, GPS/pusula hatası.', 'Distance keeps growing (drift) or XT growing: cannot fight the wind, GPS/compass error.', 'المسافة تزداد باستمرار (انجراف) أو XT يكبر: لا يقاوم الرياح، خطأ GPS/بوصلة.')),
+    'c_fft': _L(('İvmeölçer titreşiminin frekanslara dağılımı. Tepe frekansı genellikle pervane/motor dönüşüdür; mor bant çentik filtresinin süzdüğü aralıktır.', 'How accelerometer vibration is spread over frequency. The peak is usually propeller/motor rotation; the purple band is what the notch filter removes.', 'توزيع اهتزاز مقياس التسارع على الترددات. الذروة غالباً دوران المروحة/المحرك؛ النطاق البنفسجي هو ما يزيله مرشح الشق.'),
+                ('Belirgin tek tepe ve çentik filtresi üzerinde.', 'One clear peak with the notch filter on it.', 'ذروة واضحة واحدة ومرشح الشق عليها.'),
+                ('Tepe çentik filtresinin dışında ya da birden çok güçlü tepe.', 'Peak outside the notch band or several strong peaks.', 'الذروة خارج نطاق المرشح أو عدة ذروات قوية.'),
+                ('Düşük frekansta (<20 Hz) güçlü enerji: gevşek montaj, kırık pervane, yapısal rezonans.', 'Strong energy at low frequency (<20 Hz): loose mounting, broken prop, structural resonance.', 'طاقة قوية في التردد المنخفض (<20 هرتز): تثبيت مرتخٍ، مروحة مكسورة، رنين هيكلي.')),
+    'c_imu': _L(('Kartın içindeki IMU\'ların (ivme ve dönüş sensörleri) birbiriyle uyumu ve barometre ile GPS irtifasının karşılaştırması.', 'Agreement between the board\'s IMUs (accelerometers and gyros) and barometer vs GPS altitude.', 'توافق وحدات IMU داخل اللوحة (التسارع والجيروسكوب) ومقارنة ارتفاع البارومتر وGPS.'),
+                ('IMU eğrileri üst üste; baro ve GPS irtifası birkaç metre içinde.', 'IMU curves overlap; baro and GPS altitude within a few metres.', 'منحنيات IMU متطابقة؛ ارتفاع البارومتر وGPS ضمن بضعة أمتار.'),
+                ('Bir IMU diğerinden kaymış; baro ile GPS 10 m+ ayrılıyor (sıcaklık, hava akımı).', 'One IMU drifting; baro and GPS 10 m+ apart (temperature, airflow).', 'انحراف IMU؛ فرق 10 م+ بين البارومتر وGPS (حرارة، تيار هوائي).'),
+                ('IMU\'lardan birinin sıçraması/donması ya da baronun ani irtifa sıçraması: sensör arızası, EKF şerit değişimi.', 'An IMU jumping/freezing or sudden baro jump: sensor failure, EKF lane switch.', 'قفز/تجمد إحدى وحدات IMU أو قفزة مفاجئة في البارومتر: عطل حساس، تبديل مسار EKF.')),
+    'c_esc': _L(('ESC\'lerin bildirdiği motor devri, sıcaklık ve akım (DShot/BLHeli ya da DroneCAN telemetrisi).', 'Motor RPM, temperature and current reported by the ESCs (DShot/BLHeli or DroneCAN telemetry).', 'دوران المحرك والحرارة والتيار التي تبلغها ESC (قياسات DShot/BLHeli أو DroneCAN).'),
+                ('Devirler birbirine yakın; sıcaklık 80 °C altı.', 'RPMs close together; temperature below 80 °C.', 'الدورانات متقاربة؛ الحرارة دون 80 درجة.'),
+                ('Bir motorun devri sürekli düşük/yüksek; 80–100 °C.', 'One motor\'s RPM constantly low/high; 80–100 °C.', 'دوران محرك منخفض/مرتفع باستمرار؛ 80–100 درجة.'),
+                ('Devrin aniden sıfıra düşmesi (motor durması / senkron kaybı) ya da 100 °C üstü.', 'RPM suddenly dropping to zero (motor stop / desync) or above 100 °C.', 'هبوط الدوران فجأة للصفر (توقف/فقدان تزامن) أو فوق 100 درجة.')),
+})
+
+RT.update({
+    'sec_modes': ('Uçuş modları', 'Flight modes', 'أوضاع الطيران'), 'sec_motors': ('Motor olayları', 'Motor events', 'أحداث المحركات'),
+    'm_start': ('Başlangıç', 'Start', 'البداية'), 'm_clock': ('Saat', 'Clock', 'الساعة'), 'm_end': ('Bitiş', 'End', 'النهاية'),
+    'm_dur': ('Süre', 'Duration', 'المدة'), 'm_mode': ('Mod', 'Mode', 'الوضع'), 'm_why': ('Değişim nedeni', 'Reason for change', 'سبب التغيير'),
+})
+LESSON['c_timeline'] = {
+    'what': ('Üst şerit: uçuş modları (her mod kendi renginde, altında uçuş süresi · gerçek saat; kırmızı üçgen = failsafe nedeniyle değişim). Alt kısım: uçuş, olay, hata ve uyarı mesajları. Ayrıntılı liste "Uçuş modları" sekmesindedir.',
+             'Top strip: flight modes (each in its own colour, with flight time · clock time; red triangle = change caused by a failsafe). Bottom: flight, event, error and warning messages. Full list in the "Flight modes" tab.',
+             'الشريط العلوي: أوضاع الطيران (كل وضع بلونه مع زمن الطيران · الوقت الفعلي؛ المثلث الأحمر = تغيير بسبب الطوارئ). الأسفل: رسائل الطيران والأحداث والأخطاء والتحذيرات. القائمة الكاملة في تبويب "أوضاع الطيران".'),
+    'normal': ('Planlı mod geçişleri (kumanda anahtarı / görev komutu), hata yok.', 'Planned mode changes (RC switch / mission command), no errors.', 'تغييرات وضع مخطط لها (مفتاح التحكم / أمر المهمة)، لا أخطاء.'),
+    'warn': ('Sık mod değişimi, tekrarlayan uyarı mesajları.', 'Frequent mode changes, repeated warning messages.', 'تغييرات وضع متكررة، رسائل تحذير متكررة.'),
+    'danger': ('Failsafe ile mod değişimi (RTL/QLAND/LAND), hata kayıtları, kazadan hemen önce mod değişimi.', 'Mode change by failsafe (RTL/QLAND/LAND), error records, mode change just before the crash.', 'تغيير الوضع بسبب الطوارئ، سجلات أخطاء، تغيير وضع قبل التحطم مباشرة.')}

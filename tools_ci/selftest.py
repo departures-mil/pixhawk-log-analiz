@@ -202,5 +202,26 @@ try:
 except Exception:
     import traceback; traceback.print_exc(); bad += 1
 
+# ---- v1.1.5: modlar, kanal görevleri, motor isimleri, grafik seti, Mission Planner
+try:
+    from app.core import viz, charts as CH
+    class _L: params = {'FRAME_CLASS': 1, 'FRAME_TYPE': 1}; modes = []; duration = 10; t0_us = 0
+    class _A: vehicle = 'Copter'; L = _L()
+    assert viz.motor_name(_A, 1, 'tr') == 'M1 · Ön sağ' and viz.motor_name(_A, 2, 'en') == 'M2 · Rear left', viz.motor_name(_A, 1, 'tr')
+    assert viz.motor_name(_A, 3, 'tr').endswith('Ön sol') and viz.motor_name(_A, 4, 'tr').endswith('Arka sağ')
+    _L.params = {'FRAME_CLASS': 2, 'FRAME_TYPE': 1}; assert viz.motor_name(_A, 1, 'tr').startswith('M1 · Sağ'), viz.motor_name(_A, 1, 'tr')
+    assert viz.reason_text(26, 'tr').startswith('Açılış') and viz.reason_text(39, 'en').startswith('RTL complete')
+    An = analysis.Analysis(loader.load(os.path.join(d, 'normal.BIN')))
+    sg = viz.segments(An, 'tr'); assert sg and all(x['t1'] >= x['t0'] for x in sg)
+    assert any(r['kind'] == 'ctrl' for r in viz.channel_roles(An, 'tr'))
+    assert not [m for m in viz.motors(An) if m['kind'] == 'lift'], 'sabit kanatta kanatçık motor sanılmamalı'
+    for lg in ('tr', 'ar'):
+        for k, fn in list(CH.ALL) + [('c_timeline', CH.chart_timeline)]:
+            fn(An, lg)
+    xm = viz.mavgraphs_xml(An); assert '<graphs>' in xm and 'ATT.Roll' in xm
+    print('v1.1.5 viz / charts OK', len(CH.ALL), 'grafik')
+except Exception:
+    import traceback; traceback.print_exc(); bad += 1
+
 sys.exit(1 if bad else 0)
 
