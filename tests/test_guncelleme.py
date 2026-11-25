@@ -24,8 +24,16 @@ def test_swap_script_spawned_outside_install_dir(monkeypatch, tmp_path):
     calls = []
     monkeypatch.setattr(sys, 'platform', 'win32')
     monkeypatch.setattr(subprocess, 'Popen', lambda args, **kw: calls.append((args, kw)))
+
+    class SI:
+        dwFlags = 0; wShowWindow = 1
+    monkeypatch.setattr(subprocess, 'STARTUPINFO', SI, raising=False)
     kabuk._spawn(str(tmp_path))(['cmd.exe', '/c', str(tmp_path / 'takas-1.2.0.cmd')])
-    assert calls[0][1]['cwd'] == str(tmp_path)
+    kw = calls[0][1]
+    assert kw['cwd'] == str(tmp_path)
+    # DETACHED_PROCESS yok (her komut ayrı pencere açıp `find` takılıyordu), gizli konsol var
+    assert not (kw['creationflags'] & 0x00000008) and kw['creationflags'] & 0x08000000
+    assert kw['startupinfo'].wShowWindow == 0
 
 
 def test_swap_script_failure_reopens_old(tmp_path, monkeypatch):

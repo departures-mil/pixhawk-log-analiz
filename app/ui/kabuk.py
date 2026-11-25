@@ -180,11 +180,10 @@ def _spawn(staging):
                 f.write(body)
             return subprocess.Popen(['cmd.exe', '/c', script], cwd=staging, close_fds=True, stdin=subprocess.DEVNULL,
                                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, creationflags=0x08000000 | 0x00000200)
-        # takas betiği: çalışma klasörü kurulum klasörü olmasın (klasör taşınabilsin)
-        if sys.platform.startswith('win'):
-            return subprocess.Popen(args, cwd=staging, close_fds=True, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
-                                    stderr=subprocess.DEVNULL, creationflags=0x00000008 | 0x00000200 | 0x08000000)
-        return _spawn_detached(args)
+        # takas betiği: çalışma klasörü kurulum klasörü olmasın (klasör taşınabilsin). DETACHED_PROCESS KULLANMA: konsolsuz cmd'de
+        # tasklist/find/ping her biri ayrı pencere açıyor, Windows Terminal varsayılanken `find` takılıp güncelleme bitmiyordu
+        # (v1.1.4 → v1.1.5). fccore'un gizli konsollu başlatıcısı kullanılır.
+        return _spawn_detached(args, cwd=staging)
     return spawn
 
 
