@@ -6,7 +6,7 @@ from PySide6.QtGui import QColor
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem, QHeaderView, QAbstractItemView,
                                QSplitter, QTextBrowser, QComboBox, QLineEdit, QDialog, QFormLayout, QDoubleSpinBox, QSpinBox,
                                QPlainTextEdit, QFileDialog, QInputDialog, QMessageBox, QRadioButton, QButtonGroup, QListWidget,
-                               QListWidgetItem, QTabWidget, QDateEdit, QProgressBar)
+                               QListWidgetItem, QTabWidget, QDateEdit, QProgressBar, QScrollArea)
 from .i18n import t, lang
 from .common import label, button, run_bg, error, info, open_path, card, ImageView, VERDICT_COL
 from .pages_a import Page
@@ -266,6 +266,9 @@ class ExamPage(Page):
         super().__init__(win)
         v = QVBoxLayout(self); v.setContentsMargins(16, 12, 16, 12)
         self.tabs = QTabWidget(); v.addWidget(self.tabs)
+        from . import pages_x as PX
+        self.PX = PX
+        self.builder = PX.ExamBuilder(self); self.tabs.addTab(self.builder, PX.tx('b_tab'))
         # --- Eğitimci
         tw = QWidget(); tv = QVBoxLayout(tw)
         r1 = QHBoxLayout()
@@ -285,8 +288,14 @@ class ExamPage(Page):
         sp.addWidget(lw)
         rw = QWidget(); rv = QVBoxLayout(rw); rv.setContentsMargins(0, 0, 0, 0)
         rv.addWidget(label(t('ex_results'), 'h2'))
-        self.res = _tbl([t('ex_student'), t('pi_score'), '%', t('ex_passed'), t('ex_time'), t('col_date'), t('ex_cert')], 0); rv.addWidget(self.res, 1)
-        rh = QHBoxLayout(); rh.addWidget(button('🎓 ' + t('ex_cert_pdf'), self.cert_pdf)); rh.addStretch(1); rv.addLayout(rh)
+        self.ex_info = label('', 'muted', wrap=True); rv.addWidget(self.ex_info)
+        ph = QHBoxLayout()
+        ph.addWidget(button(PX.tx('p_paper'), self.p_paper, primary=True)); ph.addWidget(button(PX.tx('p_scan'), self.p_scan))
+        ph.addWidget(button(PX.tx('p_phone_scan'), lambda: self.p_live('scan'))); ph.addWidget(button(PX.tx('p_live'), lambda: self.p_live('exam')))
+        ph.addStretch(1); rv.addLayout(ph)
+        self.res = _tbl([t('ex_student'), t('pi_score'), '%', t('ex_passed'), t('ex_time'), t('col_date'), PX.tx('via'), PX.tx('pending'), t('ex_cert')], 0)
+        self.res.doubleClicked.connect(lambda *_: self.p_grade()); rv.addWidget(self.res, 1)
+        rh = QHBoxLayout(); rh.addWidget(button(PX.tx('p_grade'), self.p_grade)); rh.addWidget(button('🎓 ' + t('ex_cert_pdf'), self.cert_pdf)); rh.addStretch(1); rv.addLayout(rh)
         sp.addWidget(rw); sp.setSizes([380, 700]); tv.addWidget(sp, 1)
         self.tabs.addTab(tw, '👩‍🏫 ' + t('ex_teacher'))
         # --- Öğrenci
@@ -301,8 +310,11 @@ class ExamPage(Page):
         self.timer_l = label('', 'h2'); sv.addWidget(self.timer_l)
         c = card(); cv = QVBoxLayout(c); cv.setContentsMargins(20, 18, 20, 18)
         self.ql = label(t('ex_pick_help'), 'h1', wrap=True); cv.addWidget(self.ql)
+        self.s_img = PX.ImgLabel(400); cv.addWidget(self.s_img)
+        self.s_open_l = label(PX.tx('open_q'), 'muted', wrap=True); self.s_open_l.setVisible(False); cv.addWidget(self.s_open_l)
+        self.s_open = QPlainTextEdit(); self.s_open.setMinimumHeight(130); self.s_open.setVisible(False); cv.addWidget(self.s_open)
         self.grp = QButtonGroup(self); self.opts = []
-        for i in range(4):
+        for i in range(5):
             rb = QRadioButton(); rb.setStyleSheet('font-size:11pt; padding:6px'); rb.setVisible(False); self.grp.addButton(rb, i); self.opts.append(rb); cv.addWidget(rb)
         nav = QHBoxLayout()
         self.b_prev = button('◀ ' + t('ex_prev'), lambda: self._go(-1)); self.b_next = button(t('next') + ' ▶', lambda: self._go(1))
@@ -311,15 +323,15 @@ class ExamPage(Page):
         nav.addStretch(1); cv.addLayout(nav)
         self.s_res = label('', wrap=True); cv.addWidget(self.s_res)
         sv.addWidget(c); sv.addStretch(1)
-        self.tabs.addTab(sw, '🧑‍🎓 ' + t('ex_student_tab'))
+        self.tabs.addTab(PX.scroll(sw), '🧑‍🎓 ' + t('ex_student_tab'))
         self.clk = QTimer(self); self.clk.setInterval(1000); self.clk.timeout.connect(self._tick)
         self.classes = []; self.exams = []; self.cur_exam = None; self.answers = []; self.qi = 0; self.t0 = 0
 
     def on_show(self):
         self.refresh()
         role = getattr(self.win, 'role', 'admin')
-        self.tabs.setTabEnabled(0, role != 'student')
-        if role == 'student': self.tabs.setCurrentIndex(1)
+        self.tabs.setTabEnabled(0, role != 'student'); self.tabs.setTabEnabled(1, role != 'student')
+        if role == 'student': self.tabs.setCurrentIndex(2)
 
     # ---------- eğitimci
     def refresh(self):
@@ -329,6 +341,7 @@ class ExamPage(Page):
         self.cls.blockSignals(False)
         if self.classes and self.cls.currentRow() < 0: self.cls.setCurrentRow(0)
         self._cls_sel()
+        self.builder.refresh()
         allex = a.rec_list('exam')
         cur = self.s_exam.currentData()
         self.s_exam.blockSignals(True); self.s_exam.clear()
@@ -352,7 +365,7 @@ class ExamPage(Page):
         c = self._cur_class(); a = self.win.archive
         self.exams = [e for e in a.rec_list('exam') if c and e.get('class_id') == c['id']]
         self.exs.blockSignals(True); self.exs.clear()
-        for e in self.exams: self.exs.addItem(f"{e['title']} · {e.get('log_name', '')} · {e.get('created', '')}")
+        for e in self.exams: self.exs.addItem(' · '.join(str(x) for x in (e['title'], ('#' + e['code']) if e.get('code') else '', e.get('log_name', ''), e.get('created', '')) if x))
         self.exs.blockSignals(False)
         if self.exams: self.exs.setCurrentRow(0)
         self._ex_sel()
@@ -363,12 +376,41 @@ class ExamPage(Page):
 
     def _ex_sel(self, *_):
         e = self._cur_exam()
-        if not e: self.res.setRowCount(0); return
+        if not e: self.res.setRowCount(0); self.ex_info.setText(''); self.results = []; return
         from ..core import exam as X
+        PX = self.PX; n_open = sum(1 for q in e.get('questions', []) if X.is_open(q)); n_img = sum(1 for q in e.get('questions', []) if q.get('img'))
+        self.ex_info.setText(f"{PX.tx('l_code')}: {e.get('code', '-')}  ·  {len(e.get('questions', []))} {t('ex_q')} (☑ {len(e.get('questions', [])) - n_open} · ✎ {n_open} · 🖼 {n_img})"
+                             f"  ·  {e.get('time_limit_min')} {t('ex_min')}  ·  %{e.get('pass_mark')}")
         self.results = X.results_of(self.win.archive, e['id'])
-        _fill(self.res, [[r['student'], f"{r['score']}/{r['total']}", f"{r['pct']:.0f}", '✔' if r['passed'] else '✘', f"{r['duration_s'] // 60}:{r['duration_s'] % 60:02d}",
-                          r.get('date', ''), r.get('cert_id', '')] for r in self.results],
-              [[None, None, None, '#4ADE80' if r['passed'] else '#F87171', None, None, None] for r in self.results])
+        via = {'omr': PX.tx('via_omr'), 'phone': PX.tx('via_phone')}
+        pend = [X.pending(e, r) for r in self.results]
+        _fill(self.res, [[r['student'], f"{r['score']:g}/{r['total']}", f"{r['pct']:.0f}", '✔' if r['passed'] else '✘', f"{r['duration_s'] // 60}:{r['duration_s'] % 60:02d}",
+                          r.get('date', ''), via.get(r.get('via'), PX.tx('via_pc')), str(p) if p else '', r.get('cert_id', '')] for r, p in zip(self.results, pend)],
+              [[None, None, None, '#4ADE80' if r['passed'] else '#F87171', None, None, None, '#FBBF24' if p else None, None] for r, p in zip(self.results, pend)])
+
+    def _need_exam(self):
+        e = self._cur_exam()
+        if not e: info(self, t('ex_need_exam'))
+        return e
+
+    def p_paper(self):
+        e = self._need_exam()
+        if e:
+            from ..core import exam as X
+            self.PX.make_papers(self, X.ensure_code(self.win.archive, e), self.win)
+
+    def p_scan(self):
+        e = self._need_exam()
+        if e: self.PX.scan_files(self, e, self.win, self._ex_sel)
+
+    def p_live(self, mode):
+        e = self._need_exam()
+        if e: self.PX.LiveDialog(self, self.win, e, mode, self._ex_sel).exec(); self._ex_sel()
+
+    def p_grade(self):
+        r = self.res.currentRow()
+        if not (0 <= r < len(getattr(self, 'results', []))): return info(self, self.PX.tx('g_pick'))
+        if self.PX.GradeDialog(self, self.win, self.results[r]).exec(): self._ex_sel()
 
     def new_class(self):
         dl = QDialog(self); dl.setWindowTitle(t('ex_new_class')); dl.setMinimumWidth(460); f = QFormLayout(dl)
@@ -488,22 +530,30 @@ class ExamPage(Page):
         if not eid: return info(self, t('ex_need_exam'))
         if not name: return info(self, t('ex_need_name'))
         self.cur_exam = self.win.archive.rec_get('exam', eid); self.student = name
-        self.answers = [-1] * len(self.cur_exam['questions']); self.qi = 0; self.t0 = time.time()
+        self.answers = ['' if q.get('type') == 'open' else -1 for q in self.cur_exam['questions']]; self.qi = 0; self.t0 = time.time()
         for b in (self.b_prev, self.b_next, self.b_finish): b.setEnabled(True)
         self.b_start.setEnabled(False); self.s_res.setText(''); self.clk.start(); self._show_q(); self._tick()
 
     def _show_q(self):
         e = self.cur_exam; q = e['questions'][self.qi]
         self.ql.setText(f"{self.qi + 1}/{len(e['questions'])} · {q['q']}")
+        self.s_img.set_ref(q.get('img'))
+        op = q.get('type') == 'open'
+        self.s_open_l.setVisible(op); self.s_open.setVisible(op)
+        if op: self.s_open.setPlainText(self.answers[self.qi] if isinstance(self.answers[self.qi], str) else '')
         self.grp.setExclusive(False)
         for k, rb in enumerate(self.opts):
-            rb.setVisible(k < len(q['opts'])); rb.setChecked(False)
-            if k < len(q['opts']): rb.setText(q['opts'][k])
-        if self.answers[self.qi] >= 0: self.opts[self.answers[self.qi]].setChecked(True)
+            vis = not op and k < len(q['opts'])
+            rb.setVisible(vis); rb.setChecked(False)
+            if vis: rb.setText(q['opts'][k])
+        a = self.answers[self.qi]
+        if not op and isinstance(a, int) and 0 <= a < len(self.opts): self.opts[a].setChecked(True)
         self.grp.setExclusive(True)
 
     def _save_ans(self):
-        if self.cur_exam is not None: self.answers[self.qi] = self.grp.checkedId()
+        if self.cur_exam is None: return
+        q = self.cur_exam['questions'][self.qi]
+        self.answers[self.qi] = self.s_open.toPlainText().strip() if q.get('type') == 'open' else self.grp.checkedId()
 
     def _go(self, d):
         if not self.cur_exam: return
@@ -519,7 +569,8 @@ class ExamPage(Page):
     def finish(self, force=False):
         if not self.cur_exam: return
         self._save_ans()
-        if not force and -1 in self.answers and QMessageBox.question(self, t('app'), t('ex_unanswered', n=self.answers.count(-1))) != QMessageBox.Yes:
+        blank = sum(1 for a in self.answers if a == -1 or a == '')
+        if not force and blank and QMessageBox.question(self, t('app'), t('ex_unanswered', n=blank)) != QMessageBox.Yes:
             return
         from ..core import exam as X
         self.clk.stop()
@@ -529,6 +580,12 @@ class ExamPage(Page):
         h = [f'<div dir="{d}"><h2 style="color:{"#4ADE80" if r["passed"] else "#F87171"}">{E(t("ex_result", s=r["score"], n=r["total"], p=int(round(r["pct"]))))} — '
              f'{E(t("ex_pass_txt") if r["passed"] else t("ex_fail_txt"))}</h2>']
         for i, (q, a) in enumerate(zip(qs, self.answers)):
+            if q.get('type') == 'open':
+                pts = ((r.get('auto') or {}).get(str(i)) or {}).get('pts', 0)
+                h.append(f'<p><b>{i + 1}.</b> {E(q["q"])}<br><span style="color:#FBBF24">✎ {E(a or "-")}</span><br>'
+                         f'<span style="color:#CBD5E1"><b>{E(self.PX.tx("model"))}:</b> {E(q.get("model") or q.get("exp", ""))}</span>'
+                         f'<br><span style="color:#94A3B8">{E(self.PX.tx("g_auto", s=f"{pts:g}", h=self.PX.tx("pending")))}</span></p>')
+                continue
             ok = a == q['ans']
             h.append(f'<p><b>{i + 1}.</b> {E(q["q"])}<br><span style="color:{"#4ADE80" if ok else "#F87171"}">{"✔" if ok else "✘"} '
                      f'{E(q["opts"][a]) if a >= 0 else "-"}</span>' + ('' if ok else f' → <b>{E(q["opts"][q["ans"]])}</b><br><span style="color:#CBD5E1">'
@@ -536,6 +593,7 @@ class ExamPage(Page):
         self.s_res.setText(''.join(h) + '</div>'); self.s_res.setTextFormat(Qt.RichText)
         self.ql.setText(t('ex_done'))
         for rb in self.opts: rb.setVisible(False)
+        self.s_img.set_raw(None); self.s_open.setVisible(False); self.s_open_l.setVisible(False)
         for b in (self.b_prev, self.b_next, self.b_finish): b.setEnabled(False)
         self.b_start.setEnabled(True); self.cur_exam = None
         self.refresh()

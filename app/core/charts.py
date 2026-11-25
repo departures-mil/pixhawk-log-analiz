@@ -101,6 +101,15 @@ def want_fig(on=True):
     _TL.fig = on
 
 
+def quiz(on=True):
+    """Sınav görseli kipi: kırım çizgisi, karar kartı ve motor olay işaretleri gibi cevabı ele veren süsler çizilmez."""
+    _TL.quiz = on
+
+
+def is_quiz():
+    return bool(getattr(_TL, 'quiz', False))
+
+
 def _png(fig):
     if MARK['t'] is not None or MARK['span']:
         for ax in fig.axes:
@@ -224,6 +233,7 @@ def _clock_axis(ax, A):
 
 
 def _crash(ax, A):
+    if is_quiz(): return
     if A.verdict.get('kind') == 'crash' and A.flights:
         ax.axvline(A.flights[-1][1], color=C['red'], lw=2, alpha=0.6)
 
