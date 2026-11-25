@@ -47,6 +47,17 @@ TX = {
     'ed_help': ('Dilleri ayrı sekmelerde yazın; boş bırakılan dilde İngilizce (o da yoksa Türkçe) gösterilir. En az 2 şık gerekir; 4. şık isteğe bağlıdır.',
                 'Write each language in its own tab; an empty language shows English (or Turkish). At least 2 options are needed; the 4th is optional.',
                 'اكتب كل لغة في تبويبها؛ اللغة الفارغة تعرض الإنجليزية (أو التركية). يلزم خياران على الأقل والرابع اختياري.'),
+    'ed_type': ('Soru türü', 'Question type', 'نوع السؤال'),
+    'ty_mc': ('Çoktan seçmeli', 'Multiple choice', 'اختيار من متعدد'),
+    'ty_open': ('Yorum (yazılı cevap; eğitimci puanlar)', 'Interpretation (written; the instructor grades)', 'تفسير (إجابة كتابية؛ يصححها المدرّب)'),
+    'ed_img': ('Görsel', 'Image', 'صورة'), 'ed_img_add': ('🖼 Görsel ekle…', '🖼 Add image…', '🖼 إضافة صورة…'),
+    'ed_img_rm': ('Görseli kaldır', 'Remove image', 'إزالة الصورة'), 'ed_img_none': ('(görsel yok)', '(no image)', '(لا صورة)'),
+    'ed_img_has': ('Görsel var — önizleme altta', 'Has image — preview below', 'توجد صورة — المعاينة أدناه'),
+    'ed_model': ('Örnek cevap', 'Model answer', 'إجابة نموذجية'),
+    'ed_kw': ('Aranan kavramlar', 'Key concepts', 'المفاهيم المطلوبة'),
+    'ed_kw_ph': ('virgülle ayırın; eş anlamlıları | ile: titreşim|vibe, pervane', 'comma separated; synonyms with |: vibration|vibe, propeller',
+                 'افصل بفواصل؛ المرادفات بـ |: اهتزاز|vibe، مروحة'),
+    'ed_err_model': ('Yorum sorusu için örnek cevap yazın.', 'Write a model answer for the interpretation question.', 'اكتب إجابة نموذجية لسؤال التفسير.'),
     'ed_err_q': ('Soru metni boş.', 'The question text is empty.', 'نص السؤال فارغ.'),
     'ed_err_opts': ('En az iki şık yazın.', 'Write at least two options.', 'اكتب خيارين على الأقل.'),
     'ed_err_ans': ('Doğru şık boş olamaz.', 'The correct option cannot be empty.', 'لا يمكن أن يكون الخيار الصحيح فارغاً.'),
@@ -82,7 +93,7 @@ class QuestionEditor(QDialog):
         super().__init__(parent)
         from ..core import qbank as B
         self.B = B; self.q = q or {}
-        self.setWindowTitle(tx('ed_edit') if q else tx('ed_new')); self.setMinimumSize(760, 620)
+        self.setWindowTitle(tx('ed_edit') if q else tx('ed_new')); self.setMinimumSize(820, 860)
         v = QVBoxLayout(self)
         f = QFormLayout()
         self.topic = QComboBox()
@@ -94,6 +105,11 @@ class QuestionEditor(QDialog):
         self.level.setCurrentIndex(max(0, self.level.findData(int(self.q.get('level', 1)))))
         f.addRow(tx('ed_level'), self.level)
         self.src = QLineEdit(self.q.get('src', '')); f.addRow(tx('ed_src'), self.src)
+        self.typ = QComboBox(); self.typ.addItem(tx('ty_mc'), 'mc'); self.typ.addItem(tx('ty_open'), 'open')
+        self.typ.setCurrentIndex(1 if B.is_open(self.q) else 0); f.addRow(tx('ed_type'), self.typ)
+        self.img_ref = self.q.get('img')
+        ih = QHBoxLayout(); self.img_l = QLabel(); ih.addWidget(self.img_l, 1)
+        ih.addWidget(button(tx('ed_img_add'), self._img_add)); ih.addWidget(button(tx('ed_img_rm'), self._img_rm)); f.addRow(tx('ed_img'), ih)
         v.addLayout(f)
         v.addWidget(label(tx('ed_help'), 'muted', wrap=True))
         self.tabs = QTabWidget(); self.w = {}
@@ -108,18 +124,48 @@ class QuestionEditor(QDialog):
                 le = QLineEdit((o or {}).get(lg, '')); g.addWidget(QLabel(tx('ed_opt', n=i + 1)), i + 1, 0); g.addWidget(le, i + 1, 1); opts.append(le)
             ex = QPlainTextEdit((self.q.get('exp') or {}).get(lg, '')); ex.setFixedHeight(110)
             g.addWidget(QLabel(tx('exp')), n_opt + 1, 0); g.addWidget(ex, n_opt + 1, 1)
+            mo = QPlainTextEdit(B.tri(self.q.get('model') or '').get(lg, '')); mo.setFixedHeight(110)
+            ml = QLabel(tx('ed_model')); g.addWidget(ml, n_opt + 2, 0); g.addWidget(mo, n_opt + 2, 1)
+            kw = QLineEdit(', '.join((self.q.get('kw') or {}).get(lg, []))); kw.setPlaceholderText(tx('ed_kw_ph'))
+            kl = QLabel(tx('ed_kw')); g.addWidget(kl, n_opt + 3, 0); g.addWidget(kw, n_opt + 3, 1)
             if lg == 'ar':
-                for x in [qe, ex] + opts: x.setLayoutDirection(Qt.RightToLeft)
-            self.w[lg] = (qe, opts, ex); self.tabs.addTab(w, nm)
+                for x in [qe, ex, mo, kw] + opts: x.setLayoutDirection(Qt.RightToLeft)
+            self.w[lg] = (qe, opts, ex, mo, kw, g, ml, kl); self.tabs.addTab(w, nm)
         v.addWidget(self.tabs, 1)
-        r = QHBoxLayout(); r.addWidget(QLabel(tx('ed_ans') + ':'))
+        from .pages_x import ImgLabel
+        self.img_v = ImgLabel(150); v.addWidget(self.img_v)
+        r = QHBoxLayout(); self.ans_l = QLabel(tx('ed_ans') + ':'); r.addWidget(self.ans_l)
         self.ans = QButtonGroup(self)
         for i in range(n_opt):
             rb = QRadioButton(str(i + 1)); self.ans.addButton(rb, i); r.addWidget(rb)
-        b = self.ans.button(int(self.q.get('ans', 0)))
+        b = self.ans.button(max(0, int(self.q.get('ans', 0))))
         if b: b.setChecked(True)
         r.addStretch(1); r.addWidget(button(tx('cancel'), self.reject)); r.addWidget(button(tx('save'), self.accept, primary=True)); v.addLayout(r)
         self.tabs.setCurrentIndex({'tr': 0, 'en': 1, 'ar': 2}.get(lang(), 0))
+        self.typ.currentIndexChanged.connect(self._mode); self._mode(); self._img_show()
+
+    def _mode(self, *_):
+        op = self.typ.currentData() == 'open'
+        for qe, opts, ex, mo, kw, g, ml, kl in self.w.values():
+            for i, le in enumerate(opts):
+                le.setVisible(not op); g.itemAtPosition(i + 1, 0).widget().setVisible(not op)
+            for x in (mo, kw, ml, kl): x.setVisible(op)
+        self.ans_l.setVisible(not op)
+        for b in self.ans.buttons(): b.setVisible(not op)
+
+    def _img_show(self):
+        self.img_l.setText(tx('ed_img_has') if self.img_ref else tx('ed_img_none'))
+        self.img_v.set_ref(self.img_ref)
+
+    def _img_add(self):
+        p, _ = QFileDialog.getOpenFileName(self, tx('ed_img_add'), '', 'Images (*.png *.jpg *.jpeg *.bmp *.webp)')
+        if not p: return
+        try: self.img_ref = self.B.img_from_file(p)
+        except Exception as e: return error(self, str(e))
+        self._img_show()
+
+    def _img_rm(self):
+        self.img_ref = None; self._img_show()
 
     def value(self):
         n_opt = len(self.w['tr'][1])
@@ -129,6 +175,13 @@ class QuestionEditor(QDialog):
         q['opts'] = [{lg: self.w[lg][1][i].text().strip() for lg in self.w} for i in range(n_opt)]
         q['exp'] = {lg: self.w[lg][2].toPlainText().strip() for lg in self.w}
         q['ans'] = max(0, self.ans.checkedId())
+        q['img'] = self.img_ref
+        if self.typ.currentData() == 'open':
+            q['type'] = 'open'; q['opts'] = []; q['ans'] = -1
+            q['model'] = {lg: self.w[lg][3].toPlainText().strip() for lg in self.w}
+            q['kw'] = {lg: [g.strip() for g in self.w[lg][4].text().replace('،', ',').split(',') if g.strip()] for lg in self.w}
+            return q
+        q.pop('type', None); q.pop('model', None); q.pop('kw', None)
         we = self.q.get('wexp') or []
         q['wexp'] = [we[i] if i < len(we) else None for i in range(n_opt)] if we else None
         return q
@@ -176,8 +229,11 @@ class QBankPage(Page):
         self.tbl.setSelectionBehavior(QAbstractItemView.SelectRows); self.tbl.setWordWrap(False)
         self.tbl.itemSelectionChanged.connect(self._show); self.tbl.cellDoubleClicked.connect(lambda *_: self.edit())
         sp.addWidget(self.tbl)
-        self.view = QTextBrowser(); self.view.setOpenExternalLinks(False); sp.addWidget(self.view)
-        sp.setSizes([520, 300]); v.addWidget(sp, 1)
+        from .pages_x import ImgLabel, scroll
+        pw = QWidget(); pv = QVBoxLayout(pw); pv.setContentsMargins(0, 0, 0, 0)
+        self.img = ImgLabel(340); self.view = QTextBrowser(); self.view.setOpenExternalLinks(False); self.view.setMinimumHeight(160)
+        pv.addWidget(self.img); pv.addWidget(self.view, 1); sp.addWidget(scroll(pw))
+        sp.setSizes([480, 380]); v.addWidget(sp, 1)
         self.rows = []
         self.fill()
 
@@ -209,7 +265,7 @@ class QBankPage(Page):
             elif o_ and q.get('origin') != o_: continue
             if ws:
                 blob = MS.norm(' '.join([q['id'], q.get('src', '')] + [B.tx(q['q'], x) for x in B.LANGS] + [B.tx(q.get('exp'), x) for x in B.LANGS] +
-                                        [B.tx(o, x) for o in q['opts'] for x in B.LANGS]))
+                                        [B.tx(o, x) for o in q['opts'] for x in B.LANGS] + [B.tx(q.get('model'), x) for x in B.LANGS if q.get('model')]))
                 if not all(w in blob for w in ws): continue
             out.append(q)
         self.rows = out
@@ -220,7 +276,8 @@ class QBankPage(Page):
             if q.get('mod'): typ += ' · ' + tx('mod')
             if q.get('hidden'): typ += ' · ' + tx('hidden')
             vals = [q['id'], B.topic_name(q.get('topic'), lg), B.level_name(q.get('level'), lg), B.tx(q['q'], lg),
-                    B.tx(q['opts'][int(q.get('ans', 0))], lg) if q['opts'] else '', q.get('src', ''), typ]
+                    ('✎ ' + B.tx(q.get('model'), lg)) if B.is_open(q) else B.tx(q['opts'][int(q.get('ans', 0))], lg) if q['opts'] else '', q.get('src', ''), typ]
+            if q.get('img'): vals[0] = '🖼 ' + vals[0]
             for j, val in enumerate(vals):
                 it = QTableWidgetItem(val)
                 if j == 6: it.setForeground(QColor('#FBBF24' if q.get('mod') else '#F87171' if q.get('hidden') else oc.get(q.get('origin'), '#94A3B8')))
@@ -250,7 +307,11 @@ class QBankPage(Page):
 
     def _show(self):
         q = self._cur(); B = self.B; lg = lang()
-        if not q: self.view.clear(); return
+        if not q: self.view.clear(); self.img.set_raw(None); return
+        self.img.set_ref(q.get('img'))
+        if B.is_open(q):
+            from .pages_x import q_html
+            self.view.setHtml(f'<p style="color:#94A3B8">{E(q["id"])}</p>' + q_html(q, lg)); self.b_res.setEnabled(bool(q.get('mod') or q.get('hidden'))); return
         d = 'rtl' if lg == 'ar' else 'ltr'
         h = [f'<div dir="{d}"><p style="color:#94A3B8">{E(q["id"])} · {E(B.topic_name(q.get("topic"), lg))} · {E(B.level_name(q.get("level"), lg))}'
              + (f' · {E(tx("src"))}: <b>{E(q.get("src", ""))}</b>' if q.get('src') else '') + '</p>',

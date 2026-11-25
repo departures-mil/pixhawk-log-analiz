@@ -6,6 +6,9 @@ Kullanıcı değişiklikleri arşivde 'qbank' kaydı olarak tutulur (GitHub/LAN 
 - {'id', 'hidden': True} → hazır sorunun bankadan kaldırılması (geri yüklenebilir)
 
 Soru sözlüğü: {id, topic, level 1-3, src, q{tr,en,ar}, opts[{tr,en,ar}…], ans, exp{tr,en,ar}, wexp[{…}]|None, origin, lib, key}
+v1.1.11: type 'mc' (çoktan seçmeli, varsayılan) | 'open' (açık uçlu yorum: model{…} örnek cevap, kw{lg:[grup…]} anahtar kavramlar,
+opts boş, ans -1); img = 'visq/…png' (hazır havuz, app/data) ya da 'data:image/…;base64,…' (kullanıcı görseli);
+case = {label crash|normal|incident, cause, kind real|synth|open, veh} (görselli vaka sorularında).
 """
 from __future__ import annotations
 import json, random, time, uuid
@@ -29,6 +32,7 @@ TOPICS = {
     'failsafe': ('Failsafe ve güvenlik', 'Failsafe and safety', 'الأمان والسلامة'),
     'method': ('Kırım analizi yöntemi', 'Crash analysis method', 'منهجية تحليل الحوادث'),
     'mp': ('Mission Planner', 'Mission Planner', 'Mission Planner'),
+    'charts': ('Grafik yorumlama (görselli)', 'Chart interpretation (with images)', 'تفسير الرسوم البيانية (مع صور)'),
     'library': ('Log mesajları ve alanlar', 'Log messages and fields', 'رسائل السجل وحقولها'),
     'params': ('Kritik parametreler', 'Critical parameters', 'المعاملات الحرجة'),
 }
@@ -148,10 +152,51 @@ def _cut(s, n):
     return s if len(s) <= n else s[:n].rsplit(' ', 1)[0] + '…'
 
 
+def _visual():
+    """Hazır görselli grafik soruları (gerçek kırım / normal uçuşlar ve eğitim senaryoları; tools_data/build_visq.py)."""
+    try:
+        d = json.load(open(res('data', 'visq.json'), encoding='utf-8'))
+    except Exception:
+        return []
+    out = []
+    for q in d.get('questions', []):
+        q = dict(q); q['origin'] = 'builtin'
+        q['q'] = tri(q['q']); q['exp'] = tri(q.get('exp') or ''); q['opts'] = [tri(o) for o in q.get('opts') or []]
+        if q.get('model'): q['model'] = tri(q['model'])
+        out.append(q)
+    return out
+
+
 def builtin():
     if 'b' not in _CACHE:
-        _CACHE['b'] = _handwritten() + _auto()
+        _CACHE['b'] = _handwritten() + _visual() + _auto()
     return _CACHE['b']
+
+
+def is_open(q):
+    return (q or {}).get('type') == 'open'
+
+
+def img_bytes(ref):
+    """Soru görselinin baytları: 'visq/x.png' (program verisi) ya da data URI. Yoksa None."""
+    if not ref: return None
+    try:
+        if ref.startswith('data:'):
+            import base64
+            return base64.b64decode(ref.split(',', 1)[1])
+        with open(res('data', *ref.split('/')), 'rb') as f: return f.read()
+    except Exception:
+        return None
+
+
+def img_from_file(path, max_w=1400):
+    """Kullanıcının seçtiği resmi küçültüp data URI yapar (eşitlemede taşınabilsin diye boyut sınırlı)."""
+    from PIL import Image
+    import base64, io
+    im = Image.open(path); im = im.convert('RGB')
+    if im.width > max_w: im = im.resize((max_w, round(im.height * max_w / im.width)), Image.LANCZOS)
+    b = io.BytesIO(); im.save(b, format='JPEG', quality=82, optimize=True)
+    return 'data:image/jpeg;base64,' + base64.b64encode(b.getvalue()).decode()
 
 
 # ------------------------------------------------------------------ birleşik banka
@@ -184,8 +229,10 @@ def new_id():
 
 
 def validate(q):
-    """Hata kodu ya da None: 'q' soru metni yok, 'opts' en az 2 şık, 'ans' doğru şık boş."""
+    """Hata kodu ya da None: 'q' soru metni yok, 'opts' en az 2 şık, 'ans' doğru şık boş, 'model' açık uçluda örnek cevap yok."""
     if not any((q.get('q') or {}).get(lg, '').strip() for lg in LANGS): return 'q'
+    if is_open(q):
+        return None if any(tri(q.get('model') or '').get(lg, '').strip() for lg in LANGS) else 'model'
     opts = [o for o in q.get('opts') or [] if any((o or {}).get(lg, '').strip() for lg in LANGS)]
     if len(opts) < 2: return 'opts'
     a = int(q.get('ans', 0))
@@ -204,8 +251,13 @@ def clean(q):
     out = {'id': q.get('id') or new_id(), 'topic': q.get('topic') or 'basics', 'level': int(q.get('level') or 1), 'src': (q.get('src') or '').strip(),
            'q': tri(q.get('q')), 'opts': keep, 'ans': na, 'exp': tri(q.get('exp') or ''), 'wexp': nw if any(nw) else None,
            'edited': time.strftime('%Y-%m-%d %H:%M')}
-    for k in ('lib', 'key'):
+    for k in ('lib', 'key', 'img', 'case'):
         if q.get(k): out[k] = q[k]
+    if is_open(q):
+        m = tri(q.get('model') or '')
+        out.update({'type': 'open', 'opts': [], 'ans': -1, 'wexp': None, 'model': m,
+                    'exp': out['exp'] if any(out['exp'].values()) else m,
+                    'kw': {lg: [g.strip() for g in (q.get('kw') or {}).get(lg, []) if g and g.strip()] for lg in LANGS}})
     return out
 
 
@@ -260,6 +312,12 @@ def pick(qs, topics=None, levels=None, n=10, seed=None, ids=None, weights=None):
 def to_item(q, lg, rnd=None):
     """Alıştırma/sınav biçimi: {'q','opts','ans','exp','wexp','bank_id','topic','level','src','lib','key'} (şıklar karışık)."""
     rnd = rnd or random.Random()
+    if is_open(q):
+        item = {'type': 'open', 'q': tx(q['q'], lg), 'opts': [], 'ans': -1, 'exp': tx(q.get('exp') or q.get('model'), lg),
+                'model': tx(q.get('model'), lg), 'kw': q.get('kw') or {}, 'wexp': [],
+                'bank_id': q['id'], 'topic': q.get('topic'), 'level': int(q.get('level', 1)), 'src': q.get('src', '')}
+        if q.get('img'): item['img'] = q['img']
+        return item
     idx = list(range(len(q['opts']))); rnd.shuffle(idx)
     opts = [tx(q['opts'][i], lg) for i in idx]
     we = q.get('wexp') or []
@@ -267,6 +325,7 @@ def to_item(q, lg, rnd=None):
     item = {'q': tx(q['q'], lg), 'opts': opts, 'ans': idx.index(int(q.get('ans', 0))), 'exp': tx(q.get('exp'), lg), 'wexp': wexp,
             'bank_id': q['id'], 'topic': q.get('topic'), 'level': int(q.get('level', 1)), 'src': q.get('src', '')}
     if q.get('lib') and q.get('key'): item['lib'] = q['lib']; item['key'] = q['key']
+    if q.get('img'): item['img'] = q['img']
     return item
 
 
