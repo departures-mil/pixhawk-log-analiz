@@ -275,4 +275,19 @@ try:
 except Exception:
     import traceback; traceback.print_exc(); bad += 1
 
+try:
+    # v1.1.11: görselli grafik soruları + optik form + kâğıt sınav
+    from app.core import qbank as QB, omr, paper
+    vq_ = [q for q in QB.builtin() if q.get('img')]
+    assert len(vq_) > 200 and any(QB.is_open(q) for q in vq_)
+    for ref in {q['img'] for q in vq_}: assert (QB.img_bytes(ref) or b'')[:4] == b'\x89PNG', ref
+    import tempfile as _tf
+    _d = _tf.mkdtemp(); _ex = {'id': 'x', 'code': '1234', 'title': 'T', 'lang': 'ar', 'time_limit_min': 10, 'pass_mark': 60,
+                              'questions': [QB.to_item(q, 'ar') for q in vq_[:4]]}
+    for _f in (paper.booklet_pdf, paper.key_pdf): assert open(_f(_ex, os.path.join(_d, _f.__name__ + '.pdf')), 'rb').read(5) == b'%PDF-'
+    assert open(paper.sheet_pdf(_ex, os.path.join(_d, 's.pdf')), 'rb').read(5) == b'%PDF-'
+    print('v1.1.11 exam (visual + paper) OK', len(vq_))
+except Exception:
+    import traceback; traceback.print_exc(); bad += 1
+
 sys.exit(1 if bad else 0)

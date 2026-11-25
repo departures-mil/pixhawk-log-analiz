@@ -52,6 +52,13 @@ ortak `reusable-release.yml` (latest.json, son 5 sürümden yamalar) ile yayın.
   çalışmayı sayılarla izler (içerik yok), çevrim dışı kurallar + kullanıcının kendi Gemini/Claude anahtarıyla öneri; bildirim + sağ altta ✦ panel;
   Ayarlar'da "Admin ile iletişim"in önünde kart. Aynı bilgisayardaki programlarla %APPDATA%/FalconCekirdek/agent üzerinden paylaşım.
 
+## v1.1.11 — Sınav sekmesi: görselli grafik soruları, kâğıt sınav, optik okuma, telefonla sınav
+- **Sınav** sekmesi (`app/ui/pages_x.py` + `pages_c.ExamPage`): Sınav hazırla (soru sayısı, kaynak/konu/seviye/tür/uçuş/ipucu süzgeci, elle ekleme ya da otomatik doldurma, açık logdan/senaryodan görselli soru üretimi) · Eğitimci (kâğıt sınav, optik okuma, telefonla okutma/sınav, yorum puanlama) · Öğrenci.
+- Görselli havuz `app/data/visq.json` + `app/data/visq/*.png` (`tools_data/build_visq.py`, `app/core/visq.py`): uzman etiketli gerçek kırım/normal loglar + sentetik senaryolar; ipuçsuz grafikler `charts.quiz(True)` ile (kırım çizgisi, karar kartı ve motor olay işaretleri gizli).
+- Açık uçlu (yorum) sorular: `type='open'`, `model`, `kw`; puan eğitimciden (0/0,5/1), yoksa anahtar kavram önerisi (`visq.score_open`, `exam.regrade`).
+- Kâğıt sınav (`app/core/paper.py`): kodlu kitapçık, QR'ı düz metin cevap anahtarı (telefon kamerası internetsiz okur), optik form (`app/core/omr.py`, sinav-hazirlama `renderer/omr.js` düzeni ve okuma yöntemi).
+- Telefon (`app/core/canli.py`, sinav-hazirlama `src/canli.js` benzeri): aynı Wi-Fi'da 47880–47885 portunda sınav ve form okutma sayfası; sonuçlar `result` kaydına `via='phone'|'omr'` ile yazılır.
+
 ## v1.1.10 — soru bankası ve sınav sistemi
 - **Soru Bankası** (`app/ui/pages_q.py`, `app/core/qbank.py`, sorular `app/core/qbank_d1..d4.py`): 16 konu × 3 seviyede 126 elle yazılmış öğretici soru (TR/EN/AR, açıklamalı) + log mesajı / kritik parametre kütüphanelerinden üretilen ~400 soru.
 - Tamamı görüntülenir ve düzenlenir: arama, süzgeç, ekle/düzenle/kopyala/sil/geri al, `.pxbank` dışa/içe aktarma. Değişiklikler arşivde `qbank` kaydı olarak tutulur ve GitHub/LAN ile eşitlenir.
