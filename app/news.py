@@ -1,6 +1,28 @@
 """Sürüm notları ("Neler yeni" + release-notes.json). Yeni sürümde EN ÜSTE eklenir; tr/en/ar zorunlu."""
 
 NEWS = [
+    {'v': '1.1.5',
+     'tr': 'Uçuş modları her yerde: her mod kendi renginde bant, adı ve gerçek saatiyle; mod tablosu (başlangıç, bitiş, süre, değişim nedeni, modun ne yaptığı)\n'
+           'Motor çıkışları sekmesi: motorlar yeriyle isimli (ör. M4 · Arka sağ), yerleşim çizimi, durma / tam güce kilitlenme uyarısı ve olay anı yakın çekimi\n'
+           'Kanallar görevleriyle: Roll, Pitch, Yaw, Gaz (kanatçık, V kuyruk, elevon…); ters kanal işareti; kumanda stick hareketleri ve mod anahtarı grafiği\n'
+           '20 grafik: özet panosu, hız ve rüzgâr, TECS, PID, navigasyon, GPS doğruluğu, titreşim spektrumu, IMU/baro, batarya mAh, ESC, EKF yenilikleri\n'
+           'Grafikler etkileşimli: yakınlaştır, kaydır, PNG kaydet, imleçle harita/3B aynı ana gider, Shift+tıklama ile ölçüm cetveli\n'
+           'Mission Planner sekmesi: Review Log alanları, ilgili ayarlar, önemli anların TimeUS değeri ve hazır grafik dosyası\n'
+           'Harita moda göre renkli, 3B tekrarda mod renkli rota ve kumanda çubukları; raporda mod tablosu ve motor olayları',
+     'en': 'Flight modes everywhere: each mode as a coloured band with its name and clock time; mode table (start, end, duration, reason, what the mode does)\n'
+           'Motor outputs tab: motors named by position (e.g. M4 · Rear right), layout drawing, stopped / pinned-at-full-power warning and close-up of the event\n'
+           'Channels by function: Roll, Pitch, Yaw, Throttle (aileron, V-tail, elevon…); reversed channel mark; transmitter stick movements and mode switch chart\n'
+           '20 charts: summary dashboard, speed and wind, TECS, PID, navigation, GPS accuracy, vibration spectrum, IMU/baro, battery mAh, ESC, EKF innovations\n'
+           'Interactive charts: zoom, pan, save PNG, cursor moves map/3D to the same moment, Shift+click measuring ruler\n'
+           'Mission Planner tab: Review Log fields, related parameters, TimeUS of key moments and a preset graph file\n'
+           'Map coloured by mode, 3D replay with mode-coloured track and sticks; mode table and motor events in the report',
+     'ar': 'أوضاع الطيران في كل مكان: كل وضع شريط ملوّن باسمه ووقته الفعلي؛ جدول الأوضاع (البداية، النهاية، المدة، سبب التغيير، وظيفة الوضع)\n'
+           'تبويب مخارج المحركات: المحركات مسماة حسب موقعها (مثل M4 · خلفي أيمن)، رسم التوزيع، تحذير التوقف أو العلوق عند القدرة القصوى ولقطة مقرّبة للحدث\n'
+           'القنوات حسب الوظيفة: الدوران، الميلان، الانعراج، الخانق (الجنيح، ذيل V، الإليفون…)؛ علامة القناة المعكوسة؛ رسم حركات عصي التحكم ومفتاح الوضع\n'
+           '20 رسماً: لوحة الملخص، السرعة والرياح، TECS، PID، الملاحة، دقة GPS، طيف الاهتزاز، IMU/البارومتر، mAh البطارية، ESC، ابتكارات EKF\n'
+           'رسوم تفاعلية: تكبير، تحريك، حفظ PNG، المؤشر ينقل الخريطة وثلاثي الأبعاد إلى اللحظة نفسها، مسطرة قياس بـ Shift+نقر\n'
+           'تبويب Mission Planner: حقول Review Log، المعاملات المرتبطة، قيمة TimeUS للحظات المهمة وملف رسوم جاهز\n'
+           'الخريطة ملوّنة حسب الوضع، الإعادة ثلاثية الأبعاد بمسار ملوّن وعصي التحكم؛ جدول الأوضاع وأحداث المحركات في التقرير'},
     {'v': '1.1.4',
      'tr': 'Dört seviyeli karar: Kaza · Ciddi sorun · Küçük uyarı · Normal (küçük uyarılar artık kaza gibi gösterilmez)\n'
            'Kontrolsüz düşüş algılama (yükseklik kaybı, hız, açı) ve VTOL/çok motorlu araçta motor kaybı; motor numarası çıkış eşlemesinden\n'

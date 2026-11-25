@@ -28,8 +28,8 @@ S = {
     'crash': (('Kırım anı', 'Impact', 'لحظة التحطم'),
               ('İzle: logun bittiği an; irtifa, tutum ve titreşimdeki son değişimler kırımı doğruluyor.', 'Watch: the end of the log; the last changes in altitude, attitude and vibration confirm the impact.', 'راقب: نهاية السجل؛ التغيرات الأخيرة في الارتفاع والوضعية والاهتزاز تؤكد التحطم.')),
 }
-CAUSE_CHART = {'gps': 'c_gps', 'ekf': 'c_ekf', 'battery': 'c_bat', 'radio': 'c_rcou', 'stall': 'c_alt', 'vibration': 'c_vibe',
-               'compass': 'c_mag', 'power': 'c_bat', 'control': 'c_att', 'motor': 'c_rcou'}
+CAUSE_CHART = {'gps': 'c_gps', 'ekf': 'c_ekf', 'battery': 'c_bat', 'radio': 'c_sticks', 'stall': 'c_alt', 'vibration': 'c_vibe',
+               'compass': 'c_mag', 'power': 'c_bat', 'control': 'c_att', 'motor': 'c_motors'}
 
 
 def _s(k, lang, i, **a):
