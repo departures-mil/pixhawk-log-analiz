@@ -280,6 +280,8 @@ class ChartsPage(Page):
     def _clicked(self, t):
         try: self.win.pages['map'].goto_time(t, switch=False)
         except Exception: pass
+        try: self.win.pages['video'].goto_log_time(t)
+        except Exception: pass
 
     def set_cursor(self, t):
         self.view.set_cursor(t)
