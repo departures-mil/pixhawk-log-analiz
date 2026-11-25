@@ -27,6 +27,16 @@ def mode_head(lg):
     return [R(k, lg) for k in ('m_start', 'm_clock', 'm_end', 'm_dur', 'm_mode', 'm_why')]
 
 
+def src_text(A, key, lg):
+    """Tablo altı kaynak satırı (log alanları + Full Parameter List parametreleri)."""
+    try:
+        from . import sources
+        x = sources.short(A, key, lg)
+        return ('🔎 ' + x) if x else ''
+    except Exception:
+        return ''
+
+
 def mode_rows(A, lg):
     """[[başlangıç, saat, bitiş, süre, mod, neden, renk, failsafe]] — uçuş modu tablosu (rapor ve arayüz)."""
     from . import viz
@@ -202,6 +212,7 @@ def build_docx(rd: ReportData, path, lh=None):
     from docx.oxml import OxmlElement
     lh = {**DEFAULT_LH, **(lh or {})}
     lg = rd.lang; rtl = lg == 'ar'; A = rd.A
+    src_line = lambda k: src_text(A, k, lg)  # noqa: E731
     doc = Document()
     sec = doc.sections[0]
     sec.page_height = Cm(29.7); sec.page_width = Cm(21.0)
@@ -412,14 +423,17 @@ def build_docx(rd: ReportData, path, lh=None):
                          f"{f1(s_.get('alt_mean'))}/{f1(s_.get('alt_max'))} m", f1(s_.get('as_mean') if s_.get('as_mean') is not None else s_.get('gs_mean'), ' m/s'),
                          f1(s_.get('thr_mean'), '%'), f"{f1(s_.get('roll_max'))}°/{f1(s_.get('pitch_max'))}°"])
         table(rows, [R(k, lg) for k in ('p_phase', 'p_time', 'p_dur', 'p_alt', 'p_spd', 'p_thr', 'p_att')], [2.4, 3.4, 1.8, 2.6, 2.2, 2, 2.6])
+        if src_line('sec_phases'): para(src_line('sec_phases'))
         mr = mode_rows(A, lg)
         if mr:
             heading(R('sec_modes', lg))
             table([r[:6] for r in mr], mode_head(lg), [2.0, 1.9, 1.9, 1.7, 2.6, 6.9], [[None, None, None, None, r[6], 'FEE2E2' if r[7] else None] for r in mr])
+            if src_line('sec_modes'): para(src_line('sec_modes'))
         me = motor_rows(A, lg)
         if me:
             heading(R('sec_motors', lg))
             for line in me: para('⚠ ' + line)
+            if src_line('sec_motors'): para(src_line('sec_motors'))
 
     def s_charts():
         heading(R('charts', lg))
@@ -744,6 +758,7 @@ def build_pdf(rd: ReportData, path, lh=None, encrypt=None):
     from reportlab.lib.enums import TA_CENTER
     from reportlab.platypus import Paragraph, Spacer, Table, TableStyle, Image, KeepTogether, PageBreak
     lg = rd.lang; A = rd.A
+    src_line = lambda k: src_text(A, k, lg).replace('🔎 ', '')  # noqa: E731
     K_ = pdf_kit(lg, lh, rd.id)
     P, tbl, img, base, small, H1, H2, TT, W_, rtl = (K_[k] for k in ('P', 'tbl', 'img', 'base', 'small', 'H1', 'H2', 'TT', 'W', 'rtl'))
     long_ = rd.mode != 'short'
@@ -875,15 +890,19 @@ def build_pdf(rd: ReportData, path, lh=None, encrypt=None):
                  f"{f1(p_['stats'].get('alt_mean'))}/{f1(p_['stats'].get('alt_max'))} m", f1(p_['stats'].get('as_mean') if p_['stats'].get('as_mean') is not None else p_['stats'].get('gs_mean'), ' m/s'),
                  f1(p_['stats'].get('thr_mean'), '%'), f"{f1(p_['stats'].get('roll_max'))}°/{f1(p_['stats'].get('pitch_max'))}°"] for p_ in A.phases]
         story.append(tbl(rows, [R(k, lg) for k in ('p_phase', 'p_time', 'p_dur', 'p_alt', 'p_spd', 'p_thr', 'p_att')], [2.2 * cm, 3.4 * cm, 1.8 * cm, 2.5 * cm, 2.2 * cm, 2 * cm, W_ - 14.1 * cm], fs=7.5))
+        srcp = ParagraphStyle('src', parent=small, textColor=colors.HexColor('#475569'), fontSize=6.6, leading=8.4)
+        if src_line('sec_phases'): story.append(P(src_line('sec_phases'), srcp))
         mr = mode_rows(A, lg)
         if mr:
             story.append(P(R('sec_modes', lg), H2))
             story.append(tbl([r[:6] for r in mr], mode_head(lg), [2.0 * cm, 1.9 * cm, 1.9 * cm, 1.7 * cm, 2.6 * cm, W_ - 10.1 * cm],
                              [[None, None, None, None, r[6], 'FEE2E2' if r[7] else None] for r in mr], fs=7.2))
+            if src_line('sec_modes'): story.append(P(src_line('sec_modes'), srcp))
         me = motor_rows(A, lg)
         if me:
             story.append(P(R('sec_motors', lg), H2))
             for line in me: story.append(P('⚠ ' + line, ParagraphStyle('mw', parent=small, textColor=colors.HexColor('#B91C1C'))))
+            if src_line('sec_motors'): story.append(P(src_line('sec_motors'), srcp))
 
     def lesson(key):
         Ls = LESSON.get(key)

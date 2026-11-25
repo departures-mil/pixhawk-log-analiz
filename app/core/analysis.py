@@ -119,19 +119,19 @@ class Analysis(ExtMixin):
             lat, lon = pos['Lat'], pos['Lng']
             alt = pos['Alt'] if pos.has('Alt') else np.zeros(len(lat))
             rel = pos['RelHomeAlt'] if pos.has('RelHomeAlt') else alt - np.nanmin(alt)
-            t = pos['t']
+            t = pos['t']; src = 'POS.RelHomeAlt' if pos.has('RelHomeAlt') else 'POS.Alt'
         else:
             g = L.s('GPS')
             if not g.has('Lat'):
                 self.track = None; return
             ok = (g['Status'] >= 3) if g.has('Status') else np.ones(len(g['t']), bool)
             t = g['t'][ok]; lat = g['Lat'][ok]; lon = g['Lng'][ok]; alt = g['Alt'][ok]
-            rel = alt - (alt[0] if len(alt) else 0)
+            rel = alt - (alt[0] if len(alt) else 0); src = 'GPS.Alt'
         good = np.isfinite(lat) & np.isfinite(lon) & (np.abs(lat) > 0.0001)
         if good.sum() < 2:
             self.track = None; return
         t, lat, lon, alt, rel = t[good], lat[good], lon[good], alt[good], rel[good]
-        self.track = {'t': t, 'lat': lat, 'lon': lon, 'alt': alt, 'rel': rel}
+        self.track = {'t': t, 'lat': lat, 'lon': lon, 'alt': alt, 'rel': rel, 'src': src}
 
     def _armed(self):
         L = self.L
