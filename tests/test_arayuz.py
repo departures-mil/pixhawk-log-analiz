@@ -154,3 +154,23 @@ def test_custom_chart_and_video_pages(win, qapp, tmp_path):
     assert vp.frame is not None and abs(vp.vt - 2.0) < 0.3, vp.vt
     assert abs(vp.log_t() - 102.0) < 0.3
     vp.stop()
+
+
+def test_msglib_search_descriptions_all_languages(win, qapp):
+    """v1.1.9: log mesajları aramasında açıklamalar ve üç dildeki çeviriler de aranır (aksan duyarsız, eş anlamlılarla)."""
+    import json
+    from app.core import msgsearch as MS
+    from app.core.paths import res
+    I = MS.Index(json.load(open(res('data', 'logmsgs.json'), encoding='utf-8')))
+    for q in ('titreşim', 'titresim', 'vibration', 'اهتزاز', 'VIBE.VibeX'):
+        assert I.search(q) and I.search(q)[0][0] == 'VIBE', q
+    r = dict(I.search('batarya gerilim'))
+    assert 'BAT' in r and 'Volt' in r['BAT']['fields']
+    assert I.search('gps hdop')[0][1]['fields'][0].lower() == 'hdop'
+    assert not I.search('xyzzq')
+    assert '<span' in MS.highlight('Titreşim seviyesi', 'titresim', str)
+    pg = win.pages['msgs']; pg.q.setText('titreşim'); qapp.processEvents()
+    ks = [pg.list.item(i).data(256) for i in range(pg.list.count())]
+    assert ks[0] == 'VIBE' and 'VibeX' in pg.list.item(0).text()
+    assert '<span' in pg.view.toHtml() or 'FDE047' in pg.view.toHtml()
+    pg.q.setText('')
