@@ -320,7 +320,7 @@ class MsgLibPage(Page):
         self.M = json.load(open(res('data', 'logmsgs.json'), encoding='utf-8'))
         v = QVBoxLayout(self); v.setContentsMargins(16, 12, 16, 12)
         top = QHBoxLayout()
-        self.q = QLineEdit(); self.q.setPlaceholderText(t('search') + ' (VIBE, GPS, Volt, titreşim…)'); self.q.textChanged.connect(self.fill)
+        self.q = QLineEdit(); self.q.setPlaceholderText(t('ms_ph')); self.q.textChanged.connect(self.fill)
         top.addWidget(self.q, 1)
         self.core = QCheckBox(t('core_only')); self.core.setChecked(True); self.core.toggled.connect(self.fill); top.addWidget(self.core)
         self.inlog = QCheckBox(t('in_log')); self.inlog.toggled.connect(self.fill); top.addWidget(self.inlog)
@@ -336,35 +336,59 @@ class MsgLibPage(Page):
         self.fill()
 
     def fill(self, *_):
-        q = self.q.text().strip().lower(); lg = lang()
+        from ..core import msgsearch as MS
+        q = self.q.text().strip(); lg = lang()
         seen = set(x.split('[')[0] for x in (self.win.A.L.types_seen if self.win.A else []))
         self.list.clear(); n = 0
-        for k in sorted(self.M):
-            m = self.M[k]
-            if self.core.isChecked() and not m.get('core') and not q: continue
-            if self.inlog.isChecked() and k not in seen: continue
-            d = GL.lt(m['desc'], lg)
-            if q:
-                blob = (k + ' ' + d + ' ' + ' '.join(f + ' ' + GL.lt(x, lg) for f, x in m.get('fields', {}).items())).lower()
-                if q not in blob: continue
-            it = QListWidgetItem(f'{k}  —  {d[:60]}'); it.setData(Qt.UserRole, k)
+        if q:
+            # açıklamalarda ve alan açıklamalarında da, üç dilde birden (TR/EN/AR), aksan duyarsız, eş anlamlılarla
+            if getattr(self, '_ix', None) is None: self._ix = MS.Index(self.M)
+            keys = [k for k in self.M if not self.inlog.isChecked() or k in seen]
+            res = self._ix.search(q, keys)
+        else:
+            res = [(k, None) for k in sorted(self.M)
+                   if (not self.core.isChecked() or self.M[k].get('core')) and (not self.inlog.isChecked() or k in seen)]
+        self._hits = dict(res)
+        for k, r in res:
+            d = GL.lt(self.M[k]['desc'], lg)
+            txt = f'{k}  —  {d[:60]}'
+            if r and r['fields']: txt += '\n      ↳ ' + ', '.join(r['fields'][:5]) + (' …' if len(r['fields']) > 5 else '')
+            it = QListWidgetItem(txt); it.setData(Qt.UserRole, k)
+            if r: it.setToolTip(t('ms_where', w=', '.join(t('ms_w_' + x) for x in sorted(r['where'])),
+                                  l=', '.join(x.upper() for x in sorted(r['langs'])) or '—'))
             if k in seen: it.setForeground(QColor('#4ADE80'))
             self.list.addItem(it); n += 1
         self.cnt.setText(t('count', n=n))
         if n: self.list.setCurrentRow(0)
+        elif q: self.view.setHtml(f'<p style="color:#94A3B8">{E(t("ms_none"))}</p>')
 
     def _show(self, it, *_):
         if not it: return
+        from ..core import msgsearch as MS
         k = it.data(Qt.UserRole); m = self.M[k]; lg = lang(); d = 'rtl' if lg == 'ar' else 'ltr'
+        q = self.q.text().strip(); H = (lambda s_: MS.highlight(s_, q, E)) if q else E
+        r = (getattr(self, '_hits', {}) or {}).get(k)
         desc = GL.lt(m['desc'], lg)
-        h = [f'<div dir="{d}"><h2 style="color:#93C5FD">{E(k)}</h2><p style="font-size:11pt">{E(desc)}</p>']
-        if lg != 'en' and m['desc'].get('en'): h.append(f'<p style="color:#94A3B8">EN: {E(m["desc"]["en"])}</p>')
+        h = [f'<div dir="{d}"><h2 style="color:#93C5FD">{H(k)}</h2><p style="font-size:11pt">{H(desc)}</p>']
+        # aranan kelime başka dildeki açıklamada bulunduysa o dili de göster (EN her zaman)
+        for ol in ('en', 'tr', 'ar'):
+            if ol == lg: continue
+            od = GL.lt(m['desc'], ol)
+            if od and od != desc and (ol == 'en' or (r and ol in r['langs'])):
+                od_dir = 'rtl' if ol == 'ar' else 'ltr'
+                h.append(f'<p dir="{od_dir}" style="color:#94A3B8">{ol.upper()}: {H(od)}</p>')
         h.append(f'<h3>{E(t("msg_fields"))}</h3><table width="100%" cellpadding="5" cellspacing="0">')
+        hitf = set(r['fields']) if r else set()
         for i, (f, x) in enumerate(m.get('fields', {}).items()):
-            bg = '#111C33' if i % 2 else '#0F1A30'
+            bg = '#3B3415' if f in hitf else ('#111C33' if i % 2 else '#0F1A30')
             tx = GL.lt(x, lg)
-            extra = f'<br><span style="color:#64748B">{E(x.get("en", ""))}</span>' if lg != 'en' and x.get('en') and GL.lt(x, lg) != x.get('en') else ''
-            h.append(f'<tr bgcolor="{bg}"><td nowrap><b>{E(f)}</b></td><td>{E(tx)}{extra}</td></tr>')
+            extra = ''
+            for ol in ('en', 'tr', 'ar'):
+                if ol == lg: continue
+                ot = GL.lt(x, ol)
+                if ot and ot != tx and (ol == 'en' or (f in hitf and r and ol in r['langs'])):
+                    extra += f'<br><span style="color:#64748B">{ol.upper()}: {H(ot)}</span>'
+            h.append(f'<tr bgcolor="{bg}"><td nowrap><b>{H(f)}</b></td><td>{H(tx)}{extra}</td></tr>')
         h.append('</table>')
         A = self.win.A
         if A:
