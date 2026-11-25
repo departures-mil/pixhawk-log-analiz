@@ -5,7 +5,7 @@ import numpy as np
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QProgressBar, QTextBrowser, QListWidget, QListWidgetItem,
                                QSplitter, QComboBox, QTabWidget, QSlider, QTableWidget, QTableWidgetItem, QHeaderView, QLineEdit,
-                               QCheckBox, QRadioButton, QButtonGroup, QPushButton, QFileDialog, QGridLayout, QAbstractItemView)
+                               QCheckBox, QRadioButton, QButtonGroup, QPushButton, QFileDialog, QGridLayout, QAbstractItemView, QSpinBox)
 from PySide6.QtGui import QColor
 from .i18n import t, lang
 from .common import label, button, ImageView, run_bg, error, info, card
@@ -764,13 +764,26 @@ def _md(txt):
 class PracticePage(Page):
     def __init__(self, win):
         super().__init__(win)
+        from ..core import qbank as QB
+        from .pages_q import tx as qtx
         v = QVBoxLayout(self); v.setContentsMargins(24, 16, 24, 16)
         top = QHBoxLayout()
         top.addWidget(button('🔄 ' + t('new_q'), self.new, primary=True))
+        # v1.1.10: soru kaynağı (log + banka), konu, seviye
+        self.srcsel = QComboBox()
+        for k in ('mix', 'bank', 'log', 'wrong'): self.srcsel.addItem(qtx('pr_' + k), k)
+        self.topsel = QComboBox(); self.topsel.addItem(qtx('all_t'), None)
+        for k in QB.TOPICS: self.topsel.addItem(QB.topic_name(k, lang()), k)
+        self.lvlsel = QComboBox(); self.lvlsel.addItem(qtx('all_l'), None)
+        for n_ in (1, 2, 3): self.lvlsel.addItem(QB.level_name(n_, lang()), n_)
+        self.nsel = QSpinBox(); self.nsel.setRange(5, 50); self.nsel.setValue(10); self.nsel.setSuffix(' ' + qtx('pr_q'))
+        for w_ in (self.srcsel, self.topsel, self.lvlsel, self.nsel): top.addWidget(w_)
         self.score_l = label('', 'h2'); top.addWidget(self.score_l, 1)
+        top.addWidget(button('🗃 ' + qtx('title'), lambda: self.win.goto('qbank')))
         v.addLayout(top)
-        v.addWidget(label(t('practice_src'), 'muted', wrap=True))
+        self.src_l = label(t('practice_src'), 'muted', wrap=True); v.addWidget(self.src_l)
         c = card(); cv = QVBoxLayout(c); cv.setContentsMargins(20, 18, 20, 18)
+        self.meta = label('', 'muted'); cv.addWidget(self.meta)
         self.ql = label('', 'h1', wrap=True); cv.addWidget(self.ql)
         self.grp = QButtonGroup(self); self.opts = []
         for i in range(4):
@@ -782,22 +795,63 @@ class PracticePage(Page):
         self.b_chart.setVisible(False); self.b_lib.setVisible(False)
         row.addWidget(self.b_check); row.addWidget(self.b_next); row.addWidget(self.b_chart); row.addWidget(self.b_lib); row.addStretch(1); cv.addLayout(row)
         v.addWidget(c); v.addStretch(1)
-        self.qs = []; self.i = 0; self.ok = 0; self.answered = 0
+        self.qs = []; self.i = 0; self.ok = 0; self.answered = 0; self._ids = None
+        for w_ in (self.srcsel, self.topsel, self.lvlsel): w_.currentIndexChanged.connect(lambda *_: (setattr(self, '_ids', None), self.new()))
         self.new()
 
     def on_analysis(self, A):
         self.new()
 
+    def start_bank(self, ids=None):
+        """Soru Bankası sayfasından: verilen soru kimlikleriyle alıştırma."""
+        self._ids = set(ids) if ids else None
+        self.srcsel.blockSignals(True); self.srcsel.setCurrentIndex(self.srcsel.findData('bank')); self.srcsel.blockSignals(False)
+        self.new()
+
     def new(self):
         from ..core.practice import generate
-        self.qs = generate(self.win.A, lang(), 10, int(time.time())); self.i = 0; self.ok = 0; self.answered = 0
+        from ..core import qbank as QB
+        from .pages_q import tx as qtx
+        import random as _r
+        src = self.srcsel.currentData(); n = self.nsel.value(); lg = lang(); seed = int(time.time() * 1000) % 2 ** 31
+        topics = {self.topsel.currentData()} if self.topsel.currentData() else None
+        levels = {self.lvlsel.currentData()} if self.lvlsel.currentData() else None
+        qs = []
+        if src in ('mix', 'bank', 'wrong'):
+            bank = QB.load(self.win.archive)
+            st = self.win.settings.get('qbank_stats', {}) or {}
+            if src == 'wrong':
+                w = {k: (v[1] - v[0]) / max(1, v[1]) + 0.1 * (v[1] - v[0]) for k, v in st.items() if v[1] > v[0]}
+                pick = QB.pick(bank, topics, levels, n, seed, ids=set(w), weights=w)
+            else:
+                nb = n if src == 'bank' or self.win.A is None else max(1, n - n // 3)
+                pick = QB.pick(bank, topics, levels, nb, seed, ids=self._ids)
+            rnd = _r.Random(seed)
+            qs = [QB.to_item(q, lg, rnd) for q in pick]
+        if src in ('mix', 'log') and self.win.A is not None and (src == 'log' or not topics):
+            lq = [x for x in generate(self.win.A, lg, n, seed) if not x.get('lib')]
+            qs = (qs + lq[:max(0, n - len(qs)) if src == 'mix' else n])
+            _r.Random(seed).shuffle(qs)
+        elif src == 'log' and not qs:
+            qs = generate(self.win.A, lg, n, seed)
+        self.src_l.setText(qtx('pr_src_' + src) if not (src == 'wrong' and not qs) else qtx('pr_no_wrong'))
+        self.qs = qs[:n]; self.i = 0; self.ok = 0; self.answered = 0
         self._show()
 
     def _show(self):
+        from ..core import qbank as QB
         self._score()
-        if not self.qs: self.ql.setText('-'); return
+        if not self.qs:
+            self.ql.setText('-'); self.meta.setText('')
+            for r in self.opts: r.setVisible(False)
+            return
         q = self.qs[self.i]
         self.ql.setText(f'{self.i + 1}/{len(self.qs)} · {q["q"]}')
+        m = []
+        if q.get('topic'): m.append(QB.topic_name(q['topic'], lang()))
+        if q.get('level'): m.append(QB.level_name(q['level'], lang()))
+        if q.get('src'): m.append('⌁ ' + q['src'])
+        self.meta.setText('  ·  '.join(m) if m else '')
         self.grp.setExclusive(False)
         for k, r in enumerate(self.opts):
             r.setChecked(False); r.setVisible(k < len(q['opts'])); r.setEnabled(True)
@@ -816,6 +870,11 @@ class PracticePage(Page):
         if k < 0: return
         q = self.qs[self.i]; good = k == q['ans']
         self.answered += 1; self.ok += good
+        if q.get('bank_id'):  # soru başına doğru/toplam (yanlışlarımı tekrar et)
+            st = dict(self.win.settings.get('qbank_stats', {}) or {}); a_ = st.get(q['bank_id'], [0, 0])
+            st[q['bank_id']] = [a_[0] + int(good), a_[1] + 1]; self.win.settings['qbank_stats'] = st
+            try: self.win.settings.save()
+            except Exception: pass
         for j, r in enumerate(self.opts):
             r.setEnabled(False)
             if j == q['ans']: r.setStyleSheet('font-size:11pt; padding:6px; color:#4ADE80; font-weight:700')
