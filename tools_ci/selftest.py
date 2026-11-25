@@ -233,6 +233,31 @@ try:
     finally:
         CH.want_fig(False)
     print('v1.1.7 sources OK')
+    # v1.1.8: kendi grafiğim (formül/parametre eşiği) + video eşleme / OSD / birleştirme
+    from app.core import customchart as CC, vidsync as VS
+    import subprocess, tempfile as _tf
+    assert len(CC.catalog(An.L)) > 20
+    t_, y_ = CC.evaluate(An.L, 'ATT.Roll - ATT.DesRoll'); assert len(t_) == len(y_) > 10
+    t_, y_ = CC.evaluate(An.L, 'smooth(abs(ATT.Pitch), 5) * 2'); assert (y_ >= 0).all()
+    for bad_, code_ in (('', 'empty'), ('XXX.Y + 1', 'missing'), ('ATT.Roll +', 'syntax'), ('__import__("os")', '')):
+        try: CC.evaluate(An.L, bad_); raise AssertionError('hata bekleniyordu: ' + bad_)
+        except CC.ExprError as e_: assert str(e_).startswith(code_), (bad_, str(e_))
+    pn_ = next(iter(An.L.params))
+    png_, out_ = CC.build(An, {'series': [{'expr': 'GPS.Spd', 'panel': 1}], 'params': [{'name': pn_, 'panel': 1}]}, 'ar')
+    assert png_[:4] == b'\x89PNG' and out_[0]['t'] is not None
+    st_ = CC.stats(out_[0]['t'], out_[0]['y'], None, None, 1.0); assert st_['above'] + st_['below'] > 0
+    vd_ = _tf.mkdtemp(); vf_ = os.path.join(vd_, 'cam.mp4')
+    subprocess.run([VS.ffmpeg_exe(), '-y', '-loglevel', 'error', '-f', 'lavfi', '-i', 'testsrc=size=320x240:rate=10:duration=3',
+                    '-pix_fmt', 'yuv420p', '-c:v', 'libx264', '-preset', 'ultrafast', vf_], check=True)
+    vi_ = VS.probe(vf_); assert abs(vi_['dur'] - 3) < 0.3 and vi_['w'] == 320
+    D_ = VS.OSDData(An, 'tr')
+    for lg in ('tr', 'ar'):
+        im_ = VS.osd_frame(VS.grab(vi_, 1.0, 320), VS.OSDData(An, lg).sample(60.0), VS.OSD_KEYS, lg, analysis.fmt_t)
+        assert im_.size[0] == 320
+    ov_ = os.path.join(vd_, 'out.mp4')
+    VS.export(An, ov_, vi_, 50.0, second=vi_, off_second=50.0, layout='pip', panel=True, width=320)
+    assert VS.probe(ov_)['dur'] > 2
+    print('v1.1.8 custom chart / video OK')
 except Exception:
     import traceback; traceback.print_exc(); bad += 1
 

@@ -114,3 +114,43 @@ def test_interactive_charts_modes_mp(win, qapp, tmp_path):
     assert 'GPS.Alt' in src and 'Review a Log' in src
     assert any('GPS.Alt' in t_.get_text() for t_ in pg.view.fig.texts)
     assert 'MODE.Mode' in pg.mt_src.text()
+
+
+def _lavfi(path, dur=4, created=None):
+    import subprocess
+    from app.core.vidsync import ffmpeg_exe
+    args = [ffmpeg_exe(), '-y', '-hide_banner', '-loglevel', 'error', '-f', 'lavfi', '-i', f'testsrc=size=320x240:rate=10:duration={dur}',
+            '-pix_fmt', 'yuv420p', '-c:v', 'libx264', '-preset', 'ultrafast']
+    if created: args += ['-metadata', f'creation_time={created}']
+    subprocess.run(args + [path], check=True)
+
+
+def test_custom_chart_and_video_pages(win, qapp, tmp_path):
+    """v1.1.8: Kendi Grafiğim (alan + formül + parametre eşiği, kayıt) ve Video ve OSD (eşleme, grafikten videoya gitme)."""
+    import time
+    from app.core import synth, loader, analysis, vidsync as V
+    p = str(tmp_path / 'n.BIN'); synth.generate(p, 'normal', duration=300.0)
+    A = analysis.Analysis(loader.load(p)); win.A = A
+    cc = win.pages['custom']; cc.on_analysis(A)
+    assert cc.fl.count() > 20 and cc.pl.count() > 0
+    cc.set_spec({'series': [{'expr': 'ATT.Roll - ATT.DesRoll', 'panel': 1}, {'expr': 'GPS.Spd', 'panel': 2}],
+                 'params': [{'name': cc.pl.item(0).data(256), 'panel': 2}]})
+    cc.draw()
+    for _ in range(300):
+        qapp.processEvents(); time.sleep(0.02)
+        if cc.view.canvas is not None and cc.st.rowCount(): break
+    assert cc.view.taxes and cc.st.rowCount() == 2
+    cc.name.setText('pytest'); cc._save()
+    assert any(x['title'] == 'pytest' for x in win.settings['custom_charts'])
+    vp = win.pages['video']; vp.on_analysis(A)
+    vp.goto_log_time(10.0)  # video yokken sessiz geçer
+    f = str(tmp_path / 'v.mp4'); _lavfi(f)
+    vp.vids[0] = V.probe(f); vp.which.setCurrentIndex(0); vp._which(); vp._labels()
+    vp.offsp.setValue(100.0)
+    win.pages['charts']._clicked(102.0)
+    for _ in range(100):
+        qapp.processEvents(); time.sleep(0.02)
+        if vp.frame is not None: break
+    assert vp.frame is not None and abs(vp.vt - 2.0) < 0.3, vp.vt
+    assert abs(vp.log_t() - 102.0) < 0.3
+    vp.stop()
