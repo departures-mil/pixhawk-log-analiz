@@ -79,11 +79,13 @@ def chart_overview(A, lg):
              (_t(('Azami irtifa', 'Max altitude', 'أقصى ارتفاع'), lg), f"{np.nanmax(A.track['rel']):.0f} m" if A.track is not None and len(A.track['rel']) else '-', C['teal']),
              (_t(('Mod değişimi', 'Mode changes', 'تغييرات الوضع'), lg), f"{max(0, len(segs) - 1)}", C['purple']),
              (_t(('Sağlık', 'Health', 'الصحة'), lg), f"{A.overall}/100", C['green'] if A.overall >= 80 else (C['amber'] if A.overall >= 55 else C['red']))]
+    if B.is_quiz(): cards = [cards[1], cards[2], cards[3]]
     c0 = viz.clock(A, A.flights[0][0]) if A.flights else None
     if c0: cards.append((_t(('Kalkış saati', 'Takeoff time', 'وقت الإقلاع'), lg), f'{viz.date_of(A) or ""} {c0}'.strip(), C['ink']))
     tsrc = (A.track or {}).get('src', 'GPS.Alt') if A.track is not None else '-'
     csrc = [_t(('analiz: tüm alanlar', 'analysis: all fields', 'التحليل: كل الحقول'), lg), 'EV.Id · GPS.Spd', tsrc, 'MODE.Mode',
             'VIBE·GPS·BAT·XKF4', 'GPS.GWk·GMS']
+    if B.is_quiz(): csrc = [csrc[1], csrc[2], csrc[3], csrc[5]]
     n = len(cards)
     for i, (k, val, col) in enumerate(cards):
         axk.text(i / n + 0.5 / n, 0.14, B.mshape(csrc[i], lg) if i < len(csrc) else '', transform=axk.transAxes, ha='center', va='center', fontsize=4.6,
@@ -228,7 +230,7 @@ def chart_motors(A, lg):
     L = A.L; o = L.s('RCOU')
     M = [m for m in viz.motors(A, lg) if o.has(m['ch'])]
     if not M: return None
-    ev = viz.motor_events(A, lg)
+    ev = viz.motor_events(A, lg) if not B.is_quiz() else {'motors': [], 'events': []}
     n = len(M)
     root = next((e for e in ev['events'] if e.get('root')), None) or next((e for e in ev['events'] if e['kind'] == 'stop'), None) \
         or (ev['events'][0] if ev['events'] else None)

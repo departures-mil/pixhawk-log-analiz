@@ -4,7 +4,7 @@ U2 = {
     # --- gezinme
     'nav_fleet': ('Filo ve Bakım', 'Fleet & Maintenance', 'الأسطول والصيانة'),
     'nav_pilots': ('Pilot Kartları', 'Pilot Cards', 'بطاقات الطيارين'),
-    'nav_exam': ('Sınav ve Sertifika', 'Exam & Certificate', 'الاختبار والشهادة'),
+    'nav_exam': ('Sınav', 'Exam', 'الاختبار'),
     # --- filo
     'fl_title': ('Filo takibi ve bakım', 'Fleet tracking and maintenance', 'تتبع الأسطول والصيانة'),
     'fl_add': ('Hava aracı ekle', 'Add aircraft', 'إضافة طائرة'),

@@ -5,7 +5,7 @@ import numpy as np
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QProgressBar, QTextBrowser, QListWidget, QListWidgetItem,
                                QSplitter, QComboBox, QTabWidget, QSlider, QTableWidget, QTableWidgetItem, QHeaderView, QLineEdit,
-                               QCheckBox, QRadioButton, QButtonGroup, QPushButton, QFileDialog, QGridLayout, QAbstractItemView, QSpinBox)
+                               QCheckBox, QRadioButton, QButtonGroup, QPushButton, QFileDialog, QGridLayout, QAbstractItemView, QSpinBox, QPlainTextEdit)
 from PySide6.QtGui import QColor
 from .i18n import t, lang
 from .common import label, button, ImageView, run_bg, error, info, card
@@ -785,16 +785,21 @@ class PracticePage(Page):
         c = card(); cv = QVBoxLayout(c); cv.setContentsMargins(20, 18, 20, 18)
         self.meta = label('', 'muted'); cv.addWidget(self.meta)
         self.ql = label('', 'h1', wrap=True); cv.addWidget(self.ql)
+        from .pages_x import ImgLabel, tx as xtx, scroll
+        self.img = ImgLabel(420); cv.addWidget(self.img)
+        self.open_l = label(xtx('open_q'), 'muted', wrap=True); self.open_e = QPlainTextEdit(); self.open_e.setMinimumHeight(120)
+        cv.addWidget(self.open_l); cv.addWidget(self.open_e)
         self.grp = QButtonGroup(self); self.opts = []
-        for i in range(4):
+        for i in range(5):
             r = QRadioButton(); r.setStyleSheet('font-size:11pt; padding:6px'); self.grp.addButton(r, i); self.opts.append(r); cv.addWidget(r)
-        self.res = label('', wrap=True); cv.addWidget(self.res)
+        self.res = label('', wrap=True); self.res.setTextInteractionFlags(Qt.TextSelectableByMouse); cv.addWidget(self.res)
         row = QHBoxLayout()
         self.b_check = button(t('check'), self.check, primary=True); self.b_next = button(t('next'), self.next_q)
         self.b_chart = button(t('go_chart'), self.go_chart); self.b_lib = button(t('go_lib'), self.go_lib)
         self.b_chart.setVisible(False); self.b_lib.setVisible(False)
         row.addWidget(self.b_check); row.addWidget(self.b_next); row.addWidget(self.b_chart); row.addWidget(self.b_lib); row.addStretch(1); cv.addLayout(row)
-        v.addWidget(c); v.addStretch(1)
+        cw = QWidget(); cwv = QVBoxLayout(cw); cwv.setContentsMargins(0, 0, 0, 0); cwv.addWidget(c); cwv.addStretch(1)
+        v.addWidget(scroll(cw), 1)
         self.qs = []; self.i = 0; self.ok = 0; self.answered = 0; self._ids = None
         for w_ in (self.srcsel, self.topsel, self.lvlsel): w_.currentIndexChanged.connect(lambda *_: (setattr(self, '_ids', None), self.new()))
         self.new()
@@ -842,11 +847,13 @@ class PracticePage(Page):
         from ..core import qbank as QB
         self._score()
         if not self.qs:
-            self.ql.setText('-'); self.meta.setText('')
+            self.ql.setText('-'); self.meta.setText(''); self.img.set_raw(None); self.open_l.setVisible(False); self.open_e.setVisible(False)
             for r in self.opts: r.setVisible(False)
             return
         q = self.qs[self.i]
         self.ql.setText(f'{self.i + 1}/{len(self.qs)} · {q["q"]}')
+        op = q.get('type') == 'open'
+        self.img.set_ref(q.get('img')); self.open_l.setVisible(op); self.open_e.setVisible(op); self.open_e.clear(); self.open_e.setReadOnly(False)
         m = []
         if q.get('topic'): m.append(QB.topic_name(q['topic'], lang()))
         if q.get('level'): m.append(QB.level_name(q['level'], lang()))
@@ -866,9 +873,11 @@ class PracticePage(Page):
 
     def check(self):
         if not self.qs: return
+        q = self.qs[self.i]
+        if q.get('type') == 'open': return self._check_open(q)
         k = self.grp.checkedId()
         if k < 0: return
-        q = self.qs[self.i]; good = k == q['ans']
+        good = k == q['ans']
         self.answered += 1; self.ok += good
         if q.get('bank_id'):  # soru başına doğru/toplam (yanlışlarımı tekrar et)
             st = dict(self.win.settings.get('qbank_stats', {}) or {}); a_ = st.get(q['bank_id'], [0, 0])
@@ -882,12 +891,29 @@ class PracticePage(Page):
         txt = (t('correct') if good else t('wrong', c=q['opts'][q['ans']])) + '\n' + q.get('exp', '')
         we = q.get('wexp') or []
         if not good and k < len(we) and we[k]: txt += '\n\n❓ ' + t('why_wrong') + ' ' + we[k]
-        self.res.setText(txt)
+        self.res.setTextFormat(Qt.PlainText); self.res.setText(txt)
         self.b_chart.setVisible(bool(q.get('chart') and self.win.A)); self.b_lib.setVisible(bool(q.get('lib')))
         self.b_check.setEnabled(False)
         if self.ok > self.win.settings.get('practice_best', 0):
             self.win.settings['practice_best'] = self.ok; self.win.settings.save()
         self._score()
+
+    def _check_open(self, q):
+        """Yorum sorusu: anahtar kavram puanı + örnek cevap (alıştırmada eğitimci yok; puan öneridir)."""
+        from ..core import visq
+        from .pages_x import tx as xtx
+        a = self.open_e.toPlainText().strip()
+        if not a: return
+        sc, hit = visq.score_open(a, q.get('kw')); pts = visq.suggest_points(sc)
+        self.answered += 1; self.ok += pts
+        kw = (q.get('kw') or {}).get(lang()) or (q.get('kw') or {}).get('en') or []
+        miss = [g.split('|')[0] for g in kw if g not in hit]
+        col = '#4ADE80' if pts >= 1 else '#FBBF24' if pts else '#F87171'
+        h = [f'<p style="color:{col}"><b>{html.escape(xtx("g_auto", s=f"{pts:g}", h=" · ".join(g.split("|")[0] for g in hit) or "-"))}</b></p>']
+        if miss: h.append(f'<p style="color:#94A3B8">{html.escape(xtx("kw"))}: {html.escape(" · ".join(miss))}</p>')
+        h.append(f'<p><b>{html.escape(xtx("model"))}:</b> {html.escape(q.get("model") or q.get("exp", ""))}</p>')
+        self.res.setTextFormat(Qt.RichText); self.res.setText(''.join(h))
+        self.open_e.setReadOnly(True); self.b_check.setEnabled(False); self._score()
 
     def go_chart(self):
         q = self.qs[self.i] if self.qs else None

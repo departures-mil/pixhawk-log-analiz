@@ -13,6 +13,21 @@ def new_id(n=10):
     return uuid.uuid4().hex[:n].upper()
 
 
+def new_code(archive=None):
+    """Kâğıt / telefon sınavı için 4 haneli sınav kodu (mevcut sınavlarla çakışmaz)."""
+    import random
+    used = {e.get('code') for e in archive.rec_list('exam')} if archive is not None else set()
+    while True:
+        c = f'{random.SystemRandom().randrange(10000):04d}'
+        if c not in used: return c
+
+
+def ensure_code(archive, exam):
+    if not exam.get('code'):
+        exam = dict(exam, code=new_code(archive)); archive.rec_put('exam', exam['id'], exam)
+    return exam
+
+
 def create_class(archive, name, instructor, students=()):
     cid = new_id(8)
     archive.rec_put('class', cid, {'id': cid, 'name': name, 'instructor': instructor, 'students': list(students), 'created': time.strftime('%Y-%m-%d')})
@@ -26,7 +41,7 @@ def create_exam(archive, class_id, title, A, lang='tr', n=10, time_limit_min=20,
     for q in qs:  # grafik/kütüphane bağlantılarını koru, numpy değerlerini temizle
         if q.get('t') is not None: q['t'] = float(q['t'])
     eid = new_id(10)
-    archive.rec_put('exam', eid, {'id': eid, 'class_id': class_id, 'title': title, 'lang': lang, 'questions': qs, 'n': len(qs),
+    archive.rec_put('exam', eid, {'id': eid, 'class_id': class_id, 'title': title, 'lang': lang, 'questions': qs, 'n': len(qs), 'code': new_code(archive),
                                   'time_limit_min': int(time_limit_min), 'pass_mark': int(pass_mark), 'source': source or {},
                                   'log_name': os.path.basename(A.L.path) if A is not None else '', 'created': time.strftime('%Y-%m-%d %H:%M')})
     return eid
@@ -47,20 +62,69 @@ def bank_questions(archive, lang='tr', n=10, topics=None, levels=None, A=None, m
     return qs
 
 
-def grade(exam, answers):
-    qs = exam['questions']; ok = sum(1 for q, a in zip(qs, answers) if a == q['ans'])
+def is_open(q):
+    return (q or {}).get('type') == 'open'
+
+
+def auto_scores(exam, answers):
+    """Açık uçlu cevaplar için anahtar kavram puanı önerisi: {indeks: {'score': 0..1, 'pts': 0|0.5|1, 'hit': [...]}}"""
+    from . import visq
+    out = {}
+    for i, (q, a) in enumerate(zip(exam['questions'], answers)):
+        if not is_open(q): continue
+        sc, hit = visq.score_open(a if isinstance(a, str) else '', q.get('kw'))
+        out[str(i)] = {'score': sc, 'pts': visq.suggest_points(sc), 'hit': hit}
+    return out
+
+
+def grade(exam, answers, manual=None, auto=None):
+    """→ (puan, soru sayısı, yüzde, geçti mi). Çoktan seçmeli: doğruysa 1. Açık uçlu: eğitimcinin verdiği puan (0/0,5/1),
+    verilmemişse anahtar kavram önerisi."""
+    qs = exam['questions']; manual = manual or {}
+    if auto is None: auto = auto_scores(exam, answers)
+    ok = 0.0
+    for i, (q, a) in enumerate(zip(qs, answers)):
+        if is_open(q):
+            k = str(i)
+            ok += float(manual[k]) if k in manual else float((auto.get(k) or {}).get('pts', 0))
+        elif a == q['ans']:
+            ok += 1
+    ok = round(ok, 2)
     pct = 100.0 * ok / max(1, len(qs))
-    return ok, len(qs), pct, pct >= exam.get('pass_mark', 70)
+    return (int(ok) if ok == int(ok) else ok), len(qs), pct, pct >= exam.get('pass_mark', 70)
+
+
+def pending(exam, result):
+    """Eğitimcinin henüz puanlamadığı açık uçlu soru sayısı."""
+    man = result.get('manual') or {}
+    return sum(1 for i, q in enumerate(exam.get('questions', [])) if is_open(q) and str(i) not in man)
+
+
+def _cert(rid, student, exam):
+    return time.strftime('%Y%m%d') + '-' + hashlib.sha256(f'{rid}{student}{exam["id"]}'.encode()).hexdigest()[:8].upper()
 
 
 def save_result(archive, exam, student, answers, started, finished):
-    ok, tot, pct, passed = grade(exam, answers)
+    auto = auto_scores(exam, answers)
+    ok, tot, pct, passed = grade(exam, answers, None, auto)
     rid = new_id(12)
-    cert = (time.strftime('%Y%m%d') + '-' + hashlib.sha256(f'{rid}{student}{exam["id"]}'.encode()).hexdigest()[:8].upper()) if passed else ''
+    cert = _cert(rid, student, exam) if passed else ''
     r = {'id': rid, 'exam_id': exam['id'], 'class_id': exam.get('class_id'), 'student': student, 'answers': answers, 'score': ok, 'total': tot,
          'pct': round(pct, 1), 'passed': passed, 'started': started, 'finished': finished, 'duration_s': int(max(0, finished - started)),
-         'date': time.strftime('%Y-%m-%d %H:%M'), 'cert_id': cert}
+         'date': time.strftime('%Y-%m-%d %H:%M'), 'cert_id': cert, 'auto': auto, 'manual': {}}
     archive.rec_put('result', rid, r)
+    return r
+
+
+def regrade(archive, result, manual):
+    """Eğitimci açık uçlu cevapları puanladı: {indeks: 0|0.5|1} → puan, yüzde, geçme ve sertifika yeniden hesaplanır."""
+    exam = archive.rec_get('exam', result['exam_id']) or {}
+    r = dict(result); r['manual'] = {str(k): float(v) for k, v in manual.items()}
+    ok, tot, pct, passed = grade(exam, r.get('answers', []), r['manual'], r.get('auto'))
+    r.update({'score': ok, 'total': tot, 'pct': round(pct, 1), 'passed': passed, 'graded': time.strftime('%Y-%m-%d %H:%M')})
+    if passed and not r.get('cert_id'): r['cert_id'] = _cert(r['id'], r['student'], exam)
+    if not passed: r['cert_id'] = ''
+    archive.rec_put('result', r['id'], r)
     return r
 
 
