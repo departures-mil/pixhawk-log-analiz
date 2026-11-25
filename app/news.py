@@ -1,6 +1,10 @@
 """Sürüm notları ("Neler yeni" + release-notes.json). Yeni sürümde EN ÜSTE eklenir; tr/en/ar zorunlu."""
 
 NEWS = [
+    {'v': '1.1.6',
+     'tr': 'Güncelleme düzeltmesi: güncellerken açılan siyah "find" penceresi ve takılma giderildi; güncelleme arka planda sessizce biter ve program yeni sürümle açılır',
+     'en': 'Update fix: the black "find" window that opened and hung during updating is gone; the update finishes silently in the background and the app reopens on the new version',
+     'ar': 'إصلاح التحديث: أُزيلت نافذة "find" السوداء التي كانت تظهر وتتوقف أثناء التحديث؛ يكتمل التحديث بصمت في الخلفية ويُعاد فتح البرنامج بالإصدار الجديد'},
     {'v': '1.1.5',
      'tr': 'Uçuş modları her yerde: her mod kendi renginde bant, adı ve gerçek saatiyle; mod tablosu (başlangıç, bitiş, süre, değişim nedeni, modun ne yaptığı)\n'
            'Motor çıkışları sekmesi: motorlar yeriyle isimli (ör. M4 · Arka sağ), yerleşim çizimi, durma / tam güce kilitlenme uyarısı ve olay anı yakın çekimi\n'
