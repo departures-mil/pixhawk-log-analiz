@@ -4,7 +4,6 @@
     contact.card()  → Ayarlar kartı (settings.build bunu EN SONA koyar)
 Firestore REST (comm-calc-103111111 / mesajlar, yalnız ekleme). Gönderilemeyen yerel kuyruğa alınır (en çok 30),
 sonra tekrar denenir. Kullanıcı mesajında yedek FormSubmit kullanılır; çökme raporları yalnız gelen kutusuna gider."""
-import base64
 import json
 import os
 import platform as _pf
@@ -22,10 +21,6 @@ QKEY, MAXQ = 'contact.queue', 30
 cfg = {'app': '', 'version': '', 'post': None}
 _lock = threading.Lock()
 _subs = []
-
-
-def _to():
-    return base64.b64decode('').decode()[::-1]
 
 
 def device_id():
@@ -86,17 +81,8 @@ def inbox(f):
 
 
 def mail(f):
-    body = {'_subject': (f.get('uygulama') or 'Uygulama') + ': ' + f['tur'], '_template': 'table', '_captcha': 'false', 'Tur': f['tur'],
-            'Mesaj': f['mesaj'], 'Uygulama': f['uygulama'], 'Surum': f['surum'], 'Platform': f['platform'], 'Dil': f['dil'], 'Cihaz': f['cihaz']}
-    if f.get('iletisim'):
-        body['Iletisim'] = f['iletisim']
-        if '@' in f['iletisim']:
-            body['_replyto'] = f['iletisim']
-    st, raw = _post('https://formsubmit.co/ajax/' + _to(), body, {'Accept': 'application/json'})
-    try:
-        return str(json.loads(raw.decode('utf-8') or '{}').get('success')).lower() == 'true'
-    except Exception:
-        return False
+    """Yedek e-posta yolu kaldırıldı: programda hiçbir kişisel adres bulunmaz; mesaj kuyrukta bekler."""
+    return False
 
 
 def deliver(item):
