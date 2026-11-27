@@ -171,6 +171,199 @@ def harvest():
     print('logs:', len(man), 'total MB', round(total))
 
 
+PLANE_RX = re.compile(r'plane|quad ?plane|vtol|tail ?sitter|tilt ?rotor|fixed ?wing|glider|flying ?wing', re.I)
+PLANE_Q = ['plane crash', 'arduplane crash', 'fixed wing crash', 'quadplane crash log', 'vtol crash log', 'tailsitter crash',
+           'tiltrotor crash', 'plane stall crash', 'plane spiral dive', 'plane nose dive', 'plane crashed auto', 'plane crashed rtl',
+           'plane crash takeoff', 'hand launch crash', 'catapult launch crash', 'plane crash landing', 'quadplane transition crash',
+           'quadplane fell', 'vtol motor failure', 'qassist crash', 'plane lost control', 'flying wing crash', 'glider crash',
+           'plane fbwa crash', 'tecs crash', 'airspeed sensor crash', 'plane death spiral', 'plane flyaway', 'plane servo crash',
+           'plane first flight log', 'plane autotune log', 'quadplane maiden', 'vtol first flight log', 'plane tuning log review',
+           'quadplane tuning log', 'tecs tuning log', 'plane log review', 'quadplane log review', 'tailsitter tuning']
+
+
+def _topic_ok(tid, title, need, seen, unknown_ok):
+    """Başlıktan etiket: crash/normal; Plane kategorisinde başlık bir şey söylemiyorsa 'unknown' (uzman yanıtları karar verir)."""
+    if tid in seen: return None
+    lb = label(title or '')
+    if lb and need.get(lb, 0) > 0: return lb
+    if lb is None and unknown_ok and need.get('unknown', 0) > 0 and re.search(r'\b(log|help|problem|issue|why|what happened|analy[sz])', title or '', re.I):
+        return 'unknown'
+    return None
+
+
+def _grab(tid, kind, man, mf, need, tot):
+    """Konuyu açar, ilk 6 mesajdaki (konu sahibinin) log bağlantılarından ilk geçerli .bin'i indirir. → eklenen MB ya da 0"""
+    try:
+        T = get(f'{FORUM}/t/{tid}.json'); time.sleep(1.2)
+    except Exception as e:
+        print('topic fail', tid, e); return 0
+    posts = (T.get('post_stream') or {}).get('posts') or []
+    first = re.sub('<[^>]+>', ' ', posts[0].get('cooked', '')) if posts else ''
+    if kind != 'unknown':
+        lb = label(T.get('title', ''), first)
+        if lb != kind: return 0
+    cand = []
+    for p in posts[:6]:
+        if p.get('post_number', 1) == 1 or p.get('username') == (posts[0].get('username') if posts else None):
+            cand += links(p.get('cooked', ''))
+    for u in cand[:3]:
+        try:
+            b, final = get(direct(u), binary=True, timeout=180)
+            data = to_bin(b)
+        except Exception as e:
+            print('  dl fail', u[:90], e); continue
+        if not data or len(data) < 200_000: continue
+        open(os.path.join(BENCH, f'{tid}.bin'), 'wb').write(data)
+        mb = len(data) / 1e6; need[kind] -= 1
+        man[tid] = {'id': tid, 'title': T.get('title'), 'url': f"{FORUM}/t/{T.get('slug', '')}/{tid}", 'log_url': u,
+                    'label': kind, 'cause_hint': cause_hint(T.get('title', ''), first), 'mb': round(mb, 1),
+                    'category_id': T.get('category_id'), 'created': (T.get('created_at') or '')[:10]}
+        print(f'+ {kind:7s} {mb:6.1f} MB  {T.get("title")[:80]}', flush=True)
+        json.dump(man, open(mf, 'w'), indent=1)
+        return mb
+    return 0
+
+
+def _known():
+    import gzip
+    seen = set(labels())
+    for extra in ('threads.json.gz', 'holdout_threads.json.gz', 'more_threads.json.gz', 'plane_threads.json.gz'):
+        try: seen |= set(json.load(gzip.open(os.path.join(ROOT, 'tools_data', 'crashbench', extra), 'rt', encoding='utf-8')))
+        except Exception: pass
+    return seen
+
+
+def harvest_plane():
+    """Uçak ağırlıklı geniş tarama: Plane/QuadPlane/VTOL kategorilerinin TÜM sayfaları (en eskiye kadar) + uçak aramaları.
+    Kategori listesi başlıkları verdiği için yalnız uygun başlıklı konular açılır. Önceki setlerdeki konular alınmaz."""
+    os.makedirs(BENCH, exist_ok=True)
+    mf = os.path.join(BENCH, 'manifest.json')
+    man = json.load(open(mf)) if os.path.exists(mf) else {}
+    seen = set(man) | _known()
+    total = sum(x.get('mb', 0) for x in man.values())
+    need = {'crash': int(os.environ.get('BENCH_N_CRASH', '400')), 'normal': int(os.environ.get('BENCH_N_NORMAL', '150')),
+            'unknown': int(os.environ.get('BENCH_N_UNK', '150'))}
+    for x in man.values(): need[x['label']] = need.get(x['label'], 0) - 1
+    deadline = time.time() + float(os.environ.get('BENCH_MINUTES', '250')) * 60
+    cats = []
+    try:
+        C = get(f'{FORUM}/categories.json?include_subcategories=true'); time.sleep(1.2)
+        def walk(cs, parent=''):
+            for c in cs:
+                nm = (parent + ' / ' + (c.get('name') or '')).strip(' /')
+                if PLANE_RX.search(nm) or PLANE_RX.search(c.get('slug') or ''): cats.append((c['id'], c.get('slug'), nm))
+                walk(c.get('subcategory_list') or [], nm)
+        walk((C.get('category_list') or {}).get('categories') or [])
+        for c in list(cats):          # alt kategoriler ayrıca listelenmemişse
+            try:
+                S = get(f'{FORUM}/c/{c[0]}/show.json'); time.sleep(1.2)
+                for sid in (S.get('category') or {}).get('subcategory_ids') or []:
+                    if sid not in {x[0] for x in cats}: cats.append((sid, '', c[2] + ' / sub'))
+            except Exception: pass
+    except Exception as e:
+        print('categories fail', e)
+    print('plane categories:', cats, flush=True)
+    full = lambda: total > TOTAL_MB or time.time() > deadline or all(v <= 0 for v in need.values())
+    # 1) uçak aramaları (alaka sırası)
+    for q in PLANE_Q:
+        if full(): break
+        for page in range(1, int(os.environ.get('BENCH_PAGES', '10')) + 1):
+            if full(): break
+            try:
+                d = get(f'{FORUM}/search.json?q={urllib.parse.quote(q)}&page={page}'); time.sleep(1.2)
+            except Exception as e:
+                print('search fail', q, e); time.sleep(5); continue
+            tops = d.get('topics') or []
+            if not tops: break
+            for tp in tops:
+                tid = str(tp['id']); kind = _topic_ok(tid, tp.get('title'), need, seen, False)
+                seen.add(tid)
+                if kind: total += _grab(tid, kind, man, mf, need, total)
+    # 2) kategorilerin bütün sayfaları
+    for cid, slug, nm in cats:
+        page = 0
+        while not full():
+            try:
+                L = get(f'{FORUM}/c/{slug}/{cid}.json?page={page}' if slug else f'{FORUM}/c/{cid}.json?page={page}'); time.sleep(1.2)
+            except Exception as e:
+                print('cat fail', cid, page, e); break
+            tops = (L.get('topic_list') or {}).get('topics') or []
+            if not tops: break
+            for tp in tops:
+                if full(): break
+                tid = str(tp['id']); kind = _topic_ok(tid, tp.get('title'), need, seen, True)
+                seen.add(tid)
+                if kind: total += _grab(tid, kind, man, mf, need, total)
+            page += 1
+            if page % 20 == 0: print(f'  cat {nm} page {page}  logs={len(man)} MB={round(total)}', flush=True)
+    json.dump(man, open(mf, 'w'), indent=1)
+    print('logs:', len(man), 'total MB', round(total), 'need left', need)
+
+
+def harvest_gh():
+    """ArduPilot GitHub hata kayıtları: gövdesinde .bin/.zip log bağlantısı olan kırım/uçuş sorunları + geliştirici yorumları.
+    Kimlik 'gh<numara>'. Uzman yanıtları doğrudan plane_threads dosyasına eklenir (BENCH_THREADS_OUT)."""
+    import gzip
+    tok = os.environ.get('GH_TOKEN', '')
+    H = {'User-Agent': UA['User-Agent'], 'Accept': 'application/vnd.github+json', **({'Authorization': f'Bearer {tok}'} if tok else {})}
+    def gj(url):
+        with urllib.request.urlopen(urllib.request.Request(url, headers=H), timeout=60) as r: return json.loads(r.read())
+    os.makedirs(BENCH, exist_ok=True)
+    mf = os.path.join(BENCH, 'manifest.json'); man = json.load(open(mf)) if os.path.exists(mf) else {}
+    out_p = os.path.join(ROOT, 'tools_data', 'crashbench', os.environ.get('BENCH_THREADS_OUT', 'plane_threads.json.gz'))
+    th = json.load(gzip.open(out_p, 'rt', encoding='utf-8')) if os.path.exists(out_p) else {}
+    seen = set(man) | _known(); n_max = int(os.environ.get('BENCH_N_GH', '120')); got = 0
+    QS = ['crash log', 'crashed', 'plane crash', 'quadplane crash', 'fell', 'lost control', 'flipped', 'log attached crash', 'vtol crash']
+    for q in QS:
+        for page in range(1, 11):
+            if got >= n_max: break
+            try:
+                d = gj('https://api.github.com/search/issues?per_page=50&page=%d&q=%s' % (page, urllib.parse.quote(f'repo:ArduPilot/ardupilot is:issue {q}')))
+                time.sleep(2.5)
+            except Exception as e:
+                print('gh search fail', q, e); time.sleep(20); break
+            items = d.get('items') or []
+            if not items: break
+            for it in items:
+                tid = 'gh%d' % it['number']
+                if tid in seen: continue
+                seen.add(tid)
+                body = it.get('body') or ''
+                lb = label(it.get('title') or '', body)
+                if lb not in ('crash', 'normal'): continue
+                urls = re.findall(r'https?://[^\s)\]"\'<>]+', body)
+                cand = [u for u in urls if re.search(r'\.(bin|zip)(\?|$)', u.lower()) or 'drive.google.com' in u or
+                        ('github.com/user-attachments/files' in u)]
+                for u in cand[:3]:
+                    try:
+                        b, _ = get(direct(u), binary=True, timeout=180); data = to_bin(b)
+                    except Exception as e:
+                        print('  dl fail', u[:90], e); continue
+                    if not data or len(data) < 200_000: continue
+                    open(os.path.join(BENCH, f'{tid}.bin'), 'wb').write(data); mb = len(data) / 1e6; got += 1
+                    man[tid] = {'id': tid, 'title': it.get('title'), 'url': it.get('html_url'), 'log_url': u, 'label': lb,
+                                'cause_hint': cause_hint(it.get('title') or '', body), 'mb': round(mb, 1), 'category_id': 'github',
+                                'created': (it.get('created_at') or '')[:10]}
+                    rows = [{'n': 1, 'u': (it.get('user') or {}).get('login'), 'tl': 1, 'staff': False, 'likes': 0, 'acc': False,
+                             'd': (it.get('created_at') or '')[:10], 'x': body[:3500]}]
+                    try:
+                        cm = gj(it['comments_url'] + '?per_page=60'); time.sleep(1)
+                        for i, c in enumerate(cm, 2):
+                            aa = c.get('author_association') or ''
+                            rows.append({'n': i, 'u': (c.get('user') or {}).get('login'), 'tl': 3 if aa in ('MEMBER', 'OWNER', 'COLLABORATOR') else 1,
+                                         'staff': aa in ('MEMBER', 'OWNER'), 'likes': (c.get('reactions') or {}).get('+1', 0), 'acc': False,
+                                         'd': (c.get('created_at') or '')[:10], 'x': (c.get('body') or '')[:3500]})
+                    except Exception as e:
+                        print('  comments fail', tid, e)
+                    th[tid] = {'title': it.get('title'), 'url': it.get('html_url'), 'posts': rows}
+                    print(f'+ gh {lb:6s} {mb:6.1f} MB  {it.get("title", "")[:80]}', flush=True)
+                    json.dump(man, open(mf, 'w'), indent=1)
+                    break
+    with gzip.open(out_p, 'wt', encoding='utf-8') as f: json.dump(th, f, ensure_ascii=False)
+    json.dump(man, open(mf, 'w'), indent=1)
+    print('github logs:', got)
+
+
 def _plain(cooked):
     t = re.sub(r'<aside class="quote.*?</aside>', ' ', cooked or '', flags=re.S)   # alıntıları at
     t = re.sub(r'<(br|p|li|div)[^>]*>', '\n', t); t = re.sub('<[^>]+>', ' ', t)
@@ -188,7 +381,7 @@ def threads():
         try: out = json.load(gzip.open(out_p, 'rt', encoding='utf-8'))
         except Exception: out = {}
     for tid in sorted(man):
-        if tid in out and out[tid].get('posts'): continue
+        if (tid in out and out[tid].get('posts')) or tid.startswith('gh'): continue
         try:
             T = get(f'{FORUM}/t/{tid}.json'); time.sleep(1.2)
             posts = list((T.get('post_stream') or {}).get('posts') or [])
@@ -343,4 +536,4 @@ def write(res):
 
 
 if __name__ == '__main__':
-    {'harvest': harvest, 'run': run, 'threads': threads}[sys.argv[1]]()
+    {'harvest': harvest, 'run': run, 'threads': threads, 'plane': harvest_plane, 'github': harvest_gh}[sys.argv[1]]()

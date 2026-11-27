@@ -1,0 +1,71 @@
+name: crashbench-plane
+
+# Uçak ağırlıklı geniş tarama: forumun Plane/QuadPlane/VTOL kategorilerinin tüm sayfaları + uçak aramaları + ArduPilot GitHub
+# hata kayıtlarındaki loglar ve uzman/geliştirici yanıtları. Tetik: tools_data/request_plane.txt
+on:
+  push:
+    paths: ['tools_data/request_plane.txt']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  plane:
+    runs-on: ubuntu-latest
+    timeout-minutes: 345
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Free disk
+        run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL || true; df -h /tmp
+      - name: Harvest plane logs (forum categories + searches)
+        env:
+          BENCH_DIR: /tmp/plane
+          BENCH_N_CRASH: '400'
+          BENCH_N_NORMAL: '150'
+          BENCH_N_UNK: '150'
+          BENCH_TOTAL_MB: '14000'
+          BENCH_MAX_MB: '120'
+          BENCH_PAGES: '10'
+          BENCH_MINUTES: '230'
+        run: python tools_data/crashbench.py plane
+      - name: Harvest GitHub issue logs
+        continue-on-error: true
+        env:
+          BENCH_DIR: /tmp/plane
+          BENCH_N_GH: '120'
+          BENCH_THREADS_OUT: plane_threads.json.gz
+          GH_TOKEN: ${{ github.token }}
+        run: timeout 40m python tools_data/crashbench.py github
+      - name: Expert replies
+        env:
+          BENCH_DIR: /tmp/plane
+          BENCH_THREADS_OUT: plane_threads.json.gz
+        run: timeout 50m python tools_data/crashbench.py threads
+      - name: Upload logs to draft release bench-plane
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd /tmp/plane && tar czf /tmp/plane.tgz *.bin manifest.json && rm -f *.bin && cd /tmp && split -b 1900m -d plane.tgz plane.tgz.part && rm plane.tgz
+          gh release view bench-plane --repo "${{ github.repository }}" >/dev/null 2>&1 || gh release create bench-plane --draft --repo "${{ github.repository }}" --target "${{ github.sha }}" --title "bench-plane (taslak, kullanıcıya görünmez)" --notes "uçak ağırlıklı tarama"
+          gh release upload bench-plane /tmp/plane.tgz.part* --clobber --repo "${{ github.repository }}"
+      - name: Commit threads
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          [ -f tools_data/crashbench/plane_threads.json.gz ] || exit 0
+          cp tools_data/crashbench/plane_threads.json.gz /tmp/pt.json.gz
+          [ -f /tmp/plane/manifest.json ] && cp /tmp/plane/manifest.json /tmp/pm.json
+          for i in 1 2 3 4 5; do
+            git fetch -q origin "${{ github.ref_name }}" && git reset -q --hard "origin/${{ github.ref_name }}"
+            cp /tmp/pt.json.gz tools_data/crashbench/plane_threads.json.gz
+            [ -f /tmp/pm.json ] && cp /tmp/pm.json tools_data/crashbench/plane_manifest.json
+            git add tools_data/crashbench/plane_threads.json.gz tools_data/crashbench/plane_manifest.json 2>/dev/null
+            git commit -qm "crashbench: uçak taraması uzman yanıtları (otomatik)" || exit 0
+            git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            sleep $((i*10))
+          done
+          exit 1
