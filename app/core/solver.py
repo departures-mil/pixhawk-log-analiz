@@ -578,7 +578,7 @@ def c_params(A, lg):
 
 ROOT2CHECK = {'gps': ['gps'], 'ekf': ['ekf', 'compass', 'gps'], 'battery': ['power'], 'power': ['power', 'ice'], 'radio': ['rc'],
               'stall': ['airspeed'], 'vibration': ['vibration'], 'compass': ['compass'], 'control': ['att', 'servo', 'motors', 'osc'],
-              'motor': ['flip', 'motors', 'ice']}
+              'motor': ['flip', 'motors', 'ice'], 'pilot': ['rc']}
 CHECKS = {k: globals()['c_' + k] for k in ALL_CHECKS}
 SEV = {'bad': 0, 'warn': 1, 'good': 2, 'ok': 2, 'na': 3}
 

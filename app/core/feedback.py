@@ -13,7 +13,7 @@ from .paths import data_dir
 from . import contact
 
 COLLECTION = 'teshis_geri_bildirim'
-CAUSES = ['gps', 'ekf', 'battery', 'radio', 'stall', 'vibration', 'compass', 'power', 'control', 'motor', 'unknown']
+CAUSES = ['gps', 'ekf', 'battery', 'radio', 'stall', 'vibration', 'compass', 'power', 'control', 'motor', 'pilot', 'unknown']
 OUTCOMES = ['crash', 'incident', 'normal']
 
 

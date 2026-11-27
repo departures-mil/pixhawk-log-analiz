@@ -838,9 +838,11 @@ class ParamCenterPage(Page):
 
 # ====================================================================== Gerçek kaza logları
 class CrashLibPage(Page):
+    """Gerçek kaza logları + uzman tecrübeleri: her gerçek konuda uzmanların teşhisi, dersler ve logda nereye bakılacağı."""
     def __init__(self, win):
         super().__init__(win)
-        from ..core import crashlib
+        from ..core import crashlib, expert as EX
+        self.EX = EX
         self.D = crashlib.load(); self.cases = self.D.get('cases') or []
         v = QVBoxLayout(self); v.setContentsMargins(16, 12, 16, 12)
         v.addWidget(label('💥 ' + t('nav_crashlib'), 'h1'))
@@ -849,41 +851,155 @@ class CrashLibPage(Page):
         if s:
             v.addWidget(label(t('cl_score', a=s['accuracy'] * 100, r=s['recall_crash'] * 100, s=s['specificity'] * 100, c=s['cause_acc'] * 100, n=s['n'])
                               + (f"  ·  {self.D.get('date', '')}" if self.D.get('date') else ''), 'h2', wrap=True))
+        self.tabs = QTabWidget(); v.addWidget(self.tabs, 1)
+        # --- sekme 1: gerçek konular
+        w1 = QWidget(); v1 = QVBoxLayout(w1); v1.setContentsMargins(0, 6, 0, 0)
         bar = QHBoxLayout()
         self.b_open = button('⬇ ' + t('cl_open'), self.open_case, primary=True); bar.addWidget(self.b_open)
         bar.addWidget(button('🌐 ' + t('cl_forum'), self.forum))
+        self.f_les = QComboBox(); self.f_les.addItem('🎓 ' + t('ex_all'), None)
+        for k in self._lesson_keys(): self.f_les.addItem(f"{EX.L[k]['icon']} {EX.txt(k, 'title', lang())}", k)
+        self.f_les.currentIndexChanged.connect(self.fill); bar.addWidget(self.f_les)
         self.q = QLineEdit(); self.q.setPlaceholderText(t('search')); self.q.textChanged.connect(self.fill); bar.addWidget(self.q, 1)
         self.st = label('', 'muted'); bar.addWidget(self.st)
-        v.addLayout(bar)
+        v1.addLayout(bar)
+        sp = QSplitter(Qt.Horizontal)
         self.tb = _tbl([t('cl_title'), 'Araç' if lang() == 'tr' else 'Vehicle' if lang() == 'en' else 'المركبة', t('cl_label'), t('cl_got'), t('cl_cause'), t('cl_hint'), 'MB'], 0)
         self.tb.cellDoubleClicked.connect(lambda *_: self.open_case())
-        v.addWidget(self.tb, 1)
-        self.fill()
+        self.tb.currentCellChanged.connect(lambda *_: self.show_case())
+        sp.addWidget(self.tb)
+        self.det = QTextBrowser(); self.det.setOpenExternalLinks(True); sp.addWidget(self.det)
+        sp.setStretchFactor(0, 3); sp.setStretchFactor(1, 2)
+        v1.addWidget(sp, 1)
+        self.tabs.addTab(w1, '📂 ' + t('ex_tab_cases'))
+        # --- sekme 2: uzman tecrübeleri
+        w2 = QWidget(); v2 = QVBoxLayout(w2); v2.setContentsMargins(0, 6, 0, 0)
+        gold = QTextBrowser(); gold.setMaximumHeight(170)
+        gold.setHtml(self._dir() + f"<b>⭐ {E(t('ex_golden'))}</b><ol>" + ''.join(f'<li>{E(g)}</li>' for g in EX.golden(lang())) + '</ol></div>')
+        v2.addWidget(gold)
+        b2 = QHBoxLayout()
+        self.f_cause = QComboBox(); self.f_cause.addItem(t('ex_all_causes'), '*')
+        for c in EX.CAUSE_ORDER:
+            if any(L_['cause'] == c for L_ in EX.L.values()): self.f_cause.addItem(self._cz(c) if c else t('ex_general'), c)
+        self.f_cause.currentIndexChanged.connect(self.fill_lessons); b2.addWidget(self.f_cause)
+        b2.addStretch(1)
+        self.b_ex = button('📂 ' + t('ex_show_cases'), self.show_examples); b2.addWidget(self.b_ex)
+        v2.addLayout(b2)
+        sp2 = QSplitter(Qt.Horizontal)
+        self.ls = QListWidget(); self.ls.currentRowChanged.connect(lambda *_: self.show_lesson()); sp2.addWidget(self.ls)
+        self.ld = QTextBrowser(); self.ld.setOpenExternalLinks(True); sp2.addWidget(self.ld)
+        sp2.setStretchFactor(0, 2); sp2.setStretchFactor(1, 3)
+        v2.addWidget(sp2, 1)
+        v2.addWidget(label(t('ex_src'), 'muted', wrap=True))
+        self.tabs.addTab(w2, '🎓 ' + t('ex_tab_lessons'))
+        self.fill(); self.fill_lessons()
 
+    # ---------------------------------------------------------------- yardımcılar
+    def _dir(self):
+        return '<div dir="rtl" style="text-align:right">' if lang() == 'ar' else '<div>'
+
+    def _lesson_keys(self):
+        st = self.EX.stats()
+        return sorted(self.EX.L, key=lambda k: -st.get(k, 0))
+
+    def _cz(self, c):
+        from ..core import texts as TX
+        if not c: return '-'
+        if c == 'motor': return ('Motor / ESC / pervane', 'Motor / ESC / prop', 'المحرك / ESC / المروحة')[LI.get(lang(), 0)]
+        try: return TX.T('cause_' + c, lang())
+        except Exception: return c
+
+    def _lesson_html(self, k, short=False):
+        EX = self.EX; lg = lang(); n = EX.stats().get(k)
+        h = [f"<h3>{EX.L[k]['icon']} {E(EX.txt(k, 'title', lg))}</h3>"]
+        if n: h.append(f"<i>{E(t('ex_seen', n=n))}</i>")
+        h.append(f"<p><b>🎓 {E(t('ex_rule'))}:</b> {E(EX.txt(k, 'rule', lg))}</p>")
+        if not short:
+            h.append(f"<p><b>🔎 {E(t('ex_look'))}:</b> {E(EX.txt(k, 'look', lg))}</p>")
+            h.append(f"<p><b>🛠 {E(t('ex_fix'))}:</b> {E(EX.txt(k, 'fix', lg))}</p>")
+            if EX.L[k]['params']: h.append(f"<p><b>⚙ {E(t('ex_params'))}:</b> <code>{E(', '.join(EX.L[k]['params']))}</code></p>")
+        return ''.join(h)
+
+    # ---------------------------------------------------------------- sekme 1
     def fill(self, *_):
-        q = self.q.text().strip().lower()
-        self.rows = [c for c in self.cases if not q or q in (c.get('title') or '').lower() or q in str(c.get('got_cause')).lower()]
+        q = self.q.text().strip().lower(); les = self.f_les.currentData()
+        self.rows = [c for c in self.cases if (not q or q in (c.get('title') or '').lower() or q in str(c.get('got_cause')).lower())
+                     and (not les or les in (self.EX.case_lessons(c.get('id')).get('lessons') or []))]
         self.tb.setRowCount(len(self.rows))
         from ..core import texts as TX
         lg = lang(); li = LI.get(lg, 0)
         lbl = {k: (TX.T('v_' + k, 'tr'), TX.T('v_' + k, 'en'), TX.T('v_' + k, 'ar')) for k in ('crash', 'normal', 'incident', 'noflight')}
-
-        def cz(c):
-            if not c: return '-'
-            if c == 'motor': return ('Motor / ESC / pervane', 'Motor / ESC / prop', 'المحرك / ESC / المروحة')[li]
-            try: return TX.T('cause_' + c, lg)
-            except Exception: return c
         for i, c in enumerate(self.rows):
             ok = (c.get('got') in ('crash', 'incident')) == (c.get('label') == 'crash')
             self.tb.setItem(i, 0, _it(c.get('title')))
             self.tb.setItem(i, 1, _it(c.get('vehicle')))
             self.tb.setItem(i, 2, _it(lbl.get(c.get('label'), ('', '', ''))[li]))
             self.tb.setItem(i, 3, _it(('✅ ' if ok else '❌ ') + lbl.get(c.get('got'), (str(c.get('got')),) * 3)[li], '#34D399' if ok else '#F87171'))
-            self.tb.setItem(i, 4, _it(cz(c.get('got_cause'))))
-            self.tb.setItem(i, 5, _it(cz(c.get('cause_hint'))))
+            self.tb.setItem(i, 4, _it(self._cz(c.get('got_cause'))))
+            self.tb.setItem(i, 5, _it(self._cz(c.get('cause_hint'))))
             self.tb.setItem(i, 6, _it(c.get('mb')))
-        if not self.rows: self.st.setText(t('cl_empty'))
-        self.tb.resizeColumnsToContents(); self.tb.setColumnWidth(0, min(560, self.tb.columnWidth(0)))
+        self.st.setText(t('cl_empty') if not self.rows else str(len(self.rows)))
+        self.tb.resizeColumnsToContents(); self.tb.setColumnWidth(0, min(420, self.tb.columnWidth(0)))
+        if self.rows: self.tb.setCurrentCell(0, 0)
+        else: self.det.clear()
+
+    def show_case(self):
+        c = self._cur()
+        if not c: return self.det.clear()
+        from ..core import texts as TX
+        EX = self.EX; lg = lang(); x = EX.case_lessons(c.get('id'))
+        h = [self._dir(), f"<h3>{E(c.get('title') or '')}</h3>"]
+        if x.get('experts'): h.append(f"<i>👥 {E(t('ex_experts_n', n=x['experts']))}</i><br>")
+        if c.get('label') == 'crash':
+            if c.get('cause_hint'):
+                h.append(f"<p><b>🎓 {E(t('ex_case_diag'))}:</b> {E(self._cz(c['cause_hint']))}</p>")
+                if x.get('alt'): h.append(f"<p><b>{E(t('ex_case_alt'))}:</b> {E(', '.join(self._cz(a) for a in x['alt']))}</p>")
+            else:
+                h.append(f"<p>{E(t('ex_case_none'))}</p>")
+        else:
+            h.append(f"<p><b>🎓 {E(t('ex_case_diag'))}:</b> {E(TX.T('v_' + (c.get('label') or 'normal'), lg))}</p>")
+        got = c.get('got')
+        h.append(f"<p><b>🤖 {E(t('ex_case_prog'))}:</b> {E(TX.T('v_' + got, lg) if got in ('crash', 'normal', 'incident', 'noflight') else str(got))}"
+                 + (f" · {E(self._cz(c.get('got_cause')))}" if c.get('got_cause') and c.get('got_cause') != 'unknown' else '') + '</p>')
+        ok = (got in ('crash', 'incident')) == (c.get('label') == 'crash') and (
+            c.get('label') != 'crash' or not c.get('cause_hint') or c.get('got_cause') in {c['cause_hint'], *(x.get('alt') or [])})
+        h.append(f"<p>{'✅ ' + E(t('ex_case_ok')) if ok else '⚠ ' + E(t('ex_case_bad'))}</p>")
+        if x.get('lessons'):
+            h.append(f"<hr><h3>📚 {E(t('ex_case_lessons'))}</h3>")
+            for k in x['lessons']: h.append(self._lesson_html(k, short=k not in x['lessons'][:2]))
+        if c.get('url'): h.append(f"<p><a href=\"{E(c['url'])}\">🌐 {E(t('ex_read'))}</a></p>")
+        h.append('</div>')
+        self.det.setHtml(''.join(h))
+
+    # ---------------------------------------------------------------- sekme 2
+    def fill_lessons(self, *_):
+        EX = self.EX; c = self.f_cause.currentData(); st = EX.stats()
+        self.lkeys = [k for k in self._lesson_keys() if c == '*' or EX.L[k]['cause'] == c]
+        self.ls.clear()
+        for k in self.lkeys:
+            n = st.get(k)
+            self.ls.addItem(f"{EX.L[k]['icon']} {EX.txt(k, 'title', lang())}" + (f"  ({n})" if n else ''))
+        if self.lkeys: self.ls.setCurrentRow(0)
+
+    def show_lesson(self):
+        r = self.ls.currentRow()
+        if not (0 <= r < len(self.lkeys)): return self.ld.clear()
+        k = self.lkeys[r]
+        ex = [c for c in self.cases if k in (self.EX.case_lessons(c.get('id')).get('lessons') or [])]
+        h = [self._dir(), self._lesson_html(k)]
+        if ex:
+            h.append(f"<hr><b>📂 {E(t('ex_show_cases'))} ({len(ex)})</b><ul>")
+            for c in ex[:8]:
+                h.append(f"<li><a href=\"{E(c.get('url') or '')}\">{E(c.get('title') or '')}</a> — {E(self._cz(c.get('cause_hint')) if c.get('label') == 'crash' else c.get('label') or '')}</li>")
+            h.append('</ul>')
+        h.append('</div>')
+        self.ld.setHtml(''.join(h))
+
+    def show_examples(self, k=None):
+        r = self.ls.currentRow()
+        k = k or (self.lkeys[r] if 0 <= r < len(self.lkeys) else None)
+        if not k: return
+        self.f_les.setCurrentIndex(max(0, self.f_les.findData(k))); self.tabs.setCurrentIndex(0)
 
     def _cur(self):
         r = self.tb.currentRow()

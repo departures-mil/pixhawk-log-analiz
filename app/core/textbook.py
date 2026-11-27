@@ -9,7 +9,7 @@ from . import report as RP, texts, pcritical as CR
 from .paths import res
 
 LI = {'tr': 0, 'en': 1, 'ar': 2}
-SECTIONS = ['intro', 'causes', 'scen', 'params', 'msgs', 'quiz', 'crash']
+SECTIONS = ['intro', 'causes', 'experts', 'scen', 'params', 'msgs', 'quiz', 'crash']
 
 TX = {
     'book': ('Pixhawk / ArduPilot Uçuş Logu Analizi', 'Pixhawk / ArduPilot Flight Log Analysis', 'تحليل سجلات طيران Pixhawk و ArduPilot'),
@@ -18,6 +18,10 @@ TX = {
     'toc': ('İçindekiler', 'Contents', 'المحتويات'),
     'ch_intro': ('Giriş ve log analizi yöntemi', 'Introduction and analysis method', 'المقدمة وطريقة التحليل'),
     'ch_causes': ('Kazaların kök nedenleri ve önlemler', 'Crash root causes and prevention', 'الأسباب الجذرية للحوادث والوقاية'),
+    'ch_experts': ('Uzman tecrübeleri: gerçek kırımlardan dersler', 'Expert experience: lessons from real crashes', 'خبرة الخبراء: دروس من حوادث حقيقية'),
+    'x_rule': ('Uzmanların kuralı:', 'The experts\' rule:', 'قاعدة الخبراء:'), 'x_look': ('Logda nereye bakılır:', 'Where to look in the log:', 'أين تنظر في السجل:'),
+    'x_fix': ('Ne yapılmalı:', 'What to do:', 'ماذا تفعل:'), 'x_gold': ('Altın kurallar', 'Golden rules', 'القواعد الذهبية'),
+    'x_seen': ('({n} gerçek konuda)', '({n} real threads)', '(في {n} موضوعاً حقيقياً)'),
     'ch_scen': ('Örnek senaryolar', 'Example scenarios', 'سيناريوهات نموذجية'),
     'ch_params': ('Bilinmesi gereken kritik parametreler', 'Must-know critical parameters', 'المعاملات الحرجة الواجب معرفتها'),
     'ch_msgs': ('Log mesajları sözlüğü', 'Log messages glossary', 'مسرد رسائل السجل'),
@@ -51,7 +55,7 @@ INTRO = [
      'Each chapter has a counterpart in the program: Charts & Lessons, Map & 3D Replay (step-by-step lesson guide and MP4 video), Event Timeline, AI Advisor, Practice, Exam & Certificate, Parameter Center (full parameter list for every vehicle class) and Real Crash Logs.',
      'لكل فصل ما يقابله في البرنامج: الرسوم والدروس، والخريطة والإعادة ثلاثية الأبعاد (دليل درس خطوة بخطوة وفيديو MP4)، والخط الزمني للأحداث، والمستشار الذكي، والتدريب، والاختبار والشهادة، ومركز المعاملات (القائمة الكاملة لكل فئات المركبات)، وسجلات الحوادث الحقيقية.'),
 ]
-CAUSES = ['gps', 'ekf', 'battery', 'radio', 'stall', 'vibration', 'compass', 'power', 'control', 'motor']
+CAUSES = ['gps', 'ekf', 'battery', 'radio', 'stall', 'vibration', 'compass', 'power', 'control', 'motor', 'pilot']
 
 
 def _x(k, lg, **a):
@@ -133,6 +137,15 @@ def build_book(path, lang='tr', lh=None, sections=None, progress=None):
                 for c in CAUSES:
                     st.append(KeepTogether([P(texts.T('cause_' + c, lg), H2), P(_x('why', lg) + ' ' + texts.T('why_' + c, lg)),
                                             Spacer(1, 2), P(_x('prev', lg) + ' ' + texts.T('prevent_' + c, lg)), Spacer(1, 6)]))
+            elif s == 'experts':
+                from . import expert as EXP
+                st += [P(_x('x_gold', lg), H2)] + [P(f'{i}. ' + g) for i, g in enumerate(EXP.golden(lg), 1)] + [Spacer(1, 8)]
+                sts = EXP.stats()
+                for k in sorted(EXP.L, key=lambda k_: -sts.get(k_, 0)):
+                    ttl = EXP.txt(k, 'title', lg) + (' ' + _x('x_seen', lg, n=sts[k]) if sts.get(k) else '')
+                    st.append(KeepTogether([P(ttl, H2), P(_x('x_rule', lg) + ' ' + EXP.txt(k, 'rule', lg)), Spacer(1, 2),
+                                            P(_x('x_look', lg) + ' ' + EXP.txt(k, 'look', lg)), Spacer(1, 2),
+                                            P(_x('x_fix', lg) + ' ' + EXP.txt(k, 'fix', lg)), Spacer(1, 6)]))
             elif s == 'scen':
                 for j, sc in enumerate(data, 1):
                     A = sc['A']; v = A.verdict.get('kind', 'normal'); cause = (A.root or {}).get('cause')

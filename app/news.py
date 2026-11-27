@@ -1,6 +1,28 @@
 """Sürüm notları ("Neler yeni" + release-notes.json). Yeni sürümde EN ÜSTE eklenir; tr/en/ar zorunlu."""
 
 NEWS = [
+    {'v': '1.1.12',
+     'tr': 'Uzman tecrübeleri: ArduPilot forumundaki yüzlerce gerçek kırım konusunda deneyimli üyelerin ve geliştirici ekibin verdiği teşhis ve öğütler 32 derse ve 10 altın kurala dönüştürüldü (Türkçe, İngilizce, Arapça)\n'
+           'Her ders: uzmanların kuralı, logda nereye bakılacağı, ne yapılacağı ve ilgili parametreler; uzmanların bu konuya kaç gerçek konuda değindiği de yazılır\n'
+           'Gerçek Kaza Logları sayfası yenilendi: bir konuyu seçince uzman teşhisi, diğer olasılıklar, programın teşhisi ve o konudan çıkan dersler yanda görünür; derse göre filtreleyip gerçek örnekleri listeleyebilirsiniz\n'
+           'Analiz özetinde "Uzmanlar ne diyor?" bölümü: bulunan kök nedenle ilgili uzman kuralları ve logda nereye bakılacağı\n'
+           '136 yeni gerçek log uzman yorumlarına göre etiketlendi (toplam 461); teşhis kuralları iyileşti: doğruluk %86 → %89, normal uçuşu tanıma %70 → %85\n'
+           'Yeni kök neden: pilot / kullanım hatası (gaz kolu dipteyken Stabilize\'e geçiş); kanıtsız küçük olaylar artık "ciddi" sayılmıyor\n'
+           'Soru Bankası\'na "Uzman tecrübeleri" konusunda 96 yeni soru; eğitim kitabına "Uzman tecrübeleri" bölümü eklendi',
+     'en': 'Expert experience: the diagnoses and advice given by experienced members and the development team in hundreds of real crash threads on the ArduPilot forum were turned into 32 lessons and 10 golden rules (Turkish, English, Arabic)\n'
+           'Each lesson: the experts\' rule, where to look in the log, what to do and the related parameters; it also shows in how many real threads experts raised it\n'
+           'Real Crash Logs page renewed: select a thread to see the expert diagnosis, other possibilities, the program\'s diagnosis and the lessons from that thread; filter by lesson to list real examples\n'
+           '"What do the experts say?" in the analysis summary: expert rules for the root cause found and where to look in the log\n'
+           '136 new real logs labelled from expert comments (461 in total); diagnosis rules improved: accuracy 86% → 89%, recognising normal flights 70% → 85%\n'
+           'New root cause: pilot / handling error (switching to Stabilize with the throttle low); minor incidents without evidence are no longer rated "serious"\n'
+           '96 new questions under "Expert experience" in the Question Bank; an "Expert experience" chapter in the training book',
+     'ar': 'خبرة الخبراء: حُوِّلت التشخيصات والنصائح التي قدّمها الأعضاء ذوو الخبرة وفريق التطوير في مئات مواضيع الحوادث الحقيقية في منتدى ArduPilot إلى 32 درسًا و10 قواعد ذهبية (بالتركية والإنجليزية والعربية)\n'
+           'كل درس: قاعدة الخبراء، وأين تنظر في السجل، وماذا تفعل، والمعاملات المعنية؛ ويُذكر أيضًا في كم موضوع حقيقي أشار إليه الخبراء\n'
+           'تجديد صفحة سجلات الحوادث الحقيقية: اختر موضوعًا لترى تشخيص الخبراء والاحتمالات الأخرى وتشخيص البرنامج والدروس المستفادة منه؛ ويمكنك التصفية حسب الدرس لعرض أمثلة حقيقية\n'
+           'قسم "ماذا يقول الخبراء؟" في ملخص التحليل: قواعد الخبراء للسبب الجذري المكتشف وأين تنظر في السجل\n'
+           'وُسم 136 سجلًا حقيقيًا جديدًا حسب تعليقات الخبراء (461 إجمالًا)؛ وتحسنت قواعد التشخيص: الدقة من 86% إلى 89%، والتعرف على الرحلات الطبيعية من 70% إلى 85%\n'
+           'سبب جذري جديد: خطأ الطيار / الاستخدام (التبديل إلى Stabilize والخانق في الأسفل)؛ ولم تعد الحوادث الصغيرة بلا أدلة تُعدّ "خطيرة"\n'
+           '96 سؤالًا جديدًا في موضوع "خبرة الخبراء" في بنك الأسئلة؛ وفصل "خبرة الخبراء" في كتاب التدريب'},
     {'v': '1.1.11',
      'tr': 'Yeni "Sınav" sekmesi: sınav hazırlama, eğitimci ve öğrenci bölümleri tek yerde; soru sayısını siz seçersiniz, soruları tek tek ekleyebilir ya da "Otomatik doldur" diyebilirsiniz\n'
            'Görselli grafik soruları: gerçek kırım ve normal uçuşlardan 271 grafikle 391 soru; bir kısmında cevabı ele veren işaretler gizli, bir kısmında programın gerçek işaretli grafiği var; öğrencinin grafiği yorumlayıp yazdığı açık uçlu sorular da var. Açık logdan ya da senaryodan yeni görselli soru üretilebilir\n'

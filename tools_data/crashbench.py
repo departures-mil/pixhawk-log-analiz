@@ -116,6 +116,9 @@ def harvest():
             seen |= set(json.load(gzip.open(os.path.join(ROOT, 'tools_data', 'crashbench', 'threads.json.gz'), 'rt', encoding='utf-8')))
         except Exception:
             pass
+        for extra in ('holdout_threads.json.gz', 'more_threads.json.gz'):   # önceki ek taramalar da tekrar alınmaz
+            try: seen |= set(json.load(gzip.open(os.path.join(ROOT, 'tools_data', 'crashbench', extra), 'rt', encoding='utf-8')))
+            except Exception: pass
     total = sum(x.get('mb', 0) for x in man.values())
     need = {'crash': N_CRASH - sum(1 for x in man.values() if x['label'] == 'crash'),
             'normal': N_NORMAL - sum(1 for x in man.values() if x['label'] == 'normal')}
