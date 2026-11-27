@@ -278,3 +278,5 @@ def lang():
     return LANG['v']
 from .i18n12 import U12 as _U12  # noqa: E402
 U.update(_U12)
+from .i18n13 import U13 as _U13  # noqa: E402
+U.update(_U13)

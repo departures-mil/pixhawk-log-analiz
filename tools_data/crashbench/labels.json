@@ -2616,6 +2616,935 @@
    "cause": "motor",
    "alt": [],
    "note": "VTOL ESC (T-Motor Flame) known issue"
+  },
+  "100621": {
+   "label": "crash",
+   "cause": null,
+   "note": "VTOL transition crash; no expert diagnosis"
+  },
+  "10124": {
+   "label": "crash",
+   "cause": "stall",
+   "note": "tridge: stall with extra weight/drag of quad motors"
+  },
+  "102748": {
+   "label": "crash",
+   "cause": "pilot",
+   "note": "disarm switch toggled in flight"
+  },
+  "103096": {
+   "label": "crash",
+   "cause": "control",
+   "alt": [
+    "battery"
+   ],
+   "note": "motor outputs oscillating, li-ion sag"
+  },
+  "103644": {
+   "label": "crash",
+   "cause": "pilot",
+   "alt": [
+    "battery"
+   ],
+   "note": "hit disarm switch"
+  },
+  "103732": {
+   "label": "crash",
+   "cause": "battery",
+   "alt": [
+    "motor"
+   ],
+   "note": "ESC low-voltage cutoff under current spike"
+  },
+  "106052": {
+   "label": "crash",
+   "cause": "motor",
+   "alt": [
+    "battery"
+   ],
+   "note": "ESC 4 shut down on low voltage"
+  },
+  "107532": {
+   "label": "crash",
+   "cause": null
+  },
+  "107723": {
+   "label": "crash",
+   "cause": "gps",
+   "note": "near crash/incident; GPS+compass module lost in QHover, DCM fallback"
+  },
+  "108201": {
+   "label": "crash",
+   "cause": null,
+   "alt": [
+    "power"
+   ],
+   "note": "logging stalled at QRTL transition; unclear"
+  },
+  "110047": {
+   "label": "crash",
+   "cause": "motor",
+   "note": "motor 1 lost thrust in yaw autotune"
+  },
+  "11018": {
+   "label": "crash",
+   "cause": "control",
+   "note": "roll/pitch P were 0"
+  },
+  "113111": {
+   "label": "crash",
+   "cause": null
+  },
+  "113798": {
+   "label": "crash",
+   "cause": "ekf",
+   "note": "optitrack vs EKF yaw inconsistent"
+  },
+  "113961": {
+   "label": "crash",
+   "cause": null
+  },
+  "11414": {
+   "label": "crash",
+   "cause": null,
+   "note": "old firmware bug guided->RTL"
+  },
+  "114541": {
+   "label": "crash",
+   "cause": "ekf",
+   "note": "near crash/incident; EKF lane switch + yaw reset then roll"
+  },
+  "114623": {
+   "label": "crash",
+   "cause": "compass",
+   "alt": [
+    "control"
+   ],
+   "note": "near crash/incident; magnetic variance, GPS offsets"
+  },
+  "11620": {
+   "label": "crash",
+   "cause": "compass",
+   "note": "compass changes with current; compassmot"
+  },
+  "116295": {
+   "label": "crash",
+   "cause": "control",
+   "note": "hardware/loose FC suspected, poor tune"
+  },
+  "118077": {
+   "label": "crash",
+   "cause": "motor",
+   "note": "top motors stopped; solder joint"
+  },
+  "119799": {
+   "label": "crash",
+   "cause": "ekf",
+   "alt": [
+    "vibration"
+   ],
+   "note": "accelerometer fault confirmed by swapping FC"
+  },
+  "121433": {
+   "label": "crash",
+   "cause": null
+  },
+  "122184": {
+   "label": "crash",
+   "cause": "motor",
+   "alt": [
+    "control"
+   ],
+   "note": "near crash/incident; motor effort maxed; motor mapping"
+  },
+  "124154": {
+   "label": "crash",
+   "cause": "motor",
+   "note": "thrust loss motor 2 at takeoff"
+  },
+  "126159": {
+   "label": "crash",
+   "cause": null,
+   "note": "rover",
+   "exclude": true
+  },
+  "12628": {
+   "label": "crash",
+   "cause": "battery"
+  },
+  "126969": {
+   "label": "crash",
+   "cause": "motor",
+   "note": "motor/ESC failure, underpowered"
+  },
+  "12717": {
+   "label": "crash",
+   "cause": "gps",
+   "alt": [
+    "vibration"
+   ]
+  },
+  "127808": {
+   "label": "crash",
+   "cause": "control",
+   "alt": [
+    "motor"
+   ],
+   "note": "motor spin directions wrong, oscillation"
+  },
+  "128037": {
+   "label": "crash",
+   "cause": null
+  },
+  "129116": {
+   "label": "crash",
+   "cause": "vibration",
+   "alt": [
+    "ekf"
+   ],
+   "note": "EKF failsafe from vibration"
+  },
+  "130404": {
+   "label": "crash",
+   "cause": "pilot",
+   "alt": [
+    "motor"
+   ],
+   "note": "switch disarm"
+  },
+  "131585": {
+   "label": "crash",
+   "cause": "compass",
+   "note": "near crash/incident; OP only: mag anomaly flyaway"
+  },
+  "134011": {
+   "label": "crash",
+   "cause": "motor"
+  },
+  "13560": {
+   "label": "crash",
+   "cause": "radio"
+  },
+  "135702": {
+   "label": "crash",
+   "cause": "motor"
+  },
+  "13576": {
+   "label": "crash",
+   "cause": "motor"
+  },
+  "13745": {
+   "label": "crash",
+   "cause": null
+  },
+  "138209": {
+   "label": "crash",
+   "cause": "pilot",
+   "note": "disarm aux in mission"
+  },
+  "138484": {
+   "label": "crash",
+   "cause": null,
+   "note": "tilt-rotor transition crash; no expert reply"
+  },
+  "138795": {
+   "label": "crash",
+   "cause": "control",
+   "note": "custom heli; RC override/landing detection"
+  },
+  "139430": {
+   "label": "crash",
+   "cause": null
+  },
+  "14092": {
+   "label": "crash",
+   "cause": "compass",
+   "alt": [
+    "vibration"
+   ],
+   "note": "near crash/incident; mag field change, EKF lane switch, clipping"
+  },
+  "141658": {
+   "label": "crash",
+   "cause": "motor",
+   "note": "all ESCs errored out (AM32/Dshot)"
+  },
+  "141882": {
+   "label": "crash",
+   "cause": "control",
+   "note": "AHRS_ORIENTATION wrong after rotating FC"
+  },
+  "142220": {
+   "label": "crash",
+   "cause": "power",
+   "note": "logging stops as if FC lost power; watchdog"
+  },
+  "143216": {
+   "label": "crash",
+   "cause": "power",
+   "note": "IOMCU reset mid-flight"
+  },
+  "143625": {
+   "label": "crash",
+   "cause": "control",
+   "alt": [
+    "battery"
+   ],
+   "note": "failed takeoff, setup/tune or loose battery; not battery FS"
+  },
+  "144128": {
+   "label": "crash",
+   "cause": "compass",
+   "alt": [
+    "ekf"
+   ],
+   "note": "near crash/incident; yaw estimate problem, mag error"
+  },
+  "144150": {
+   "label": "crash",
+   "cause": "vibration",
+   "alt": [
+    "ekf"
+   ],
+   "note": "EKF failsafe from vibration compensation"
+  },
+  "14474": {
+   "label": "crash",
+   "cause": null
+  },
+  "144992": {
+   "label": "crash",
+   "cause": "pilot",
+   "note": "yaw stick configured as ArmDisarm (RC misconfiguration)"
+  },
+  "145155": {
+   "label": "crash",
+   "cause": "ekf",
+   "alt": [
+    "compass"
+   ],
+   "note": "EKF failsafe; mag anomaly"
+  },
+  "145465": {
+   "label": "crash",
+   "cause": "control",
+   "alt": [
+    "motor"
+   ],
+   "note": "tuning/notch not done"
+  },
+  "146120": {
+   "label": "crash",
+   "cause": "control",
+   "note": "aileron servo function setup suspected"
+  },
+  "14758": {
+   "label": "crash",
+   "cause": "motor",
+   "note": "mechanical failure motor/esc/prop"
+  },
+  "15104": {
+   "label": "crash",
+   "cause": "compass",
+   "note": "compass/SBF mounting rotation"
+  },
+  "15265": {
+   "label": "crash",
+   "cause": "compass",
+   "alt": [
+    "gps",
+    "ekf"
+   ],
+   "note": "magnetometer discrepancy, EKF lost"
+  },
+  "15489": {
+   "label": "crash",
+   "cause": null,
+   "note": "near crash/incident; NaN in NTUN/CTUN; firmware issue"
+  },
+  "15681": {
+   "label": "crash",
+   "cause": "radio",
+   "alt": [
+    "compass"
+   ],
+   "note": "near crash/incident; frozen channels from handset/module link"
+  },
+  "15871": {
+   "label": "crash",
+   "cause": "motor",
+   "note": "broken solder joint motor 4"
+  },
+  "16117": {
+   "label": "crash",
+   "cause": "control",
+   "note": "mechanical failure suspected"
+  },
+  "16205": {
+   "label": "crash",
+   "cause": null
+  },
+  "16846": {
+   "label": "crash",
+   "cause": null
+  },
+  "17777": {
+   "label": "crash",
+   "cause": "gps",
+   "alt": [
+    "ekf"
+   ],
+   "note": "GPS disagreement, EKF lane switch"
+  },
+  "17875": {
+   "label": "crash",
+   "cause": "vibration",
+   "note": "prop mount loose"
+  },
+  "17906": {
+   "label": "crash",
+   "cause": null,
+   "note": "near crash/incident"
+  },
+  "18031": {
+   "label": "crash",
+   "cause": "vibration"
+  },
+  "18300": {
+   "label": "crash",
+   "cause": "motor"
+  },
+  "18361": {
+   "label": "crash",
+   "cause": "motor",
+   "alt": [
+    "vibration"
+   ]
+  },
+  "18465": {
+   "label": "crash",
+   "cause": null,
+   "note": "software crash on Linux board, not flight",
+   "exclude": true
+  },
+  "18482": {
+   "label": "crash",
+   "cause": "gps",
+   "alt": [
+    "pilot"
+   ],
+   "note": "GPS multipath; pilot mode switching"
+  },
+  "19146": {
+   "label": "crash",
+   "cause": "gps",
+   "alt": [
+    "vibration"
+   ],
+   "note": "GPS to zero sats with vibration rise"
+  },
+  "21253": {
+   "label": "crash",
+   "cause": "motor"
+  },
+  "21879": {
+   "label": "crash",
+   "cause": null
+  },
+  "22461": {
+   "label": "crash",
+   "cause": "control",
+   "note": "flips on liftoff; setup"
+  },
+  "22488": {
+   "label": "crash",
+   "cause": "motor"
+  },
+  "27379": {
+   "label": "crash",
+   "cause": null
+  },
+  "28112": {
+   "label": "crash",
+   "cause": "control",
+   "alt": [
+    "motor"
+   ],
+   "note": "motor order wrong"
+  },
+  "28155": {
+   "label": "crash",
+   "cause": "control",
+   "note": "servos not responding to demanded roll/pitch (servo connection)"
+  },
+  "28270": {
+   "label": "crash",
+   "cause": null,
+   "note": "near crash/incident; auto with invalid mission; descent"
+  },
+  "31535": {
+   "label": "crash",
+   "cause": "stall",
+   "alt": [
+    "control"
+   ],
+   "note": "near crash/incident; never reached ARSPD_FBW_MIN; forward motor at full power"
+  },
+  "31874": {
+   "label": "crash",
+   "cause": "battery",
+   "note": "battery below MOT_BAT_VOLT_MIN; imbalance"
+  },
+  "32115": {
+   "label": "crash",
+   "cause": "battery",
+   "alt": [
+    "vibration"
+   ],
+   "note": "battery driven too low"
+  },
+  "32183": {
+   "label": "crash",
+   "cause": "control",
+   "note": "Q_ASSIST/yaw issue in VTOL maneuvering"
+  },
+  "33183": {
+   "label": "crash",
+   "cause": "vibration",
+   "alt": [
+    "compass"
+   ],
+   "note": "near crash/incident; vibes + RX errors, mag innovations climbing"
+  },
+  "33347": {
+   "label": "crash",
+   "cause": "motor"
+  },
+  "33536": {
+   "label": "crash",
+   "cause": "motor"
+  },
+  "33546": {
+   "label": "crash",
+   "cause": null
+  },
+  "35024": {
+   "label": "crash",
+   "cause": "control",
+   "note": "CG far off or ESC not calibrated"
+  },
+  "38567": {
+   "label": "crash",
+   "cause": null
+  },
+  "39428": {
+   "label": "crash",
+   "cause": "motor",
+   "alt": [
+    "battery"
+   ],
+   "note": "motor 3 ESC low voltage cutoff"
+  },
+  "39803": {
+   "label": "crash",
+   "cause": "compass",
+   "note": "bad mag calibration/interference; yaw realignment"
+  },
+  "39836": {
+   "label": "crash",
+   "cause": "control",
+   "note": "reversed surface, CG or tune"
+  },
+  "40563": {
+   "label": "crash",
+   "cause": null
+  },
+  "40986": {
+   "label": "crash",
+   "cause": null
+  },
+  "41183": {
+   "label": "crash",
+   "cause": "pilot",
+   "note": "near crash/incident; commanded full throttle climbs"
+  },
+  "41190": {
+   "label": "crash",
+   "cause": "control",
+   "note": "near crash/incident; autotune leveling/alt hold conflict"
+  },
+  "42652": {
+   "label": "crash",
+   "cause": "control",
+   "note": "overpowered + aggressive autotune"
+  },
+  "42859": {
+   "label": "crash",
+   "cause": null,
+   "note": "auto without mission, mis_total"
+  },
+  "44132": {
+   "label": "crash",
+   "cause": null
+  },
+  "45353": {
+   "label": "crash",
+   "cause": "control",
+   "note": "attitude oscillations, tuning"
+  },
+  "50364": {
+   "label": "crash",
+   "cause": "control",
+   "note": "CG too far rear (solved)"
+  },
+  "50593": {
+   "label": "crash",
+   "cause": "control",
+   "alt": [
+    "motor"
+   ],
+   "note": "near crash/incident; thrust imbalance + tune"
+  },
+  "52129": {
+   "label": "crash",
+   "cause": null
+  },
+  "52948": {
+   "label": "crash",
+   "cause": "vibration",
+   "note": "clipping, vibration failsafe, altitude control lost"
+  },
+  "53060": {
+   "label": "crash",
+   "cause": "motor",
+   "alt": [
+    "control"
+   ],
+   "note": "motor imbalance"
+  },
+  "53734": {
+   "label": "crash",
+   "cause": "pilot",
+   "alt": [
+    "control"
+   ],
+   "note": "crash check triggered by full pitch input"
+  },
+  "53951": {
+   "label": "crash",
+   "cause": "control",
+   "note": "yaw bias, frame mechanical issue"
+  },
+  "54090": {
+   "label": "crash",
+   "cause": null
+  },
+  "55405": {
+   "label": "crash",
+   "cause": "control",
+   "alt": [
+    "motor"
+   ],
+   "note": "oscillations; ESCs unsuitable"
+  },
+  "55598": {
+   "label": "crash",
+   "cause": "gps",
+   "alt": [
+    "control"
+   ],
+   "note": "GPS glitch; motor position"
+  },
+  "56689": {
+   "label": "crash",
+   "cause": "stall",
+   "alt": [
+    "control"
+   ],
+   "note": "near crash/incident; tridge: flying below ARSPD_FBW_MIN; or aileron servo"
+  },
+  "57474": {
+   "label": "crash",
+   "cause": "control",
+   "note": "not ready for autotune"
+  },
+  "57706": {
+   "label": "crash",
+   "cause": "stall",
+   "note": "classic stall and spin"
+  },
+  "58933": {
+   "label": "crash",
+   "cause": "vibration",
+   "alt": [
+    "control"
+   ],
+   "note": "high vibration with clipping, tuning"
+  },
+  "61814": {
+   "label": "crash",
+   "cause": "control",
+   "alt": [
+    "motor"
+   ],
+   "note": "motor order / orientation"
+  },
+  "62240": {
+   "label": "crash",
+   "cause": "radio",
+   "note": "near crash/incident; radio failure; mode channel stuck"
+  },
+  "62335": {
+   "label": "crash",
+   "cause": "control",
+   "alt": [
+    "vibration"
+   ],
+   "note": "mechanical failure + lack of tuning"
+  },
+  "62779": {
+   "label": "crash",
+   "cause": "pilot",
+   "note": "cut throttle in stabilize"
+  },
+  "63238": {
+   "label": "crash",
+   "cause": "pilot",
+   "alt": [
+    "control"
+   ],
+   "note": "autotune in stabilize; instructions not followed"
+  },
+  "64557": {
+   "label": "crash",
+   "cause": "control",
+   "note": "default PIDs, poor tune, no ESC calibration"
+  },
+  "65423": {
+   "label": "crash",
+   "cause": "radio",
+   "note": "near crash/incident; RC signal lost without failsafe (disputed: H743 roll issue)"
+  },
+  "65833": {
+   "label": "crash",
+   "cause": "pilot",
+   "note": "emergency stop / disarm triggered"
+  },
+  "65883": {
+   "label": "crash",
+   "cause": "control",
+   "note": "reversed surface or CG for forward flight"
+  },
+  "65907": {
+   "label": "crash",
+   "cause": "battery",
+   "alt": [
+    "control"
+   ],
+   "note": "bad battery; underpowered, sag <2.8V/cell"
+  },
+  "66182": {
+   "label": "crash",
+   "cause": "vibration",
+   "alt": [
+    "control"
+   ],
+   "note": "near crash/incident; bad tune + VibeZ>50, vibration failsafe"
+  },
+  "68114": {
+   "label": "crash",
+   "cause": "control",
+   "alt": [
+    "motor"
+   ],
+   "note": "terrible yaw bias (twisted arms)"
+  },
+  "68348": {
+   "label": "crash",
+   "cause": "control",
+   "alt": [
+    "vibration"
+   ],
+   "note": "hand launch twist/inverted, AHRS orientation?, vibration"
+  },
+  "69639": {
+   "label": "crash",
+   "cause": "pilot",
+   "alt": [
+    "battery"
+   ],
+   "note": "disarmed with switch during battery FS RTL"
+  },
+  "70027": {
+   "label": "crash",
+   "cause": "control",
+   "note": "pitch servo direction / max deflection wrong; radio trims"
+  },
+  "70766": {
+   "label": "crash",
+   "cause": "radio",
+   "note": "receiver failure, RSSI to 0"
+  },
+  "72113": {
+   "label": "crash",
+   "cause": "control",
+   "alt": [
+    "vibration"
+   ],
+   "note": "near crash/incident; output oscillations"
+  },
+  "72575": {
+   "label": "crash",
+   "cause": "control",
+   "note": "wrong FRAME_TYPE, initial tune"
+  },
+  "72983": {
+   "label": "crash",
+   "cause": "control",
+   "alt": [
+    "stall"
+   ],
+   "note": "tridge: poor attitude tuning and high speed"
+  },
+  "73200": {
+   "label": "crash",
+   "cause": "motor"
+  },
+  "76554": {
+   "label": "crash",
+   "cause": null,
+   "note": "QAutotune VTOL crash; no diagnosis"
+  },
+  "77508": {
+   "label": "crash",
+   "cause": null,
+   "note": "SITL software crash",
+   "exclude": true
+  },
+  "77564": {
+   "label": "crash",
+   "cause": "stall",
+   "note": "roll 67 deg exceeded limits in RTL, failed to climb"
+  },
+  "78052": {
+   "label": "crash",
+   "cause": "gps",
+   "alt": [
+    "control"
+   ],
+   "note": "GPS glitching, fence, yaw bias"
+  },
+  "78702": {
+   "label": "crash",
+   "cause": "motor",
+   "alt": [
+    "control"
+   ]
+  },
+  "78844": {
+   "label": "crash",
+   "cause": "control",
+   "note": "untrimmed new plane; oscillation with power"
+  },
+  "79296": {
+   "label": "crash",
+   "cause": null
+  },
+  "83360": {
+   "label": "crash",
+   "cause": "vibration",
+   "alt": [
+    "ekf"
+   ],
+   "note": "near crash/incident; very high vibration, EKF primary change"
+  },
+  "84027": {
+   "label": "crash",
+   "cause": "control",
+   "alt": [
+    "pilot"
+   ],
+   "note": "increasing oscillations + pilot roll input"
+  },
+  "85751": {
+   "label": "crash",
+   "cause": "control",
+   "note": "no initial tuning after FC swap"
+  },
+  "88407": {
+   "label": "crash",
+   "cause": "motor"
+  },
+  "88953": {
+   "label": "crash",
+   "cause": null
+  },
+  "90448": {
+   "label": "crash",
+   "cause": null
+  },
+  "90646": {
+   "label": "crash",
+   "cause": "control",
+   "note": "left elevon torn (mechanical)"
+  },
+  "93512": {
+   "label": "crash",
+   "cause": "motor",
+   "alt": [
+    "control"
+   ],
+   "note": "thrust loss / BLHeli low RPM protect, oscillations"
+  },
+  "94323": {
+   "label": "crash",
+   "cause": "vibration",
+   "alt": [
+    "gps",
+    "ekf"
+   ],
+   "note": "near crash/incident; extreme vibration and clipping"
+  },
+  "94668": {
+   "label": "crash",
+   "cause": "vibration",
+   "alt": [
+    "gps"
+   ],
+   "note": "near crash/incident; vibration, not GPS"
+  },
+  "95698": {
+   "label": "crash",
+   "cause": "control",
+   "note": "arm and takeoff commands too close (dronekit)"
+  },
+  "97736": {
+   "label": "crash",
+   "cause": null
+  },
+  "97848": {
+   "label": "crash",
+   "cause": "motor",
+   "alt": [
+    "battery"
+   ],
+   "note": "thrust loss motor 1 at hover, overloaded"
+  },
+  "98267": {
+   "label": "crash",
+   "cause": null
+  },
+  "98734": {
+   "label": "crash",
+   "cause": "stall",
+   "alt": [
+    "control"
+   ],
+   "note": "stall from high bank, low airspeed; servo issue"
+  },
+  "99829": {
+   "label": "crash",
+   "cause": null
   }
  },
  "_holdout": [
@@ -2756,5 +3685,6 @@
   "9984",
   "99924"
  ],
- "_holdout_doc": "Ayrı test seti (bench-holdout): ilk ölçüm 2026-11-27, kurallar görmeden: doğruluk 0.855, duyarlılık 0.916, özgüllük 0.583, kök neden 0.443 (ikincil dahil 0.682). Sonra geliştirme setine katıldı."
+ "_holdout_doc": "Ayrı test seti (bench-holdout): ilk ölçüm 2026-11-27, kurallar görmeden: doğruluk 0.855, duyarlılık 0.916, özgüllük 0.583, kök neden 0.443 (ikincil dahil 0.682). Sonra geliştirme setine katıldı.",
+ "_more_doc": "Ek tarama (bench-more, 160 forum konusu, 2026-11-27): uzman yanıtlarından etiketlendi; kurallar görmeden ilk ölçüm (157 log, hepsi kırım/olay): duyarlılık 0.803, kök neden 0.268 (ikincil dahil 0.545). Sonra geliştirme setine katıldı."
 }
