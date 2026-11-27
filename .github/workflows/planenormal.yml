@@ -4,6 +4,7 @@ name: crashbench-plane-normal
 # Tetik: tools_data/request_planenormal.txt
 on:
   push:
+    branches-ignore: [main]
     paths: ['tools_data/request_planenormal.txt']
   workflow_dispatch:
 
