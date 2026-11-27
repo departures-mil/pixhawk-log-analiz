@@ -45,7 +45,7 @@ class ChartView(QWidget):
         self.canvas = None; self.tb = None; self.fig = None; self.A = None
         self.msg = QLabel(''); self.msg.setAlignment(Qt.AlignCenter); self.msg.setStyleSheet('background:white;color:#374151;border-radius:8px;font-size:12pt')
         self.body.addWidget(self.msg)
-        self.cursor_t = None; self._hover = []; self._cur = []; self._ruler = None; self._rul_art = []; self._last = 0.0; self._segs = []
+        self.cursor_t = None; self._hover = []; self._cur = []; self._ruler = None; self._rul_art = []; self._last = 0.0; self._segs = []; self.taxes = []
 
     # ---------------------------------------------------------------- içerik
     def _clear(self):
@@ -53,7 +53,7 @@ class ChartView(QWidget):
             self.body.removeWidget(self.canvas); self.canvas.setParent(None); self.canvas.deleteLater(); self.canvas = None
         if self.tb is not None:
             self.bar.removeWidget(self.tb); self.tb.setParent(None); self.tb.deleteLater(); self.tb = None
-        self.fig = None; self._hover = []; self._cur = []; self._rul_art = []; self._ruler = None
+        self.fig = None; self._hover = []; self._cur = []; self._rul_art = []; self._ruler = None; self.taxes = []
 
     def busy(self):
         self._clear(); self.msg.setText(tt('busy')); self.msg.show()

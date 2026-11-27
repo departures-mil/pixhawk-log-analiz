@@ -18,7 +18,7 @@ def experts(th):
 def main():
     assert set(RX) == set(E.L), set(RX) ^ set(E.L)
     T = {}
-    for f in ('threads.json.gz', 'holdout_threads.json.gz', 'more_threads.json.gz'):
+    for f in ('threads.json.gz', 'holdout_threads.json.gz', 'more_threads.json.gz', 'plane_threads.json.gz'):
         p = os.path.join(CB, f)
         if os.path.exists(p): T.update(json.load(gzip.open(p)))
     lab = json.load(open(os.path.join(CB, 'labels.json'), encoding='utf-8'))['labels']

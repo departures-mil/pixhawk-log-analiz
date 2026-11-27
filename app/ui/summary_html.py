@@ -89,6 +89,11 @@ def build(A, lg):
                 h.append(f'</ul><a href="go:crashlib" style="color:#C4B5FD">📚 {E(_t("ex_more"))}</a><br>')
         except Exception:
             pass
+        try:
+            from .i18n import t as _t2
+            h.append(f'<a href="go:logbrowser" style="color:#67E8F9">🧭 {E(_t2("lb_link"))}</a><br>')
+        except Exception:
+            pass
         h.append('<br><a href="ai:why" style="color:#60A5FA">🤖 ' + E(R('why_ai', lg)) + '</a> &nbsp; '
                  '<a href="go:solver" style="color:#60A5FA">🩺 ' + E(R('why_solver', lg)) + '</a> &nbsp; '
                  '<a href="fb:why" style="color:#86EFAC">' + E(_fbt(lg)) + '</a>')

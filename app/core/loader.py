@@ -97,7 +97,7 @@ def _vehicle_from(text):
 
 NONE_KEY = ('ATT', 'POS', 'CTUN', 'NTUN', 'TECS', 'AETR', 'RCIN', 'RCOU', 'PM', 'STAT', 'AHR2', 'AOA', 'POWR', 'RSSI', 'DSF', 'ORGN', 'RATE',
             'CMD', 'PIDR', 'PIDP', 'PIDY', 'RAD', 'MAV')
-LOADER_VER = 7
+LOADER_VER = 8
 
 
 def _fix_vehicle(L):
@@ -206,6 +206,9 @@ def _load_bin_fast(path, progress=None, cancel=None) -> LogData:
         f, a = special['ARM']
         if 'ArmState' in a.dtype.names:
             L.arm = [(float(t), bool(x)) for t, x in zip(tsec(f, a), a['ArmState'])]
+            if 'Method' in a.dtype.names:      # v1.1.14: kurma/çözme yöntemi (2 = RC anahtarı) — havada anahtarla çözme teşhisi
+                ss = Series(); ss['t'] = tsec(f, a); ss['ArmState'] = a['ArmState'].astype(float); ss['Method'] = a['Method'].astype(float)
+                special['_ARMX'] = ss
     out = {}
     for n, (f, a) in arrs.items():
         t = tsec(f, a)
@@ -227,6 +230,7 @@ def _load_bin_fast(path, progress=None, cancel=None) -> LogData:
             if len(ok):
                 i = ok[0]
                 L.gps_time0 = (float(t[i]), 315964800 + float(a['GWk'][i]) * 604800 + float(a['GMS'][i]) / 1000.0 - 18)
+    if '_ARMX' in special: out['ARM'] = special['_ARMX']
     L.msgs = out
     _post(L, t0)
     if progress: progress(1.0)

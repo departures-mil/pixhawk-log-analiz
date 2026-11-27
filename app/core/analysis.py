@@ -816,7 +816,11 @@ class Analysis(ExtMixin):
             cands = [c for c in cands if c[0] != 'compass'] + [('compass', tc)]
         # Güç kesintisi (log havada bitti / kurulu iken kesildi)
         if any(e['k'] in ('cr_log_end', 'cr_log_cut') for e in self.verdict['evidence']):
-            cands.append(('power', end - 0.1))
+            imp = self._impact_end(end) if self.vehicle == 'Plane' else None
+            if imp is None:
+                cands.append(('power', end - 0.1))
+            elif not any(c[1] >= end - 30 for c in cands):
+                cands.append(('control', imp))     # v1.1.14: uçakta log çarpmayla kesildi (dalış/aşırı yatış): güç kaybı değil kontrol kaybı
         # Ters takılmış kumanda yüzeyi: zincirin en başı (kalkıştan itibaren)
         if getattr(self, 'surf_rev', None):
             cands.append(('control', max(win0, self.surf_rev[0])))
@@ -904,6 +908,12 @@ class Analysis(ExtMixin):
                         self.pilot_err = {'t': float(t_), 'mode': K.mode_name(self.vehicle, num), 'thr': round(float(np.nanmedian(c_['ThI'][w_])), 2),
                                           'alt': round(alt_, 1)}
                         cands.append(('pilot', float(t_))); break
+        # v1.1.14 (yeni forum vakaları): havada RC anahtarıyla motorları kapatmak (ArmDisarm / acil durdurma anahtarı) — en sık
+        # 'pilot hatası' kırımı. Uzmanlar: "panikle anahtara basmak; araç kendini kurtarabilirdi".
+        sw = self._switch_disarm(end)
+        if sw is not None:
+            cands.append(('pilot', sw['t']))
+            if self.pilot_err is None: self.pilot_err = sw
         if not cands and getattr(self, 'yaw_loss', None) is not None:
             cands.append(('motor', self.yaw_loss))     # başka belirti yokken yön kaybı: çoğunlukla motor/ESC itki kaybı
         if not cands and (self.profile in ('copter', 'heli') or self.vehicle == 'Copter') and self._poor_tune(end):
@@ -928,6 +938,8 @@ class Analysis(ExtMixin):
             if tm is not None and tm >= end - 20 and (primary[0] in ('control', 'compass') or
                                                      (primary[0] == 'vibration' and primary[1] < end - 30)):
                 primary = ('motor', tm)   # tutum/yön hatası, kırımdan hemen önceki motor doygunluğunun sonucu
+        if sw is not None and end - 25 <= sw['t'] <= end + 1 and not any(c[0] not in ('pilot', 'battery') and sw['t'] - 20 <= c[1] < sw['t'] for c in cands):
+            primary = ('pilot', sw['t'])      # motorlar pilotun anahtarıyla kapandı: sonrasındaki düşüş bunun sonucu
         # Uzman tecrübesi (gerçek forum vakaları, v1.1.12):
         # - gaz aşağıda elle moda geçiş, sonrasındaki her şeyin (düşüş, motor tabanı) başlangıcıdır
         #   (ana neden yalnız zincirde ilk sıradaysa; değilse ikincil bulgu olarak gösterilir)
@@ -958,6 +970,64 @@ class Analysis(ExtMixin):
             mf = None
         self.root = {'cause': primary[0], 't': primary[1], 'chain': chain, 'prevent': primary[0], 'motor': mf,
                      'others': [c[0] for c in cands if c[0] != primary[0]]}
+
+    def _impact_end(self, end):
+        """Uçak: log kesilmeden önceki son 8 s'de dalış (> 6 m/s alçalma) ya da aşırı tutum (|yatış| > 70°, burun < −35°) varsa
+        ilk görüldüğü an — log çarpmayla kesilmiş demektir."""
+        L = self.L; ts = []
+        a = L.s('ATT')
+        if a.has('Roll') and a.has('Pitch'):
+            m = (a['t'] >= end - 8) & (a['t'] <= end + 0.5)
+            bad = m & ((np.abs(a['Roll']) > 70) | (a['Pitch'] < -35))
+            if bad.any(): ts.append(float(a['t'][np.argmax(bad)]))
+        if self.track is not None and len(self.track['t']) > 3:
+            t, r = self.track['t'], self.track['rel']
+            m = (t >= end - 8) & (t <= end + 0.5)
+            if m.sum() >= 3:
+                tt, rr = t[m], r[m]
+                with np.errstate(all='ignore'): vz = np.gradient(rr) / np.maximum(np.gradient(tt), 1e-3)
+                bad = vz < -6
+                if bad.sum() >= 2: ts.append(float(tt[np.argmax(bad)]))
+        return min(ts) if ts else None
+
+    def _switch_disarm(self, end):
+        """Havada (irtifa ≥ 2 m ve ardından düşüş) RC anahtarıyla motor çözme/acil durdurma: {'t', 'kind': 'disarm', 'alt', 'ch'} ya da None."""
+        L = self.L; P = L.params
+        if self.track is None or not len(self.track['t']): return None
+        tt, rel = self.track['t'], self.track['rel']
+
+        def airborne(t_):
+            a0 = float(np.interp(t_, tt, rel))
+            w = (tt >= t_) & (tt <= t_ + 15)
+            if w.sum() < 2: return None
+            return a0 if a0 >= 2.0 and a0 - float(np.nanmin(rel[w])) >= 2.0 else None
+        ts = []
+        a = L.s('ARM')
+        if a.has('Method'):
+            for t_, st, m in zip(a['t'], a['ArmState'], a['Method']):
+                if st < 0.5 and int(m) == 2: ts.append((float(t_), None))      # AUXSWITCH
+        else:
+            sw_ch = [n for n in range(1, 17) if int(P.get(f'RC{n}_OPTION', P.get(f'CH{n}_OPT', 0)) or 0) in (41, 153, 154, 31, 165)]
+            r = L.s('RCIN')
+            for t_, i in L.events:
+                if i != 11: continue
+                for n in sw_ch:
+                    if not r.has(f'C{n}'): continue
+                    w = (r['t'] >= t_ - 1.5) & (r['t'] <= t_ + 0.5)
+                    if w.sum() >= 2 and float(np.nanmax(r[f'C{n}'][w]) - np.nanmin(r[f'C{n}'][w])) > 300:
+                        ts.append((float(t_), n)); break
+            # acil durdurma anahtarı (motorlar durur, çözme olmayabilir)
+            for n in [n for n in sw_ch if int(P.get(f'RC{n}_OPTION', 0) or 0) in (31, 165)]:
+                if not r.has(f'C{n}'): continue
+                v = r[f'C{n}']; hi = v > 1700
+                k = np.flatnonzero(hi[1:] & ~hi[:-1])
+                ts += [(float(r['t'][j + 1]), n) for j in k]
+        for t_, n in sorted(ts):
+            if t_ > end + 1: break
+            al = airborne(t_)
+            if al is not None:
+                return {'t': t_, 'kind': 'disarm', 'alt': round(al, 1), 'ch': n}
+        return None
 
     def _vibe_p95(self, end):
         """Uçuş boyunca (son 3 s hariç) en kötü eksen titreşiminin %95'liği (m/s²) ya da None."""

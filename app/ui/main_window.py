@@ -10,7 +10,7 @@ from fccore.window import FcWindow, TopBar
 from fccore.widgets import button as fbutton, label as flabel, toast
 from .i18n import t, lang, set_lang
 from .common import label, button, run_bg, error, info, open_path, app_icon
-from . import pages_a as PA, pages_b as PB, pages_c as PC, pages_p as PP, pages_s as PS, pages_v as PV, pages_q as PQ
+from . import pages_a as PA, pages_b as PB, pages_c as PC, pages_p as PP, pages_s as PS, pages_v as PV, pages_q as PQ, pages_g as PG
 from .settings_page import SettingsPage
 from ..core.settings import Settings
 from ..core.archive import Archive, file_uid
@@ -18,7 +18,7 @@ from ..core.advisor import Usage
 from ..core.paths import data_dir
 
 NAV = [('analysis', '🔎', 'nav_analysis', PA.AnalysisPage), ('solver', '🩺', 'nav_solver', PS.SolverPage), ('charts', '📈', 'nav_charts', PA.ChartsPage),
-       ('map', '🗺', 'nav_map', PA.MapPage), ('custom', '📐', 'nav_custom', PV.CustomChartPage),
+       ('map', '🗺', 'nav_map', PA.MapPage), ('logbrowser', '🧭', 'nav_logbrowser', PG.LogBrowserPage), ('custom', '📐', 'nav_custom', PV.CustomChartPage),
        ('video', '🎞', 'nav_video', PV.VideoPage), ('timeline', '🕒', 'nav_timeline', PA.TimelinePage),
        ('advisor', '🤖', 'nav_advisor', PA.AdvisorPage), ('practice', '🎓', 'nav_practice', PA.PracticePage),
        ('exam', '📝', 'nav_exam', PC.ExamPage), ('qbank', '🗃', 'nav_qbank', PQ.QBankPage),

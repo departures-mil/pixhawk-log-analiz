@@ -56,7 +56,10 @@ def features(A):
     L = A.L
     if not A.flights: return np.array([]), np.zeros((0, len(FEATS)))
     edges = []
+    dur = float(L.duration or 0)
     for a, b in A.flights:
+        if not (np.isfinite(a) and np.isfinite(b)) or b - a > 86400: continue   # bozuk zaman damgası (yarım yazılmış kayıt)
+        b = min(b, dur) if dur > 0 else b
         # Kalkış ve inişin ilk/son 25 sn'si doğası gereği farklıdır (kural motoru ayrıca inceler)
         e = np.arange(a + 25, b - 25 - WIN, WIN)
         for ph in A.phases:
