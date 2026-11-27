@@ -1,0 +1,58 @@
+name: crashbench-plane-normal
+
+# Plane NORMAL uçuş taraması: Plane sürüm/beta konularındaki test pilotu logları + ayar/ilk uçuş/log inceleme konuları.
+# Tetik: tools_data/request_planenormal.txt
+on:
+  push:
+    branches-ignore: [main]
+    paths: ['tools_data/request_planenormal.txt']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  pn:
+    runs-on: ubuntu-latest
+    timeout-minutes: 345
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Free disk
+        run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL || true; df -h /tmp
+      - name: Harvest plane normal-flight logs
+        env:
+          BENCH_DIR: /tmp/pn
+          BENCH_N_NORMAL: '450'
+          BENCH_TOTAL_MB: '16000'
+          BENCH_MAX_MB: '100'
+          BENCH_PAGES: '8'
+          BENCH_MINUTES: '285'
+          BENCH_THREADS_OUT: pn_threads.json.gz
+        run: python tools_data/crashbench.py planenormal
+      - name: Upload logs to draft release bench-pn
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd /tmp/pn && tar czf /tmp/pn.tgz *.bin manifest.json && rm -f *.bin && cd /tmp && split -b 1900m -d pn.tgz pn.tgz.part && rm pn.tgz
+          gh release view bench-pn --repo "${{ github.repository }}" >/dev/null 2>&1 || gh release create bench-pn --draft --repo "${{ github.repository }}" --target "${{ github.sha }}" --title "bench-pn (taslak, kullanıcıya görünmez)" --notes "Plane normal uçuş taraması"
+          gh release upload bench-pn /tmp/pn.tgz.part* --clobber --repo "${{ github.repository }}"
+      - name: Commit threads
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          [ -f tools_data/crashbench/pn_threads.json.gz ] || exit 0
+          cp tools_data/crashbench/pn_threads.json.gz /tmp/pt.json.gz
+          [ -f /tmp/pn/manifest.json ] && cp /tmp/pn/manifest.json /tmp/pm.json
+          for i in 1 2 3 4 5; do
+            git fetch -q origin "${{ github.ref_name }}" && git reset -q --hard "origin/${{ github.ref_name }}"
+            cp /tmp/pt.json.gz tools_data/crashbench/pn_threads.json.gz
+            [ -f /tmp/pm.json ] && cp /tmp/pm.json tools_data/crashbench/pn_manifest.json
+            git add tools_data/crashbench/pn_threads.json.gz tools_data/crashbench/pn_manifest.json 2>/dev/null
+            git commit -qm "crashbench: Plane normal uçuş taraması (otomatik)" || exit 0
+            git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            sleep $((i*10))
+          done
+          exit 1

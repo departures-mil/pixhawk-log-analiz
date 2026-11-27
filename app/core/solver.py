@@ -522,8 +522,7 @@ def c_airspeed(A, lg):
     if A.profile not in ('plane', 'vtol'): return None
     h = A.health.get('airspeed')
     f = A.facts
-    src = A.L.s('ARSP') if A.L.s('ARSP').has('Airspeed') else A.L.s('CTUN')
-    k = 'Airspeed' if src.has('Airspeed') else ('As' if src.has('As') else None)
+    src, k = A.airspeed_src()
     if not k: return dict(st='na', txt=s3('nodata', lg, m='ARSP / CTUN.As'))
     tt = src['t']
     # kalkış koşusu / el atışı (ilk 6 s) ve iniş-çarpma anı (son 5 s) dışarıda: o anlarda düşük hava hızı doğaldır

@@ -12,10 +12,10 @@
   "recall_crash": 0.867,
   "specificity": 0.89,
   "cause_n": 411,
-  "cause_match": 196,
-  "cause_acc": 0.477,
-  "cause_any": 278,
-  "cause_any_acc": 0.676,
+  "cause_match": 203,
+  "cause_acc": 0.494,
+  "cause_any": 282,
+  "cause_any_acc": 0.686,
   "labels": "expert"
  },
  "history": [
@@ -143,7 +143,7 @@
    "labels": "expert"
   },
   {
-   "date": "2026-11-27 20:23",
+   "date": "2026-11-27 20:46",
    "tag": "dev",
    "n": 659,
    "errors": 52,
@@ -157,10 +157,10 @@
    "recall_crash": 0.867,
    "specificity": 0.89,
    "cause_n": 411,
-   "cause_match": 196,
-   "cause_acc": 0.477,
-   "cause_any": 278,
-   "cause_any_acc": 0.676,
+   "cause_match": 203,
+   "cause_acc": 0.494,
+   "cause_any": 282,
+   "cause_any_acc": 0.686,
    "labels": "expert"
   }
  ],
@@ -349,7 +349,7 @@
    "others": null,
    "overall": 75,
    "dur": 274,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -728,7 +728,7 @@
    "others": [],
    "overall": 46,
    "dur": 406,
-   "sec": 0.8,
+   "sec": 0.9,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -961,9 +961,9 @@
    "note": "",
    "vehicle": "Plane",
    "got": "incident",
-   "got_cause": "compass",
+   "got_cause": "control",
    "others": [
-    "control",
+    "compass",
     "stall"
    ],
    "overall": 34,
@@ -1316,8 +1316,8 @@
     "distance": 194.7036001622415,
     "max_gs": 33.18196487426758,
     "max_gs_t": 37.397157,
-    "max_as": 40.104164123535156,
-    "max_as_t": 38.390792,
+    "max_as": 37.972782135009766,
+    "max_as_t": 37.590864,
     "min_volt": 42.03200149536133,
     "min_volt_t": 38.190734,
     "used_mah": 250.1947021484375,
@@ -1467,16 +1467,16 @@
      "score": 0,
      "status": "bad",
      "metrics": {
-      "as_mean": 7.0572516206847995,
-      "as_min": 0.22885188460350037,
-      "below_min_pct": 80.78947368421052,
-      "as_minus_gs": 2.0569407220726723
+      "as_mean": 9.246901731145867,
+      "as_min": 3.0,
+      "below_min_pct": 71.04072398190046,
+      "as_minus_gs": 2.142544422526268
      },
      "findings": [
       {
        "k": "as_low",
        "a": {
-        "v": 80.8,
+        "v": 71.0,
         "min": 12.0
        }
       }
@@ -1753,7 +1753,7 @@
    ],
    "overall": 78,
    "dur": 1127,
-   "sec": 0.9,
+   "sec": 1.0,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -2589,7 +2589,7 @@
    "others": null,
    "overall": 83,
    "dur": 1142,
-   "sec": 0.7,
+   "sec": 0.8,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -2774,7 +2774,7 @@
    ],
    "overall": 81,
    "dur": 2621,
-   "sec": 1.3,
+   "sec": 1.4,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -3154,7 +3154,7 @@
    ],
    "overall": 44,
    "dur": 549,
-   "sec": 0.6,
+   "sec": 0.9,
    "verdict": {
     "kind": "crash",
     "score": 60,
@@ -3442,7 +3442,7 @@
    "others": null,
    "overall": 81,
    "dur": 487,
-   "sec": 0.7,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -3662,7 +3662,7 @@
    ],
    "overall": 46,
    "dur": 417,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 75,
@@ -4022,7 +4022,7 @@
    ],
    "overall": 63,
    "dur": 567,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -4277,7 +4277,7 @@
    "others": null,
    "overall": 34,
    "dur": 310,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -4634,7 +4634,7 @@
    "others": null,
    "overall": 92,
    "dur": 879,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -4893,11 +4893,13 @@
    "note": "",
    "vehicle": "Plane",
    "got": "crash",
-   "got_cause": "control",
-   "others": [],
+   "got_cause": "radio",
+   "others": [
+    "control"
+   ],
    "overall": 47,
    "dur": 460,
-   "sec": 0.8,
+   "sec": 0.9,
    "verdict": {
     "kind": "crash",
     "score": 60,
@@ -5197,7 +5199,7 @@
    ],
    "overall": 47,
    "dur": 266,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 25,
@@ -5810,7 +5812,7 @@
    "others": null,
    "overall": 43,
    "dur": 320,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -6265,7 +6267,7 @@
    "others": [],
    "overall": 40,
    "dur": 114,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -6535,7 +6537,7 @@
    "others": [],
    "overall": 49,
    "dur": 215,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -6948,7 +6950,7 @@
    "others": null,
    "overall": 86,
    "dur": 332,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -7756,7 +7758,7 @@
    "others": null,
    "overall": 69,
    "dur": 282,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -8016,7 +8018,7 @@
    ],
    "overall": 33,
    "dur": 489,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -9357,7 +9359,7 @@
    "others": [],
    "overall": 49,
    "dur": 349,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -10084,7 +10086,7 @@
    "others": null,
    "overall": 73,
    "dur": 118,
-   "sec": 0.5,
+   "sec": 0.8,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -10788,7 +10790,7 @@
    "others": null,
    "overall": 100,
    "dur": 262,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -10969,7 +10971,7 @@
    "got": "noflight",
    "got_cause": null,
    "others": null,
-   "overall": 47,
+   "overall": 52,
    "dur": 232,
    "sec": 0.6,
    "verdict": {
@@ -10986,8 +10988,6 @@
     "disarm_t": 170.818731,
     "max_gs": 0.0,
     "max_gs_t": 0.075023,
-    "max_as": 0.0,
-    "max_as_t": 0.075094,
     "min_volt": 51.2160758972168,
     "min_volt_t": 166.918795,
     "used_mah": 776.5239868164062,
@@ -11105,29 +11105,6 @@
       "radio_failsafes": 0
      },
      "findings": []
-    },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": 0.0
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 26.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
     },
     "cpu": {
      "score": 100,
@@ -12226,9 +12203,9 @@
    "got": "crash",
    "got_cause": "compass",
    "others": [],
-   "overall": 51,
+   "overall": 50,
    "dur": 45,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -12274,8 +12251,8 @@
     "distance": 321.6737419780184,
     "max_gs": 34.75583267211914,
     "max_gs_t": 42.578938,
-    "max_as": 36.41001892089844,
-    "max_as_t": 44.639052,
+    "max_as": 40.13945007324219,
+    "max_as_t": 44.352072,
     "min_volt": 16.391828536987305,
     "min_volt_t": 44.252242,
     "used_mah": 736.16064453125,
@@ -12450,19 +12427,19 @@
      "findings": []
     },
     "airspeed": {
-     "score": 38,
+     "score": 30,
      "status": "bad",
      "metrics": {
-      "as_mean": 21.558735445141792,
-      "as_min": 0.3334461748600006,
-      "below_min_pct": 20.689655172413794,
-      "as_minus_gs": -1.0915686941225533
+      "as_mean": 17.566846859866175,
+      "as_min": 3.0,
+      "below_min_pct": 23.275862068965516,
+      "as_minus_gs": -5.090887127528425
      },
      "findings": [
       {
        "k": "as_low",
        "a": {
-        "v": 20.7,
+        "v": 23.3,
         "min": 9.0
        }
       },
@@ -12522,7 +12499,7 @@
    "got": "incident",
    "got_cause": "control",
    "others": [],
-   "overall": 39,
+   "overall": 43,
    "dur": 37,
    "sec": 0.5,
    "verdict": {
@@ -12548,8 +12525,6 @@
     "distance": 27.620409270473246,
     "max_gs": 7.429000377655029,
     "max_gs_t": 22.584467,
-    "max_as": 0.7891194820404053,
-    "max_as_t": 10.228913,
     "min_volt": 20.40693473815918,
     "min_volt_t": 30.208025,
     "used_mah": 242.0044708251953,
@@ -12716,29 +12691,6 @@
      },
      "findings": []
     },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 0.020353877191654348,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -0.8542675940480235
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 9.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
-    },
     "cpu": {
      "score": 100,
      "status": "good",
@@ -12799,7 +12751,7 @@
    "got": "noflight",
    "got_cause": null,
    "others": null,
-   "overall": 43,
+   "overall": 48,
    "dur": 309,
    "sec": 0.7,
    "verdict": {
@@ -12821,8 +12773,6 @@
     "distance": 35.09342918545711,
     "max_gs": 0.9179896712303162,
     "max_gs_t": 236.409634,
-    "max_as": 4.394887447357178,
-    "max_as_t": 105.841624,
     "min_volt": 24.69731903076172,
     "min_volt_t": 113.240905,
     "used_mah": 0.43636608123779297,
@@ -12960,25 +12910,6 @@
       }
      ]
     },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 0.42693626312445515,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": 0.3985130544048132
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 19.0
-       }
-      }
-     ]
-    },
     "cpu": {
      "score": 100,
      "status": "good",
@@ -13090,7 +13021,7 @@
    ],
    "overall": 43,
    "dur": 1112,
-   "sec": 1.1,
+   "sec": 1.2,
    "verdict": {
     "kind": "crash",
     "score": 75,
@@ -13354,7 +13285,7 @@
    ],
    "overall": 31,
    "dur": 36,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -13715,7 +13646,7 @@
    "others": null,
    "overall": 84,
    "dur": 3164,
-   "sec": 0.9,
+   "sec": 1.1,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -13942,7 +13873,7 @@
    ],
    "overall": 40,
    "dur": 771,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 85,
@@ -14722,7 +14653,7 @@
    ],
    "overall": 41,
    "dur": 465,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -15178,9 +15109,9 @@
    "got": "normal",
    "got_cause": null,
    "others": null,
-   "overall": 50,
+   "overall": 85,
    "dur": 51,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -15204,8 +15135,6 @@
     "distance": 64.67674615581387,
     "max_gs": 2.1510000228881836,
     "max_gs_t": 32.657455,
-    "max_as": 1.954073190689087,
-    "max_as_t": 6.983501,
     "min_volt": 14.160064697265625,
     "min_volt_t": 7.206523,
     "used_mah": 41.13453674316406,
@@ -15336,29 +15265,6 @@
      },
      "findings": []
     },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 0.4179683879872923,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -0.03432185437348253
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 9.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
-    },
     "cpu": {
      "score": 97,
      "status": "good",
@@ -15448,7 +15354,7 @@
    "others": [],
    "overall": 48,
    "dur": 36,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -15649,7 +15555,7 @@
    "others": [],
    "overall": 48,
    "dur": 36,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -15848,9 +15754,9 @@
    "got": "crash",
    "got_cause": "control",
    "others": [],
-   "overall": 37,
+   "overall": 41,
    "dur": 95,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 75,
@@ -15895,8 +15801,6 @@
     "distance": 157.28985797284471,
     "max_gs": 21.430076599121094,
     "max_gs_t": 92.192047,
-    "max_as": 16.063480377197266,
-    "max_as_t": 92.008658,
     "min_volt": 21.41506576538086,
     "min_volt_t": 85.449103,
     "used_mah": 151.7593231201172,
@@ -16065,29 +15969,6 @@
      },
      "findings": []
     },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 3.568991606679952,
-      "as_min": 0.0,
-      "below_min_pct": 85.31746031746032,
-      "as_minus_gs": 0.5474993534877308
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 85.3,
-        "min": 12.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
-    },
     "cpu": {
      "score": 100,
      "status": "good",
@@ -16146,11 +16027,13 @@
    "note": "near crash/incident; RC signal interruption -> throttle failsafe",
    "vehicle": "Plane",
    "got": "incident",
-   "got_cause": "control",
-   "others": [],
+   "got_cause": "radio",
+   "others": [
+    "control"
+   ],
    "overall": 46,
    "dur": 341,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -16754,7 +16637,7 @@
    ],
    "overall": 70,
    "dur": 1123,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -17450,7 +17333,7 @@
    "got": "noflight",
    "got_cause": null,
    "others": null,
-   "overall": 43,
+   "overall": 48,
    "dur": 256,
    "sec": 0.6,
    "verdict": {
@@ -17472,8 +17355,6 @@
     "distance": 20.117307692682573,
     "max_gs": 0.14759743213653564,
     "max_gs_t": 0.237041,
-    "max_as": 0.13420692086219788,
-    "max_as_t": 97.139585,
     "min_volt": 9.987011909484863,
     "min_volt_t": 201.657154,
     "used_mah": 0.0,
@@ -17614,29 +17495,6 @@
      },
      "findings": []
     },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 0.015538394351258044,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -0.02519845691703017
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 9.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
-    },
     "cpu": {
      "score": 100,
      "status": "good",
@@ -17671,7 +17529,7 @@
    "others": null,
    "overall": 55,
    "dur": 28,
-   "sec": 0.6,
+   "sec": 0.4,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -17838,7 +17696,7 @@
    ],
    "overall": 66,
    "dur": 1271,
-   "sec": 0.8,
+   "sec": 1.0,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -18268,7 +18126,7 @@
    ],
    "overall": 42,
    "dur": 20,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -18499,7 +18357,7 @@
    "others": null,
    "overall": 83,
    "dur": 575,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -18745,7 +18603,7 @@
    "others": null,
    "overall": 49,
    "dur": 656,
-   "sec": 0.6,
+   "sec": 0.8,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -18983,7 +18841,7 @@
    "others": null,
    "overall": 90,
    "dur": 286,
-   "sec": 0.8,
+   "sec": 0.9,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -19173,7 +19031,7 @@
    "others": null,
    "overall": 91,
    "dur": 133,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -19930,7 +19788,7 @@
    "others": [],
    "overall": 41,
    "dur": 149,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -20273,7 +20131,7 @@
    "others": null,
    "overall": 91,
    "dur": 998,
-   "sec": 0.9,
+   "sec": 0.8,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -20527,9 +20385,9 @@
    "got": "incident",
    "got_cause": "control",
    "others": [],
-   "overall": 42,
+   "overall": 45,
    "dur": 1087,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 25,
@@ -20561,6 +20419,8 @@
     "distance": 518.375928322029,
     "max_gs": 29.48,
     "max_gs_t": 342.64162,
+    "max_as": 16.64823341369629,
+    "max_as_t": 332.264487,
     "min_volt": 1421.0,
     "min_volt_t": 332.52721,
     "used_mah": 1318.962646484375,
@@ -20655,6 +20515,22 @@
       "radio_failsafes": 0
      },
      "findings": []
+    },
+    "airspeed": {
+     "score": 100,
+     "status": "good",
+     "metrics": {
+      "as_mean": 16.21674039363861,
+      "as_min": 15.891016006469727,
+      "below_min_pct": 0.0,
+      "as_minus_gs": -2.0653531694598146
+     },
+     "findings": [
+      {
+       "k": "as_not_used",
+       "a": {}
+      }
+     ]
     }
    },
    "events": []
@@ -20683,7 +20559,7 @@
    "others": [],
    "overall": 65,
    "dur": 495898,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -21396,9 +21272,9 @@
    "got": "incident",
    "got_cause": "control",
    "others": [],
-   "overall": 37,
+   "overall": 42,
    "dur": 529,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -21430,8 +21306,6 @@
     "distance": 13.990770688925155,
     "max_gs": 5.189937114715576,
     "max_gs_t": 528.030193,
-    "max_as": 3.8680593967437744,
-    "max_as_t": 528.325269,
     "first_error": null,
     "profile": "vtol",
     "bl_vib_p95": 4.201,
@@ -21565,29 +21439,6 @@
       "radio_failsafes": 0
      },
      "findings": []
-    },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 0.05509193597139432,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -0.10173034202028741
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 5.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
     },
     "cpu": {
      "score": 100,
@@ -21807,7 +21658,7 @@
    "others": null,
    "overall": 54,
    "dur": 134,
-   "sec": 1.1,
+   "sec": 1.0,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -22011,7 +21862,7 @@
    "others": null,
    "overall": 85,
    "dur": 587,
-   "sec": 1.0,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -22447,7 +22298,7 @@
    ],
    "overall": 42,
    "dur": 3320,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 45,
@@ -22684,7 +22535,7 @@
    "others": null,
    "overall": 94,
    "dur": 155,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 5,
@@ -22912,7 +22763,7 @@
    "others": [],
    "overall": 45,
    "dur": 424,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 25,
@@ -23685,7 +23536,7 @@
    "others": null,
    "overall": 46,
    "dur": 729,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -24004,7 +23855,7 @@
    ],
    "overall": 49,
    "dur": 67,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -24202,7 +24053,7 @@
    "others": [],
    "overall": 45,
    "dur": 13,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 75,
@@ -25060,17 +24911,17 @@
    "exclude": false,
    "note": "transition throttle question",
    "vehicle": "Plane",
-   "got": "incident",
-   "got_cause": "unknown",
+   "got": "normal",
+   "got_cause": null,
    "others": null,
-   "overall": 49,
+   "overall": 54,
    "dur": 155,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
-    "kind": "incident",
+    "kind": "normal",
     "score": 0,
     "evidence": [],
-    "severity": "minor"
+    "severity": null
    },
    "facts": {
     "duration": 155.146014,
@@ -25089,8 +24940,6 @@
     "distance": 484.72234019466805,
     "max_gs": 27.534000396728516,
     "max_gs_t": 74.215075,
-    "max_as": 31.042510986328125,
-    "max_as_t": 74.411555,
     "min_volt": 22.56538963317871,
     "min_volt_t": 66.512864,
     "used_mah": 511.4435119628906,
@@ -25208,25 +25057,6 @@
       "radio_failsafes": 0
      },
      "findings": []
-    },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 5.541933927296739,
-      "as_min": 0.0,
-      "below_min_pct": 85.77844311377245,
-      "as_minus_gs": -0.7186227677225967
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 85.8,
-        "min": 15.0
-       }
-      }
-     ]
     },
     "cpu": {
      "score": 100,
@@ -25588,7 +25418,7 @@
    ],
    "overall": 42,
    "dur": 261,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -27546,14 +27376,14 @@
    "note": "",
    "vehicle": "Plane",
    "got": "crash",
-   "got_cause": "control",
+   "got_cause": "stall",
    "others": [
-    "stall",
+    "control",
     "compass"
    ],
    "overall": 38,
    "dur": 43,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 75,
@@ -27843,7 +27673,7 @@
    ],
    "overall": 40,
    "dur": 269,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -28286,7 +28116,7 @@
    "others": null,
    "overall": 94,
    "dur": 1397,
-   "sec": 0.8,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -28483,7 +28313,7 @@
    ],
    "overall": 50,
    "dur": 694,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -29294,7 +29124,7 @@
    "others": null,
    "overall": 91,
    "dur": 207,
-   "sec": 0.7,
+   "sec": 0.8,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -29477,9 +29307,9 @@
     "pilot",
     "control"
    ],
-   "overall": 42,
+   "overall": 47,
    "dur": 57,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -29533,8 +29363,6 @@
     "distance": 67.5232160068951,
     "max_gs": 19.44300079345703,
     "max_gs_t": 56.233005,
-    "max_as": 17.738494873046875,
-    "max_as_t": 56.156383,
     "min_volt": 22.188051223754883,
     "min_volt_t": 55.196739,
     "used_mah": 205.75601196289062,
@@ -29683,29 +29511,6 @@
       "radio_failsafes": 0
      },
      "findings": []
-    },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 3.115698808534206,
-      "as_min": 0.0,
-      "below_min_pct": 85.5072463768116,
-      "as_minus_gs": 0.9809678972681384
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 85.5,
-        "min": 5.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
     },
     "cpu": {
      "score": 100,
@@ -30361,14 +30166,13 @@
    "note": "",
    "vehicle": "Plane",
    "got": "crash",
-   "got_cause": "compass",
+   "got_cause": "control",
    "others": [
-    "control",
-    "control"
+    "compass"
    ],
    "overall": 38,
    "dur": 56,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 75,
@@ -31977,7 +31781,7 @@
    "others": null,
    "overall": 93,
    "dur": 173,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -32669,7 +32473,7 @@
    "others": null,
    "overall": 97,
    "dur": 210,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -33480,7 +33284,7 @@
    "got": "noflight",
    "got_cause": null,
    "others": null,
-   "overall": 37,
+   "overall": 41,
    "dur": 44,
    "sec": 0.5,
    "verdict": {
@@ -33502,8 +33306,6 @@
     "distance": 3.5560018723497717,
     "max_gs": 0.13398879766464233,
     "max_gs_t": 0.426837,
-    "max_as": 0.13259756565093994,
-    "max_as_t": 3.206776,
     "used_mah": 5.0994181632995605,
     "first_error": null,
     "profile": "vtol",
@@ -33653,29 +33455,6 @@
       }
      ]
     },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 0.01926080285166218,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -0.03428937350932451
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 14.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
-    },
     "cpu": {
      "score": 40,
      "status": "bad",
@@ -33747,7 +33526,7 @@
    "others": null,
    "overall": 55,
    "dur": 163,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -33936,7 +33715,7 @@
    "others": null,
    "overall": 54,
    "dur": 1455,
-   "sec": 1.1,
+   "sec": 1.0,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -34307,7 +34086,7 @@
    ],
    "overall": 71,
    "dur": 449,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -34875,7 +34654,7 @@
    "others": null,
    "overall": 49,
    "dur": 2488,
-   "sec": 1.4,
+   "sec": 1.3,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -35788,7 +35567,7 @@
    ],
    "overall": 43,
    "dur": 1008,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -36473,7 +36252,7 @@
    ],
    "overall": 42,
    "dur": 223,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -37465,7 +37244,7 @@
    "others": null,
    "overall": 91,
    "dur": 341,
-   "sec": 0.7,
+   "sec": 0.9,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -37648,7 +37427,7 @@
    "others": [],
    "overall": 98,
    "dur": 87,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -38242,7 +38021,7 @@
    "others": null,
    "overall": 81,
    "dur": 1431,
-   "sec": 0.9,
+   "sec": 1.0,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -38462,7 +38241,7 @@
    "others": [],
    "overall": 42,
    "dur": 261,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -39674,7 +39453,7 @@
    ],
    "overall": 42,
    "dur": 873,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -41114,7 +40893,7 @@
    "others": null,
    "overall": 52,
    "dur": 350,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -41963,8 +41742,8 @@
     "disarm_t": 377.541929,
     "max_gs": 0.0,
     "max_gs_t": 0.139544,
-    "max_as": 107.65856170654297,
-    "max_as_t": 299.049236,
+    "max_as": 90.55770874023438,
+    "max_as_t": 295.049822,
     "min_volt": 23.157596588134766,
     "min_volt_t": 290.250184,
     "used_mah": 178.65545654296875,
@@ -42098,16 +41877,16 @@
      "score": 0,
      "status": "bad",
      "metrics": {
-      "as_mean": 8.479740574362193,
-      "as_min": 0.12980201840400696,
-      "below_min_pct": 86.76092544987146,
-      "as_minus_gs": 8.479740574362193
+      "as_mean": 14.422763056359718,
+      "as_min": 3.0,
+      "below_min_pct": 64.12859560067682,
+      "as_minus_gs": 14.422763056359718
      },
      "findings": [
       {
        "k": "as_low",
        "a": {
-        "v": 86.8,
+        "v": 64.1,
         "min": 10.0
        }
       }
@@ -42563,7 +42342,7 @@
    "others": null,
    "overall": 79,
    "dur": 6146,
-   "sec": 1.7,
+   "sec": 1.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -42803,7 +42582,7 @@
    "others": null,
    "overall": 52,
    "dur": 458,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -43502,7 +43281,7 @@
    ],
    "overall": 49,
    "dur": 391,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -44012,7 +43791,7 @@
    "others": null,
    "overall": 100,
    "dur": 92,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -44208,7 +43987,7 @@
    ],
    "overall": 46,
    "dur": 82,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -45103,7 +44882,7 @@
    "others": null,
    "overall": 83,
    "dur": 2100,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -46874,18 +46653,17 @@
    "exclude": false,
    "note": "",
    "vehicle": "Plane",
-   "got": "incident",
-   "got_cause": "control",
-   "others": [],
-   "overall": 48,
+   "got": "normal",
+   "got_cause": null,
+   "others": null,
+   "overall": 68,
    "dur": 305,
    "sec": 0.8,
    "verdict": {
-    "kind": "incident",
+    "kind": "normal",
     "score": 0,
     "evidence": [],
-    "severity": "minor",
-    "refined": true
+    "severity": null
    },
    "facts": {
     "duration": 304.542084,
@@ -46904,8 +46682,6 @@
     "distance": 13.51272496132152,
     "max_gs": 0.627047061920166,
     "max_gs_t": 121.424323,
-    "max_as": 10.635730743408203,
-    "max_as_t": 108.465868,
     "min_volt": 21.722068786621094,
     "min_volt_t": 48.172038,
     "used_mah": 0.7541825771331787,
@@ -47031,25 +46807,6 @@
       "radio_failsafes": 0
      },
      "findings": []
-    },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 2.249442152859886,
-      "as_min": 0.09043622761964798,
-      "below_min_pct": 99.22737306843267,
-      "as_minus_gs": 2.1902535888866077
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 99.2,
-        "min": 9.0
-       }
-      }
-     ]
     },
     "cpu": {
      "score": 100,
@@ -48080,7 +47837,7 @@
    "others": [],
    "overall": 61,
    "dur": 2807,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -48342,7 +48099,7 @@
    "others": null,
    "overall": 96,
    "dur": 71,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -48532,7 +48289,7 @@
    ],
    "overall": 41,
    "dur": 428,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 55,
@@ -48736,7 +48493,7 @@
    ],
    "overall": 40,
    "dur": 143,
-   "sec": 0.6,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 90,
@@ -49062,7 +48819,7 @@
    "others": null,
    "overall": 52,
    "dur": 134,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -50341,7 +50098,7 @@
    ],
    "overall": 67,
    "dur": 180,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -50674,7 +50431,7 @@
    ],
    "overall": 38,
    "dur": 808,
-   "sec": 0.9,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -51184,7 +50941,7 @@
    ],
    "overall": 66,
    "dur": 774,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 95,
@@ -51386,7 +51143,7 @@
    ],
    "overall": 45,
    "dur": 496,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -51776,7 +51533,7 @@
    ],
    "overall": 43,
    "dur": 71422085125,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -52382,7 +52139,7 @@
     "pilot",
     "compass"
    ],
-   "overall": 43,
+   "overall": 62,
    "dur": 1175,
    "sec": 0.8,
    "verdict": {
@@ -52416,8 +52173,6 @@
     "distance": 9703.188901458963,
     "max_gs": 5.9730000495910645,
     "max_gs_t": 1148.507283,
-    "max_as": 9.973363876342773,
-    "max_as_t": 1143.197705,
     "min_volt": 21.935365676879883,
     "min_volt_t": 1156.096508,
     "used_mah": 285.1116943359375,
@@ -52566,25 +52321,6 @@
      },
      "findings": []
     },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 2.2795806825551064,
-      "as_min": 0.20514321327209473,
-      "below_min_pct": 100.0,
-      "as_minus_gs": 1.615629091379822
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 12.0
-       }
-      }
-     ]
-    },
     "cpu": {
      "score": 100,
      "status": "good",
@@ -52637,7 +52373,7 @@
    "others": null,
    "overall": 51,
    "dur": 134,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -53099,12 +52835,10 @@
    "vehicle": "Plane",
    "got": "incident",
    "got_cause": "control",
-   "others": [
-    "stall"
-   ],
-   "overall": 37,
+   "others": [],
+   "overall": 39,
    "dur": 152,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -53136,8 +52870,8 @@
     "distance": 556.0209226059767,
     "max_gs": 33.55277633666992,
     "max_gs_t": 78.599003,
-    "max_as": 0.0,
-    "max_as_t": 0.099317,
+    "max_as": 36.6297607421875,
+    "max_as_t": 78.62031,
     "min_volt": 14.196691513061523,
     "min_volt_t": 56.499307,
     "used_mah": 122.5418472290039,
@@ -53306,19 +53040,19 @@
      "findings": []
     },
     "airspeed": {
-     "score": 0,
+     "score": 30,
      "status": "bad",
      "metrics": {
-      "as_mean": 0.0,
+      "as_mean": 17.383971727017947,
       "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -16.70062950366013
+      "below_min_pct": 23.202614379084967,
+      "as_minus_gs": 0.6857639652919241
      },
      "findings": [
       {
        "k": "as_low",
        "a": {
-        "v": 100.0,
+        "v": 23.2,
         "min": 9.0
        }
       },
@@ -53362,7 +53096,7 @@
    "others": null,
    "overall": 63,
    "dur": 206,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -54068,7 +53802,7 @@
    ],
    "overall": 41,
    "dur": 1164,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 90,
@@ -54389,7 +54123,7 @@
    ],
    "overall": 51,
    "dur": 414,
-   "sec": 1.0,
+   "sec": 0.9,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -54679,7 +54413,7 @@
    ],
    "overall": 58,
    "dur": 1336,
-   "sec": 1.0,
+   "sec": 0.9,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -55154,11 +54888,13 @@
    "note": "",
    "vehicle": "Plane",
    "got": "incident",
-   "got_cause": "control",
-   "others": [],
-   "overall": 37,
+   "got_cause": "motor",
+   "others": [
+    "control"
+   ],
+   "overall": 41,
    "dur": 258,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -55190,8 +54926,6 @@
     "distance": 14.118430125854132,
     "max_gs": 3.1243679523468018,
     "max_gs_t": 242.422246,
-    "max_as": 1.8639752864837646,
-    "max_as_t": 242.542613,
     "min_volt": 13.85205078125,
     "min_volt_t": 54.021796,
     "used_mah": 59.67543411254883,
@@ -55355,29 +55089,6 @@
      },
      "findings": []
     },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 0.09148144470329614,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -0.36425327653683365
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 9.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
-    },
     "cpu": {
      "score": 100,
      "status": "good",
@@ -55430,7 +55141,7 @@
    "others": [],
    "overall": 51,
    "dur": 170,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -55841,7 +55552,7 @@
    ],
    "overall": 61,
    "dur": 484,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -56346,9 +56057,9 @@
    "got": "incident",
    "got_cause": "control",
    "others": [],
-   "overall": 45,
+   "overall": 50,
    "dur": 108,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -56380,8 +56091,6 @@
     "distance": 212.11815256446832,
     "max_gs": 14.283000946044922,
     "max_gs_t": 107.296797,
-    "max_as": 3.7879490852355957,
-    "max_as_t": 99.754048,
     "min_volt": 21.750995635986328,
     "min_volt_t": 107.623178,
     "used_mah": 18.236387252807617,
@@ -56519,29 +56228,6 @@
       "radio_failsafes": 0
      },
      "findings": []
-    },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 0.7174967847394277,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -1.9998076079795266
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 9.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
     },
     "cpu": {
      "score": 100,
@@ -56930,7 +56616,7 @@
    "got": "incident",
    "got_cause": "control",
    "others": [],
-   "overall": 44,
+   "overall": 71,
    "dur": 354,
    "sec": 0.7,
    "verdict": {
@@ -56970,8 +56656,6 @@
     "distance": 154.68115746913128,
     "max_gs": 4.698835372924805,
     "max_gs_t": 336.34317,
-    "max_as": 47.35685729980469,
-    "max_as_t": 338.863037,
     "min_volt": 20.211524963378906,
     "min_volt_t": 334.863832,
     "used_mah": 0.0064508626237511635,
@@ -57118,25 +56802,6 @@
      },
      "findings": []
     },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 2.673950904411907,
-      "as_min": 0.059945348650217056,
-      "below_min_pct": 100.0,
-      "as_minus_gs": 1.646937364225842
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 9.0
-       }
-      }
-     ]
-    },
     "cpu": {
      "score": 100,
      "status": "good",
@@ -57198,7 +56863,7 @@
    ],
    "overall": 47,
    "dur": 960,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -57575,7 +57240,7 @@
    "got": "incident",
    "got_cause": "control",
    "others": [],
-   "overall": 44,
+   "overall": 71,
    "dur": 354,
    "sec": 0.5,
    "verdict": {
@@ -57615,8 +57280,6 @@
     "distance": 154.68115746913128,
     "max_gs": 4.698835372924805,
     "max_gs_t": 336.34317,
-    "max_as": 47.35685729980469,
-    "max_as_t": 338.863037,
     "min_volt": 20.211524963378906,
     "min_volt_t": 334.863832,
     "used_mah": 0.0064508626237511635,
@@ -57762,25 +57425,6 @@
       "radio_failsafes": 0
      },
      "findings": []
-    },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 2.673950904411907,
-      "as_min": 0.059945348650217056,
-      "below_min_pct": 100.0,
-      "as_minus_gs": 1.646937364225842
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 9.0
-       }
-      }
-     ]
     },
     "cpu": {
      "score": 100,
@@ -58021,7 +57665,7 @@
    ],
    "overall": 69,
    "dur": 806,
-   "sec": 0.9,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -58248,7 +57892,7 @@
    "others": [],
    "overall": 47,
    "dur": 93,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -58761,7 +58405,7 @@
    ],
    "overall": 40,
    "dur": 167,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -59174,7 +58818,7 @@
    ],
    "overall": 69,
    "dur": 460,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -59452,14 +59096,15 @@
    "note": "",
    "vehicle": "Plane",
    "got": "crash",
-   "got_cause": "compass",
+   "got_cause": "motor",
    "others": [
+    "compass",
     "control",
     "control"
    ],
    "overall": 44,
    "dur": 53,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -60474,11 +60119,15 @@
    "note": "",
    "vehicle": "Plane",
    "got": "crash",
-   "got_cause": "control",
-   "others": [],
+   "got_cause": "motor",
+   "others": [
+    "control",
+    "control",
+    "control"
+   ],
    "overall": 48,
    "dur": 76,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 75,
@@ -60764,7 +60413,7 @@
    ],
    "overall": 39,
    "dur": 29,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -61073,7 +60722,7 @@
    ],
    "overall": 60,
    "dur": 1205,
-   "sec": 0.9,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -62805,7 +62454,7 @@
    "others": null,
    "overall": 82,
    "dur": 62,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -63015,7 +62664,7 @@
    ],
    "overall": 69,
    "dur": 177,
-   "sec": 0.9,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -63260,7 +62909,7 @@
    ],
    "overall": 80,
    "dur": 198,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -63715,7 +63364,7 @@
    "others": null,
    "overall": 80,
    "dur": 185,
-   "sec": 0.8,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -63982,7 +63631,7 @@
    ],
    "overall": 37,
    "dur": 28,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -64325,7 +63974,7 @@
    ],
    "overall": 73,
    "dur": 813,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -64564,17 +64213,17 @@
    "exclude": false,
    "note": "",
    "vehicle": "Plane",
-   "got": "incident",
-   "got_cause": "unknown",
+   "got": "normal",
+   "got_cause": null,
    "others": null,
-   "overall": 46,
+   "overall": 51,
    "dur": 554,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
-    "kind": "incident",
+    "kind": "normal",
     "score": 0,
     "evidence": [],
-    "severity": "minor"
+    "severity": null
    },
    "facts": {
     "duration": 554.438202,
@@ -64593,8 +64242,6 @@
     "distance": 103.26730327745716,
     "max_gs": 1.9684323072433472,
     "max_gs_t": 455.401304,
-    "max_as": 8.673590660095215,
-    "max_as_t": 141.589426,
     "min_volt": 21.77086639404297,
     "min_volt_t": 153.888264,
     "used_mah": 1422.5743408203125,
@@ -64730,29 +64377,6 @@
       "radio_failsafes": 0
      },
      "findings": []
-    },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 2.2947640099042763,
-      "as_min": 0.22500284016132355,
-      "below_min_pct": 100.0,
-      "as_minus_gs": 1.5902558259408341
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 13.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
     },
     "cpu": {
      "score": 100,
@@ -65077,7 +64701,7 @@
    "others": null,
    "overall": 99,
    "dur": 1777,
-   "sec": 0.9,
+   "sec": 1.0,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -65299,7 +64923,7 @@
    ],
    "overall": 64,
    "dur": 59,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 55,
@@ -65548,7 +65172,7 @@
    ],
    "overall": 40,
    "dur": 326,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 60,
@@ -65889,7 +65513,7 @@
    ],
    "overall": 62,
    "dur": 2284,
-   "sec": 1.3,
+   "sec": 1.2,
    "verdict": {
     "kind": "crash",
     "score": 75,
@@ -66218,10 +65842,12 @@
    "vehicle": "Plane",
    "got": "incident",
    "got_cause": "control",
-   "others": [],
+   "others": [
+    "radio"
+   ],
    "overall": 36,
    "dur": 63,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -66547,7 +66173,7 @@
    ],
    "overall": 34,
    "dur": 536,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -67210,7 +66836,7 @@
    ],
    "overall": 79,
    "dur": 1618,
-   "sec": 1.0,
+   "sec": 0.9,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -67703,7 +67329,7 @@
    ],
    "overall": 38,
    "dur": 306,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -67949,7 +67575,7 @@
    ],
    "overall": 43,
    "dur": 101,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -68405,9 +68031,9 @@
    "got": "incident",
    "got_cause": "control",
    "others": [],
-   "overall": 35,
+   "overall": 40,
    "dur": 92,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -68431,8 +68057,8 @@
     "distance": 77.19107738090662,
     "max_gs": 1.9200000762939453,
     "max_gs_t": 42.761103,
-    "max_as": 1.1545462608337402,
-    "max_as_t": 85.821473,
+    "max_as": 13.872047424316406,
+    "max_as_t": 18.340876,
     "min_volt": 11.438447952270508,
     "min_volt_t": 19.441029,
     "used_mah": 41.4033317565918,
@@ -68586,19 +68212,19 @@
      "findings": []
     },
     "airspeed": {
-     "score": 0,
-     "status": "bad",
+     "score": 87,
+     "status": "good",
      "metrics": {
-      "as_mean": 0.01586951845926147,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -0.4330089053954536
+      "as_mean": 8.356103693445524,
+      "as_min": 3.5020058155059814,
+      "below_min_pct": 4.340277777777778,
+      "as_minus_gs": 7.905459086513279
      },
      "findings": [
       {
        "k": "as_low",
        "a": {
-        "v": 100.0,
+        "v": 4.3,
         "min": 9.0
        }
       },
@@ -69117,7 +68743,7 @@
    ],
    "overall": 41,
    "dur": 830,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -69954,7 +69580,7 @@
    ],
    "overall": 56,
    "dur": 1299,
-   "sec": 1.3,
+   "sec": 1.4,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -70256,7 +69882,7 @@
    "others": null,
    "overall": 66,
    "dur": 1419,
-   "sec": 1.0,
+   "sec": 0.9,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -70469,7 +70095,7 @@
    ],
    "overall": 43,
    "dur": 621,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 50,
@@ -71159,7 +70785,7 @@
    ],
    "overall": 46,
    "dur": 482,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -71441,7 +71067,7 @@
    ],
    "overall": 73,
    "dur": 52,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -71637,7 +71263,7 @@
    ],
    "overall": 39,
    "dur": 502,
-   "sec": 1.1,
+   "sec": 1.0,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -72799,7 +72425,7 @@
    ],
    "overall": 49,
    "dur": 72,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -73478,7 +73104,7 @@
    ],
    "overall": 49,
    "dur": 179,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 60,
@@ -73738,7 +73364,7 @@
    "got": "normal",
    "got_cause": null,
    "others": null,
-   "overall": 52,
+   "overall": 88,
    "dur": 147,
    "sec": 0.7,
    "verdict": {
@@ -73764,8 +73390,6 @@
     "distance": 452.5518784410261,
     "max_gs": 14.833841323852539,
     "max_gs_t": 56.500396,
-    "max_as": 12.859976768493652,
-    "max_as_t": 50.660403,
     "min_volt": 45.74434280395508,
     "min_volt_t": 37.861125,
     "used_mah": 2484.801025390625,
@@ -73884,25 +73508,6 @@
      },
      "findings": []
     },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 4.16183618097566,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -1.4462472296165934
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 18.0
-       }
-      }
-     ]
-    },
     "cpu": {
      "score": 100,
      "status": "good",
@@ -73980,7 +73585,7 @@
    ],
    "overall": 49,
    "dur": 520,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -74506,7 +74111,7 @@
    "others": null,
    "overall": 53,
    "dur": 276,
-   "sec": 0.8,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -74727,7 +74332,7 @@
    "others": null,
    "overall": 100,
    "dur": 111,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -74877,7 +74482,7 @@
    ],
    "overall": 36,
    "dur": 1994,
-   "sec": 1.5,
+   "sec": 1.3,
    "verdict": {
     "kind": "crash",
     "score": 85,
@@ -75463,7 +75068,7 @@
    "others": [],
    "overall": 55,
    "dur": 216,
-   "sec": 1.0,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -75972,7 +75577,7 @@
    "got": "noflight",
    "got_cause": null,
    "others": null,
-   "overall": 48,
+   "overall": 53,
    "dur": 99,
    "sec": 0.5,
    "verdict": {
@@ -75994,8 +75599,6 @@
     "distance": 7.079208370484438,
     "max_gs": 0.19100001454353333,
     "max_gs_t": 19.068636,
-    "max_as": 0.5988127589225769,
-    "max_as_t": 81.182387,
     "min_volt": 3.7678442001342773,
     "min_volt_t": 11.089612,
     "used_mah": 6.125844955444336,
@@ -76113,25 +75716,6 @@
       "radio_failsafes": 0
      },
      "findings": []
-    },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 0.20000369700982895,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": 0.1417946471221088
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 16.0
-       }
-      }
-     ]
     },
     "cpu": {
      "score": 100,
@@ -76951,7 +76535,7 @@
    ],
    "overall": 63,
    "dur": 1213,
-   "sec": 1.9,
+   "sec": 1.8,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -77329,7 +76913,7 @@
    "got": "incident",
    "got_cause": "control",
    "others": [],
-   "overall": 43,
+   "overall": 48,
    "dur": 1719,
    "sec": 0.8,
    "verdict": {
@@ -77363,8 +76947,6 @@
     "distance": 249.19345908564378,
     "max_gs": 22.6460018157959,
     "max_gs_t": 55.673543,
-    "max_as": 2.4394428730010986,
-    "max_as_t": 1715.787792,
     "min_volt": 12.19430923461914,
     "min_volt_t": 56.293628,
     "used_mah": 1559.6925048828125,
@@ -77516,29 +77098,6 @@
      },
      "findings": []
     },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 0.0668854141256334,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -3.844526008942061
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 9.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
-    },
     "cpu": {
      "score": 100,
      "status": "good",
@@ -77651,7 +77210,7 @@
    ],
    "overall": 28,
    "dur": 31,
-   "sec": 0.8,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -78363,7 +77922,7 @@
    "others": [],
    "overall": 92,
    "dur": 295,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -79671,7 +79230,7 @@
    ],
    "overall": 39,
    "dur": 489,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -79926,7 +79485,7 @@
    ],
    "overall": 33,
    "dur": 77,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 85,
@@ -82083,7 +81642,7 @@
    ],
    "overall": 37,
    "dur": 84,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -82849,7 +82408,7 @@
    "others": [],
    "overall": 48,
    "dur": 314,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -83290,7 +82849,7 @@
    "others": null,
    "overall": 94,
    "dur": 111,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -83876,7 +83435,7 @@
    ],
    "overall": 45,
    "dur": 29,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -84409,13 +83968,13 @@
    "note": "near crash/incident",
    "vehicle": "Plane",
    "got": "incident",
-   "got_cause": "stall",
+   "got_cause": "control",
    "others": [
-    "control"
+    "stall"
    ],
-   "overall": 37,
+   "overall": 42,
    "dur": 379,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -84439,8 +83998,6 @@
     "distance": 2394.010359090551,
     "max_gs": 21.1597843170166,
     "max_gs_t": 173.689968,
-    "max_as": 0.0,
-    "max_as_t": 0.209576,
     "min_volt": 10.674154281616211,
     "min_volt_t": 153.512697,
     "used_mah": 192.99586486816406,
@@ -84609,29 +84166,6 @@
       "radio_failsafes": 0
      },
      "findings": []
-    },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -17.070612392854848
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 9.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
     }
    },
    "events": []
@@ -85522,7 +85056,7 @@
    ],
    "overall": 45,
    "dur": 62,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -86576,7 +86110,7 @@
    ],
    "overall": 24,
    "dur": 28,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -87364,7 +86898,7 @@
    ],
    "overall": 32,
    "dur": 84,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -88967,18 +88501,17 @@
    "exclude": false,
    "note": "near crash/incident; frame type X vs H yaw in hover",
    "vehicle": "Plane",
-   "got": "incident",
-   "got_cause": "unknown",
+   "got": "normal",
+   "got_cause": null,
    "others": null,
-   "overall": 48,
+   "overall": 75,
    "dur": 157,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
-    "kind": "incident",
+    "kind": "normal",
     "score": 0,
     "evidence": [],
-    "severity": "minor",
-    "refined": true
+    "severity": null
    },
    "facts": {
     "duration": 157.099488,
@@ -88997,8 +88530,6 @@
     "distance": 11.99087876224042,
     "max_gs": 1.034000039100647,
     "max_gs_t": 11.345078,
-    "max_as": 6.359668731689453,
-    "max_as_t": 145.584635,
     "min_volt": 14.542627334594727,
     "min_volt_t": 151.385119,
     "used_mah": 171.59681701660156,
@@ -89114,25 +88645,6 @@
       "radio_failsafes": 0
      },
      "findings": []
-    },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 2.9910909539461135,
-      "as_min": 0.1814231425523758,
-      "below_min_pct": 100.0,
-      "as_minus_gs": 2.617849865972443
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 9.0
-       }
-      }
-     ]
     },
     "vtol": {
      "score": 85,
@@ -89429,7 +88941,7 @@
    "others": [],
    "overall": 41,
    "dur": 478,
-   "sec": 0.9,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -89673,7 +89185,7 @@
    ],
    "overall": 40,
    "dur": 654,
-   "sec": 1.0,
+   "sec": 1.1,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -91100,7 +90612,7 @@
    ],
    "overall": 40,
    "dur": 243,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -91343,7 +90855,7 @@
    "others": [],
    "overall": 98,
    "dur": 2023,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -92371,7 +91883,7 @@
    ],
    "overall": 44,
    "dur": 112,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -93194,10 +92706,13 @@
    "vehicle": "Plane",
    "got": "crash",
    "got_cause": "control",
-   "others": [],
+   "others": [
+    "radio",
+    "stall"
+   ],
    "overall": 45,
    "dur": 596,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -93243,6 +92758,8 @@
     "distance": 5044.346637412249,
     "max_gs": 25.89,
     "max_gs_t": 336.991161,
+    "max_as": 25.500137329101562,
+    "max_as_t": 421.295374,
     "min_volt": 1002.0,
     "min_volt_t": 487.159337,
     "used_mah": 2843.9765625,
@@ -93349,6 +92866,28 @@
       "radio_failsafes": 0
      },
      "findings": []
+    },
+    "airspeed": {
+     "score": 70,
+     "status": "warn",
+     "metrics": {
+      "as_mean": 19.764171838760376,
+      "as_min": 6.464288234710693,
+      "below_min_pct": 10.0
+     },
+     "findings": [
+      {
+       "k": "as_low",
+       "a": {
+        "v": 10.0,
+        "min": 9.0
+       }
+      },
+      {
+       "k": "as_not_used",
+       "a": {}
+      }
+     ]
     }
    },
    "events": [
@@ -93396,9 +92935,9 @@
    "got": "normal",
    "got_cause": null,
    "others": null,
-   "overall": 52,
+   "overall": 93,
    "dur": 122,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -93422,8 +92961,8 @@
     "distance": 478.4380266211899,
     "max_gs": 21.03900146484375,
     "max_gs_t": 27.377378,
-    "max_as": 21.327791213989258,
-    "max_as_t": 26.357786,
+    "max_as": 19.9588623046875,
+    "max_as_t": 4.060042,
     "first_error": null,
     "profile": "vtol",
     "bl_vib_p95": 0.2074,
@@ -93506,22 +93045,15 @@
      "findings": []
     },
     "airspeed": {
-     "score": 0,
-     "status": "bad",
+     "score": 100,
+     "status": "good",
      "metrics": {
-      "as_mean": 6.244947078762945,
-      "as_min": 0.022061703726649284,
-      "below_min_pct": 68.79271070615034,
-      "as_minus_gs": -0.3180914869003209
+      "as_mean": 16.06004850305023,
+      "as_min": 14.960067749023438,
+      "below_min_pct": 0.0,
+      "as_minus_gs": 9.497009937386965
      },
      "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 68.8,
-        "min": 9.0
-       }
-      },
       {
        "k": "as_not_used",
        "a": {}
@@ -93822,7 +93354,7 @@
    "others": [],
    "overall": 31,
    "dur": 505,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -95212,7 +94744,7 @@
    ],
    "overall": 47,
    "dur": 179,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -96556,7 +96088,7 @@
    "got": "normal",
    "got_cause": null,
    "others": null,
-   "overall": 48,
+   "overall": 77,
    "dur": 173,
    "sec": 0.6,
    "verdict": {
@@ -96582,8 +96114,6 @@
     "distance": 156.0497234441107,
     "max_gs": 8.596000671386719,
     "max_gs_t": 35.654006,
-    "max_as": 11.686017036437988,
-    "max_as_t": 34.053118,
     "min_volt": 14.295790672302246,
     "min_volt_t": 35.353169,
     "used_mah": 75.00999450683594,
@@ -96725,25 +96255,6 @@
      },
      "findings": []
     },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 3.001402899939255,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": 2.023347997136177
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 14.0
-       }
-      }
-     ]
-    },
     "vtol": {
      "score": 100,
      "status": "good",
@@ -96786,7 +96297,7 @@
    "others": null,
    "overall": 81,
    "dur": 122,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -97334,7 +96845,7 @@
    "others": null,
    "overall": 68,
    "dur": 586,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -97953,7 +97464,7 @@
    ],
    "overall": 66,
    "dur": 544,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 55,
@@ -98185,9 +97696,9 @@
     "control",
     "control"
    ],
-   "overall": 48,
+   "overall": 50,
    "dur": 662,
-   "sec": 1.1,
+   "sec": 1.0,
    "verdict": {
     "kind": "incident",
     "score": 50,
@@ -98225,6 +97736,8 @@
     "distance": 201.99695992431378,
     "max_gs": 7.218000411987305,
     "max_gs_t": 661.147492,
+    "max_as": 19.870956420898438,
+    "max_as_t": 249.485658,
     "min_volt": 43.30272674560547,
     "min_volt_t": 661.256856,
     "used_mah": 4100.8125,
@@ -98382,6 +97895,22 @@
       "radio_failsafes": 0
      },
      "findings": []
+    },
+    "airspeed": {
+     "score": 99,
+     "status": "good",
+     "metrics": {
+      "as_mean": 16.232676190192546,
+      "as_min": 5.266664981842041,
+      "below_min_pct": 0.1834862385321101,
+      "as_minus_gs": 15.514618224891592
+     },
+     "findings": [
+      {
+       "k": "as_not_used",
+       "a": {}
+      }
+     ]
     },
     "vtol": {
      "score": 85,
@@ -98896,7 +98425,7 @@
    "got": "noflight",
    "got_cause": null,
    "others": null,
-   "overall": 40,
+   "overall": 45,
    "dur": 16,
    "sec": 0.5,
    "verdict": {
@@ -98913,8 +98442,6 @@
     "disarm_t": 16.317198,
     "max_gs": 0.0,
     "max_gs_t": 0.100572,
-    "max_as": 0.0,
-    "max_as_t": 0.296959,
     "min_volt": 11.610506057739258,
     "min_volt_t": 6.016481,
     "used_mah": 7.426053047180176,
@@ -99045,29 +98572,6 @@
       "radio_failsafes": 0
      },
      "findings": []
-    },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": 0.0
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 9.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
     },
     "cpu": {
      "score": 100,
@@ -99423,7 +98927,7 @@
    ],
    "overall": 50,
    "dur": 60,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -100529,7 +100033,7 @@
    "others": [],
    "overall": 51,
    "dur": 293,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -101119,8 +100623,8 @@
     "distance": 71.43928272140289,
     "max_gs": 7.965000152587891,
     "max_gs_t": 10.533767,
-    "max_as": 0.0,
-    "max_as_t": 0.060698,
+    "max_as": 17.607402801513672,
+    "max_as_t": 17.194724,
     "min_volt": 11.781338691711426,
     "min_volt_t": 16.594592,
     "used_mah": 17.689964294433594,
@@ -101271,16 +100775,16 @@
      "score": 0,
      "status": "bad",
      "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -6.166907138655028
+      "as_mean": 6.444585770368576,
+      "as_min": 2.0217843055725098,
+      "below_min_pct": 91.96428571428571,
+      "as_minus_gs": 0.27553694083694535
      },
      "findings": [
       {
        "k": "as_low",
        "a": {
-        "v": 100.0,
+        "v": 92.0,
         "min": 9.0
        }
       },
@@ -102050,7 +101554,7 @@
    ],
    "overall": 35,
    "dur": 481,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -102661,7 +102165,7 @@
    "others": null,
    "overall": 49,
    "dur": 2792,
-   "sec": 1.1,
+   "sec": 0.9,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -102870,7 +102374,7 @@
    ],
    "overall": 38,
    "dur": 13,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -103154,7 +102658,7 @@
    "others": [],
    "overall": 87,
    "dur": 424325,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 55,
@@ -103303,7 +102807,7 @@
    "others": [],
    "overall": 75,
    "dur": 78,
-   "sec": 0.8,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 55,
@@ -103771,7 +103275,7 @@
    ],
    "overall": 38,
    "dur": 956,
-   "sec": 0.6,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -104153,7 +103657,7 @@
    ],
    "overall": 42,
    "dur": 2018,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -104666,7 +104170,7 @@
    ],
    "overall": 46,
    "dur": 28,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -104859,7 +104363,7 @@
    ],
    "overall": 40,
    "dur": 40,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -105141,7 +104645,7 @@
    ],
    "overall": 42,
    "dur": 66,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 45,
@@ -105398,9 +104902,9 @@
    "others": [
     "control"
    ],
-   "overall": 40,
+   "overall": 45,
    "dur": 436,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -105424,8 +104928,8 @@
     "distance": 3924.211308698987,
     "max_gs": 27.814001083374023,
     "max_gs_t": 350.908296,
-    "max_as": 0.0,
-    "max_as_t": 0.462627,
+    "max_as": 21.16756820678711,
+    "max_as_t": 273.547374,
     "min_volt": 10.539361000061035,
     "min_volt_t": 379.987567,
     "used_mah": 1723.5545654296875,
@@ -105577,19 +105081,19 @@
      "findings": []
     },
     "airspeed": {
-     "score": 0,
-     "status": "bad",
+     "score": 71,
+     "status": "warn",
      "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -10.21081404449115
+      "as_mean": 13.256714311706796,
+      "as_min": 1.5705227851867676,
+      "below_min_pct": 9.646569646569647,
+      "as_minus_gs": 3.08358168911082
      },
      "findings": [
       {
        "k": "as_low",
        "a": {
-        "v": 100.0,
+        "v": 9.6,
         "min": 9.0
        }
       },
@@ -105984,7 +105488,7 @@
    ],
    "overall": 36,
    "dur": 41,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -106316,7 +105820,7 @@
    ],
    "overall": 38,
    "dur": 15,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 95,
@@ -106588,7 +106092,7 @@
    ],
    "overall": 46,
    "dur": 81,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -106852,7 +106356,7 @@
    "others": [],
    "overall": 68,
    "dur": 213,
-   "sec": 0.8,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -107092,7 +106596,7 @@
    "got": "incident",
    "got_cause": "control",
    "others": [],
-   "overall": 42,
+   "overall": 44,
    "dur": 50,
    "sec": 0.5,
    "verdict": {
@@ -107125,8 +106629,8 @@
     "distance": 88.00507301402565,
     "max_gs": 18.38300132751465,
     "max_gs_t": 49.978802,
-    "max_as": 0.0,
-    "max_as_t": 0.060497,
+    "max_as": 17.985225677490234,
+    "max_as_t": 50.279455,
     "min_volt": 23.393253326416016,
     "min_volt_t": 47.298972,
     "used_mah": 57.02793502807617,
@@ -107259,19 +106763,19 @@
      "findings": []
     },
     "airspeed": {
-     "score": 0,
+     "score": 36,
      "status": "bad",
      "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -12.627707110350457
+      "as_mean": 11.971760187830244,
+      "as_min": 6.662215232849121,
+      "below_min_pct": 21.428571428571427,
+      "as_minus_gs": -0.5979280075337439
      },
      "findings": [
       {
        "k": "as_low",
        "a": {
-        "v": 100.0,
+        "v": 21.4,
         "min": 9.0
        }
       },
@@ -107317,7 +106821,7 @@
    "others": [],
    "overall": 51,
    "dur": 199,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -107588,7 +107092,7 @@
    ],
    "overall": 31,
    "dur": 35,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -107906,7 +107410,7 @@
    ],
    "overall": 51,
    "dur": 2009,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -108166,7 +107670,7 @@
    ],
    "overall": 41,
    "dur": 586,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 85,
@@ -109043,7 +108547,7 @@
    "others": null,
    "overall": 93,
    "dur": 1195,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -109513,7 +109017,7 @@
    ],
    "overall": 47,
    "dur": 667,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -110531,7 +110035,7 @@
    "others": null,
    "overall": 89,
    "dur": 701,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -111052,7 +110556,7 @@
    ],
    "overall": 35,
    "dur": 42,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -111573,7 +111077,7 @@
    "others": [],
    "overall": 42,
    "dur": 1146,
-   "sec": 0.9,
+   "sec": 1.0,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -112038,7 +111542,7 @@
    ],
    "overall": 84,
    "dur": 170,
-   "sec": 0.4,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -112283,12 +111787,10 @@
    "vehicle": "Plane",
    "got": "incident",
    "got_cause": "control",
-   "others": [
-    "stall"
-   ],
-   "overall": 40,
+   "others": [],
+   "overall": 45,
    "dur": 75,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -112312,8 +111814,6 @@
     "n_flights": 1,
     "arm_t": 4.19626,
     "disarm_t": 74.791489,
-    "max_as": 0.0,
-    "max_as_t": 0.430395,
     "min_volt": 10.273223876953125,
     "min_volt_t": 13.598652,
     "used_mah": 81.7624740600586,
@@ -112448,28 +111948,6 @@
       "radio_failsafes": 0
      },
      "findings": []
-    },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 21.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
     },
     "cpu": {
      "score": 100,
@@ -112928,7 +112406,7 @@
    "others": [],
    "overall": 85,
    "dur": 129,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -113588,7 +113066,7 @@
    "others": [],
    "overall": 43,
    "dur": 793,
-   "sec": 0.7,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 85,
@@ -114509,7 +113987,7 @@
    ],
    "overall": 70,
    "dur": 369,
-   "sec": 0.9,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -114783,7 +114261,7 @@
    ],
    "overall": 29,
    "dur": 68,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -115581,7 +115059,7 @@
    "others": [],
    "overall": 66,
    "dur": 45,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -116115,7 +115593,7 @@
    "others": null,
    "overall": 83,
    "dur": 508,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -116525,7 +116003,7 @@
    "others": [],
    "overall": 44,
    "dur": 1341,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -117354,7 +116832,7 @@
    "got": "noflight",
    "got_cause": null,
    "others": null,
-   "overall": 42,
+   "overall": 47,
    "dur": 15,
    "sec": 0.5,
    "verdict": {
@@ -117369,8 +116847,6 @@
     "version": "ArduPlane V3.10.0-dev (04ebb9de)",
     "max_gs": 0.0,
     "max_gs_t": 0.232378,
-    "max_as": 4.926929950714111,
-    "max_as_t": 4.804384,
     "used_mah": 24.45229148864746,
     "first_error": null,
     "profile": "vtol",
@@ -117497,29 +116973,6 @@
      },
      "findings": []
     },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 2.4608042663894594,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": 2.4608042663894594
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 15.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
-    },
     "cpu": {
      "score": 100,
      "status": "good",
@@ -117574,7 +117027,7 @@
    ],
    "overall": 46,
    "dur": 735,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -117895,7 +117348,7 @@
    "others": [],
    "overall": 24,
    "dur": 602860,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 85,
@@ -118149,9 +117602,9 @@
    "got": "incident",
    "got_cause": "control",
    "others": [],
-   "overall": 34,
+   "overall": 40,
    "dur": 198,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -118183,8 +117636,6 @@
     "distance": 65.35212805403734,
     "max_gs": 6.660000324249268,
     "max_gs_t": 143.146228,
-    "max_as": 0.0,
-    "max_as_t": 0.066635,
     "first_error": null,
     "profile": "plane",
     "bl_vib_p95": 8.7812,
@@ -118336,29 +117787,6 @@
       "radio_failsafes": 0
      },
      "findings": []
-    },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -1.5803514738819466
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 9.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
     },
     "cpu": {
      "score": 100,
@@ -118784,7 +118212,7 @@
    ],
    "overall": 76,
    "dur": 59,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -118988,9 +118416,9 @@
    "got": "incident",
    "got_cause": "control",
    "others": [],
-   "overall": 37,
+   "overall": 44,
    "dur": 760,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -119022,8 +118450,8 @@
     "distance": 24.30550022167425,
     "max_gs": 8.197000503540039,
     "max_gs_t": 716.430533,
-    "max_as": 0.0,
-    "max_as_t": 709.51132,
+    "max_as": 35.35908126831055,
+    "max_as_t": 715.911428,
     "min_volt": 24.359128952026367,
     "min_volt_t": 718.312401,
     "used_mah": 161.64456176757812,
@@ -119170,22 +118598,15 @@
      "findings": []
     },
     "airspeed": {
-     "score": 0,
-     "status": "bad",
+     "score": 100,
+     "status": "good",
      "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -3.290608082946048
+      "as_mean": 25.11091661453247,
+      "as_min": 22.632160186767578,
+      "below_min_pct": 0.0,
+      "as_minus_gs": 21.820405767974876
      },
      "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 12.0
-       }
-      },
       {
        "k": "as_not_used",
        "a": {}
@@ -119228,7 +118649,7 @@
    ],
    "overall": 62,
    "dur": 26,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -119675,7 +119096,7 @@
    ],
    "overall": 68,
    "dur": 297,
-   "sec": 0.6,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -119903,7 +119324,7 @@
    "others": null,
    "overall": 85,
    "dur": 29,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -120101,7 +119522,7 @@
    "others": [],
    "overall": 54,
    "dur": 1523,
-   "sec": 1.0,
+   "sec": 0.9,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -121237,7 +120658,7 @@
    ],
    "overall": 46,
    "dur": 225,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -121799,7 +121220,7 @@
    "others": null,
    "overall": 70,
    "dur": 76,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -122069,7 +121490,7 @@
    ],
    "overall": 39,
    "dur": 209,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 60,
@@ -122510,7 +121931,7 @@
    "others": [],
    "overall": 70,
    "dur": 198,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -122695,7 +122116,7 @@
    ],
    "overall": 47,
    "dur": 36,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -122986,7 +122407,7 @@
    ],
    "overall": 66,
    "dur": 527,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -123641,7 +123062,7 @@
    "others": null,
    "overall": 92,
    "dur": 431,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -125795,7 +125216,7 @@
    "others": [],
    "overall": 47,
    "dur": 510506,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -125934,7 +125355,7 @@
    "others": [],
    "overall": 91,
    "dur": 23,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -126129,7 +125550,7 @@
    ],
    "overall": 48,
    "dur": 60,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -126365,7 +125786,7 @@
    "others": null,
    "overall": 84,
    "dur": 407,
-   "sec": 0.8,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -126569,7 +125990,7 @@
    "others": null,
    "overall": 65,
    "dur": 359,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -126827,7 +126248,7 @@
    ],
    "overall": 51,
    "dur": 52,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -127116,7 +126537,7 @@
    "others": [],
    "overall": 70,
    "dur": 251,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -127893,7 +127314,7 @@
    "others": null,
    "overall": 91,
    "dur": 198,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -128665,7 +128086,7 @@
    ],
    "overall": 41,
    "dur": 672,
-   "sec": 0.8,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 75,
@@ -129923,7 +129344,7 @@
    ],
    "overall": 43,
    "dur": 1857,
-   "sec": 0.6,
+   "sec": 1.0,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -130404,7 +129825,7 @@
    ],
    "overall": 37,
    "dur": 2601,
-   "sec": 0.9,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -132952,13 +132373,15 @@
    "note": "classic stall and spin",
    "vehicle": "Plane",
    "got": "crash",
-   "got_cause": "control",
+   "got_cause": "stall",
    "others": [
-    "stall"
+    "control",
+    "control",
+    "control"
    ],
-   "overall": 39,
+   "overall": 44,
    "dur": 653,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 90,
@@ -133005,8 +132428,6 @@
     "distance": 919.7009509729518,
     "max_gs": 16.986894607543945,
     "max_gs_t": 134.072255,
-    "max_as": 0.0,
-    "max_as_t": 0.004579,
     "first_error": null,
     "profile": "vtol",
     "bl_vib_p95": 14.6633,
@@ -133151,29 +132572,6 @@
      },
      "findings": []
     },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -1.7134412049497418
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 9.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
-    },
     "cpu": {
      "score": 100,
      "status": "good",
@@ -133231,7 +132629,7 @@
    "others": null,
    "overall": 52,
    "dur": 34,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -133444,7 +132842,7 @@
    "others": [],
    "overall": 40,
    "dur": 172,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 85,
@@ -133780,7 +133178,7 @@
    "others": [],
    "overall": 45,
    "dur": 114,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -133984,7 +133382,7 @@
    ],
    "overall": 64,
    "dur": 1289,
-   "sec": 0.9,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -134525,7 +133923,7 @@
    ],
    "overall": 77,
    "dur": 691,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -134773,7 +134171,7 @@
    ],
    "overall": 39,
    "dur": 161,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -135105,7 +134503,7 @@
    ],
    "overall": 44,
    "dur": 824,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -135626,13 +135024,13 @@
    "note": "plane tail heavy CG -> stall, death spiral",
    "vehicle": "Plane",
    "got": "crash",
-   "got_cause": "control",
+   "got_cause": "stall",
    "others": [
-    "stall"
+    "control"
    ],
-   "overall": 35,
+   "overall": 41,
    "dur": 2840,
-   "sec": 1.3,
+   "sec": 1.2,
    "verdict": {
     "kind": "crash",
     "score": 90,
@@ -135679,8 +135077,8 @@
     "distance": 3926.9687867279413,
     "max_gs": 23.21000099182129,
     "max_gs_t": 383.517902,
-    "max_as": 0.0,
-    "max_as_t": 0.080606,
+    "max_as": 20.649431228637695,
+    "max_as_t": 274.158102,
     "min_volt": 11.412456512451172,
     "min_volt_t": 480.218033,
     "used_mah": 2973.7275390625,
@@ -135858,22 +135256,15 @@
      "findings": []
     },
     "airspeed": {
-     "score": 0,
-     "status": "bad",
+     "score": 99,
+     "status": "good",
      "metrics": {
-      "as_mean": 0.0,
+      "as_mean": 12.609737413385872,
       "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -1.2537104774517953
+      "below_min_pct": 0.17181474552327133,
+      "as_minus_gs": 11.35565155962822
      },
      "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 9.0
-       }
-      },
       {
        "k": "as_not_used",
        "a": {}
@@ -136078,7 +135469,7 @@
    "others": null,
    "overall": 92,
    "dur": 20,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -136278,7 +135669,7 @@
    ],
    "overall": 64,
    "dur": 1062,
-   "sec": 0.9,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 95,
@@ -136580,7 +135971,7 @@
    ],
    "overall": 42,
    "dur": 20,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -136915,7 +136306,7 @@
    "others": [],
    "overall": 46,
    "dur": 55,
-   "sec": 0.6,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -137155,7 +136546,7 @@
    ],
    "overall": 46,
    "dur": 84,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -137463,7 +136854,7 @@
    "others": [],
    "overall": 91,
    "dur": 15,
-   "sec": 0.8,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -137668,7 +137059,7 @@
    "others": null,
    "overall": 80,
    "dur": 954,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -137881,7 +137272,7 @@
    ],
    "overall": 89,
    "dur": 704,
-   "sec": 0.8,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -138115,7 +137506,7 @@
    "others": null,
    "overall": 46,
    "dur": 47,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -138311,9 +137702,9 @@
    "got": "normal",
    "got_cause": null,
    "others": null,
-   "overall": 46,
+   "overall": 73,
    "dur": 118,
-   "sec": 0.9,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -138330,8 +137721,6 @@
     "n_flights": 1,
     "arm_t": 0.0,
     "disarm_t": 109.550904,
-    "max_as": 0.0,
-    "max_as_t": 0.15812,
     "used_mah": 38.20113754272461,
     "first_error": null,
     "profile": "vtol",
@@ -138434,28 +137823,6 @@
      },
      "findings": []
     },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 9.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
-    },
     "cpu": {
      "score": 100,
      "status": "good",
@@ -138508,13 +137875,11 @@
    "note": "near crash/incident; RC signal lost without failsafe (disputed: H743 roll issue)",
    "vehicle": "Plane",
    "got": "incident",
-   "got_cause": "stall",
-   "others": [
-    "control"
-   ],
-   "overall": 41,
+   "got_cause": "control",
+   "others": [],
+   "overall": 48,
    "dur": 361,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -138538,8 +137903,8 @@
     "distance": 1884.883026348358,
     "max_gs": 25.5440616607666,
     "max_gs_t": 273.793198,
-    "max_as": 0.0,
-    "max_as_t": 0.093928,
+    "max_as": 26.59576416015625,
+    "max_as_t": 273.893748,
     "min_volt": 15.057941436767578,
     "min_volt_t": 18.592853,
     "used_mah": 493.70965576171875,
@@ -138702,22 +138067,15 @@
      "findings": []
     },
     "airspeed": {
-     "score": 0,
-     "status": "bad",
+     "score": 100,
+     "status": "good",
      "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -16.308860088292068
+      "as_mean": 17.026497293401647,
+      "as_min": 9.896576881408691,
+      "below_min_pct": 0.0,
+      "as_minus_gs": 0.7099470218508931
      },
      "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 9.0
-       }
-      },
       {
        "k": "as_not_used",
        "a": {}
@@ -138762,7 +138120,7 @@
    ],
    "overall": 84,
    "dur": 70,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -138966,7 +138324,7 @@
    "got": "noflight",
    "got_cause": null,
    "others": null,
-   "overall": 29,
+   "overall": 33,
    "dur": 78,
    "sec": 0.5,
    "verdict": {
@@ -138981,8 +138339,6 @@
     "version": "ArduPlane V4.0.7 (f0d8ca5e)",
     "max_gs": 0.0,
     "max_gs_t": 0.14247,
-    "max_as": 0.0,
-    "max_as_t": 0.020482,
     "first_error": null,
     "profile": "plane",
     "bl_vib_p95": 0.4969,
@@ -139106,29 +138462,6 @@
      },
      "findings": []
     },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": 0.0
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 9.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
-    },
     "cpu": {
      "score": 100,
      "status": "good",
@@ -139163,7 +138496,7 @@
    "others": [],
    "overall": 57,
    "dur": 1184,
-   "sec": 1.0,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -139419,7 +138752,7 @@
    "others": null,
    "overall": 40,
    "dur": 54,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -139679,9 +139012,9 @@
    "others": [
     "compass"
    ],
-   "overall": 47,
+   "overall": 51,
    "dur": 473,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -139705,8 +139038,8 @@
     "distance": 262.6995479398753,
     "max_gs": 11.848690032958984,
     "max_gs_t": 385.373738,
-    "max_as": 0.0,
-    "max_as_t": 0.118874,
+    "max_as": 31.923006057739258,
+    "max_as_t": 336.4387,
     "min_volt": 47.40901184082031,
     "min_volt_t": 383.334216,
     "used_mah": 32.21980285644531,
@@ -139841,19 +139174,19 @@
      "findings": []
     },
     "airspeed": {
-     "score": 0,
-     "status": "bad",
+     "score": 67,
+     "status": "warn",
      "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -2.776411160343757
+      "as_mean": 24.188746430657126,
+      "as_min": 3.0,
+      "below_min_pct": 10.909090909090908,
+      "as_minus_gs": 23.327910964708813
      },
      "findings": [
       {
        "k": "as_low",
        "a": {
-        "v": 100.0,
+        "v": 10.9,
         "min": 16.0
        }
       },
@@ -139920,7 +139253,7 @@
    ],
    "overall": 39,
    "dur": 37,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -141242,9 +140575,9 @@
    "got": "incident",
    "got_cause": "control",
    "others": [],
-   "overall": 42,
+   "overall": 44,
    "dur": 975,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 45,
@@ -141283,6 +140616,8 @@
     "distance": 4571.448721767063,
     "max_gs": 19.130001068115234,
     "max_gs_t": 252.751417,
+    "max_as": 19.014123916625977,
+    "max_as_t": 252.795558,
     "min_volt": 1.0003657341003418,
     "min_volt_t": 611.492807,
     "used_mah": 487.6712341308594,
@@ -141442,6 +140777,22 @@
       "radio_failsafes": 0
      },
      "findings": []
+    },
+    "airspeed": {
+     "score": 99,
+     "status": "good",
+     "metrics": {
+      "as_mean": 12.029822366736823,
+      "as_min": 7.181049823760986,
+      "below_min_pct": 0.4205467107239411,
+      "as_minus_gs": 0.7471251946477072
+     },
+     "findings": [
+      {
+       "k": "as_not_used",
+       "a": {}
+      }
+     ]
     },
     "cpu": {
      "score": 100,
@@ -141670,7 +141021,7 @@
    ],
    "overall": 51,
    "dur": 39,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 90,
@@ -142901,7 +142252,7 @@
    "got": "incident",
    "got_cause": "control",
    "others": [],
-   "overall": 29,
+   "overall": 35,
    "dur": 69,
    "sec": 0.5,
    "verdict": {
@@ -142935,8 +142286,8 @@
     "distance": 29.985582153701298,
     "max_gs": 7.874644756317139,
     "max_gs_t": 27.548304,
-    "max_as": 0.0,
-    "max_as_t": 0.128321,
+    "max_as": 19.003868103027344,
+    "max_as_t": 25.028457,
     "min_volt": 11.66899585723877,
     "min_volt_t": 28.32865,
     "used_mah": 67.856201171875,
@@ -143118,22 +142469,15 @@
      "findings": []
     },
     "airspeed": {
-     "score": 0,
-     "status": "bad",
+     "score": 100,
+     "status": "good",
      "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -2.1425495475308804
+      "as_mean": 15.247675709102465,
+      "as_min": 11.550447463989258,
+      "below_min_pct": 0.0,
+      "as_minus_gs": 13.105163071106354
      },
      "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 9.0
-       }
-      },
       {
        "k": "as_not_used",
        "a": {}
@@ -143173,10 +142517,8 @@
    "vehicle": "Plane",
    "got": "crash",
    "got_cause": "control",
-   "others": [
-    "stall"
-   ],
-   "overall": 35,
+   "others": [],
+   "overall": 39,
    "dur": 47,
    "sec": 0.5,
    "verdict": {
@@ -143223,8 +142565,8 @@
     "distance": 129.59137150353035,
     "max_gs": 32.11800003051758,
     "max_gs_t": 45.113839,
-    "max_as": 0.0,
-    "max_as_t": 0.351435,
+    "max_as": 31.19580841064453,
+    "max_as_t": 45.131918,
     "min_volt": 13.312688827514648,
     "min_volt_t": 44.652946,
     "used_mah": 79.12364959716797,
@@ -143400,19 +142742,19 @@
      "findings": []
     },
     "airspeed": {
-     "score": 0,
-     "status": "bad",
+     "score": 60,
+     "status": "warn",
      "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -23.1166133836953
+      "as_mean": 21.786623693429508,
+      "as_min": 0.9932571649551392,
+      "below_min_pct": 13.461538461538462,
+      "as_minus_gs": -1.2071227755732878
      },
      "findings": [
       {
        "k": "as_low",
        "a": {
-        "v": 100.0,
+        "v": 13.5,
         "min": 9.0
        }
       },
@@ -143463,7 +142805,7 @@
    ],
    "overall": 32,
    "dur": 811,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -143968,7 +143310,7 @@
    "others": [],
    "overall": 48,
    "dur": 92,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -144186,7 +143528,7 @@
    "others": null,
    "overall": 82,
    "dur": 649,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -144427,7 +143769,7 @@
    "others": null,
    "overall": 78,
    "dur": 106,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -144646,7 +143988,7 @@
    ],
    "overall": 40,
    "dur": 33,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -145349,12 +144691,10 @@
    "vehicle": "Plane",
    "got": "incident",
    "got_cause": "control",
-   "others": [
-    "stall"
-   ],
-   "overall": 37,
+   "others": [],
+   "overall": 42,
    "dur": 555,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -145379,8 +144719,8 @@
     "distance": 3712.1325526704554,
     "max_gs": 21.402000427246094,
     "max_gs_t": 106.447184,
-    "max_as": 0.0,
-    "max_as_t": 0.076145,
+    "max_as": 25.11196517944336,
+    "max_as_t": 520.996751,
     "min_volt": 11.114296913146973,
     "min_volt_t": 246.007425,
     "used_mah": null,
@@ -145541,19 +144881,19 @@
      "findings": []
     },
     "airspeed": {
-     "score": 0,
-     "status": "bad",
+     "score": 83,
+     "status": "good",
      "metrics": {
-      "as_mean": 0.0,
+      "as_mean": 13.398689552418237,
       "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -12.824924247254183
+      "below_min_pct": 5.526512322628827,
+      "as_minus_gs": 0.9112828426031717
      },
      "findings": [
       {
        "k": "as_low",
        "a": {
-        "v": 100.0,
+        "v": 5.5,
         "min": 9.0
        }
       },
@@ -145599,7 +144939,7 @@
    "others": [],
    "overall": 36,
    "dur": 247,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -146292,12 +145632,10 @@
    "vehicle": "Plane",
    "got": "crash",
    "got_cause": "control",
-   "others": [
-    "stall"
-   ],
-   "overall": 38,
+   "others": [],
+   "overall": 44,
    "dur": 1525,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 90,
@@ -146344,8 +145682,8 @@
     "distance": 5013.043822158668,
     "max_gs": 23.07038116455078,
     "max_gs_t": 1384.819549,
-    "max_as": 0.0,
-    "max_as_t": 0.260593,
+    "max_as": 21.867717742919922,
+    "max_as_t": 1422.099477,
     "min_volt": 10.020150184631348,
     "min_volt_t": 1377.663138,
     "used_mah": 210.47360229492188,
@@ -146508,22 +145846,15 @@
      "findings": []
     },
     "airspeed": {
-     "score": 0,
-     "status": "bad",
+     "score": 100,
+     "status": "good",
      "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -8.22699701792711
+      "as_mean": 17.980554249371107,
+      "as_min": 9.320611000061035,
+      "below_min_pct": 0.0,
+      "as_minus_gs": 9.742918208191863
      },
      "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 9.0
-       }
-      },
       {
        "k": "as_not_used",
        "a": {}
@@ -146861,10 +146192,12 @@
    "vehicle": "Plane",
    "got": "incident",
    "got_cause": "control",
-   "others": [],
-   "overall": 48,
+   "others": [
+    "stall"
+   ],
+   "overall": 49,
    "dur": 537,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -146896,6 +146229,8 @@
     "distance": 2234.4214806121663,
     "max_gs": 33.86600112915039,
     "max_gs_t": 254.302446,
+    "max_as": 28.56755256652832,
+    "max_as_t": 254.382798,
     "min_volt": 5.486652374267578,
     "min_volt_t": 536.563492,
     "used_mah": 1620.2677001953125,
@@ -147052,6 +146387,22 @@
      },
      "findings": []
     },
+    "airspeed": {
+     "score": 100,
+     "status": "good",
+     "metrics": {
+      "as_mean": 13.028919920176763,
+      "as_min": 8.23583984375,
+      "below_min_pct": 0.0,
+      "as_minus_gs": 0.7297265901396305
+     },
+     "findings": [
+      {
+       "k": "as_not_used",
+       "a": {}
+      }
+     ]
+    },
     "cpu": {
      "score": 100,
      "status": "good",
@@ -147090,7 +146441,7 @@
    ],
    "overall": 82,
    "dur": 566,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 95,
@@ -147322,7 +146673,7 @@
    "others": [],
    "overall": 79,
    "dur": 235,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -147579,9 +146930,11 @@
    "note": "receiver failure, RSSI to 0",
    "vehicle": "Plane",
    "got": "crash",
-   "got_cause": "control",
-   "others": [],
-   "overall": 43,
+   "got_cause": "radio",
+   "others": [
+    "control"
+   ],
+   "overall": 45,
    "dur": 1368,
    "sec": 0.8,
    "verdict": {
@@ -147630,6 +146983,8 @@
     "distance": 35718.61617411444,
     "max_gs": 29.073001861572266,
     "max_gs_t": 458.319393,
+    "max_as": 31.306854248046875,
+    "max_as_t": 459.799787,
     "min_volt": 14.565196990966797,
     "min_volt_t": 1367.659573,
     "used_mah": 978.8671875,
@@ -147811,6 +147166,22 @@
       "radio_failsafes": 0
      },
      "findings": []
+    },
+    "airspeed": {
+     "score": 100,
+     "status": "good",
+     "metrics": {
+      "as_mean": 26.989486215439932,
+      "as_min": 10.63912296295166,
+      "below_min_pct": 0.0,
+      "as_minus_gs": 22.34959269702055
+     },
+     "findings": [
+      {
+       "k": "as_not_used",
+       "a": {}
+      }
+     ]
     },
     "cpu": {
      "score": 100,
@@ -148832,7 +148203,7 @@
    "got": "noflight",
    "got_cause": null,
    "others": null,
-   "overall": 36,
+   "overall": 41,
    "dur": 77,
    "sec": 0.5,
    "verdict": {
@@ -148852,8 +148223,6 @@
     "distance": 8.10593693407054,
     "max_gs": 0.41600000858306885,
     "max_gs_t": 54.33567,
-    "max_as": 10.418133735656738,
-    "max_as_t": 2.057642,
     "min_volt": 11.375260353088379,
     "min_volt_t": 27.957904,
     "used_mah": 1.1717498302459717,
@@ -148993,29 +148362,6 @@
       }
      ]
     },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 2.470688306060233,
-      "as_min": 0.5397303104400635,
-      "below_min_pct": 96.31093544137023,
-      "as_minus_gs": 2.41269910808132
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 96.3,
-        "min": 9.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
-    },
     "cpu": {
      "score": 100,
      "status": "good",
@@ -149055,7 +148401,7 @@
    ],
    "overall": 41,
    "dur": 68,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -149302,7 +148648,7 @@
    "others": [],
    "overall": 77,
    "dur": 924,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -149558,7 +148904,7 @@
    ],
    "overall": 44,
    "dur": 109,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -149860,7 +149206,7 @@
    "others": [],
    "overall": 72,
    "dur": 374,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -150161,7 +149507,7 @@
    "others": [],
    "overall": 84,
    "dur": 104,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -150366,12 +149712,10 @@
    "vehicle": "Plane",
    "got": "crash",
    "got_cause": "control",
-   "others": [
-    "stall"
-   ],
-   "overall": 34,
+   "others": [],
+   "overall": 41,
    "dur": 521,
-   "sec": 0.8,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -150417,8 +149761,8 @@
     "distance": 3751.4808633495036,
     "max_gs": 50.707000732421875,
     "max_gs_t": 519.25673,
-    "max_as": 0.0,
-    "max_as_t": 0.052755,
+    "max_as": 56.76229476928711,
+    "max_as_t": 520.757219,
     "min_volt": 12.430012702941895,
     "min_volt_t": 380.998846,
     "used_mah": 587.99365234375,
@@ -150589,22 +149933,15 @@
      "findings": []
     },
     "airspeed": {
-     "score": 0,
-     "status": "bad",
+     "score": 99,
+     "status": "good",
      "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -16.740999304166873
+      "as_mean": 23.81392651418305,
+      "as_min": 7.082913398742676,
+      "below_min_pct": 0.4768717215069146,
+      "as_minus_gs": 7.08438406200746
      },
      "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 11.0
-       }
-      },
       {
        "k": "as_not_used",
        "a": {}
@@ -151212,13 +150549,13 @@
    "note": "",
    "vehicle": "Plane",
    "got": "incident",
-   "got_cause": "stall",
+   "got_cause": "control",
    "others": [
-    "control"
+    "stall"
    ],
-   "overall": 42,
+   "overall": 49,
    "dur": 1789,
-   "sec": 1.5,
+   "sec": 1.2,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -151243,8 +150580,8 @@
     "distance": 22338.33538532207,
     "max_gs": 24.660001754760742,
     "max_gs_t": 617.63139,
-    "max_as": 0.0,
-    "max_as_t": 0.111181,
+    "max_as": 27.699705123901367,
+    "max_as_t": 850.95146,
     "min_volt": 14.395927429199219,
     "min_volt_t": 963.731374,
     "used_mah": 7377.9208984375,
@@ -151396,22 +150733,15 @@
      "findings": []
     },
     "airspeed": {
-     "score": 0,
-     "status": "bad",
+     "score": 100,
+     "status": "good",
      "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -15.24899721289325
+      "as_mean": 15.314035181952175,
+      "as_min": 8.397899627685547,
+      "below_min_pct": 0.0,
+      "as_minus_gs": 0.06475095177340473
      },
      "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 9.0
-       }
-      },
       {
        "k": "as_not_used",
        "a": {}
@@ -151452,7 +150782,7 @@
    "others": [
     "control"
    ],
-   "overall": 37,
+   "overall": 41,
    "dur": 98,
    "sec": 0.5,
    "verdict": {
@@ -151499,8 +150829,8 @@
     "distance": 335.2706794824352,
     "max_gs": 20.674001693725586,
     "max_gs_t": 97.599417,
-    "max_as": 0.0,
-    "max_as_t": 0.001614,
+    "max_as": 22.797523498535156,
+    "max_as_t": 96.903579,
     "min_volt": 20.196868896484375,
     "min_volt_t": 94.261584,
     "used_mah": 435.75177001953125,
@@ -151685,19 +151015,19 @@
      "findings": []
     },
     "airspeed": {
-     "score": 0,
-     "status": "bad",
+     "score": 72,
+     "status": "warn",
      "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -14.224165572630953
+      "as_mean": 15.425623270262658,
+      "as_min": 2.975801706314087,
+      "below_min_pct": 9.29203539823009,
+      "as_minus_gs": 1.2294894435393762
      },
      "findings": [
       {
        "k": "as_low",
        "a": {
-        "v": 100.0,
+        "v": 9.3,
         "min": 9.0
        }
       },
@@ -152046,7 +151376,7 @@
    ],
    "overall": 84,
    "dur": 460,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -152282,7 +151612,7 @@
    ],
    "overall": 61,
    "dur": 320,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -152626,7 +151956,7 @@
    "got": "crash",
    "got_cause": "control",
    "others": [],
-   "overall": 40,
+   "overall": 42,
    "dur": 906,
    "sec": 0.8,
    "verdict": {
@@ -152674,6 +152004,8 @@
     "distance": 13051.256662562211,
     "max_gs": 45.82,
     "max_gs_t": 900.867171,
+    "max_as": 21.2857723236084,
+    "max_as_t": 471.96755,
     "used_mah": 0.0,
     "first_error": null,
     "profile": "plane",
@@ -152800,6 +152132,28 @@
       "radio_failsafes": 0
      },
      "findings": []
+    },
+    "airspeed": {
+     "score": 85,
+     "status": "good",
+     "metrics": {
+      "as_mean": 18.009649245535257,
+      "as_min": 5.600452899932861,
+      "below_min_pct": 0.03575259206292456,
+      "as_minus_gs": -7.274954743942579
+     },
+     "findings": [
+      {
+       "k": "as_not_used",
+       "a": {}
+      },
+      {
+       "k": "aspd_ratio",
+       "a": {
+        "r": 0.71
+       }
+      }
+     ]
     }
    },
    "events": []
@@ -153129,7 +152483,7 @@
    "others": null,
    "overall": 81,
    "dur": 657,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -154127,11 +153481,9 @@
    "note": "roll 67 deg exceeded limits in RTL, failed to climb",
    "vehicle": "Plane",
    "got": "incident",
-   "got_cause": "stall",
-   "others": [
-    "control"
-   ],
-   "overall": 41,
+   "got_cause": "control",
+   "others": [],
+   "overall": 46,
    "dur": 73,
    "sec": 0.5,
    "verdict": {
@@ -154171,8 +153523,8 @@
     "distance": 392.1464279287989,
     "max_gs": 46.88200378417969,
     "max_gs_t": 72.525215,
-    "max_as": 0.0,
-    "max_as_t": 0.295702,
+    "max_as": 41.563194274902344,
+    "max_as_t": 72.025854,
     "min_volt": 14.521378517150879,
     "min_volt_t": 63.62591,
     "used_mah": 159.3196563720703,
@@ -154324,19 +153676,19 @@
      "findings": []
     },
     "airspeed": {
-     "score": 0,
-     "status": "bad",
+     "score": 76,
+     "status": "warn",
      "metrics": {
-      "as_mean": 0.0,
+      "as_mean": 31.053337286389063,
       "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -29.331249346030955
+      "below_min_pct": 7.936507936507936,
+      "as_minus_gs": 1.6905066088409282
      },
      "findings": [
       {
        "k": "as_low",
        "a": {
-        "v": 100.0,
+        "v": 7.9,
         "min": 9.0
        }
       },
@@ -154389,9 +153741,9 @@
    "note": "Allister: airspeed <10 m/s, stalled",
    "vehicle": "Plane",
    "got": "incident",
-   "got_cause": "control",
+   "got_cause": "stall",
    "others": [
-    "stall"
+    "control"
    ],
    "overall": 43,
    "dur": 42,
@@ -154434,8 +153786,8 @@
     "distance": 45.127732789499184,
     "max_gs": 8.730973243713379,
     "max_gs_t": 37.231582,
-    "max_as": 0.0,
-    "max_as_t": 0.091628,
+    "max_as": 18.11517333984375,
+    "max_as_t": 41.553689,
     "min_volt": 11.553524017333984,
     "min_volt_t": 41.392321,
     "used_mah": 11.524422645568848,
@@ -154589,16 +153941,16 @@
      "score": 0,
      "status": "bad",
      "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -5.926945427665278
+      "as_mean": 8.221676768678607,
+      "as_min": 2.5381858348846436,
+      "below_min_pct": 56.060606060606055,
+      "as_minus_gs": 2.290622286421097
      },
      "findings": [
       {
        "k": "as_low",
        "a": {
-        "v": 100.0,
+        "v": 56.1,
         "min": 9.0
        }
       },
@@ -154660,7 +154012,7 @@
    ],
    "overall": 81,
    "dur": 1096,
-   "sec": 0.7,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 25,
@@ -154917,9 +154269,9 @@
    "got": "normal",
    "got_cause": null,
    "others": null,
-   "overall": 49,
+   "overall": 83,
    "dur": 1876,
-   "sec": 0.9,
+   "sec": 0.8,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -154943,8 +154295,6 @@
     "distance": 196.5234283761687,
     "max_gs": 0.8750000596046448,
     "max_gs_t": 1715.938116,
-    "max_as": 0.0,
-    "max_as_t": 0.020653,
     "first_error": null,
     "profile": "vtol",
     "bl_vib_p95": 2.7457,
@@ -155040,29 +154390,6 @@
       "radio_failsafes": 0
      },
      "findings": []
-    },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -0.059726656739387346
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 17.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
     },
     "cpu": {
      "score": 100,
@@ -155287,7 +154614,7 @@
    "others": null,
    "overall": 81,
    "dur": 167,
-   "sec": 0.7,
+   "sec": 0.4,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -155505,7 +154832,7 @@
    ],
    "overall": 39,
    "dur": 45,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -155819,7 +155146,7 @@
    ],
    "overall": 41,
    "dur": 285,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -156231,7 +155558,7 @@
    "others": null,
    "overall": 93,
    "dur": 362,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -156439,10 +155766,12 @@
    "vehicle": "Plane",
    "got": "incident",
    "got_cause": "control",
-   "others": [],
+   "others": [
+    "radio"
+   ],
    "overall": 39,
    "dur": 212,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -156474,8 +155803,8 @@
     "distance": 119.01312647455967,
     "max_gs": 5.289000034332275,
     "max_gs_t": 195.888437,
-    "max_as": 0.0,
-    "max_as_t": 0.047765,
+    "max_as": 9.72020149230957,
+    "max_as_t": 196.328995,
     "min_volt": 8.121825218200684,
     "min_volt_t": 211.952998,
     "used_mah": 142.8099365234375,
@@ -156659,16 +155988,16 @@
      "score": 0,
      "status": "bad",
      "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -1.5892041858929356
+      "as_mean": 4.943164396286011,
+      "as_min": 1.0501301288604736,
+      "below_min_pct": 96.66666666666667,
+      "as_minus_gs": 3.3859036370027717
      },
      "findings": [
       {
        "k": "as_low",
        "a": {
-        "v": 100.0,
+        "v": 96.7,
         "min": 10.0
        }
       },
@@ -157376,7 +156705,7 @@
    ],
    "overall": 38,
    "dur": 14,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 75,
@@ -157827,7 +157156,7 @@
    ],
    "overall": 62,
    "dur": 469,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -158309,7 +157638,7 @@
    "got": "normal",
    "got_cause": null,
    "others": null,
-   "overall": 48,
+   "overall": 83,
    "dur": 74,
    "sec": 0.5,
    "verdict": {
@@ -158328,8 +157657,6 @@
     "n_flights": 1,
     "arm_t": 0.0,
     "disarm_t": 58.617293,
-    "max_as": 0.0,
-    "max_as_t": 0.80955,
     "min_volt": 13.294270515441895,
     "min_volt_t": 56.414645,
     "used_mah": 0.4213147461414337,
@@ -158438,28 +157765,6 @@
      },
      "findings": []
     },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 9.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
-    },
     "cpu": {
      "score": 100,
      "status": "good",
@@ -158518,7 +157823,7 @@
    "others": null,
    "overall": 74,
    "dur": 51,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -158741,7 +158046,7 @@
    "others": null,
    "overall": 93,
    "dur": 2150,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -158962,7 +158267,7 @@
    ],
    "overall": 43,
    "dur": 34,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 95,
@@ -160155,7 +159460,7 @@
    "others": null,
    "overall": 53,
    "dur": 285,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -160332,8 +159637,10 @@
    "note": "plane geofence breach on ground",
    "vehicle": "Plane",
    "got": "incident",
-   "got_cause": "control",
-   "others": [],
+   "got_cause": "radio",
+   "others": [
+    "control"
+   ],
    "overall": 43,
    "dur": 332,
    "sec": 0.7,
@@ -160642,7 +159949,7 @@
    "others": [],
    "overall": 92,
    "dur": 124,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -161078,7 +160385,7 @@
    ],
    "overall": 55,
    "dur": 339,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -162827,7 +162134,7 @@
    ],
    "overall": 38,
    "dur": 452,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -164141,7 +163448,7 @@
    "others": null,
    "overall": 89,
    "dur": 702,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -164406,7 +163713,7 @@
    "others": null,
    "overall": 82,
    "dur": 390,
-   "sec": 0.8,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -164610,7 +163917,7 @@
    ],
    "overall": 41,
    "dur": 16,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 95,
@@ -164858,10 +164165,9 @@
    "note": "",
    "vehicle": "Plane",
    "got": "incident",
-   "got_cause": "compass",
+   "got_cause": "control",
    "others": [
-    "control",
-    "control"
+    "compass"
    ],
    "overall": 43,
    "dur": 104,
@@ -165473,7 +164779,7 @@
    "got": "crash",
    "got_cause": "control",
    "others": [],
-   "overall": 44,
+   "overall": 47,
    "dur": 1041,
    "sec": 0.5,
    "verdict": {
@@ -165523,6 +164829,8 @@
     "distance": 1778.9724355582855,
     "max_gs": 27.37,
     "max_gs_t": 844.314583,
+    "max_as": 17.691505432128906,
+    "max_as_t": 845.855826,
     "min_volt": 1119.0,
     "min_volt_t": 802.515992,
     "used_mah": 4567.3271484375,
@@ -165612,6 +164920,22 @@
       "radio_failsafes": 0
      },
      "findings": []
+    },
+    "airspeed": {
+     "score": 100,
+     "status": "good",
+     "metrics": {
+      "as_mean": 15.950490423776571,
+      "as_min": 9.247819900512695,
+      "below_min_pct": 0.0,
+      "as_minus_gs": 4.232066443552602
+     },
+     "findings": [
+      {
+       "k": "as_not_used",
+       "a": {}
+      }
+     ]
     }
    },
    "events": [
@@ -166074,7 +165398,8 @@
    "got": "incident",
    "got_cause": "stall",
    "others": [
-    "control"
+    "control",
+    "radio"
    ],
    "overall": 33,
    "dur": 64,
@@ -166117,8 +165442,8 @@
     "distance": 92.14386071924747,
     "max_gs": 6.903487205505371,
     "max_gs_t": 57.205776,
-    "max_as": 0.0,
-    "max_as_t": 0.105681,
+    "max_as": 25.63434600830078,
+    "max_as_t": 58.527235,
     "first_error": null,
     "profile": "plane",
     "phys_cruise_thr": 0.34,
@@ -166274,16 +165599,16 @@
      "score": 0,
      "status": "bad",
      "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -2.331900157574548
+      "as_mean": 9.449518906897392,
+      "as_min": 2.4646542072296143,
+      "below_min_pct": 44.20289855072464,
+      "as_minus_gs": 7.113281995678308
      },
      "findings": [
       {
        "k": "as_low",
        "a": {
-        "v": 100.0,
+        "v": 44.2,
         "min": 9.0
        }
       },
@@ -166916,7 +166241,7 @@
    "got": "incident",
    "got_cause": "unknown",
    "others": null,
-   "overall": 53,
+   "overall": 93,
    "dur": 167,
    "sec": 0.6,
    "verdict": {
@@ -166950,8 +166275,6 @@
     "distance": 164.26989423566212,
     "max_gs": 0.6668388843536377,
     "max_gs_t": 166.319722,
-    "max_as": 9.21143627166748,
-    "max_as_t": 159.860719,
     "min_volt": 1.4711536169052124,
     "min_volt_t": 166.760088,
     "used_mah": 41.812110900878906,
@@ -167064,25 +166387,6 @@
       "radio_failsafes": 0
      },
      "findings": []
-    },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 1.9896936749418577,
-      "as_min": 0.40398064255714417,
-      "below_min_pct": 100.0,
-      "as_minus_gs": 1.9063684375757208
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 15.0
-       }
-      }
-     ]
     },
     "cpu": {
      "score": 100,
@@ -167495,7 +166799,7 @@
    "others": null,
    "overall": 93,
    "dur": 416,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -167703,11 +167007,13 @@
    "note": "",
    "vehicle": "Plane",
    "got": "incident",
-   "got_cause": "control",
-   "others": [],
+   "got_cause": "radio",
+   "others": [
+    "control"
+   ],
    "overall": 41,
    "dur": 449,
-   "sec": 0.7,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -167739,8 +167045,8 @@
     "distance": 573.1029723740485,
     "max_gs": 20.671001434326172,
     "max_gs_t": 361.556043,
-    "max_as": 15.17557144165039,
-    "max_as_t": 361.172366,
+    "max_as": 14.973373413085938,
+    "max_as_t": 360.772253,
     "min_volt": 19.223024368286133,
     "min_volt_t": 397.768862,
     "used_mah": 2.7470386028289795,
@@ -167900,16 +167206,16 @@
      "score": 0,
      "status": "bad",
      "metrics": {
-      "as_mean": 4.870865628432531,
-      "as_min": 0.07399719953536987,
-      "below_min_pct": 82.78247501921598,
-      "as_minus_gs": 0.5589605639837422
+      "as_mean": 6.488905007632983,
+      "as_min": 3.0,
+      "below_min_pct": 64.03641881638846,
+      "as_minus_gs": 0.09009597586589142
      },
      "findings": [
       {
        "k": "as_low",
        "a": {
-        "v": 82.8,
+        "v": 64.0,
         "min": 9.0
        }
       }
@@ -168029,9 +167335,9 @@
    "got": "noflight",
    "got_cause": null,
    "others": null,
-   "overall": 50,
+   "overall": 82,
    "dur": 6,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -168049,8 +167355,6 @@
     "distance": 0.15147513691878678,
     "max_gs": 0.06100000441074371,
     "max_gs_t": 2.085411,
-    "max_as": 0.31824398040771484,
-    "max_as_t": 2.706298,
     "min_volt": 12.207945823669434,
     "min_volt_t": 0.12647,
     "used_mah": 0.01095409132540226,
@@ -168167,29 +167471,6 @@
       "radio_failsafes": 0
      },
      "findings": []
-    },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 0.28774805968267875,
-      "as_min": 0.2454400658607483,
-      "below_min_pct": 100.0,
-      "as_minus_gs": 0.26022360938278505
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 9.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
     },
     "cpu": {
      "score": 100,
@@ -168748,7 +168029,7 @@
    ],
    "overall": 39,
    "dur": 1082,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 85,
@@ -169285,7 +168566,7 @@
    "others": [],
    "overall": 72,
    "dur": 39,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -169439,11 +168720,13 @@
    "note": "VTOL quad motor 1 saturation",
    "vehicle": "Plane",
    "got": "incident",
-   "got_cause": "control",
-   "others": [],
+   "got_cause": "motor",
+   "others": [
+    "control"
+   ],
    "overall": 44,
    "dur": 560,
-   "sec": 1.0,
+   "sec": 0.9,
    "verdict": {
     "kind": "incident",
     "score": 45,
@@ -169482,8 +168765,8 @@
     "distance": 94.32792027841748,
     "max_gs": 4.3632097244262695,
     "max_gs_t": 533.633491,
-    "max_as": 7.935690402984619,
-    "max_as_t": 534.356768,
+    "max_as": 3.906660556793213,
+    "max_as_t": 506.359479,
     "min_volt": 42.16279983520508,
     "min_volt_t": 533.557468,
     "used_mah": -3688.03857421875,
@@ -169638,10 +168921,10 @@
      "score": 0,
      "status": "bad",
      "metrics": {
-      "as_mean": 2.641097524605977,
-      "as_min": 0.008936011232435703,
+      "as_mean": 3.153926169778418,
+      "as_min": 3.0,
       "below_min_pct": 100.0,
-      "as_minus_gs": 2.4613369916407812
+      "as_minus_gs": 2.9188787245414796
      },
      "findings": [
       {
@@ -169709,7 +168992,7 @@
    ],
    "overall": 38,
    "dur": 138,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -170267,7 +169550,7 @@
    "others": [],
    "overall": 48,
    "dur": 1377,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -170517,7 +169800,7 @@
    "got": "incident",
    "got_cause": "control",
    "others": [],
-   "overall": 43,
+   "overall": 47,
    "dur": 75,
    "sec": 0.5,
    "verdict": {
@@ -170558,8 +169841,6 @@
     "distance": 52.070197496737265,
     "max_gs": 3.2150001525878906,
     "max_gs_t": 59.72651,
-    "max_as": 7.24844217300415,
-    "max_as_t": 59.159954,
     "min_volt": 14.579451560974121,
     "min_volt_t": 59.636892,
     "used_mah": 152.1217803955078,
@@ -170722,29 +170003,6 @@
       "radio_failsafes": 0
      },
      "findings": []
-    },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 0.37615178905062036,
-      "as_min": 0.0,
-      "below_min_pct": 99.60861056751467,
-      "as_minus_gs": -0.48451014144017474
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 99.6,
-        "min": 8.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
     },
     "cpu": {
      "score": 100,
@@ -171055,10 +170313,9 @@
    "got": "incident",
    "got_cause": "control",
    "others": [
-    "stall",
     "pilot"
    ],
-   "overall": 38,
+   "overall": 44,
    "dur": 463,
    "sec": 0.5,
    "verdict": {
@@ -171092,8 +170349,8 @@
     "distance": 571.3770492356922,
     "max_gs": 35.18300247192383,
     "max_gs_t": 129.691089,
-    "max_as": 0.0,
-    "max_as_t": 0.655746,
+    "max_as": 33.907867431640625,
+    "max_as_t": 129.268393,
     "min_volt": 14.505386352539062,
     "min_volt_t": 120.168398,
     "used_mah": 213.6212158203125,
@@ -171255,19 +170512,19 @@
      "findings": []
     },
     "airspeed": {
-     "score": 0,
-     "status": "bad",
+     "score": 82,
+     "status": "good",
      "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -21.534534101378142
+      "as_mean": 20.322130924317896,
+      "as_min": 0.7460156679153442,
+      "below_min_pct": 6.097560975609756,
+      "as_minus_gs": -1.214783663332239
      },
      "findings": [
       {
        "k": "as_low",
        "a": {
-        "v": 100.0,
+        "v": 6.1,
         "min": 9.0
        }
       },
@@ -171367,7 +170624,7 @@
    "others": null,
    "overall": 91,
    "dur": 725,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -171761,9 +171018,9 @@
    "got": "normal",
    "got_cause": null,
    "others": null,
-   "overall": 50,
+   "overall": 83,
    "dur": 233,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -171787,8 +171044,6 @@
     "distance": 114.22141598668335,
     "max_gs": 4.406000137329102,
     "max_gs_t": 21.136142,
-    "max_as": 4.168788909912109,
-    "max_as_t": 20.65596,
     "min_volt": 14.961539268493652,
     "min_volt_t": 215.136518,
     "used_mah": 4.70112419128418,
@@ -171911,29 +171166,6 @@
       "radio_failsafes": 0
      },
      "findings": []
-    },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 0.1357053908378788,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": -0.1291722141523162
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 8.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
     },
     "cpu": {
      "score": 100,
@@ -172225,7 +171457,7 @@
    "others": null,
    "overall": 93,
    "dur": 668,
-   "sec": 1.0,
+   "sec": 0.9,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -173150,7 +172382,7 @@
    ],
    "overall": 56,
    "dur": 451,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 25,
@@ -173911,7 +173143,7 @@
    "others": null,
    "overall": 49,
    "dur": 113,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -174111,7 +173343,7 @@
    ],
    "overall": 49,
    "dur": 1484,
-   "sec": 0.9,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -174488,7 +173720,7 @@
    "others": null,
    "overall": 94,
    "dur": 1123,
-   "sec": 0.9,
+   "sec": 1.0,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -174660,7 +173892,7 @@
    ],
    "overall": 43,
    "dur": 72,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 75,
@@ -177026,7 +176258,7 @@
    ],
    "overall": 48,
    "dur": 117,
-   "sec": 1.0,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -177576,7 +176808,7 @@
    "others": [],
    "overall": 100,
    "dur": 96,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -177758,9 +176990,9 @@
    "got": "noflight",
    "got_cause": null,
    "others": null,
-   "overall": 35,
+   "overall": 39,
    "dur": 15,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -177775,8 +177007,6 @@
     "disarm_t": 14.947282,
     "max_gs": 0.0,
     "max_gs_t": 0.046455,
-    "max_as": 0.0,
-    "max_as_t": 0.04653,
     "used_mah": 132.87179565429688,
     "first_error": null,
     "profile": "plane",
@@ -177911,25 +177141,6 @@
      },
      "findings": []
     },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": 0.0
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 5.0
-       }
-      }
-     ]
-    },
     "cpu": {
      "score": 100,
      "status": "good",
@@ -177964,7 +177175,7 @@
    "others": null,
    "overall": 100,
    "dur": 56,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -178021,7 +177232,7 @@
    ],
    "overall": 53,
    "dur": 1252,
-   "sec": 1.3,
+   "sec": 1.4,
    "verdict": {
     "kind": "incident",
     "score": 40,
@@ -178534,11 +177745,12 @@
    "note": "thrust loss motor 1 at hover, overloaded",
    "vehicle": "Plane",
    "got": "incident",
-   "got_cause": "control",
+   "got_cause": "motor",
    "others": [
+    "control",
     "pilot"
    ],
-   "overall": 39,
+   "overall": 44,
    "dur": 220,
    "sec": 0.8,
    "verdict": {
@@ -178579,8 +177791,6 @@
     "distance": 113.94878515280212,
     "max_gs": 4.921292781829834,
     "max_gs_t": 201.457061,
-    "max_as": 10.9925537109375,
-    "max_as_t": 201.477614,
     "first_error": null,
     "profile": "vtol",
     "bl_vib_p95": 1.6992,
@@ -178721,29 +177931,6 @@
      },
      "findings": []
     },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 0.3021900510923547,
-      "as_min": 0.0,
-      "below_min_pct": 99.84076433121018,
-      "as_minus_gs": -0.1312146196571394
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 99.8,
-        "min": 9.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
-    },
     "cpu": {
      "score": 100,
      "status": "good",
@@ -178796,7 +177983,7 @@
    "got": "incident",
    "got_cause": "control",
    "others": [],
-   "overall": 44,
+   "overall": 49,
    "dur": 65,
    "sec": 0.6,
    "verdict": {
@@ -178830,8 +178017,6 @@
     "distance": 26.511358093942974,
     "max_gs": 6.999997138977051,
     "max_gs_t": 37.579795,
-    "max_as": 6.390221118927002,
-    "max_as_t": 32.620295,
     "min_volt": 21.74915885925293,
     "min_volt_t": 42.419584,
     "used_mah": 263.2417907714844,
@@ -178974,25 +178159,6 @@
      },
      "findings": []
     },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 2.6603924158908843,
-      "as_min": 0.10288893431425095,
-      "below_min_pct": 100.0,
-      "as_minus_gs": 1.8316180831437323
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 9.0
-       }
-      }
-     ]
-    },
     "cpu": {
      "score": 100,
      "status": "good",
@@ -179047,7 +178213,7 @@
    "others": [],
    "overall": 42,
    "dur": 379486,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 55,
@@ -179671,7 +178837,7 @@
    "others": [],
    "overall": 77,
    "dur": 266,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -179883,7 +179049,7 @@
    ],
    "overall": 39,
    "dur": 208,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -180309,7 +179475,7 @@
    ],
    "overall": 38,
    "dur": 2534,
-   "sec": 1.5,
+   "sec": 1.2,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -180574,7 +179740,7 @@
    ],
    "overall": 30,
    "dur": 70,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -181193,7 +180359,7 @@
    ],
    "overall": 39,
    "dur": 303,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -181803,7 +180969,7 @@
    "others": null,
    "overall": 100,
    "dur": 233,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -182445,7 +181611,7 @@
    ],
    "overall": 48,
    "dur": 20,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 95,
@@ -182756,7 +181922,8 @@
    "got": "crash",
    "got_cause": "motor",
    "others": [
-    "control"
+    "control",
+    "radio"
    ],
    "overall": 47,
    "dur": 1220,
@@ -183092,11 +182259,11 @@
    "note": "",
    "vehicle": "Plane",
    "got": "crash",
-   "got_cause": "compass",
+   "got_cause": "control",
    "others": [
-    "control"
+    "compass"
    ],
-   "overall": 30,
+   "overall": 34,
    "dur": 17,
    "sec": 0.5,
    "verdict": {
@@ -183134,8 +182301,6 @@
     "disarm_t": 17.431762,
     "max_gs": 0.0,
     "max_gs_t": 0.20746,
-    "max_as": 0.0,
-    "max_as_t": 0.08847,
     "first_error": null,
     "profile": "vtol",
     "phys_cruise_thr": 0.25,
@@ -183285,29 +182450,6 @@
       "radio_failsafes": 0
      },
      "findings": []
-    },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 0.0,
-      "as_min": 0.0,
-      "below_min_pct": 100.0,
-      "as_minus_gs": 0.0
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 9.0
-       }
-      },
-      {
-       "k": "as_not_used",
-       "a": {}
-      }
-     ]
     },
     "cpu": {
      "score": 100,
@@ -184589,7 +183731,7 @@
    ],
    "overall": 80,
    "dur": 809,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -184887,7 +184029,7 @@
    "others": null,
    "overall": 90,
    "dur": 223,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -185132,9 +184274,9 @@
    "others": [
     "compass"
    ],
-   "overall": 40,
+   "overall": 45,
    "dur": 647,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -185166,8 +184308,6 @@
     "distance": 239.29856461895,
     "max_gs": 1.9860000610351562,
     "max_gs_t": 333.094516,
-    "max_as": 7.088490009307861,
-    "max_as_t": 430.021101,
     "min_volt": 21.703794479370117,
     "min_volt_t": 407.760496,
     "used_mah": 1475.93603515625,
@@ -185316,25 +184456,6 @@
       "radio_failsafes": 0
      },
      "findings": []
-    },
-    "airspeed": {
-     "score": 0,
-     "status": "bad",
-     "metrics": {
-      "as_mean": 2.3130952371284366,
-      "as_min": 0.1481274962425232,
-      "below_min_pct": 100.0,
-      "as_minus_gs": 1.7167759182388675
-     },
-     "findings": [
-      {
-       "k": "as_low",
-       "a": {
-        "v": 100.0,
-        "min": 11.0
-       }
-      }
-     ]
     },
     "cpu": {
      "score": 92,
@@ -185797,7 +184918,7 @@
    "others": [],
    "overall": 51,
    "dur": 80,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -185828,8 +184949,8 @@
     "distance": 552.243114905568,
     "max_gs": 14.880001068115234,
     "max_gs_t": 71.201597,
-    "max_as": 14.948150634765625,
-    "max_as_t": 71.001078,
+    "max_as": 15.213451385498047,
+    "max_as_t": 74.365873,
     "min_volt": 12.291790008544922,
     "min_volt_t": 67.402309,
     "used_mah": 166.88174438476562,
@@ -185956,16 +185077,16 @@
      "score": 0,
      "status": "bad",
      "metrics": {
-      "as_mean": 5.848959703897771,
-      "as_min": 0.022061703726649284,
-      "below_min_pct": 63.786531130876746,
-      "as_minus_gs": -0.923110122564847
+      "as_mean": 7.489242906570435,
+      "as_min": 3.0,
+      "below_min_pct": 61.73333333333333,
+      "as_minus_gs": 0.3830843020023274
      },
      "findings": [
       {
        "k": "as_low",
        "a": {
-        "v": 63.8,
+        "v": 61.7,
         "min": 12.0
        }
       }
@@ -186031,7 +185152,7 @@
    ],
    "overall": 65,
    "dur": 165,
-   "sec": 0.9,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -186499,7 +185620,7 @@
    ],
    "overall": 70,
    "dur": 654,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -186883,7 +186004,7 @@
    ],
    "overall": 70,
    "dur": 157,
-   "sec": 0.8,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -187278,7 +186399,7 @@
    ],
    "overall": 69,
    "dur": 234,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -187987,7 +187108,7 @@
    ],
    "overall": 38,
    "dur": 509,
-   "sec": 0.7,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -188806,7 +187927,7 @@
    ],
    "overall": 42,
    "dur": 96,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -189240,7 +188361,7 @@
    "others": [],
    "overall": 62,
    "dur": 77,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 55,
@@ -190153,7 +189274,7 @@
    ],
    "overall": 44,
    "dur": 129,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -190488,7 +189609,7 @@
    ],
    "overall": 57,
    "dur": 38,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 55,
@@ -191371,7 +190492,7 @@
    ],
    "overall": 66,
    "dur": 255,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -191767,7 +190888,7 @@
    ],
    "overall": 69,
    "dur": 254,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -193439,7 +192560,7 @@
    ],
    "overall": 56,
    "dur": 138,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,

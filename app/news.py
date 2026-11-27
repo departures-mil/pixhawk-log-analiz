@@ -1,6 +1,22 @@
 """Sürüm notları ("Neler yeni" + release-notes.json). Yeni sürümde EN ÜSTE eklenir; tr/en/ar zorunlu."""
 
 NEWS = [
+    {'v': '1.1.16',
+     'tr': 'Plane (VTOL dahil) kök neden teşhisi güçlendi: 147 uzman etiketli gerçek Plane logunda doğru kök neden %55 → %63; kırım yakalama (%90) ve normal uçuşu tanıma (%82) korundu\n'
+           'Hava hızı sensörü takılı olmayan ya da kullanılmayan uçaklarda program artık sıfır okuyan sensör yerine otopilotun kullandığı tahmini hava hızını (CTUN/TECS) kullanıyor; her uçuşta görülen sahte "düşük hava hızı / stall" uyarısı kalktı\n'
+           'VTOL motor itki kaybı: dikey uçuşta bir kaldırma motoru tavanda kalıp araç ardından devriliyorsa kök neden "motor" olarak, motor numarasıyla bulunur\n'
+           'Stall: hız düştükten hemen sonra başlayan kontrol kaybı stall olarak teşhis edilir. RC kaybı: "Throttle failsafe" mesajları ve alıcı RSSI\'sinin uçuşta sıfıra düşmesi yakalanır\n'
+           'Uçuşta 100°\'yi aşan yatış (ters dönme) tek başına kontrol kaybı belirtisi sayılır; sabit kanatta pusula, başka bir neden varken kök neden gösterilmez',
+     'en': 'Stronger Plane (incl. VTOL) root-cause diagnosis: on 147 expert-labelled real Plane logs the correct root cause rose from 55% to 63%; crash detection (90%) and recognising normal flights (82%) kept\n'
+           'On planes without an airspeed sensor (or with it disabled) the program now uses the autopilot\'s own airspeed estimate (CTUN/TECS) instead of a sensor reading zero; the false "low airspeed / stall" warning seen on every flight is gone\n'
+           'VTOL motor thrust loss: if a lift motor stays at maximum in vertical flight and the aircraft then tips over, the root cause is found as "motor", with the motor number\n'
+           'Stall: a loss of control that starts right after the speed dropped is diagnosed as a stall. RC loss: "Throttle failsafe" messages and receiver RSSI dropping to zero in flight are detected\n'
+           'A bank beyond 100° in flight (inverted) counts as a sign of loss of control on its own; on fixed wing the compass is not shown as root cause when another cause is present',
+     'ar': 'تشخيص أقوى للسبب الجذري في Plane (بما في ذلك VTOL): في 147 سجل Plane حقيقي موسوم من الخبراء ارتفع السبب الجذري الصحيح من 55% إلى 63%؛ مع الحفاظ على اكتشاف الحوادث (90%) والتعرف على الرحلات الطبيعية (82%)\n'
+           'في الطائرات التي لا تحمل حساس سرعة هواء (أو المعطّل) يستخدم البرنامج الآن تقدير الطيار الآلي لسرعة الهواء (CTUN/TECS) بدل حساس يقرأ صفرًا؛ وزال التحذير الكاذب "سرعة هواء منخفضة / انهيار" الذي كان يظهر في كل رحلة\n'
+           'فقدان دفع محرك VTOL: إذا بقي محرك رفع عند الحد الأقصى أثناء الطيران العمودي ثم انقلبت الطائرة، يُكتشف السبب الجذري "محرك" مع رقم المحرك\n'
+           'الانهيار (Stall): فقدان السيطرة الذي يبدأ مباشرة بعد انخفاض السرعة يُشخَّص كانهيار. فقدان التحكم اللاسلكي: تُكتشف رسائل "Throttle failsafe" وهبوط RSSI المستقبل إلى الصفر أثناء الطيران\n'
+           'الميل الذي يتجاوز 100° أثناء الطيران (الانقلاب) يُعدّ وحده علامة على فقدان السيطرة؛ وفي الأجنحة الثابتة لا تُعرض البوصلة كسبب جذري عند وجود سبب آخر'},
     {'v': '1.1.15',
      'tr': 'Plane (VTOL dahil) teşhisi: normal uçuşların yanlışlıkla "ciddi olay" diye işaretlenmesi büyük ölçüde giderildi. 147 uzman etiketli gerçek Plane logunda normal uçuşu tanıma %70 → %82, kırım yakalama değişmedi (%90)\n'
            'Yeni kurallar: hiçbir kırım kanıtı yokken toplam 400 saniyeden uzun uçup inen uçakta ayar/hava hızı/servo bulguları artık "küçük uyarı" sayılır; uçuş bittikten en az 5 saniye sonra yerde sakin disarm edilmesi normal iniş kabul edilir\n'

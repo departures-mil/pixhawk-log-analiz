@@ -227,7 +227,7 @@ def _grab(tid, kind, man, mf, need, tot):
 def _known():
     import gzip
     seen = set(labels())
-    for extra in ('threads.json.gz', 'holdout_threads.json.gz', 'more_threads.json.gz', 'plane_threads.json.gz'):
+    for extra in ('threads.json.gz', 'holdout_threads.json.gz', 'more_threads.json.gz', 'plane_threads.json.gz', 'pn_threads.json.gz'):
         try: seen |= set(json.load(gzip.open(os.path.join(ROOT, 'tools_data', 'crashbench', extra), 'rt', encoding='utf-8')))
         except Exception: pass
     return seen
@@ -298,6 +298,134 @@ def harvest_plane():
             if page % 20 == 0: print(f'  cat {nm} page {page}  logs={len(man)} MB={round(total)}', flush=True)
     json.dump(man, open(mf, 'w'), indent=1)
     print('logs:', len(man), 'total MB', round(total), 'need left', need)
+
+
+PN_Q = ['plane first flight log', 'maiden flight log plane', 'plane autotune log', 'plane autotune results', 'quadplane autotune',
+        'qautotune log', 'quicktune quadplane', 'tecs tuning', 'tecs tuning log', 'plane log review', 'please review my log plane',
+        'check my log plane', 'quadplane log review', 'vtol log review', 'vtol transition log', 'transition tuning quadplane',
+        'tailsitter tuning log', 'tiltrotor tuning log', 'flying wing tuning log', 'plane tuning advice log', 'plane pid tuning log',
+        'airspeed calibration log', 'plane waypoint mission log', 'auto landing log plane', 'plane loiter tuning', 'l1 tuning',
+        'npfg tuning', 'plane vibration log', 'quadplane hover vibration', 'plane oscillation log', 'quadplane hover tuning log',
+        'plane long range flight log', 'fpv wing log', 'glider log', 'plane battery consumption log', 'plane log analysis help',
+        'arduplane log', 'quadplane log', 'vtol flight log', 'plane flight log']
+PN_REL = re.compile(r'\bplane\b.*\b\d\.\d+(\.\d+)?\b.*\b(beta|release|stable|rc\d?)\b|\b(beta|release)\b.*\bplane\b.*\d\.\d', re.I)
+PN_BAD = re.compile(r'\b(crash(?:ed|es|ing)?|fell|flip(?:ped)?|fly ?away|lost control|loss of control|destroyed|nose ?dived?|'
+                    r'spiral(?:led)?|death roll|went down|dropped out of|hit the ground|broke)\b', re.I)
+
+
+def harvest_planenormal():
+    """Plane NORMAL uçuş taraması. (1) Plane sürüm/beta konuları: test pilotlarının her yazısındaki log ayrı örnek
+    ('r<konu>_<yazı>'), bağlamı = o yazı + ona verilen cevaplar; (2) ayar/ilk uçuş/log inceleme aramaları (başlık ve ilk yazıda
+    kırım sözcüğü olmayanlar). Konu metinleri doğrudan BENCH_THREADS_OUT'a yazılır (etiketleme için)."""
+    import gzip
+    os.makedirs(BENCH, exist_ok=True)
+    mf = os.path.join(BENCH, 'manifest.json'); man = json.load(open(mf)) if os.path.exists(mf) else {}
+    out_p = os.path.join(ROOT, 'tools_data', 'crashbench', os.environ.get('BENCH_THREADS_OUT', 'pn_threads.json.gz'))
+    th = json.load(gzip.open(out_p, 'rt', encoding='utf-8')) if os.path.exists(out_p) else {}
+    seen = set(man) | _known()
+    total = sum(x.get('mb', 0) for x in man.values()); n_max = int(os.environ.get('BENCH_N_NORMAL', '400'))
+    deadline = time.time() + float(os.environ.get('BENCH_MINUTES', '280')) * 60
+    full = lambda: total > TOTAL_MB or time.time() > deadline or len(man) >= n_max
+    def save():
+        json.dump(man, open(mf, 'w'), indent=1)
+        with gzip.open(out_p, 'wt', encoding='utf-8') as f: json.dump(th, f, ensure_ascii=False)
+    def row(p):
+        likes = sum(a.get('count', 0) for a in (p.get('actions_summary') or []) if a.get('id') == 2)
+        return {'n': p.get('post_number'), 'u': p.get('username'), 'tl': p.get('trust_level'), 'r': p.get('reply_to_post_number'),
+                'staff': bool(p.get('staff') or p.get('moderator') or p.get('admin')), 'likes': likes,
+                'acc': bool(p.get('accepted_answer')), 'd': (p.get('created_at') or '')[:10], 'x': _plain(p.get('cooked'))[:3500]}
+    def all_posts(tid, cap=1500):
+        T = get(f'{FORUM}/t/{tid}.json'); time.sleep(1.2)
+        posts = list((T.get('post_stream') or {}).get('posts') or [])
+        ids = [i for i in ((T.get('post_stream') or {}).get('stream') or []) if i not in {p['id'] for p in posts}][:cap]
+        for k in range(0, len(ids), 20):
+            if time.time() > deadline: break
+            q = '&'.join(f'post_ids[]={i}' for i in ids[k:k + 20])
+            try:
+                more = get(f'{FORUM}/t/{tid}/posts.json?{q}'); time.sleep(1.2)
+                posts += (more.get('post_stream') or {}).get('posts') or []
+            except Exception as e:
+                print('  more fail', tid, e)
+        return T, sorted(posts, key=lambda p: p.get('post_number', 0))
+    def fetch(u):
+        try:
+            b, _ = get(direct(u), binary=True, timeout=180, limit_mb=MAX_MB)
+            d = to_bin(b)
+            return d if d and len(d) >= 200_000 else None
+        except Exception as e:
+            print('  dl fail', u[:90], e); return None
+    def add(key, d, title, url, u, src, extra=None):
+        nonlocal total
+        open(os.path.join(BENCH, f'{key}.bin'), 'wb').write(d); mb = len(d) / 1e6; total += mb
+        man[key] = {'id': key, 'title': title, 'url': url, 'log_url': u, 'label': 'unknown', 'src': src, 'mb': round(mb, 1), **(extra or {})}
+        print(f'+ {src:4s} {mb:6.1f} MB  {title[:70]}', flush=True)
+    # 1) sürüm / beta konuları
+    rel = {}
+    for q in ['Plane beta', 'Plane stable release', 'ArduPlane beta', 'Plane 4.0', 'Plane 4.1', 'Plane 4.2', 'Plane 4.3', 'Plane 4.4',
+              'Plane 4.5', 'Plane 4.6', 'Plane 4.7', 'Plane 3.9', 'Plane 3.8', 'plane release candidate']:
+        for page in (1, 2, 3):
+            try:
+                d = get(f'{FORUM}/search.json?q={urllib.parse.quote(q + " in:title")}&page={page}'); time.sleep(1.2)
+            except Exception as e:
+                print('search fail', q, e); break
+            tops = d.get('topics') or []
+            if not tops: break
+            for tp in tops:
+                if PN_REL.search(tp.get('title') or ''): rel[str(tp['id'])] = tp.get('title')
+    print('release topics:', len(rel), flush=True)
+    for tid, title in sorted(rel.items(), key=lambda x: -int(x[0])):
+        if full(): break
+        try: T, posts = all_posts(tid)
+        except Exception as e: print('rel fail', tid, e); continue
+        url = f"{FORUM}/t/{T.get('slug', '')}/{tid}"
+        for i, p in enumerate(posts):
+            if full(): break
+            n = p.get('post_number'); key = f'r{tid}_{n}'
+            if n == 1 or key in seen: continue
+            txt = _plain(p.get('cooked'))
+            if PN_BAD.search(txt[:1500]): continue
+            ls = links(p.get('cooked', ''))
+            if not ls: continue
+            seen.add(key)
+            d = next((x for x in (fetch(u) for u in ls[:2]) if x), None)
+            if not d: continue
+            ctx = [row(p)] + [row(q) for q in posts[i + 1:i + 40] if q.get('reply_to_post_number') == n or
+                              (q.get('username') == p.get('username'))][:10]
+            add(key, d, f'{title} #{n}', f'{url}/{n}', ls[0], 'rel')
+            th[key] = {'title': f'{title} #{n}', 'url': f'{url}/{n}', 'posts': ctx}
+            save()
+    # 2) ayar / ilk uçuş / log inceleme aramaları
+    for q in PN_Q:
+        if full(): break
+        for page in range(1, int(os.environ.get('BENCH_PAGES', '8')) + 1):
+            if full(): break
+            try:
+                d = get(f'{FORUM}/search.json?q={urllib.parse.quote(q)}&page={page}'); time.sleep(1.2)
+            except Exception as e:
+                print('search fail', q, e); time.sleep(5); continue
+            tops = d.get('topics') or []
+            if not tops: break
+            for tp in tops:
+                if full(): break
+                tid = str(tp['id']); title = tp.get('title') or ''
+                if tid in seen or PN_BAD.search(title): seen.add(tid); continue
+                seen.add(tid)
+                try: T, posts = all_posts(tid, cap=60)
+                except Exception as e: print('topic fail', tid, e); continue
+                if not posts: continue
+                if PN_BAD.search(_plain(posts[0].get('cooked'))[:1500]): continue
+                if not PLANE_RX.search(title + ' ' + _plain(posts[0].get('cooked'))[:1500] + ' ' + str(T.get('category_id'))): continue
+                op = posts[0].get('username'); cand = []
+                for p in posts[:6]:
+                    if p.get('post_number') == 1 or p.get('username') == op: cand += links(p.get('cooked', ''))
+                d = next((x for x in (fetch(u) for u in cand[:3]) if x), None)
+                if not d: continue
+                url = f"{FORUM}/t/{T.get('slug', '')}/{tid}"
+                add(tid, d, title, url, cand[0], 'srch', {'category_id': T.get('category_id'), 'created': (T.get('created_at') or '')[:10]})
+                th[tid] = {'title': title, 'url': url, 'posts': [row(p) for p in posts[:80]]}
+                save()
+    save()
+    print('logs:', len(man), 'MB', round(total))
 
 
 def harvest_gh():
@@ -536,4 +664,4 @@ def write(res):
 
 
 if __name__ == '__main__':
-    {'harvest': harvest, 'run': run, 'threads': threads, 'plane': harvest_plane, 'github': harvest_gh}[sys.argv[1]]()
+    {'harvest': harvest, 'run': run, 'threads': threads, 'plane': harvest_plane, 'github': harvest_gh, 'planenormal': harvest_planenormal}[sys.argv[1]]()
