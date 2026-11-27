@@ -863,13 +863,34 @@ class CrashLibPage(Page):
         self.q = QLineEdit(); self.q.setPlaceholderText(t('search')); self.q.textChanged.connect(self.fill); bar.addWidget(self.q, 1)
         self.st = label('', 'muted'); bar.addWidget(self.st)
         v1.addLayout(bar)
+        # süzgeçler: araç · uzman etiketi · kök neden (uzman/program) · programın sonucu — birlikte çalışır
+        fb = QHBoxLayout()
+        self.f_veh = QComboBox(); self.f_veh.addItem(t('clf_all_veh'), None)
+        for vv in sorted({c.get('vehicle') for c in self.cases if c.get('vehicle')}): self.f_veh.addItem(vv, vv)
+        self.f_lab = QComboBox()
+        for k, d in ((None, 'clf_all_lab'), ('crash', 'clf_crash'), ('normal', 'clf_normal')): self.f_lab.addItem(t(d), k)
+        self.f_cz = QComboBox(); self.f_cz.addItem(t('clf_all_cause'), None)
+        for c in EX.CAUSE_ORDER[:-1] + ['unknown']:
+            if any(x.get('cause_hint') == c or x.get('got_cause') == c for x in self.cases):
+                self.f_cz.addItem(self._cz(c) if c != 'unknown' else t('clf_unknown'), c)
+        self.f_czw = QComboBox()
+        for k, d in (('any', 'clf_cw_any'), ('exp', 'clf_cw_exp'), ('prog', 'clf_cw_prog'), ('both', 'clf_cw_both')): self.f_czw.addItem(t(d), k)
+        self.f_res = QComboBox()
+        for k, d in ((None, 'clf_all_res'), ('ok', 'clf_ok'), ('bad', 'clf_bad')): self.f_res.addItem(t(d), k)
+        for w_ in (self.f_veh, self.f_lab, self.f_cz, self.f_czw, self.f_res):
+            w_.currentIndexChanged.connect(self.fill); fb.addWidget(w_)
+        fb.addWidget(button('✖ ' + t('clf_clear'), self.clear_filters)); fb.addStretch(1)
+        v1.addLayout(fb)
         sp = QSplitter(Qt.Horizontal)
         self.tb = _tbl([t('cl_title'), 'Araç' if lang() == 'tr' else 'Vehicle' if lang() == 'en' else 'المركبة', t('cl_label'), t('cl_got'), t('cl_cause'), t('cl_hint'), 'MB'], 0)
         self.tb.cellDoubleClicked.connect(lambda *_: self.open_case())
+        self.sort_col, self.sort_desc = None, False
+        hh = self.tb.horizontalHeader(); hh.setSectionsClickable(True); hh.sectionClicked.connect(self.sort_by)
+        hh.setToolTip(t('clf_sort_tip'))
         self.tb.currentCellChanged.connect(lambda *_: self.show_case())
         sp.addWidget(self.tb)
         self.det = QTextBrowser(); self.det.setOpenExternalLinks(True); sp.addWidget(self.det)
-        sp.setStretchFactor(0, 3); sp.setStretchFactor(1, 2)
+        sp.setStretchFactor(0, 5); sp.setStretchFactor(1, 2); sp.setSizes([1000, 420])
         v1.addWidget(sp, 1)
         self.tabs.addTab(w1, '📂 ' + t('ex_tab_cases'))
         # --- sekme 2: uzman tecrübeleri
@@ -923,14 +944,26 @@ class CrashLibPage(Page):
     # ---------------------------------------------------------------- sekme 1
     def fill(self, *_):
         q = self.q.text().strip().lower(); les = self.f_les.currentData()
+        veh, lab, cz, czw, res = (w_.currentData() for w_ in (self.f_veh, self.f_lab, self.f_cz, self.f_czw, self.f_res))
+
+        def cz_ok(c):
+            if not cz: return True
+            e, p_ = c.get('cause_hint') == cz, (c.get('got_cause') or 'unknown') == cz
+            return {'exp': e, 'prog': p_, 'both': e and p_}.get(czw, e or p_)
         self.rows = [c for c in self.cases if (not q or q in (c.get('title') or '').lower() or q in str(c.get('got_cause')).lower())
-                     and (not les or les in (self.EX.case_lessons(c.get('id')).get('lessons') or []))]
+                     and (not les or les in (self.EX.case_lessons(c.get('id')).get('lessons') or []))
+                     and (not veh or c.get('vehicle') == veh) and (not lab or c.get('label') == lab) and cz_ok(c)
+                     and (not res or (self._ok(c) == (res == 'ok')))]
+        if self.sort_col is not None:
+            self.rows.sort(key=lambda c: self._skey(c, self.sort_col), reverse=self.sort_desc)
+            self.tb.horizontalHeader().setSortIndicatorShown(True)
+            self.tb.horizontalHeader().setSortIndicator(self.sort_col, Qt.DescendingOrder if self.sort_desc else Qt.AscendingOrder)
         self.tb.setRowCount(len(self.rows))
         from ..core import texts as TX
         lg = lang(); li = LI.get(lg, 0)
         lbl = {k: (TX.T('v_' + k, 'tr'), TX.T('v_' + k, 'en'), TX.T('v_' + k, 'ar')) for k in ('crash', 'normal', 'incident', 'noflight')}
         for i, c in enumerate(self.rows):
-            ok = (c.get('got') in ('crash', 'incident')) == (c.get('label') == 'crash')
+            ok = self._ok(c)
             self.tb.setItem(i, 0, _it(c.get('title')))
             self.tb.setItem(i, 1, _it(c.get('vehicle')))
             self.tb.setItem(i, 2, _it(lbl.get(c.get('label'), ('', '', ''))[li]))
@@ -939,9 +972,32 @@ class CrashLibPage(Page):
             self.tb.setItem(i, 5, _it(self._cz(c.get('cause_hint'))))
             self.tb.setItem(i, 6, _it(c.get('mb')))
         self.st.setText(t('cl_empty') if not self.rows else str(len(self.rows)))
-        self.tb.resizeColumnsToContents(); self.tb.setColumnWidth(0, min(420, self.tb.columnWidth(0)))
+        self.tb.resizeColumnsToContents(); self.tb.setColumnWidth(0, min(360, self.tb.columnWidth(0)))
         if self.rows: self.tb.setCurrentCell(0, 0)
-        else: self.det.clear()
+        self.show_case()
+
+    @staticmethod
+    def _ok(c):
+        return (c.get('got') in ('crash', 'incident')) == (c.get('label') == 'crash')
+
+    def _skey(self, c, col):
+        if col == 6:
+            try: return (0, float(c.get('mb') or 0))
+            except Exception: return (1, 0.0)
+        v = {0: c.get('title'), 1: c.get('vehicle'), 2: c.get('label'), 3: ('0' if self._ok(c) else '1') + str(c.get('got')),
+             4: self._cz(c.get('got_cause')) if c.get('got_cause') else '', 5: self._cz(c.get('cause_hint')) if c.get('cause_hint') else ''}.get(col)
+        v = (v or '').lower()
+        return (v == '' or v == '-', v)          # boşlar her zaman sonda (artan sırada)
+
+    def sort_by(self, col):
+        if self.sort_col == col: self.sort_desc = not self.sort_desc
+        else: self.sort_col, self.sort_desc = col, False
+        self.fill()
+
+    def clear_filters(self):
+        for w_ in (self.f_veh, self.f_lab, self.f_cz, self.f_czw, self.f_res, self.f_les): w_.blockSignals(True); w_.setCurrentIndex(0); w_.blockSignals(False)
+        self.q.blockSignals(True); self.q.clear(); self.q.blockSignals(False)
+        self.fill()
 
     def show_case(self):
         c = self._cur()
@@ -967,7 +1023,7 @@ class CrashLibPage(Page):
         if x.get('lessons'):
             h.append(f"<hr><h3>📚 {E(t('ex_case_lessons'))}</h3>")
             for k in x['lessons']: h.append(self._lesson_html(k, short=k not in x['lessons'][:2]))
-        if c.get('url'): h.append(f"<p><a href=\"{E(c['url'])}\">🌐 {E(t('ex_read'))}</a></p>")
+        if c.get('url'): h.append(f"<p><a style=\"color:#60A5FA\" href=\"{E(c['url'])}\">🌐 {E(t('ex_read'))}</a></p>")
         h.append('</div>')
         self.det.setHtml(''.join(h))
 
@@ -990,7 +1046,7 @@ class CrashLibPage(Page):
         if ex:
             h.append(f"<hr><b>📂 {E(t('ex_show_cases'))} ({len(ex)})</b><ul>")
             for c in ex[:8]:
-                h.append(f"<li><a href=\"{E(c.get('url') or '')}\">{E(c.get('title') or '')}</a> — {E(self._cz(c.get('cause_hint')) if c.get('label') == 'crash' else c.get('label') or '')}</li>")
+                h.append(f"<li><a style=\"color:#60A5FA\" href=\"{E(c.get('url') or '')}\">{E(c.get('title') or '')}</a> — {E(self._cz(c.get('cause_hint')) if c.get('label') == 'crash' else c.get('label') or '')}</li>")
             h.append('</ul>')
         h.append('</div>')
         self.ld.setHtml(''.join(h))

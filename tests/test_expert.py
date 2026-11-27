@@ -48,3 +48,19 @@ def test_crashlib_page(win):
     pg.ls.setCurrentRow(0); assert pg.ld.toPlainText().strip()
     pg.show_examples(); assert pg.tabs.currentIndex() == 0 and pg.f_les.currentData() and pg.rows
     i = pg.f_cause.findData('pilot'); pg.f_cause.setCurrentIndex(i); assert pg.ls.count() >= 1
+
+
+def test_crashlib_sort_filter(win):
+    win.goto('crashlib'); pg = win.pages['crashlib']; pg.clear_filters()
+    n = len(pg.rows)
+    pg.sort_by(6); mb = [float(c.get('mb') or 0) for c in pg.rows]; assert mb == sorted(mb)
+    pg.sort_by(6); mb = [float(c.get('mb') or 0) for c in pg.rows]; assert mb == sorted(mb, reverse=True)
+    pg.sort_by(0); tt = [(c.get('title') or '').lower() for c in pg.rows]; assert tt == sorted(tt)
+    pg.f_veh.setCurrentIndex(pg.f_veh.findData('Plane')); assert pg.rows and all(c['vehicle'] == 'Plane' for c in pg.rows)
+    pg.f_lab.setCurrentIndex(pg.f_lab.findData('crash')); assert all(c['label'] == 'crash' for c in pg.rows)
+    pg.f_veh.setCurrentIndex(0)
+    pg.f_cz.setCurrentIndex(pg.f_cz.findData('motor')); pg.f_czw.setCurrentIndex(pg.f_czw.findData('exp'))
+    assert pg.rows and all(c['cause_hint'] == 'motor' for c in pg.rows)
+    pg.f_czw.setCurrentIndex(pg.f_czw.findData('both')); assert all(c['cause_hint'] == c['got_cause'] == 'motor' for c in pg.rows)
+    pg.f_res.setCurrentIndex(pg.f_res.findData('bad')); assert all(not pg._ok(c) for c in pg.rows)
+    pg.clear_filters(); assert len(pg.rows) == n

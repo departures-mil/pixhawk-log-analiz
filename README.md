@@ -52,6 +52,9 @@ ortak `reusable-release.yml` (latest.json, son 5 sürümden yamalar) ile yayın.
   çalışmayı sayılarla izler (içerik yok), çevrim dışı kurallar + kullanıcının kendi Gemini/Claude anahtarıyla öneri; bildirim + sağ altta ✦ panel;
   Ayarlar'da "Admin ile iletişim"in önünde kart. Aynı bilgisayardaki programlarla %APPDATA%/FalconCekirdek/agent üzerinden paylaşım.
 
+## v1.1.13 — Gerçek Kaza Logları: sıralama ve süzgeçler
+- `CrashLibPage`: başlığa tıklayınca sıralama (`sort_by`, `_skey`), süzgeçler araç · etiket · kök neden (uzman/program/biri/ikisi) · program sonucu, `clear_filters`. Metinler `i18n12.py` (`clf_*`).
+
 ## v1.1.12 — Uzman tecrübeleri: gerçek kırımlardan dersler
 - `app/core/expert.py`: forumdaki gerçek kırım konularında uzmanların teşhis ve öğütlerinden 32 ders (kural · logda nereye bakılır · ne yapılır ·
   parametreler, TR/EN/AR) ve 10 altın kural. `tools_data/expert_tags.py` (+ `expert_rx.py`) uzman yanıtlarını tarayıp her konuya ders atar →

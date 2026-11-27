@@ -1,6 +1,16 @@
 """Sürüm notları ("Neler yeni" + release-notes.json). Yeni sürümde EN ÜSTE eklenir; tr/en/ar zorunlu."""
 
 NEWS = [
+    {'v': '1.1.13',
+     'tr': 'Gerçek Kaza Logları: sütun başlığına tıklayınca tablo o sütuna göre sıralanır, tekrar tıklayınca sıra tersine döner (MB sayısal sıralanır, boşlar sonda)\n'
+           'Yeni süzgeçler, birlikte kullanılabilir: araç (yalnız Plane, yalnız Copter…), yalnız kırım ya da yalnız normal uçuş, kök neden (uzman teşhisine, program teşhisine, ikisinden birine ya da ikisinin aynı olduğuna göre), programın doğru bildiği ya da yanıldığı konular\n'
+           '"Süzgeçleri temizle" ile hepsi tek tıkla sıfırlanır; seçili satırın uzman paneli her zaman o satırla eşleşir',
+     'en': 'Real Crash Logs: click a column header to sort the table by that column, click again to reverse (MB sorts numerically, empty values last)\n'
+           'New filters that work together: vehicle (Plane only, Copter only…), crashes only or normal flights only, root cause (by expert diagnosis, program diagnosis, either, or both agreeing), threads the program got right or wrong\n'
+           '"Clear filters" resets everything in one click; the expert panel always matches the selected row',
+     'ar': 'سجلات الحوادث الحقيقية: انقر على عنوان العمود لترتيب الجدول حسبه، وانقر مرة أخرى لعكس الترتيب (يُرتَّب MB رقميًا والقيم الفارغة في الأخير)\n'
+           'عوامل تصفية جديدة تعمل معًا: المركبة (Plane فقط، Copter فقط…)، الحوادث فقط أو الرحلات الطبيعية فقط، السبب الجذري (حسب تشخيص الخبراء أو البرنامج أو أيهما أو عند اتفاقهما)، المواضيع التي أصاب فيها البرنامج أو أخطأ\n'
+           '"مسح عوامل التصفية" يعيد كل شيء بنقرة واحدة؛ ولوحة الخبراء تطابق دائمًا الصف المحدد'},
     {'v': '1.1.12',
      'tr': 'Uzman tecrübeleri: ArduPilot forumundaki yüzlerce gerçek kırım konusunda deneyimli üyelerin ve geliştirici ekibin verdiği teşhis ve öğütler 32 derse ve 10 altın kurala dönüştürüldü (Türkçe, İngilizce, Arapça)\n'
            'Her ders: uzmanların kuralı, logda nereye bakılacağı, ne yapılacağı ve ilgili parametreler; uzmanların bu konuya kaç gerçek konuda değindiği de yazılır\n'
