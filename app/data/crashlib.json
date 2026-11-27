@@ -1,25 +1,39 @@
 {
 "score": {
-"n": 323,
-"errors": 3,
-"tp": 200,
-"fn": 17,
-"fp": 27,
-"tn": 79,
-"crash_verdict": 129,
+"n": 454,
+"errors": 8,
+"tp": 294,
+"fn": 31,
+"fp": 19,
+"tn": 110,
+"crash_verdict": 192,
 "false_crash": 1,
-"accuracy": 0.864,
-"recall_crash": 0.922,
-"specificity": 0.745,
-"cause_n": 178,
-"cause_match": 98,
-"cause_acc": 0.551,
-"cause_any": 130,
-"cause_any_acc": 0.73,
+"accuracy": 0.89,
+"recall_crash": 0.905,
+"specificity": 0.853,
+"cause_n": 266,
+"cause_match": 139,
+"cause_acc": 0.523,
+"cause_any": 192,
+"cause_any_acc": 0.722,
 "labels": "expert"
 },
-"date": "2026-11-24 21:20",
+"date": "2026-11-27 14:10",
 "cases": [
+{
+"id": "10008",
+"title": "Quadrotor Crash upon Entering AltHold",
+"url": "https://discuss.ardupilot.org/t/quadrotor-crash-upon-entering-althold/10008",
+"log_url": "https://www.dropbox.com/s/jxx8horrcgxf3zr/50.BIN?dl=0",
+"label": "crash",
+"cause_hint": null,
+"mb": 4.9,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "control",
+"dur": 257,
+"created": "2016-06-30"
+},
 {
 "id": "100104",
 "title": "New build, safe for autotune or need filter setup first?",
@@ -33,6 +47,20 @@
 "got_cause": null,
 "dur": 274,
 "created": "2023-04-25"
+},
+{
+"id": "10012",
+"title": "QUAD slowly descends having no control and crashes three times",
+"url": "https://discuss.ardupilot.org/t/quad-slowly-descends-having-no-control-and-crashes-three-times/10012",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/2X/f/f7fdca78c7d484a94011d0494890f5bea92b1042.bin",
+"label": "crash",
+"cause_hint": "motor",
+"mb": 0.2,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "power",
+"dur": 484735,
+"created": "2016-06-30"
 },
 {
 "id": "100406",
@@ -89,6 +117,34 @@
 "got_cause": "motor",
 "dur": 1127,
 "created": "2023-05-09"
+},
+{
+"id": "10085",
+"title": "Crash Could use some assistance",
+"url": "https://discuss.ardupilot.org/t/crash-could-use-some-assistance/10085",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/2X/3/3b1837c9d8c97712897253b680118b1a43e91307.bin",
+"label": "crash",
+"cause_hint": null,
+"mb": 0.3,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "unknown",
+"dur": 234350,
+"created": "2016-07-05"
+},
+{
+"id": "100868",
+"title": "Need help in identifying the cause of my copter crash in Loiter mode",
+"url": "https://discuss.ardupilot.org/t/need-help-in-identifying-the-cause-of-my-copter-crash-in-loiter-mode/100868",
+"log_url": "https://drive.google.com/file/d/1yuiHHFO620p_CjTkvpy9X5xSYeXtReUd/view?usp=sharing",
+"label": "crash",
+"cause_hint": "motor",
+"mb": 2.4,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "motor",
+"dur": 70,
+"created": "2023-05-14"
 },
 {
 "id": "101181",
@@ -240,7 +296,7 @@
 "mb": 2.2,
 "vehicle": "Copter",
 "got": "incident",
-"got_cause": "unknown",
+"got_cause": "control",
 "dur": 215,
 "created": "2023-06-29"
 },
@@ -257,6 +313,34 @@
 "got_cause": "unknown",
 "dur": 332,
 "created": "2023-07-03"
+},
+{
+"id": "103854",
+"title": "Quadcopter with V5 CUAV meat crash on its mid fligth",
+"url": "https://discuss.ardupilot.org/t/quadcopter-with-v5-cuav-meat-crash-on-its-mid-fligth/103854",
+"log_url": "https://drive.google.com/file/d/1-j99G262jz2uw1WEe2_VqhoGsPqoKGKq/view?usp=drive_link",
+"label": "crash",
+"cause_hint": "control",
+"mb": 4.4,
+"vehicle": "Copter",
+"got": "normal",
+"got_cause": null,
+"dur": 282,
+"created": "2023-07-18"
+},
+{
+"id": "104106",
+"title": "Copter held full throttle after radio failsafe and crashed into tree after several errors",
+"url": "https://discuss.ardupilot.org/t/copter-held-full-throttle-after-radio-failsafe-and-crashed-into-tree-after-several-errors/104106",
+"log_url": "https://drive.google.com/file/d/1w9IgqEJYB5lelc6f-W-bCji8zXxsUWsy/view?usp=sharing",
+"label": "crash",
+"cause_hint": null,
+"mb": 50.0,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "control",
+"dur": 489,
+"created": "2023-07-24"
 },
 {
 "id": "104199",
@@ -371,6 +455,20 @@
 "created": "2023-09-22"
 },
 {
+"id": "107273",
+"title": "EKF Yaw Reset Crash",
+"url": "https://discuss.ardupilot.org/t/ekf-yaw-reset-crash/107273",
+"log_url": "https://drive.google.com/file/d/1z5wB1v8-RY6pFT-gDKsG_vkxZFF54oi_/view?usp=sharing",
+"label": "crash",
+"cause_hint": "compass",
+"mb": 1.8,
+"vehicle": "Copter",
+"got": "normal",
+"got_cause": null,
+"dur": 69,
+"created": "2023-10-03"
+},
+{
 "id": "107280",
 "title": "Need Help tuning large frame hex.",
 "url": "https://discuss.ardupilot.org/t/need-help-tuning-large-frame-hex/107280",
@@ -399,6 +497,20 @@
 "created": "2023-10-05"
 },
 {
+"id": "107732",
+"title": "Unexpected left roll leading to crash",
+"url": "https://discuss.ardupilot.org/t/unexpected-left-roll-leading-to-crash/107732",
+"log_url": "https://drive.google.com/file/d/13uimbQ0E74wN7DrX7CvRfb1O7gKKJvyd/view?usp=sharing",
+"label": "crash",
+"cause_hint": "control",
+"mb": 56.0,
+"vehicle": "Plane",
+"got": "crash",
+"got_cause": "power",
+"dur": 1112,
+"created": "2023-10-13"
+},
+{
 "id": "107868",
 "title": "Coptor automatically begins hovering in a roughly elliptical orbit around the takeoff location in Loiter Mode",
 "url": "https://discuss.ardupilot.org/t/coptor-automatically-begins-hovering-in-a-roughly-elliptical-orbit-around-the-takeoff-location-in-loiter-mode/107868",
@@ -408,9 +520,23 @@
 "mb": 0.9,
 "vehicle": "Copter",
 "got": "crash",
-"got_cause": "motor",
+"got_cause": "vibration",
 "dur": 36,
 "created": "2023-10-16"
+},
+{
+"id": "10824",
+"title": "1300mm X8 with old pids...flip of death",
+"url": "https://discuss.ardupilot.org/t/1300mm-x8-with-old-pids-flip-of-death/10824",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/2X/6/6309ed389a0b2853b4426285c380083bf1202994.bin",
+"label": "crash",
+"cause_hint": null,
+"mb": 0.5,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 46,
+"created": "2016-08-16"
 },
 {
 "id": "108349",
@@ -453,6 +579,20 @@
 "got_cause": "motor",
 "dur": 36,
 "created": "2016-08-17"
+},
+{
+"id": "109349",
+"title": "Drone crash help",
+"url": "https://discuss.ardupilot.org/t/drone-crash-help/109349",
+"log_url": "https://drive.google.com/file/d/1nVpV6Ci4GyEEj3WjvuQbOD6F4HgCRCx9/view?usp=sharing",
+"label": "crash",
+"cause_hint": "motor",
+"mb": 2.0,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "motor",
+"dur": 173,
+"created": "2023-11-17"
 },
 {
 "id": "109490",
@@ -525,6 +665,34 @@
 "created": "2024-01-21"
 },
 {
+"id": "112561",
+"title": "Copter 4.4 Notch filter Tune for fast dynamic flight",
+"url": "https://discuss.ardupilot.org/t/copter-4-4-notch-filter-tune-for-fast-dynamic-flight/112561",
+"log_url": "https://drive.google.com/file/d/1HlKC7xqVSR7IaenaPL3gq9OuGlkppW6A/view?usp=sharing",
+"label": "normal",
+"cause_hint": null,
+"mb": 48.8,
+"vehicle": "Copter",
+"got": "normal",
+"got_cause": null,
+"dur": 286,
+"created": "2024-02-02"
+},
+{
+"id": "113009",
+"title": "No tracking data available for Throttle notch when using Filter Review Tool",
+"url": "https://discuss.ardupilot.org/t/no-tracking-data-available-for-throttle-notch-when-using-filter-review-tool/113009",
+"log_url": "https://drive.google.com/file/d/1WpumIOHhOwmH4GbPdAAAnnwyp-FevJgA/view?usp=drive_link",
+"label": "normal",
+"cause_hint": null,
+"mb": 3.3,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "unknown",
+"dur": 133,
+"created": "2024-02-11"
+},
+{
 "id": "113718",
 "title": "Wild ride after successful Auto-tune",
 "url": "https://discuss.ardupilot.org/t/wild-ride-after-successful-auto-tune/113718",
@@ -590,7 +758,7 @@
 "mb": 1.9,
 "vehicle": "Copter",
 "got": "crash",
-"got_cause": "power",
+"got_cause": "control",
 "dur": 163,
 "created": "2016-09-21"
 },
@@ -735,6 +903,20 @@
 "created": "2024-06-19"
 },
 {
+"id": "11975",
+"title": "Vcc error reported - crash 3.4rc5",
+"url": "https://discuss.ardupilot.org/t/vcc-error-reported-crash-3-4rc5/11975",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/2X/e/e0a1640f490823bae63f67f21bda28a892220ca2.bin",
+"label": "crash",
+"cause_hint": null,
+"mb": 3.9,
+"vehicle": "Copter",
+"got": "normal",
+"got_cause": null,
+"dur": 511,
+"created": "2016-10-09"
+},
+{
 "id": "119994",
 "title": "Help Needed with Tuning Issues on 5L Payload Drone in PosHold Mode",
 "url": "https://discuss.ardupilot.org/t/help-needed-with-tuning-issues-on-5l-payload-drone-in-poshold-mode/119994",
@@ -777,6 +959,20 @@
 "created": "2024-07-07"
 },
 {
+"id": "120700",
+"title": "Copter crashed need help to find the reason",
+"url": "https://discuss.ardupilot.org/t/copter-crashed-need-help-to-find-the-reason/120700",
+"log_url": "https://drive.google.com/file/d/1wyXZecoaREh000F8poiyjJGyCigVxstO/view?usp=share_link",
+"label": "crash",
+"cause_hint": "battery",
+"mb": 1.8,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "power",
+"dur": 68,
+"created": "2024-07-14"
+},
+{
 "id": "120824",
 "title": "Satellite count dropped to zero, drone crashed",
 "url": "https://discuss.ardupilot.org/t/satellite-count-dropped-to-zero-drone-crashed/120824",
@@ -814,7 +1010,7 @@
 "mb": 5.5,
 "vehicle": "Copter",
 "got": "crash",
-"got_cause": "gps",
+"got_cause": "control",
 "dur": 269,
 "created": "2024-07-26"
 },
@@ -889,6 +1085,34 @@
 "created": "2024-08-12"
 },
 {
+"id": "122289",
+"title": "High speed crash on maiden flight--design flaw or bad settings?",
+"url": "https://discuss.ardupilot.org/t/high-speed-crash-on-maiden-flight-design-flaw-or-bad-settings/122289",
+"log_url": "https://drive.google.com/file/d/1fJCWgaQubDEcD2fNQgDnuKWmSfbCuDm2/view?usp=sharing",
+"label": "crash",
+"cause_hint": "control",
+"mb": 1.6,
+"vehicle": "Plane",
+"got": "incident",
+"got_cause": "control",
+"dur": 54,
+"created": "2024-08-14"
+},
+{
+"id": "122360",
+"title": "Arduplane no aileron input during auto mode resulting in a crash",
+"url": "https://discuss.ardupilot.org/t/arduplane-no-aileron-input-during-auto-mode-resulting-in-a-crash/122360",
+"log_url": "https://drive.google.com/file/d/1H3KtvPQSHDcbLJNvHRr8_RjJc9VTuGoO/view?usp=sharing",
+"label": "crash",
+"cause_hint": null,
+"mb": 2.3,
+"vehicle": "Plane",
+"got": "crash",
+"got_cause": "compass",
+"dur": 56,
+"created": "2024-08-15"
+},
+{
 "id": "122473",
 "title": "Review log for Yaw 1Hz oscillation",
 "url": "https://discuss.ardupilot.org/t/review-log-for-yaw-1hz-oscillation/122473",
@@ -915,6 +1139,34 @@
 "got_cause": "control",
 "dur": 484,
 "created": "2024-09-02"
+},
+{
+"id": "123701",
+"title": "Stabilizing the copter's hover",
+"url": "https://discuss.ardupilot.org/t/stabilizing-the-copters-hover/123701",
+"log_url": "https://drive.google.com/file/d/1ySSlhvKU97UasLTL4WMDEgaVepLWpk2-/view?usp=sharing",
+"label": "normal",
+"cause_hint": null,
+"mb": 2.8,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "battery",
+"dur": 429,
+"created": "2024-09-14"
+},
+{
+"id": "123719",
+"title": "Potential thrust loss(1) while testing TF02 pro lidar and Crashed",
+"url": "https://discuss.ardupilot.org/t/potential-thrust-loss-1-while-testing-tf02-pro-lidar-and-crashed/123719",
+"log_url": "https://drive.google.com/file/d/1JFFWG-9Kp0MK5_0KLJ4pol-C5tZLWj5s/view?usp=sharing",
+"label": "crash",
+"cause_hint": "motor",
+"mb": 36.8,
+"vehicle": "Copter",
+"got": "normal",
+"got_cause": null,
+"dur": 1588,
+"created": "2024-09-14"
 },
 {
 "id": "123961",
@@ -973,6 +1225,20 @@
 "created": "2024-10-23"
 },
 {
+"id": "126151",
+"title": "Quadcopter oscillation and tuning",
+"url": "https://discuss.ardupilot.org/t/quadcopter-oscillation-and-tuning/126151",
+"log_url": "https://drive.google.com/file/d/1k6Lw9xkgd0pwIpYiex6zJ-OeuUlF-1CA/view?usp=sharing",
+"label": "normal",
+"cause_hint": null,
+"mb": 4.0,
+"vehicle": "Copter",
+"got": "normal",
+"got_cause": null,
+"dur": 163,
+"created": "2024-11-11"
+},
+{
 "id": "126196",
 "title": "Autotune too low ATC_ACCEL_R_MAX value",
 "url": "https://discuss.ardupilot.org/t/autotune-too-low-atc-accel-r-max-value/126196",
@@ -982,9 +1248,37 @@
 "mb": 17.3,
 "vehicle": "Copter",
 "got": "incident",
-"got_cause": "battery",
+"got_cause": "vibration",
 "dur": 449,
 "created": "2024-11-12"
+},
+{
+"id": "126371",
+"title": "Manual Tuning to auto tune",
+"url": "https://discuss.ardupilot.org/t/manual-tuning-to-auto-tune/126371",
+"log_url": "https://drive.google.com/file/d/1nYduVvRkUaUkmvP5H802Ht9t3KfkPyu0/view?usp=sharing",
+"label": "normal",
+"cause_hint": null,
+"mb": 63.1,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "unknown",
+"dur": 2488,
+"created": "2024-11-15"
+},
+{
+"id": "126622",
+"title": "CRASH No Motor Output After Switching to RTL",
+"url": "https://discuss.ardupilot.org/t/crash-no-motor-output-after-switching-to-rtl/126622",
+"log_url": "https://drive.google.com/file/d/1hzOMkCGothVzThhF0QeVFF4uAkI-23Db/view?usp=drive_link",
+"label": "crash",
+"cause_hint": "pilot",
+"mb": 7.6,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "pilot",
+"dur": 336,
+"created": "2024-11-22"
 },
 {
 "id": "12677",
@@ -1141,6 +1435,34 @@
 "created": "2025-01-28"
 },
 {
+"id": "129532",
+"title": "X9 plus motor wobbling while takeoff and crashed",
+"url": "https://discuss.ardupilot.org/t/x9-plus-motor-wobbling-while-takeoff-and-crashed/129532",
+"log_url": "https://drive.google.com/file/d/1V20LS4Ug5fXi-wvXCtE_5EohzCStx8SY/view?usp=sharing",
+"label": "crash",
+"cause_hint": "control",
+"mb": 5.9,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "control",
+"dur": 873,
+"created": "2025-01-28"
+},
+{
+"id": "12977",
+"title": "Maiden going perfectly then sudden flip over",
+"url": "https://discuss.ardupilot.org/t/maiden-going-perfectly-then-sudden-flip-over/12977",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/2X/6/64a10eba04f3274680464f44d4785fa11bf39182.BIN",
+"label": "crash",
+"cause_hint": null,
+"mb": 0.6,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "control",
+"dur": 85,
+"created": "2016-11-20"
+},
+{
 "id": "130060",
 "title": "Yaw Instability and Crash in Loiter Mode – High Vibrations & Motor Imbalance Issues",
 "url": "https://discuss.ardupilot.org/t/yaw-instability-and-crash-in-loiter-mode-high-vibrations-motor-imbalance-issues/130060",
@@ -1153,6 +1475,20 @@
 "got_cause": "motor",
 "dur": 97,
 "created": "2025-02-08"
+},
+{
+"id": "130270",
+"title": "Crash during test flight",
+"url": "https://discuss.ardupilot.org/t/crash-during-test-flight/130270",
+"log_url": "https://drive.google.com/file/d/1yQgjGBNTkifFuc2VdSwAidplSXvscF1G/view?usp=sharing",
+"label": "crash",
+"cause_hint": null,
+"mb": 0.4,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 10,
+"created": "2025-02-12"
 },
 {
 "id": "130716",
@@ -1181,6 +1517,20 @@
 "got_cause": "unknown",
 "dur": 200,
 "created": "2025-02-26"
+},
+{
+"id": "131047",
+"title": "After takeoff, it flew uncontrollably high and crashed",
+"url": "https://discuss.ardupilot.org/t/after-takeoff-it-flew-uncontrollably-high-and-crashed/131047",
+"log_url": "https://discuss.ardupilot.org/uploads/short-url/4qdxr78WGtbM0d9XEtuPbMWx2vB.zip",
+"label": "crash",
+"cause_hint": "control",
+"mb": 1.1,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 39,
+"created": "2025-02-28"
 },
 {
 "id": "13139",
@@ -1267,6 +1617,20 @@
 "created": "2025-03-22"
 },
 {
+"id": "132328",
+"title": "In-Flight FFT filter tuning issues",
+"url": "https://discuss.ardupilot.org/t/in-flight-fft-filter-tuning-issues/132328",
+"log_url": "https://drive.google.com/file/d/1rTx6iJzfZZafduxMdX3CjnqPg5SokbFU/view?usp=sharing",
+"label": "normal",
+"cause_hint": null,
+"mb": 21.9,
+"vehicle": "Copter",
+"got": "normal",
+"got_cause": null,
+"dur": 92,
+"created": "2025-03-25"
+},
+{
 "id": "132485",
 "title": "Help me analyze the logs of the Crash",
 "url": "https://discuss.ardupilot.org/t/help-me-analyze-the-logs-of-the-crash/132485",
@@ -1276,9 +1640,37 @@
 "mb": 6.4,
 "vehicle": "Copter",
 "got": "crash",
-"got_cause": "control",
+"got_cause": "pilot",
 "dur": 82,
 "created": "2025-03-28"
+},
+{
+"id": "132566",
+"title": "DRONE crashed after Notch filter setting",
+"url": "https://discuss.ardupilot.org/t/drone-crashed-after-notch-filter-setting/132566",
+"log_url": "https://drive.google.com/file/d/1u0x6M6X1WwSmPWPnHyC9Ofu-Ds3rrAvM/view?usp=sharing",
+"label": "crash",
+"cause_hint": "motor",
+"mb": 7.9,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 322,
+"created": "2025-03-31"
+},
+{
+"id": "132570",
+"title": "Copter Crashed in Loiter Mode with Video",
+"url": "https://discuss.ardupilot.org/t/copter-crashed-in-loiter-mode-with-video/132570",
+"log_url": "https://drive.google.com/file/d/1ICDjWpNZ0qAf5NpP4X7UN-SWi-CkWkH0/view?usp=sharing",
+"label": "crash",
+"cause_hint": "motor",
+"mb": 5.0,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 236,
+"created": "2025-03-31"
 },
 {
 "id": "133146",
@@ -1293,6 +1685,20 @@
 "got_cause": null,
 "dur": 2100,
 "created": "2025-04-14"
+},
+{
+"id": "13324",
+"title": "Odd crash today - multiple ERR:24-0 and ERR:24-1 messages?",
+"url": "https://discuss.ardupilot.org/t/odd-crash-today-multiple-err-24-0-and-err-24-1-messages/13324",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/2X/7/79a92adc22009d52d286d2d78a1391c30c9576d0.bin",
+"label": "crash",
+"cause_hint": "ekf",
+"mb": 1.4,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "motor",
+"dur": 201,
+"created": "2016-12-06"
 },
 {
 "id": "133410",
@@ -1407,6 +1813,20 @@
 "created": "2025-05-24"
 },
 {
+"id": "13479",
+"title": "Which made the mini heli crash",
+"url": "https://discuss.ardupilot.org/t/which-made-the-mini-heli-crash/13479",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/2X/2/29b30fc69c04f17f76ce2c62aa4e97b28fe84000.BIN",
+"label": "crash",
+"cause_hint": "pilot",
+"mb": 2.7,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "control",
+"dur": 428,
+"created": "2016-12-13"
+},
+{
 "id": "134793",
 "title": "Stabilize is OK but guided loses stability and flips over.",
 "url": "https://discuss.ardupilot.org/t/stabilize-is-ok-but-guided-loses-stability-and-flips-over/134793",
@@ -1449,6 +1869,34 @@
 "created": "2025-06-02"
 },
 {
+"id": "135297",
+"title": "Drone crashed while testing a GPS jammer",
+"url": "https://discuss.ardupilot.org/t/drone-crashed-while-testing-a-gps-jammer/135297",
+"log_url": "https://drive.google.com/file/d/1FEYntl_t8yFtbrRgkpBSgZqzOYiCnd1M/view?usp=sharing",
+"label": "crash",
+"cause_hint": "pilot",
+"mb": 9.6,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 845,
+"created": "2025-06-09"
+},
+{
+"id": "135314",
+"title": "700 size heli crashed after unintentional movment",
+"url": "https://discuss.ardupilot.org/t/700-size-heli-crashed-after-unintentional-movment/135314",
+"log_url": "https://discuss.ardupilot.org/uploads/short-url/9bPOEiNEhzLbNgTq0mxz6l4APkK.bin",
+"label": "crash",
+"cause_hint": "control",
+"mb": 0.8,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 37,
+"created": "2025-06-09"
+},
+{
 "id": "135472",
 "title": "Crash Analysis Help - EKF Failures, Compass Inconsistent, GPS Dropouts (ArduCopter 4.5.7)",
 "url": "https://discuss.ardupilot.org/t/crash-analysis-help-ekf-failures-compass-inconsistent-gps-dropouts-arducopter-4-5-7/135472",
@@ -1463,6 +1911,20 @@
 "created": "2025-06-14"
 },
 {
+"id": "135583",
+"title": "Copter crash from 120m while doing mission",
+"url": "https://discuss.ardupilot.org/t/copter-crash-from-120m-while-doing-mission/135583",
+"log_url": "https://drive.google.com/file/d/1xNKXJZrCY66AtChSVAkOMeC4o6ofhRKB/view?usp=sharing",
+"label": "crash",
+"cause_hint": "motor",
+"mb": 27.3,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 808,
+"created": "2025-06-17"
+},
+{
 "id": "135782",
 "title": "Copter 4.6.1 Custom Build - Crash Dump",
 "url": "https://discuss.ardupilot.org/t/copter-4-6-1-custom-build-crash-dump/135782",
@@ -1475,6 +1937,34 @@
 "got_cause": "motor",
 "dur": 66,
 "created": "2025-06-22"
+},
+{
+"id": "136727",
+"title": "FC power goes out and crashes in flight",
+"url": "https://discuss.ardupilot.org/t/fc-power-goes-out-and-crashes-in-flight/136727",
+"log_url": "https://drive.google.com/file/d/1w5u10LRejbEX-H0nEMez0Nt0LHBwb3HL/view?usp=sharing",
+"label": "crash",
+"cause_hint": "motor",
+"mb": 2.1,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 121,
+"created": "2025-07-16"
+},
+{
+"id": "136852",
+"title": "Crash during auto takeoff v4.6.0 with video",
+"url": "https://discuss.ardupilot.org/t/crash-during-auto-takeoff-v4-6-0-with-video/136852",
+"log_url": "https://www.dropbox.com/scl/fi/bdd8lwuayy02fwv3ic71p/00000040.BIN?rlkey=4jdbgpvw8hxiajbpc55bt9i75&dl=0",
+"label": "crash",
+"cause_hint": "control",
+"mb": 4.0,
+"vehicle": "Plane",
+"got": "incident",
+"got_cause": "control",
+"dur": 152,
+"created": "2025-07-18"
 },
 {
 "id": "137162",
@@ -1729,6 +2219,20 @@
 "created": "2025-10-19"
 },
 {
+"id": "140207",
+"title": "Hex drifting in roll in Loiter after Autotune",
+"url": "https://discuss.ardupilot.org/t/hex-drifting-in-roll-in-loiter-after-autotune/140207",
+"log_url": "https://drive.google.com/file/d/1ebR4Etr7u1CIq9_-vRJcmJZLGxxVwTFi/view?usp=drive_link",
+"label": "normal",
+"cause_hint": null,
+"mb": 43.0,
+"vehicle": "Copter",
+"got": "normal",
+"got_cause": null,
+"dur": 1374,
+"created": "2025-10-21"
+},
+{
 "id": "140808",
 "title": "EKF Fail = Crashed into a tree, Need Help With Logs",
 "url": "https://discuss.ardupilot.org/t/ekf-fail-crashed-into-a-tree-need-help-with-logs/140808",
@@ -1738,7 +2242,7 @@
 "mb": 2.8,
 "vehicle": "Copter",
 "got": "crash",
-"got_cause": "gps",
+"got_cause": "vibration",
 "dur": 134,
 "created": "2025-11-10"
 },
@@ -1780,7 +2284,7 @@
 "mb": 1.5,
 "vehicle": "Copter",
 "got": "incident",
-"got_cause": "power",
+"got_cause": "control",
 "dur": 64,
 "created": "2025-11-22"
 },
@@ -2037,6 +2541,34 @@
 "created": "2026-03-22"
 },
 {
+"id": "14313",
+"title": "3.4.2. Crash Quadcopter",
+"url": "https://discuss.ardupilot.org/t/3-4-2-crash-quadcopter/14313",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/2X/8/88d41d1f1f599c0fab1844e83edaec9f4f67cfd9.bin",
+"label": "crash",
+"cause_hint": "motor",
+"mb": 2.6,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 306,
+"created": "2017-01-23"
+},
+{
+"id": "143223",
+"title": "TAKEOFF mode : after few seconds pitch down and crash",
+"url": "https://discuss.ardupilot.org/t/takeoff-mode-after-few-seconds-pitch-down-and-crash/143223",
+"log_url": "https://drive.google.com/file/d/1Uh8rZHBnJahVVoskNEAN4-iE7WiC46V_/view?usp=drive_link",
+"label": "crash",
+"cause_hint": "control",
+"mb": 2.6,
+"vehicle": "Plane",
+"got": "incident",
+"got_cause": "control",
+"dur": 92,
+"created": "2026-03-31"
+},
+{
 "id": "143330",
 "title": "Drone has crashed, log file attached",
 "url": "https://discuss.ardupilot.org/t/drone-has-crashed-log-file-attached/143330",
@@ -2093,6 +2625,20 @@
 "created": "2026-05-04"
 },
 {
+"id": "143696",
+"title": "What was the crash cause?",
+"url": "https://discuss.ardupilot.org/t/what-was-the-crash-cause/143696",
+"log_url": "https://drive.google.com/file/d/1ehfj_J6hIMceFR0vWKvakyntYVrgV8Zc/view?usp=sharing",
+"label": "crash",
+"cause_hint": "control",
+"mb": 29.1,
+"vehicle": "Plane",
+"got": "incident",
+"got_cause": "stall",
+"dur": 621,
+"created": "2026-05-07"
+},
+{
 "id": "143931",
 "title": "Oscillation after autotune of 6inch quadrotor",
 "url": "https://discuss.ardupilot.org/t/oscillation-after-autotune-of-6inch-quadrotor/143931",
@@ -2119,6 +2665,20 @@
 "got_cause": null,
 "dur": 197,
 "created": "2026-06-11"
+},
+{
+"id": "144420",
+"title": "Done flipped after switching from stabalize to ALT_HOLD",
+"url": "https://discuss.ardupilot.org/t/done-flipped-after-switching-from-stabalize-to-alt-hold/144420",
+"log_url": "https://discuss.ardupilot.org/uploads/short-url/x1aEWyzlJlvmeqlKHV5TTTO2s11.BIN",
+"label": "crash",
+"cause_hint": "power",
+"mb": 1.0,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "gps",
+"dur": 40,
+"created": "2026-07-02"
 },
 {
 "id": "144522",
@@ -2163,6 +2723,34 @@
 "created": "2026-07-31"
 },
 {
+"id": "145269",
+"title": "AutoTune unsuccessful",
+"url": "https://discuss.ardupilot.org/t/autotune-unsuccessful/145269",
+"log_url": "https://drive.google.com/file/d/1R0nYZxpznpI0CnW7OspnyPKSuAB-PgJ0/view?usp=sharing",
+"label": "normal",
+"cause_hint": null,
+"mb": 11.8,
+"vehicle": "Copter",
+"got": "normal",
+"got_cause": null,
+"dur": 425,
+"created": "2026-08-24"
+},
+{
+"id": "145291",
+"title": "AutoTune: Failed to level, please tune manually",
+"url": "https://discuss.ardupilot.org/t/autotune-failed-to-level-please-tune-manually/145291",
+"log_url": "https://drive.google.com/file/d/1fWGmu5HViAWt1t5GjCduEz3h6VlMRPgr/view?usp=sharing",
+"label": "normal",
+"cause_hint": null,
+"mb": 13.6,
+"vehicle": "Copter",
+"got": "normal",
+"got_cause": null,
+"dur": 276,
+"created": "2026-08-26"
+},
+{
 "id": "145362",
 "title": "SpeedyBee Bee35 Copter Tuning",
 "url": "https://discuss.ardupilot.org/t/speedybee-bee35-copter-tuning/145362",
@@ -2191,6 +2779,34 @@
 "created": "2026-09-19"
 },
 {
+"id": "145571",
+"title": "Oscillations and crash",
+"url": "https://discuss.ardupilot.org/t/oscillations-and-crash/145571",
+"log_url": "https://drive.google.com/file/d/1wsEXqsLYDkdFVf7HAPPdqBrTCEGEJtCD/view?usp=drive_link",
+"label": "crash",
+"cause_hint": null,
+"mb": 3.5,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 215,
+"created": "2026-09-21"
+},
+{
+"id": "145679",
+"title": "ArduCopter 4.7.1 7 inch build does not sit put in the air even after auto tuning",
+"url": "https://discuss.ardupilot.org/t/arducopter-4-7-1-7-inch-build-does-not-sit-put-in-the-air-even-after-auto-tuning/145679",
+"log_url": "https://drive.google.com/file/d/1dY2rTv2fPJWVIQrXvTBCY6jVrsAWhRMf/view?usp=drive_link",
+"label": "normal",
+"cause_hint": null,
+"mb": 7.3,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "unknown",
+"dur": 77,
+"created": "2026-10-02"
+},
+{
 "id": "145787",
 "title": "VTOL tiltrotor crash in QLOITER – sudden yaw spin, backward movement, and nose-down rotation",
 "url": "https://discuss.ardupilot.org/t/vtol-tiltrotor-crash-in-qloiter-sudden-yaw-spin-backward-movement-and-nose-down-rotation/145787",
@@ -2217,6 +2833,48 @@
 "got_cause": "power",
 "dur": 378,
 "created": "2026-10-20"
+},
+{
+"id": "145954",
+"title": "X500 Yaw instability during autotune, crash and takeoff issues",
+"url": "https://discuss.ardupilot.org/t/x500-yaw-instability-during-autotune-crash-and-takeoff-issues/145954",
+"log_url": "https://drive.google.com/file/d/14K-60BDE-8Imgu62owPZvgCqWT4wLnck/view?usp=drive_link",
+"label": "crash",
+"cause_hint": "control",
+"mb": 189.4,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 1213,
+"created": "2026-10-27"
+},
+{
+"id": "15027",
+"title": "Violent spinning on maiden flight w/ inverted crash (Loiter)",
+"url": "https://discuss.ardupilot.org/t/violent-spinning-on-maiden-flight-w-inverted-crash-loiter/15027",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/2X/6/6e8fbf2642d0fdb3d156f29b3c9b13413e6eef63.bin",
+"label": "crash",
+"cause_hint": "control",
+"mb": 0.6,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "control",
+"dur": 55,
+"created": "2017-02-18"
+},
+{
+"id": "15074",
+"title": "Copter nearly crashed",
+"url": "https://discuss.ardupilot.org/t/copter-nearly-crashed/15074",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/2X/3/3d07960bf322659467d953f17cf972beea6c2df8.bin",
+"label": "crash",
+"cause_hint": null,
+"mb": 3.5,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "ekf",
+"dur": 295,
+"created": "2017-02-20"
 },
 {
 "id": "15863",
@@ -2256,9 +2914,23 @@
 "mb": 1.4,
 "vehicle": "Copter",
 "got": "incident",
-"got_cause": "power",
+"got_cause": "control",
 "dur": 138,
 "created": "2017-04-16"
+},
+{
+"id": "16695",
+"title": "Octocopter Crash",
+"url": "https://discuss.ardupilot.org/t/octocopter-crash/16695",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/2X/f/f6052863eee82071037160d527aa7873027cb66b.bin",
+"label": "crash",
+"cause_hint": "motor",
+"mb": 1.4,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "control",
+"dur": 124,
+"created": "2017-04-19"
 },
 {
 "id": "16756",
@@ -2275,6 +2947,20 @@
 "created": "2017-04-21"
 },
 {
+"id": "16834",
+"title": "Hexacopter crash after EKF Check 2",
+"url": "https://discuss.ardupilot.org/t/hexacopter-crash-after-ekf-check-2/16834",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/2X/7/7a8ca13aa48bd612e867cd48e452dbfc149b137a.BIN",
+"label": "crash",
+"cause_hint": "gps",
+"mb": 1.2,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "ekf",
+"dur": 122,
+"created": "2017-04-24"
+},
+{
 "id": "17024",
 "title": "First Flight & some issues with X8. Need help analysing logs!",
 "url": "https://discuss.ardupilot.org/t/first-flight-some-issues-with-x8-need-help-analysing-logs/17024",
@@ -2284,9 +2970,23 @@
 "mb": 1.2,
 "vehicle": "Copter",
 "got": "incident",
-"got_cause": "power",
+"got_cause": "vibration",
 "dur": 642,
 "created": "2017-04-30"
+},
+{
+"id": "17053",
+"title": "Quadcopter crash at Loiter - magnetometer/accel/gyro or mechanical motor issue?",
+"url": "https://discuss.ardupilot.org/t/quadcopter-crash-at-loiter-magnetometer-accel-gyro-or-mechanical-motor-issue/17053",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/2X/9/98e627431aeaaed0aba1d44d920257bd8d7160a3.bin",
+"label": "crash",
+"cause_hint": "motor",
+"mb": 1.4,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 122,
+"created": "2017-05-01"
 },
 {
 "id": "17161",
@@ -2315,6 +3015,20 @@
 "got_cause": "power",
 "dur": 205737,
 "created": "2017-05-08"
+},
+{
+"id": "17420",
+"title": "Autotune will no longer work",
+"url": "https://discuss.ardupilot.org/t/autotune-will-no-longer-work/17420",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/2X/c/c28823af331344da4f0662f6e527bdfb720c1c70.bin",
+"label": "normal",
+"cause_hint": null,
+"mb": 1.3,
+"vehicle": "Copter",
+"got": "normal",
+"got_cause": null,
+"dur": 111,
+"created": "2017-05-12"
 },
 {
 "id": "17560",
@@ -2373,6 +3087,20 @@
 "created": "2017-06-09"
 },
 {
+"id": "18457",
+"title": "Autotune fails on Y6 3.5RC7",
+"url": "https://discuss.ardupilot.org/t/autotune-fails-on-y6-3-5rc7/18457",
+"log_url": "https://www.dropbox.com/s/8j6fo3c11e5v874/2017-06-15%2010-32-25.bin?dl=0",
+"label": "normal",
+"cause_hint": null,
+"mb": 7.4,
+"vehicle": "Copter",
+"got": "normal",
+"got_cause": null,
+"dur": 383,
+"created": "2017-06-15"
+},
+{
 "id": "18540",
 "title": "Testing RF Immunity - Crash Log - What fails?",
 "url": "https://discuss.ardupilot.org/t/testing-rf-immunity-crash-log-what-fails/18540",
@@ -2401,6 +3129,20 @@
 "created": "2017-07-07"
 },
 {
+"id": "19441",
+"title": "Autotune Copter 3.5",
+"url": "https://discuss.ardupilot.org/t/autotune-copter-3-5/19441",
+"log_url": "https://www.dropbox.com/s/vqrsm3e3dk93rr7/1.zip?dl=0",
+"label": "normal",
+"cause_hint": null,
+"mb": 11.2,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "unknown",
+"dur": 705,
+"created": "2017-07-24"
+},
+{
 "id": "19550",
 "title": "1.4 m quad Copter crashed without any error in log",
 "url": "https://discuss.ardupilot.org/t/1-4-m-quad-copter-crashed-without-any-error-in-log/19550",
@@ -2415,6 +3157,20 @@
 "created": "2017-07-28"
 },
 {
+"id": "19650",
+"title": "Major EK2 Fail and big crash",
+"url": "https://discuss.ardupilot.org/t/major-ek2-fail-and-big-crash/19650",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/2X/1/1ddc2051ccc5fd63ccf9aee6528a05afacc9e5d3.bin",
+"label": "crash",
+"cause_hint": "ekf",
+"mb": 0.4,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "control",
+"dur": 27,
+"created": "2017-08-01"
+},
+{
 "id": "20162",
 "title": "Hexa copter crash",
 "url": "https://discuss.ardupilot.org/t/hexa-copter-crash/20162",
@@ -2424,7 +3180,7 @@
 "mb": 1.0,
 "vehicle": "Copter",
 "got": "incident",
-"got_cause": "battery",
+"got_cause": "vibration",
 "dur": 109,
 "created": "2017-08-18"
 },
@@ -2452,7 +3208,7 @@
 "mb": 86.8,
 "vehicle": "Copter",
 "got": "incident",
-"got_cause": "power",
+"got_cause": "vibration",
 "dur": 654,
 "created": "2017-10-06"
 },
@@ -2469,6 +3225,34 @@
 "got_cause": "power",
 "dur": 201932,
 "created": "2017-10-08"
+},
+{
+"id": "22273",
+"title": "Nasty Crash - Quad Copter Fell of 10' hight into ground",
+"url": "https://discuss.ardupilot.org/t/nasty-crash-quad-copter-fell-of-10-hight-into-ground/22273",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/2X/9/94b9831fb34dab700b29b95f4f53595334d623c2.bin",
+"label": "crash",
+"cause_hint": "power",
+"mb": 0.6,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "unknown",
+"dur": 34,
+"created": "2017-10-19"
+},
+{
+"id": "22556",
+"title": "Throw mode : crash, motors spin too late",
+"url": "https://discuss.ardupilot.org/t/throw-mode-crash-motors-spin-too-late/22556",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/2X/f/f78bc505df54f3acf5364f8967e6edf248cf2c5d.bin",
+"label": "crash",
+"cause_hint": "pilot",
+"mb": 1.0,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 243,
+"created": "2017-10-27"
 },
 {
 "id": "23148",
@@ -2508,7 +3292,7 @@
 "mb": 0.5,
 "vehicle": "Copter",
 "got": "crash",
-"got_cause": "unknown",
+"got_cause": "control",
 "dur": 35,
 "created": "2018-01-24"
 },
@@ -2525,6 +3309,20 @@
 "got_cause": "vibration",
 "dur": 29,
 "created": "2018-02-18"
+},
+{
+"id": "26036",
+"title": "Copter crash in RTL mode",
+"url": "https://discuss.ardupilot.org/t/copter-crash-in-rtl-mode/26036",
+"log_url": "https://drive.google.com/open?id=1gFISXO2r049bcL9DMf1HV9sTvuZUkMO9",
+"label": "crash",
+"cause_hint": null,
+"mb": 1.1,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 112,
+"created": "2018-02-20"
 },
 {
 "id": "26675",
@@ -2553,6 +3351,48 @@
 "got_cause": "unknown",
 "dur": 93,
 "created": "2018-03-27"
+},
+{
+"id": "29310",
+"title": "Crash after Autotune: could someone please take a look at the logfile?",
+"url": "https://discuss.ardupilot.org/t/crash-after-autotune-could-someone-please-take-a-look-at-the-logfile/29310",
+"log_url": "https://www.dropbox.com/s/whj2r2el10a7jal/2018-05-20%2011-38-08.bin?dl=0",
+"label": "crash",
+"cause_hint": "motor",
+"mb": 3.0,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "motor",
+"dur": 219,
+"created": "2018-05-22"
+},
+{
+"id": "29778",
+"title": "Hexacopter CRASH investigation",
+"url": "https://discuss.ardupilot.org/t/hexacopter-crash-investigation/29778",
+"log_url": "https://www.dropbox.com/s/h2u2qaolqv55plt/2018-05-08%2014-35-05.zip?dl=0",
+"label": "crash",
+"cause_hint": "motor",
+"mb": 9.9,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 760,
+"created": "2018-06-07"
+},
+{
+"id": "30270",
+"title": "Maiden Ended In Crash; Wobble Then Drop",
+"url": "https://discuss.ardupilot.org/t/maiden-ended-in-crash-wobble-then-drop/30270",
+"log_url": "https://drive.google.com/file/d/1u0MBhvEieB32ySl-daJY8Un64Ny7YBdL/view?usp=sharing",
+"label": "crash",
+"cause_hint": "vibration",
+"mb": 2.7,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "vibration",
+"dur": 256,
+"created": "2018-06-24"
 },
 {
 "id": "30377",
@@ -2592,7 +3432,7 @@
 "mb": 0.8,
 "vehicle": "Copter",
 "got": "crash",
-"got_cause": "motor",
+"got_cause": "vibration",
 "dur": 60,
 "created": "2018-07-07"
 },
@@ -2625,6 +3465,20 @@
 "created": "2018-08-03"
 },
 {
+"id": "31770",
+"title": "An AutoTune Puzzle",
+"url": "https://discuss.ardupilot.org/t/an-autotune-puzzle/31770",
+"log_url": "https://drive.google.com/open?id=1ktWWEN6CQOG_83z4Kslil-JKlD1HdZum",
+"label": "crash",
+"cause_hint": null,
+"mb": 12.7,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 918,
+"created": "2018-08-09"
+},
+{
 "id": "32040",
 "title": "Inconsistent compass error leads to crash when internal compasses switched off",
 "url": "https://discuss.ardupilot.org/t/inconsistent-compass-error-leads-to-crash-when-internal-compasses-switched-off/32040",
@@ -2634,9 +3488,23 @@
 "mb": 0.5,
 "vehicle": "Copter",
 "got": "incident",
-"got_cause": "motor",
+"got_cause": "vibration",
 "dur": 32,
 "created": "2018-08-17"
+},
+{
+"id": "32284",
+"title": "Arducopter 3.5.7 Crash",
+"url": "https://discuss.ardupilot.org/t/arducopter-3-5-7-crash/32284",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/3X/1/a/1ae7090b24bca9fd866b5b8e609431ed95158764.bin",
+"label": "crash",
+"cause_hint": "motor",
+"mb": 0.7,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 51,
+"created": "2018-08-24"
 },
 {
 "id": "32542",
@@ -2667,6 +3535,34 @@
 "created": "2018-09-24"
 },
 {
+"id": "33507",
+"title": "Craziest / weirdest crash / runaway - What went wrong?",
+"url": "https://discuss.ardupilot.org/t/craziest-weirdest-crash-runaway-what-went-wrong/33507",
+"log_url": "https://www.dropbox.com/s/pcs2345rc03iohi/2018-09-28%2008-57-18-crash.bin?dl=0",
+"label": "crash",
+"cause_hint": "radio",
+"mb": 11.2,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "control",
+"dur": 835,
+"created": "2018-09-28"
+},
+{
+"id": "33955",
+"title": "Crash due to EKF primary changed after GPS glitch",
+"url": "https://discuss.ardupilot.org/t/crash-due-to-ekf-primary-changed-after-gps-glitch/33955",
+"log_url": "https://drive.google.com/file/d/1zMZ2Rg_OdI_9ZWav1eBH2hb2gcghaa6y/view?usp=sharing",
+"label": "crash",
+"cause_hint": "ekf",
+"mb": 8.6,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "gps",
+"dur": 260,
+"created": "2018-10-12"
+},
+{
 "id": "34453",
 "title": "Help with log analysis after maiden crash in Autotune",
 "url": "https://discuss.ardupilot.org/t/help-with-log-analysis-after-maiden-crash-in-autotune/34453",
@@ -2679,6 +3575,20 @@
 "got_cause": "control",
 "dur": 17,
 "created": "2018-10-27"
+},
+{
+"id": "34492",
+"title": "Skid Steer Rover moves backward in GUIDED mode. - FCU Crash: Going to hold",
+"url": "https://discuss.ardupilot.org/t/skid-steer-rover-moves-backward-in-guided-mode-fcu-crash-going-to-hold/34492",
+"log_url": "https://drive.google.com/file/d/1dBO57IrXxa97gjne5wO9rczyLGKu3YsE/view?usp=sharing",
+"label": "crash",
+"cause_hint": null,
+"mb": 0.5,
+"vehicle": "Rover",
+"got": "crash",
+"got_cause": "power",
+"dur": 10,
+"created": "2018-10-28"
 },
 {
 "id": "34498",
@@ -2737,6 +3647,20 @@
 "created": "2018-11-21"
 },
 {
+"id": "36162",
+"title": "Drone crashed during takeoff",
+"url": "https://discuss.ardupilot.org/t/drone-crashed-during-takeoff/36162",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/3X/f/1/f1e589146989d8b9c2aabe3d53aa0c2128b2446d.BIN",
+"label": "crash",
+"cause_hint": "vibration",
+"mb": 0.2,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 13,
+"created": "2018-12-10"
+},
+{
 "id": "37003",
 "title": "Log Crash Analysis Help",
 "url": "https://discuss.ardupilot.org/t/log-crash-analysis-help/37003",
@@ -2760,9 +3684,23 @@
 "mb": 0.9,
 "vehicle": "Copter",
 "got": "incident",
-"got_cause": "gps",
+"got_cause": "control",
 "dur": 175,
 "created": "2019-01-26"
+},
+{
+"id": "38764",
+"title": "Crash with 3.6.6 copter",
+"url": "https://discuss.ardupilot.org/t/crash-with-3-6-6-copter/38764",
+"log_url": "https://drive.google.com/open?id=1YjTPqBnQ9PbjvAFsJv9GmWWaEu7_7KWK",
+"label": "crash",
+"cause_hint": "ekf",
+"mb": 2.9,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 2018,
+"created": "2019-02-19"
 },
 {
 "id": "39146",
@@ -2791,6 +3729,34 @@
 "got_cause": "motor",
 "dur": 40,
 "created": "2019-03-04"
+},
+{
+"id": "39447",
+"title": "Altitude snapped from baro to GPS alt - tried to crash",
+"url": "https://discuss.ardupilot.org/t/altitude-snapped-from-baro-to-gps-alt-tried-to-crash/39447",
+"log_url": "https://drive.google.com/open?id=1AbhL_tddVeUCeKU4Gn9s7UU-C3xjUT4H",
+"label": "crash",
+"cause_hint": "gps",
+"mb": 7.3,
+"vehicle": "Plane",
+"got": "incident",
+"got_cause": "stall",
+"dur": 436,
+"created": "2019-03-07"
+},
+{
+"id": "39486",
+"title": "Terrible Crash - Strange Behavior in Copter 3.6.6",
+"url": "https://discuss.ardupilot.org/t/terrible-crash-strange-behavior-in-copter-3-6-6/39486",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/3X/a/1/a1f2d36b7bbc28b034968ef408a1b80cb55b02a0.BIN",
+"label": "crash",
+"cause_hint": "vibration",
+"mb": 0.3,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "vibration",
+"dur": 78,
+"created": "2019-03-08"
 },
 {
 "id": "39580",
@@ -2844,7 +3810,7 @@
 "mb": 1.0,
 "vehicle": "Copter",
 "got": "crash",
-"got_cause": "unknown",
+"got_cause": "control",
 "dur": 199,
 "created": "2019-03-28"
 },
@@ -2861,6 +3827,34 @@
 "got_cause": "motor",
 "dur": 35,
 "created": "2019-04-01"
+},
+{
+"id": "40649",
+"title": "Copter lost stability and crashed immediately after RTL was turned off and defaulted to LOITER (3.6.7)",
+"url": "https://discuss.ardupilot.org/t/copter-lost-stability-and-crashed-immediately-after-rtl-was-turned-off-and-defaulted-to-loiter-3-6-7/40649",
+"log_url": "https://drive.google.com/open?id=1ZO_KtUfBYak4_p8DM8xH9O3ID6fFCE8S",
+"label": "crash",
+"cause_hint": "motor",
+"mb": 7.8,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 586,
+"created": "2019-04-03"
+},
+{
+"id": "40664",
+"title": "From Stabilize to Loiter Super Simple copter crash",
+"url": "https://discuss.ardupilot.org/t/from-stabilize-to-loiter-super-simple-copter-crash/40664",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/3X/3/4/3489c36cce43401d8ee48a4b3c2e52ef3a39ec0e.bin",
+"label": "crash",
+"cause_hint": "control",
+"mb": 0.8,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 98,
+"created": "2019-04-04"
 },
 {
 "id": "41509",
@@ -2933,6 +3927,20 @@
 "created": "2019-05-18"
 },
 {
+"id": "42534",
+"title": "Omnibus F4 V3 loss of control and crash",
+"url": "https://discuss.ardupilot.org/t/omnibus-f4-v3-loss-of-control-and-crash/42534",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/3X/9/9/995427cfc95484a9546e8b14ba7010def377bc83.BIN",
+"label": "crash",
+"cause_hint": "radio",
+"mb": 0.3,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "motor",
+"dur": 42,
+"created": "2019-05-18"
+},
+{
 "id": "42843",
 "title": "Advice on log with crash on takeoff",
 "url": "https://discuss.ardupilot.org/t/advice-on-log-with-crash-on-takeoff/42843",
@@ -2945,6 +3953,20 @@
 "got_cause": "power",
 "dur": 1146,
 "created": "2019-05-25"
+},
+{
+"id": "42972",
+"title": "X8 flip-over during take-off",
+"url": "https://discuss.ardupilot.org/t/x8-flip-over-during-take-off/42972",
+"log_url": "https://drive.google.com/open?id=1cQ6VyiBUCsuD23i3rzEDTbJ1sWoCJdGY",
+"label": "crash",
+"cause_hint": null,
+"mb": 0.7,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "control",
+"dur": 170,
+"created": "2019-05-28"
 },
 {
 "id": "43318",
@@ -3003,6 +4025,20 @@
 "created": "2019-06-24"
 },
 {
+"id": "44792",
+"title": "Arducopter v 3.6.9 with pixhawk+m8n gps first flight crash after selecting mode RTL",
+"url": "https://discuss.ardupilot.org/t/arducopter-v-3-6-9-with-pixhawk-m8n-gps-first-flight-crash-after-selecting-mode-rtl/44792",
+"log_url": "https://drive.google.com/file/d/1h0zjnL3ZjEC29AZRD7Urv6m4CMUPO5aW/view?usp=drive_open",
+"label": "crash",
+"cause_hint": "vibration",
+"mb": 2.4,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "vibration",
+"dur": 204,
+"created": "2019-07-14"
+},
+{
 "id": "44903",
 "title": "Crashed Log Analysis",
 "url": "https://discuss.ardupilot.org/t/crashed-log-analysis/44903",
@@ -3045,6 +4081,48 @@
 "created": "2019-07-19"
 },
 {
+"id": "45923",
+"title": "Motor wobbling in stab-mode after autotune",
+"url": "https://discuss.ardupilot.org/t/motor-wobbling-in-stab-mode-after-autotune/45923",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/3X/b/3/b3e169d2f6e58808c803038db70604738e2a0f30.zip",
+"label": "normal",
+"cause_hint": null,
+"mb": 0.9,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "compass",
+"dur": 45,
+"created": "2019-08-12"
+},
+{
+"id": "46102",
+"title": "Need expert eyes - Unknown crash!",
+"url": "https://discuss.ardupilot.org/t/need-expert-eyes-unknown-crash/46102",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/3X/a/8/a83a3e3746f4d235a12b3a034984064c02a5247b.BIN",
+"label": "crash",
+"cause_hint": "power",
+"mb": 0.3,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 16,
+"created": "2019-08-16"
+},
+{
+"id": "46511",
+"title": "AutoTune not working at Copter 3.6.10",
+"url": "https://discuss.ardupilot.org/t/autotune-not-working-at-copter-3-6-10/46511",
+"log_url": "https://drive.google.com/open?id=1OnnibKE9ptLm5cYkfRT1GyEnmXvjcaeh",
+"label": "normal",
+"cause_hint": null,
+"mb": 5.1,
+"vehicle": "Copter",
+"got": "normal",
+"got_cause": null,
+"dur": 508,
+"created": "2019-08-27"
+},
+{
 "id": "46644",
 "title": "Copter crashed! Could you please help me?",
 "url": "https://discuss.ardupilot.org/t/copter-crashed-could-you-please-help-me/46644",
@@ -3059,6 +4137,20 @@
 "created": "2019-09-01"
 },
 {
+"id": "47139",
+"title": "Copter crashes without error code",
+"url": "https://discuss.ardupilot.org/t/copter-crashes-without-error-code/47139",
+"log_url": "https://drive.google.com/file/d/1fu-Rcg4B-ddmOe_AHKo-jYMqG_sf_iDr/view?usp=sharing",
+"label": "crash",
+"cause_hint": "power",
+"mb": 13.1,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "control",
+"dur": 1341,
+"created": "2019-09-15"
+},
+{
 "id": "47298",
 "title": "[solved]Help in Autotune crash - what went wrong",
 "url": "https://discuss.ardupilot.org/t/solved-help-in-autotune-crash-what-went-wrong/47298",
@@ -3071,6 +4163,20 @@
 "got_cause": "motor",
 "dur": 96,
 "created": "2019-09-19"
+},
+{
+"id": "47471",
+"title": "Unwanted yaw drift, caused crash, failed EKF velocity [ RESOLVED ]",
+"url": "https://discuss.ardupilot.org/t/unwanted-yaw-drift-caused-crash-failed-ekf-velocity-resolved/47471",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/3X/d/1/d1126ec2a1ec9800b899ec5350771c1e2de5ae98.bin",
+"label": "crash",
+"cause_hint": "vibration",
+"mb": 0.3,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "motor",
+"dur": 18,
+"created": "2019-09-24"
 },
 {
 "id": "48069",
@@ -3115,6 +4221,34 @@
 "created": "2019-12-04"
 },
 {
+"id": "50006",
+"title": "Alt_ Hold OCTA crashed, Am I right? I am not sure",
+"url": "https://discuss.ardupilot.org/t/alt-hold-octa-crashed-am-i-right-i-am-not-sure/50006",
+"log_url": "https://drive.google.com/open?id=1ixing8j4W8NrxBQCxw1AqZ8dmPRbna_Q",
+"label": "crash",
+"cause_hint": "motor",
+"mb": 32.4,
+"vehicle": "Copter",
+"got": "normal",
+"got_cause": null,
+"dur": 284,
+"created": "2019-12-09"
+},
+{
+"id": "50267",
+"title": "Crash with 4.0.0 RC3",
+"url": "https://discuss.ardupilot.org/t/crash-with-4-0-0-rc3/50267",
+"log_url": "https://discuss.ardupilot.org/uploads/short-url/wM4ncKgv0dW44ssiB9efBs97hgs.bin",
+"label": "crash",
+"cause_hint": "battery",
+"mb": 1.0,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "motor",
+"dur": 59,
+"created": "2019-12-17"
+},
+{
 "id": "50401",
 "title": "Pixhawk Crash magically",
 "url": "https://discuss.ardupilot.org/t/pixhawk-crash-magically/50401",
@@ -3127,6 +4261,34 @@
 "got_cause": "motor",
 "dur": 26,
 "created": "2019-12-22"
+},
+{
+"id": "50541",
+"title": "Autotune crash - twice!",
+"url": "https://discuss.ardupilot.org/t/autotune-crash-twice/50541",
+"log_url": "https://www.dropbox.com/s/cvytcvwxq9vf726/2019-12-28%2009-06-52.bin?dl=0",
+"label": "crash",
+"cause_hint": "power",
+"mb": 2.5,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 297,
+"created": "2019-12-29"
+},
+{
+"id": "50732",
+"title": "Tuning an ultra slow rover",
+"url": "https://discuss.ardupilot.org/t/tuning-an-ultra-slow-rover/50732",
+"log_url": "https://drive.google.com/file/d/16PyMyjZuhmap92pqHaLCiVQE_cmdcqjV/view?usp=sharing",
+"label": "normal",
+"cause_hint": null,
+"mb": 59.6,
+"vehicle": "Rover",
+"got": "incident",
+"got_cause": "power",
+"dur": 1523,
+"created": "2020-01-03"
 },
 {
 "id": "50812",
@@ -3143,6 +4305,20 @@
 "created": "2020-01-06"
 },
 {
+"id": "52164",
+"title": "Crashed on third flight without wind",
+"url": "https://discuss.ardupilot.org/t/crashed-on-third-flight-without-wind/52164",
+"log_url": "https://drive.google.com/open?id=1JY8dbXhQq_-D5D-BMB5Y15OSWZbKpBDl",
+"label": "crash",
+"cause_hint": "battery",
+"mb": 4.8,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 353,
+"created": "2020-02-10"
+},
+{
 "id": "52335",
 "title": "Compass variance errors and crash with Skywalker X8 Quadplane",
 "url": "https://discuss.ardupilot.org/t/compass-variance-errors-and-crash-with-skywalker-x8-quadplane/52335",
@@ -3155,6 +4331,62 @@
 "got_cause": "stall",
 "dur": 225,
 "created": "2020-02-14"
+},
+{
+"id": "53229",
+"title": "Octocopter on Pixhawk 2.4.8 loss of control then crash",
+"url": "https://discuss.ardupilot.org/t/octocopter-on-pixhawk-2-4-8-loss-of-control-then-crash/53229",
+"log_url": "https://drive.google.com/file/d/1GljA_JNd_6wFLIpOziRTqDHtIeTXqeKi/view?usp=sharing",
+"label": "crash",
+"cause_hint": "vibration",
+"mb": 2.8,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "control",
+"dur": 209,
+"created": "2020-03-05"
+},
+{
+"id": "53539",
+"title": "Crashed on maiden flight",
+"url": "https://discuss.ardupilot.org/t/crashed-on-maiden-flight/53539",
+"log_url": "https://drive.google.com/file/d/18U3IUbUaoBbOlhDQO42-x88xVA1YB8D5/view?usp=drive_open",
+"label": "crash",
+"cause_hint": null,
+"mb": 1.9,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "control",
+"dur": 198,
+"created": "2020-03-12"
+},
+{
+"id": "53585",
+"title": "Crash! Drone went up without control, passthrough FrSky telemetry bug?",
+"url": "https://discuss.ardupilot.org/t/crash-drone-went-up-without-control-passthrough-frsky-telemetry-bug/53585",
+"log_url": "https://discuss.ardupilot.org/uploads/short-url/fQcrjx7C52YoXg9ilv799DElX9Q.BIN",
+"label": "crash",
+"cause_hint": "ekf",
+"mb": 0.6,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 36,
+"created": "2020-03-13"
+},
+{
+"id": "54031",
+"title": "Need help in optimizing the hovering performance",
+"url": "https://discuss.ardupilot.org/t/need-help-in-optimizing-the-hovering-performance/54031",
+"log_url": "https://www.dropbox.com/s/90euovbn1ysuh6k/2020-03-25%2017-28-12.bin?dl=0",
+"label": "normal",
+"cause_hint": null,
+"mb": 7.5,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "unknown",
+"dur": 431,
+"created": "2020-03-26"
 },
 {
 "id": "54194",
@@ -3227,6 +4459,34 @@
 "created": "2020-04-12"
 },
 {
+"id": "5495",
+"title": "Hexa garage hover crash has me losing sleep",
+"url": "https://discuss.ardupilot.org/t/hexa-garage-hover-crash-has-me-losing-sleep/5495",
+"log_url": "https://www.dropbox.com/s/08fybrw8dr1omwj/53.BIN?dl=0",
+"label": "crash",
+"cause_hint": "radio",
+"mb": 0.6,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "power",
+"dur": 510506,
+"created": "2015-05-09"
+},
+{
+"id": "55094",
+"title": "Autotune didn't go well",
+"url": "https://discuss.ardupilot.org/t/autotune-didnt-go-well/55094",
+"log_url": "https://discuss.ardupilot.org/uploads/short-url/mB95rGRhNbINqhYQWohMnXzBQoB.bin",
+"label": "crash",
+"cause_hint": "power",
+"mb": 0.5,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "power",
+"dur": 23,
+"created": "2020-04-17"
+},
+{
 "id": "55193",
 "title": "Quad falls out of sky on yaw",
 "url": "https://discuss.ardupilot.org/t/quad-falls-out-of-sky-on-yaw/55193",
@@ -3297,6 +4557,20 @@
 "created": "2020-05-10"
 },
 {
+"id": "56316",
+"title": "Tuning Advice for 13\" quad",
+"url": "https://discuss.ardupilot.org/t/tuning-advice-for-13-quad/56316",
+"log_url": "https://drive.google.com/open?id=16QBupOckWSgrSzVlOvaoP_81bdy6oF7r",
+"label": "normal",
+"cause_hint": null,
+"mb": 5.5,
+"vehicle": "Copter",
+"got": "normal",
+"got_cause": null,
+"dur": 198,
+"created": "2020-05-14"
+},
+{
 "id": "56452",
 "title": "Hover instability (Althold)",
 "url": "https://discuss.ardupilot.org/t/hover-instability-althold/56452",
@@ -3309,6 +4583,48 @@
 "got_cause": null,
 "dur": 605,
 "created": "2020-05-17"
+},
+{
+"id": "56621",
+"title": "Crash, collision with tower",
+"url": "https://discuss.ardupilot.org/t/crash-collision-with-tower/56621",
+"log_url": "https://drive.google.com/file/d/10nmwRNfpQZwF91eT0OWBRgUAdqJakryU/view?usp=sharing",
+"label": "crash",
+"cause_hint": null,
+"mb": 3.5,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 266,
+"created": "2020-05-20"
+},
+{
+"id": "56806",
+"title": "OpenSolo 4.0.3 Crash",
+"url": "https://discuss.ardupilot.org/t/opensolo-4-0-3-crash/56806",
+"log_url": "https://drive.google.com/file/d/1bhYIn4gxsNxhYGLdEsILDJC-WxywbwRy/view?usp=sharing",
+"label": "crash",
+"cause_hint": "control",
+"mb": 7.1,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "control",
+"dur": 404,
+"created": "2020-05-23"
+},
+{
+"id": "56863",
+"title": "A problem about EKF variance and crash",
+"url": "https://discuss.ardupilot.org/t/a-problem-about-ekf-variance-and-crash/56863",
+"log_url": "https://drive.google.com/file/d/1nNki5GiGJ3-GJOMGMv4MQEwwnopZdgUQ/view?usp=sharing",
+"label": "crash",
+"cause_hint": "vibration",
+"mb": 1.5,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "vibration",
+"dur": 107,
+"created": "2020-05-25"
 },
 {
 "id": "56949",
@@ -3353,6 +4669,20 @@
 "created": "2020-05-29"
 },
 {
+"id": "57185",
+"title": "Hexa crash at maiden flight",
+"url": "https://discuss.ardupilot.org/t/hexa-crash-at-maiden-flight/57185",
+"log_url": "https://drive.google.com/file/d/1aHjPxsIvQKXXXNDesytiEEvSveePCkj0/view?usp=sharing",
+"label": "crash",
+"cause_hint": "power",
+"mb": 4.3,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "battery",
+"dur": 1636,
+"created": "2020-05-31"
+},
+{
 "id": "57299",
 "title": "Crash first flight: ardupilot 4.0 help!",
 "url": "https://discuss.ardupilot.org/t/crash-first-flight-ardupilot-4-0-help/57299",
@@ -3379,6 +4709,20 @@
 "got_cause": "power",
 "dur": 111,
 "created": "2020-06-04"
+},
+{
+"id": "57546",
+"title": "CRASH! during AUTOTUNE - with video",
+"url": "https://discuss.ardupilot.org/t/crash-during-autotune-with-video/57546",
+"log_url": "https://www.dropbox.com/s/hts34g3hog5srvp/log_2_2020-6-7-12-25-10.bin?dl=0",
+"label": "crash",
+"cause_hint": "motor",
+"mb": 10.5,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 480,
+"created": "2020-06-07"
 },
 {
 "id": "59240",
@@ -3409,6 +4753,62 @@
 "created": "2020-07-19"
 },
 {
+"id": "59957",
+"title": "How to force pitch AUTOTUNE?",
+"url": "https://discuss.ardupilot.org/t/how-to-force-pitch-autotune/59957",
+"log_url": "https://www.dropbox.com/s/7qn0q4uujexuo7k/2020-08-03%2009-55-12.bin?dl=0",
+"label": "normal",
+"cause_hint": null,
+"mb": 40.2,
+"vehicle": "Plane",
+"got": "incident",
+"got_cause": "stall",
+"dur": 1289,
+"created": "2020-08-03"
+},
+{
+"id": "60455",
+"title": "Large quad autotune crash",
+"url": "https://discuss.ardupilot.org/t/large-quad-autotune-crash/60455",
+"log_url": "https://drive.google.com/file/d/1ZjAVNNvtu_1bLFHqcge1Uq1NpnGf4MG2/view?usp=drivesdk",
+"label": "crash",
+"cause_hint": "control",
+"mb": 0.8,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 57,
+"created": "2020-08-16"
+},
+{
+"id": "60538",
+"title": "[RESOLVED] Land was not detected and crash detected",
+"url": "https://discuss.ardupilot.org/t/resolved-land-was-not-detected-and-crash-detected/60538",
+"log_url": "https://www.dropbox.com/s/eix1kuiea95bv5u/2020-08-18%2006-29-21.bin?dl=1",
+"label": "crash",
+"cause_hint": "vibration",
+"mb": 25.1,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 691,
+"created": "2020-08-18"
+},
+{
+"id": "60815",
+"title": "Copter Crash ALTHOLD",
+"url": "https://discuss.ardupilot.org/t/copter-crash-althold/60815",
+"log_url": "https://discuss.ardupilot.org/uploads/short-url/nXvTLdPIdPX5qTGHEma1Ap4asC5.BIN",
+"label": "crash",
+"cause_hint": "vibration",
+"mb": 0.9,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "vibration",
+"dur": 161,
+"created": "2020-08-24"
+},
+{
 "id": "61014",
 "title": "Confirmation that this crash was due to a failed motor",
 "url": "https://discuss.ardupilot.org/t/confirmation-that-this-crash-was-due-to-a-failed-motor/61014",
@@ -3421,6 +4821,20 @@
 "got_cause": "motor",
 "dur": 824,
 "created": "2020-08-28"
+},
+{
+"id": "61150",
+"title": "Crash - Death Spiral - Arduplane 4.0.1",
+"url": "https://discuss.ardupilot.org/t/crash-death-spiral-arduplane-4-0-1/61150",
+"log_url": "https://drive.google.com/file/d/1qPPf0GQJ6QjBfDwcbqjWJ1h1RgdNoUBt/view?usp=sharing",
+"label": "crash",
+"cause_hint": "stall",
+"mb": 66.4,
+"vehicle": "Plane",
+"got": "crash",
+"got_cause": "power",
+"dur": 2840,
+"created": "2020-08-31"
 },
 {
 "id": "61372",
@@ -3477,6 +4891,20 @@
 "got_cause": null,
 "dur": 47,
 "created": "2020-11-28"
+},
+{
+"id": "65445",
+"title": "Crash after land command with Arducopter",
+"url": "https://discuss.ardupilot.org/t/crash-after-land-command-with-arducopter/65445",
+"log_url": "https://discuss.ardupilot.org/uploads/short-url/soGlmQpnaTC3ZK3hmfb4NOYb0rX.bin",
+"label": "crash",
+"cause_hint": "control",
+"mb": 1.0,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "control",
+"dur": 70,
+"created": "2020-12-20"
 },
 {
 "id": "65725",
@@ -3563,6 +4991,48 @@
 "created": "2021-02-07"
 },
 {
+"id": "67656",
+"title": "Instant pitch backward in stabilizing mode leading to crash",
+"url": "https://discuss.ardupilot.org/t/instant-pitch-backward-in-stabilizing-mode-leading-to-crash/67656",
+"log_url": "https://drive.google.com/file/d/1nx6Yrc2tfOl1i__mRp0HZs4I88HKBbS_/view?usp=sharing",
+"label": "crash",
+"cause_hint": null,
+"mb": 4.3,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "control",
+"dur": 947,
+"created": "2021-02-16"
+},
+{
+"id": "67713",
+"title": "Unexpected crash after an autotune - loss of all control",
+"url": "https://discuss.ardupilot.org/t/unexpected-crash-after-an-autotune-loss-of-all-control/67713",
+"log_url": "https://discuss.ardupilot.org/uploads/short-url/lkrCMoUe7GedAS6baORtNcXsPt7.BIN",
+"label": "crash",
+"cause_hint": "control",
+"mb": 0.7,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "control",
+"dur": 100,
+"created": "2021-02-17"
+},
+{
+"id": "6812",
+"title": "RC IN channels ALL zeros -- followed by CRASH!",
+"url": "https://discuss.ardupilot.org/t/rc-in-channels-all-zeros-followed-by-crash/6812",
+"log_url": "https://www.dropbox.com/s/oxkfj1y8xvd8cci/2015-10-01%2013-14-50.zip?dl=0",
+"label": "crash",
+"cause_hint": null,
+"mb": 4.0,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "power",
+"dur": 411867,
+"created": "2015-10-04"
+},
+{
 "id": "68125",
 "title": "Plane crash during Auto TakeOff",
 "url": "https://discuss.ardupilot.org/t/plane-crash-during-auto-takeoff/68125",
@@ -3589,6 +5059,48 @@
 "got_cause": "compass",
 "dur": 811,
 "created": "2021-03-06"
+},
+{
+"id": "68820",
+"title": "Copter in AltHold mode unwanted engine spin-up and crash",
+"url": "https://discuss.ardupilot.org/t/copter-in-althold-mode-unwanted-engine-spin-up-and-crash/68820",
+"log_url": "https://discuss.ardupilot.org/uploads/short-url/9FrM0lqgM5YbgCGLej5TiNp8YI0.BIN",
+"label": "crash",
+"cause_hint": "ekf",
+"mb": 0.7,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "control",
+"dur": 92,
+"created": "2021-03-16"
+},
+{
+"id": "68887",
+"title": "Crash multirotor in land mission!",
+"url": "https://discuss.ardupilot.org/t/crash-multirotor-in-land-mission/68887",
+"log_url": "https://drive.google.com/file/d/1V7iYNw5Jp6PTqoU7Eo08lSAPl40r0aTy/view?usp=sharing",
+"label": "crash",
+"cause_hint": "vibration",
+"mb": 7.6,
+"vehicle": "Copter",
+"got": "normal",
+"got_cause": null,
+"dur": 649,
+"created": "2021-03-17"
+},
+{
+"id": "69210",
+"title": "Quad Flyaway - need analysis",
+"url": "https://discuss.ardupilot.org/t/quad-flyaway-need-analysis/69210",
+"log_url": "https://www.dropbox.com/s/1hgy17ycvf4d7pv/00000029.BIN?dl=0",
+"label": "crash",
+"cause_hint": "control",
+"mb": 1.5,
+"vehicle": "Copter",
+"got": "normal",
+"got_cause": null,
+"dur": 106,
+"created": "2021-03-24"
 },
 {
 "id": "69409",
@@ -3619,6 +5131,20 @@
 "created": "2021-04-07"
 },
 {
+"id": "6984",
+"title": "Crash - perfect, fast roll rotations to the ground on RTL",
+"url": "https://discuss.ardupilot.org/t/crash-perfect-fast-roll-rotations-to-the-ground-on-rtl/6984",
+"log_url": "https://www.dropbox.com/s/ck92reckfmbnuao/2015-10-24%2012-45-38.bin?dl=0",
+"label": "crash",
+"cause_hint": null,
+"mb": 0.4,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "power",
+"dur": 247,
+"created": "2015-10-26"
+},
+{
 "id": "69983",
 "title": "VTOL crash analysis!",
 "url": "https://discuss.ardupilot.org/t/vtol-crash-analysis/69983",
@@ -3647,6 +5173,20 @@
 "created": "2021-04-16"
 },
 {
+"id": "70240",
+"title": "Crash due to vibrations",
+"url": "https://discuss.ardupilot.org/t/crash-due-to-vibrations/70240",
+"log_url": "https://drive.google.com/file/d/1vSSpl9xrNum3LJjD3iHSIniyxHxLr4gh/view?usp=sharing",
+"label": "crash",
+"cause_hint": "vibration",
+"mb": 9.6,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "control",
+"dur": 566,
+"created": "2021-04-19"
+},
+{
 "id": "70698",
 "title": "4.1 beta autotune failsafe",
 "url": "https://discuss.ardupilot.org/t/4-1-beta-autotune-failsafe/70698",
@@ -3673,6 +5213,20 @@
 "got_cause": "gps",
 "dur": 451,
 "created": "2021-06-10"
+},
+{
+"id": "72521",
+"title": "Crash with Hexa - Pixhawk 4 - ArduCopter 4.0.3",
+"url": "https://discuss.ardupilot.org/t/crash-with-hexa-pixhawk-4-arducopter-4-0-3/72521",
+"log_url": "https://discuss.ardupilot.org/uploads/short-url/6oJd5bdwrbKraqfJI68yOyJct2y.bin",
+"label": "crash",
+"cause_hint": "motor",
+"mb": 0.9,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "vibration",
+"dur": 68,
+"created": "2021-06-15"
 },
 {
 "id": "72523",
@@ -3787,6 +5341,20 @@
 "created": "2021-08-29"
 },
 {
+"id": "7594",
+"title": "Loiter mode climb, drift and crash!",
+"url": "https://discuss.ardupilot.org/t/loiter-mode-climb-drift-and-crash/7594",
+"log_url": "https://www.dropbox.com/s/989sciu6lhluz61/Flight%20log.BIN?dl=0",
+"label": "crash",
+"cause_hint": null,
+"mb": 3.9,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "battery",
+"dur": 552,
+"created": "2016-02-04"
+},
+{
 "id": "76391",
 "title": "Drone crashed - sudden rise in YAW during flying and crash landed",
 "url": "https://discuss.ardupilot.org/t/drone-crashed-sudden-rise-in-yaw-during-flying-and-crash-landed/76391",
@@ -3871,6 +5439,20 @@
 "created": "2021-11-23"
 },
 {
+"id": "79351",
+"title": "Copter hard crash",
+"url": "https://discuss.ardupilot.org/t/copter-hard-crash/79351",
+"log_url": "https://discuss.ardupilot.org/uploads/short-url/fIXjwhHCkY8YEGghcjcysXn0gO2.bin",
+"label": "crash",
+"cause_hint": "motor",
+"mb": 0.3,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 14,
+"created": "2021-12-07"
+},
+{
 "id": "79396",
 "title": "Trex600 with Pixhawk4 mini and Arducopter 4.1.2 Tuning help",
 "url": "https://discuss.ardupilot.org/t/trex600-with-pixhawk4-mini-and-arducopter-4-1-2-tuning-help/79396",
@@ -3925,6 +5507,20 @@
 "got_cause": null,
 "dur": 74,
 "created": "2022-01-27"
+},
+{
+"id": "81234",
+"title": "Flyaway (indoor !) need help to analyze log",
+"url": "https://discuss.ardupilot.org/t/flyaway-indoor-need-help-to-analyze-log/81234",
+"log_url": "https://discuss.ardupilot.org/uploads/short-url/oXWBcw9ykb3AQ3Mi5kXKXOASCVY.zip",
+"label": "crash",
+"cause_hint": "ekf",
+"mb": 1.2,
+"vehicle": "Copter",
+"got": "normal",
+"got_cause": null,
+"dur": 51,
+"created": "2022-01-28"
 },
 {
 "id": "81354",
@@ -3997,6 +5593,20 @@
 "created": "2022-03-13"
 },
 {
+"id": "83084",
+"title": "Geofence breach RTL after landing = crash",
+"url": "https://discuss.ardupilot.org/t/geofence-breach-rtl-after-landing-crash/83084",
+"log_url": "https://www.dropbox.com/s/uo6ux4i2tydjfsb/log_91_2022-3-16-18-16-34%20fence%20crash.bin?dl=0",
+"label": "crash",
+"cause_hint": "pilot",
+"mb": 12.6,
+"vehicle": "Plane",
+"got": "incident",
+"got_cause": "control",
+"dur": 332,
+"created": "2022-03-17"
+},
+{
 "id": "83297",
 "title": "Crash with 4.2.0-beta and 4.3.0-daily (bdshot)",
 "url": "https://discuss.ardupilot.org/t/crash-with-4-2-0-beta-and-4-3-0-daily-bdshot/83297",
@@ -4039,6 +5649,20 @@
 "created": "2022-03-31"
 },
 {
+"id": "83731",
+"title": "Large change in mag_field, Copter crashes",
+"url": "https://discuss.ardupilot.org/t/large-change-in-mag-field-copter-crashes/83731",
+"log_url": "https://discuss.ardupilot.org/uploads/short-url/xo00efrkxRNwC3p0j7Lk14AbuzL.BIN",
+"label": "crash",
+"cause_hint": "compass",
+"mb": 0.7,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "motor",
+"dur": 101,
+"created": "2022-04-03"
+},
+{
 "id": "84217",
 "title": "Need help in finding the cause of a crash",
 "url": "https://discuss.ardupilot.org/t/need-help-in-finding-the-cause-of-a-crash/84217",
@@ -4051,6 +5675,48 @@
 "got_cause": "motor",
 "dur": 25,
 "created": "2022-04-13"
+},
+{
+"id": "84274",
+"title": "Why did my drone crash? please help in finding out",
+"url": "https://discuss.ardupilot.org/t/why-did-my-drone-crash-please-help-in-finding-out/84274",
+"log_url": "https://drive.google.com/file/d/1tAactx-y33xPRvdiXTcQqn6nU1z-nErC/view?usp=sharing",
+"label": "crash",
+"cause_hint": "control",
+"mb": 9.6,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "control",
+"dur": 452,
+"created": "2022-04-15"
+},
+{
+"id": "84460",
+"title": "Erratic altitude in a downtown flight resulting in minor crash",
+"url": "https://discuss.ardupilot.org/t/erratic-altitude-in-a-downtown-flight-resulting-in-minor-crash/84460",
+"log_url": "https://www.dropbox.com/s/tye7qt1hyufvqp2/00000077.BIN?dl=1",
+"label": "crash",
+"cause_hint": "gps",
+"mb": 7.4,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "gps",
+"dur": 1604,
+"created": "2022-04-20"
+},
+{
+"id": "85068",
+"title": "Twitching when hovering and hot motors after flight",
+"url": "https://discuss.ardupilot.org/t/twitching-when-hovering-and-hot-motors-after-flight/85068",
+"log_url": "https://drive.google.com/file/d/1EjkwwDj5Ec1YAuXH0t4NwCUCbHmAC-g4/view?usp=sharing",
+"label": "normal",
+"cause_hint": null,
+"mb": 2.9,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "motor",
+"dur": 214,
+"created": "2022-05-06"
 },
 {
 "id": "85103",
@@ -4109,6 +5775,20 @@
 "created": "2022-06-22"
 },
 {
+"id": "87523",
+"title": "Big Hexacopter Crash after take off",
+"url": "https://discuss.ardupilot.org/t/big-hexacopter-crash-after-take-off/87523",
+"log_url": "https://discuss.ardupilot.org/uploads/short-url/kzsKxsD4fBX8iL1RZv6vVp0C81v.BIN",
+"label": "crash",
+"cause_hint": "control",
+"mb": 0.8,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "vibration",
+"dur": 34,
+"created": "2022-06-30"
+},
+{
 "id": "88204",
 "title": "FBWI Mode Takeoff Crashed due to Full Pitch [LOG UPLOADED]",
 "url": "https://discuss.ardupilot.org/t/fbwi-mode-takeoff-crashed-due-to-full-pitch-log-uploaded/88204",
@@ -4151,6 +5831,20 @@
 "created": "2022-07-29"
 },
 {
+"id": "89417",
+"title": "Crash at takeoff investigation help",
+"url": "https://discuss.ardupilot.org/t/crash-at-takeoff-investigation-help/89417",
+"log_url": "https://discuss.ardupilot.org/uploads/short-url/r28KG2wcDFwZdgGjewUeXljHOJS.BIN",
+"label": "crash",
+"cause_hint": "motor",
+"mb": 0.2,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "vibration",
+"dur": 16,
+"created": "2022-08-10"
+},
+{
 "id": "89501",
 "title": "Low throttle hover, MAG issues, and DSHOT600",
 "url": "https://discuss.ardupilot.org/t/low-throttle-hover-mag-issues-and-dshot600/89501",
@@ -4163,6 +5857,20 @@
 "got_cause": null,
 "dur": 249,
 "created": "2022-08-12"
+},
+{
+"id": "89643",
+"title": "Xuav Talon Crash",
+"url": "https://discuss.ardupilot.org/t/xuav-talon-crash/89643",
+"log_url": "https://drive.google.com/file/d/1eACN2EMMKNK1haRcvu0cP-mIcthP9JWn/view?usp=sharing",
+"label": "crash",
+"cause_hint": "stall",
+"mb": 20.0,
+"vehicle": "Plane",
+"got": "crash",
+"got_cause": "control",
+"dur": 1082,
+"created": "2022-08-16"
 },
 {
 "id": "89816",
@@ -4179,6 +5887,34 @@
 "created": "2022-08-19"
 },
 {
+"id": "9001",
+"title": "X8 Fly Away... Looking for help analyzing log",
+"url": "https://discuss.ardupilot.org/t/x8-fly-away-looking-for-help-analyzing-log/9001",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/2X/7/7c36f55e6569d7942ff9b6f961a6d8fba6a8d60e.bin",
+"label": "crash",
+"cause_hint": "vibration",
+"mb": 0.4,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "power",
+"dur": 39,
+"created": "2016-05-12"
+},
+{
+"id": "90145",
+"title": "Crash 16.5kg AUW VTOL",
+"url": "https://discuss.ardupilot.org/t/crash-16-5kg-auw-vtol/90145",
+"log_url": "https://drive.google.com/file/d/1jXNP6AiYlkl33OlMcNNVHCzsts7BeguE/view?usp=sharing",
+"label": "crash",
+"cause_hint": "motor",
+"mb": 67.2,
+"vehicle": "Plane",
+"got": "incident",
+"got_cause": "control",
+"dur": 560,
+"created": "2022-08-28"
+},
+{
 "id": "90207",
 "title": "Help needed to understand crash log please",
 "url": "https://discuss.ardupilot.org/t/help-needed-to-understand-crash-log-please/90207",
@@ -4188,9 +5924,23 @@
 "mb": 1.7,
 "vehicle": "Copter",
 "got": "crash",
-"got_cause": "motor",
+"got_cause": "vibration",
 "dur": 138,
 "created": "2022-08-29"
+},
+{
+"id": "90253",
+"title": "Hexacopter Crash during takeoff Loiter MODE",
+"url": "https://discuss.ardupilot.org/t/hexacopter-crash-during-takeoff-loiter-mode/90253",
+"log_url": "https://discuss.ardupilot.org/uploads/short-url/t922czb0Rx2oBbmVNnu5D2RCnzr.BIN",
+"label": "crash",
+"cause_hint": "control",
+"mb": 1.0,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 33,
+"created": "2022-08-30"
 },
 {
 "id": "90287",
@@ -4205,6 +5955,34 @@
 "got_cause": "control",
 "dur": 1377,
 "created": "2022-08-31"
+},
+{
+"id": "90547",
+"title": "[Crash] Compass problem",
+"url": "https://discuss.ardupilot.org/t/crash-compass-problem/90547",
+"log_url": "https://discuss.ardupilot.org/uploads/short-url/tATIeS7PyFfZRcNZzaTM2OohzPi.BIN",
+"label": "crash",
+"cause_hint": "control",
+"mb": 0.8,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "vibration",
+"dur": 95,
+"created": "2022-09-07"
+},
+{
+"id": "90772",
+"title": "Manual Tuning Help for Large Quadcopter: Why does it overshoot?",
+"url": "https://discuss.ardupilot.org/t/manual-tuning-help-for-large-quadcopter-why-does-it-overshoot/90772",
+"log_url": "https://drive.google.com/file/d/1XVGSMxpRBg19AlN-idTzeNGHQRkVrPPX/view?usp=sharing",
+"label": "normal",
+"cause_hint": null,
+"mb": 16.6,
+"vehicle": "Copter",
+"got": "normal",
+"got_cause": null,
+"dur": 725,
+"created": "2022-09-13"
 },
 {
 "id": "90984",
@@ -4263,6 +6041,34 @@
 "created": "2022-09-29"
 },
 {
+"id": "91618",
+"title": "Crash after simple tuning changes",
+"url": "https://discuss.ardupilot.org/t/crash-after-simple-tuning-changes/91618",
+"log_url": "https://www.dropbox.com/s/8zdbimkfr76qo7g/2022-10-06%2012-45-14.bin?dl=0",
+"label": "crash",
+"cause_hint": "control",
+"mb": 6.4,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 1446,
+"created": "2022-10-06"
+},
+{
+"id": "91915",
+"title": "Failed autotune Rate P and D",
+"url": "https://discuss.ardupilot.org/t/failed-autotune-rate-p-and-d/91915",
+"log_url": "https://drive.google.com/file/d/1AVRYkZhjCK8cQGa4OESuDKY6XqT4p9c0/view?usp=sharing",
+"label": "normal",
+"cause_hint": null,
+"mb": 27.5,
+"vehicle": "Copter",
+"got": "normal",
+"got_cause": null,
+"dur": 153,
+"created": "2022-10-14"
+},
+{
 "id": "92394",
 "title": "\"EKF Lane Switch 1\" and then drone crashes",
 "url": "https://discuss.ardupilot.org/t/ekf-lane-switch-1-and-then-drone-crashes/92394",
@@ -4319,6 +6125,20 @@
 "created": "2022-11-20"
 },
 {
+"id": "94020",
+"title": "Requesting feedback on tune of a 6 kg T-motor M1000 UAV",
+"url": "https://discuss.ardupilot.org/t/requesting-feedback-on-tune-of-a-6-kg-t-motor-m1000-uav/94020",
+"log_url": "https://drive.google.com/file/d/16YOCH2lSafO7Q4ekKKHij-JQmr1EieVL/view?usp=sharing",
+"label": "normal",
+"cause_hint": null,
+"mb": 65.0,
+"vehicle": "Copter",
+"got": "normal",
+"got_cause": null,
+"dur": 1123,
+"created": "2022-12-08"
+},
+{
 "id": "94084",
 "title": "In-Flight Crash Investigation",
 "url": "https://discuss.ardupilot.org/t/in-flight-crash-investigation/94084",
@@ -4345,6 +6165,20 @@
 "got_cause": null,
 "dur": 213,
 "created": "2022-12-20"
+},
+{
+"id": "94936",
+"title": "Crash Motor test help please",
+"url": "https://discuss.ardupilot.org/t/crash-motor-test-help-please/94936",
+"log_url": "https://drive.google.com/file/d/19nOD_lO8lDsxerSYRCVP61_CqRofbIwy/view?usp=sharing",
+"label": "crash",
+"cause_hint": "power",
+"mb": 2.9,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "control",
+"dur": 184,
+"created": "2022-12-31"
 },
 {
 "id": "95098",
@@ -4473,6 +6307,20 @@
 "created": "2023-03-09"
 },
 {
+"id": "9801",
+"title": "APM mid flight crash",
+"url": "https://discuss.ardupilot.org/t/apm-mid-flight-crash/9801",
+"log_url": "https://discuss.ardupilot.org/uploads/default/original/2X/0/038bdd9017df4bf6cab05496f96e769ae1ea92cd.bin",
+"label": "crash",
+"cause_hint": null,
+"mb": 0.2,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "power",
+"dur": 379486,
+"created": "2016-06-21"
+},
+{
 "id": "98578",
 "title": "Filtering Vibration to Get a Better Tune",
 "url": "https://discuss.ardupilot.org/t/filtering-vibration-to-get-a-better-tune/98578",
@@ -4529,6 +6377,34 @@
 "created": "2023-03-27"
 },
 {
+"id": "98940",
+"title": "Drone with Custom made Cage went flying until it crashed",
+"url": "https://discuss.ardupilot.org/t/drone-with-custom-made-cage-went-flying-until-it-crashed/98940",
+"log_url": "https://drive.google.com/file/d/1wjWAI4ii_bqtqzhPf52d3doPxMy76UpO/view?usp=share_link",
+"label": "crash",
+"cause_hint": null,
+"mb": 6.7,
+"vehicle": "Copter",
+"got": "crash",
+"got_cause": "motor",
+"dur": 303,
+"created": "2023-03-30"
+},
+{
+"id": "99121",
+"title": "First Flight Analysis",
+"url": "https://discuss.ardupilot.org/t/first-flight-analysis/99121",
+"log_url": "https://discuss.ardupilot.org/uploads/short-url/ocj6CljanJEeUpGloKWIi0NmTpM.bin",
+"label": "normal",
+"cause_hint": null,
+"mb": 0.8,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "motor",
+"dur": 32,
+"created": "2023-04-03"
+},
+{
 "id": "99685",
 "title": "Oscillations in poshold and land mode after a successful autotune",
 "url": "https://discuss.ardupilot.org/t/oscillations-in-poshold-and-land-mode-after-a-successful-autotune/99685",
@@ -4543,6 +6419,20 @@
 "created": "2023-04-16"
 },
 {
+"id": "9984",
+"title": "Pixhawk Crash complete shut down",
+"url": "https://discuss.ardupilot.org/t/pixhawk-crash-complete-shut-down/9984",
+"log_url": "https://www.dropbox.com/s/gk62h2r28rpypyp/16-06-28_13-52-16.bin?dl=0",
+"label": "crash",
+"cause_hint": "battery",
+"mb": 4.9,
+"vehicle": "Copter",
+"got": "incident",
+"got_cause": "power",
+"dur": 455,
+"created": "2016-06-29"
+},
+{
 "id": "99897",
 "title": "Quadcopter Crash Log Analysis Request",
 "url": "https://discuss.ardupilot.org/t/quadcopter-crash-log-analysis-request/99897",
@@ -4555,6 +6445,20 @@
 "got_cause": "motor",
 "dur": 20,
 "created": "2023-04-20"
+},
+{
+"id": "99924",
+"title": "Fighter VTOL crash while landing - possible reasons",
+"url": "https://discuss.ardupilot.org/t/fighter-vtol-crash-while-landing-possible-reasons/99924",
+"log_url": "https://drive.google.com/file/d/1WxoeicLTzmbK4Q-6mN0i69NnEURl2Gpi/view?usp=sharing",
+"label": "crash",
+"cause_hint": "motor",
+"mb": 43.5,
+"vehicle": "Plane",
+"got": "crash",
+"got_cause": "motor",
+"dur": 1220,
+"created": "2023-04-21"
 },
 {
 "id": "99978",

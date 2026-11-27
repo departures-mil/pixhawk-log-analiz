@@ -35,6 +35,7 @@ TOPICS = {
     'charts': ('Grafik yorumlama (görselli)', 'Chart interpretation (with images)', 'تفسير الرسوم البيانية (مع صور)'),
     'library': ('Log mesajları ve alanlar', 'Log messages and fields', 'رسائل السجل وحقولها'),
     'params': ('Kritik parametreler', 'Critical parameters', 'المعاملات الحرجة'),
+    'experts': ('Uzman tecrübeleri (gerçek kırımlar)', 'Expert experience (real crashes)', 'خبرة الخبراء (حوادث حقيقية)'),
 }
 LEVELS = {1: ('Temel', 'Basic', 'أساسي'), 2: ('Orta', 'Intermediate', 'متوسط'), 3: ('İleri', 'Advanced', 'متقدم')}
 ORIGINS = {'builtin': ('Hazır (öğretici)', 'Built-in (tutorial)', 'جاهز (تعليمي)'), 'auto': ('Kütüphaneden', 'From library', 'من المكتبة'),
@@ -167,9 +168,37 @@ def _visual():
     return out
 
 
+_EQ = {
+    'look': ('{t}: uzmanlara göre logda önce nereye bakılır?', '{t}: according to the experts, where do you look in the log first?',
+             '{t}: حسب الخبراء، أين تنظر في السجل أولاً؟'),
+    'fix': ('{t}: uzmanlara göre ne yapılmalı?', '{t}: according to the experts, what should be done?', '{t}: حسب الخبراء، ماذا يجب أن تفعل؟'),
+    'rule': ('Gerçek kırım konularında uzmanların verdiği şu öğüt hangi konuya aittir? "{d}"',
+             'Which topic does this advice from experts in real crash threads belong to? "{d}"',
+             'إلى أي موضوع تنتمي هذه النصيحة من الخبراء في مواضيع الحوادث الحقيقية؟ "{d}"'),
+}
+
+
+def _expert():
+    """Uzman tecrübelerinden (core/expert.py) üretilen sorular: logda nereye bakılır, ne yapılır, öğüt hangi konuya ait."""
+    from . import expert as EX
+    keys = sorted(EX.L); out = []
+    for k in keys:
+        L_ = EX.L[k]
+        for kind, lvl in (('look', 2), ('fix', 2), ('rule', 3)):
+            r = random.Random('ex' + kind + k)
+            oth = r.sample([x for x in keys if x != k and EX.L[x]['cause'] != L_['cause']], 3)
+            fld = 'title' if kind == 'rule' else kind
+            q = {lg: _EQ[kind][i].format(t=L_['title'][i], d=_cut(L_['fix'][i], 200)) for i, lg in enumerate(LANGS)}
+            out.append({'id': f'X-{kind}-{k}', 'topic': 'experts', 'level': lvl, 'src': 'discuss.ardupilot.org', 'origin': 'builtin',
+                        'q': q, 'opts': [tri(EX.L[x][fld]) for x in [k] + oth], 'ans': 0,
+                        'exp': tri(tuple(f'{L_["title"][i]}: {L_["rule"][i]}' for i in range(3))),
+                        'wexp': [None] + [tri(tuple(f'{EX.L[x]["title"][i]}: {_cut(EX.L[x]["rule"][i], 220)}' for i in range(3))) for x in oth]})
+    return out
+
+
 def builtin():
     if 'b' not in _CACHE:
-        _CACHE['b'] = _handwritten() + _visual() + _auto()
+        _CACHE['b'] = _handwritten() + _visual() + _expert() + _auto()
     return _CACHE['b']
 
 

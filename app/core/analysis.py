@@ -91,6 +91,7 @@ class Analysis(ExtMixin):
         self._overall()
         self._crash()
         self._root_cause()
+        self._refine_severity()
         self._params()
         self._facts()
         self.facts.update({('phys_' + k): v for k, v in (getattr(self, 'physics', None) or {}).items()})
@@ -739,6 +740,15 @@ class Analysis(ExtMixin):
         except Exception:
             pass
 
+    def _refine_severity(self):
+        """Kırım kanıtı olmayan, kök nedeni belirsiz (ya da yalnız pusula/batarya uyarısı) 'ciddi' olay → küçük uyarı.
+        Ölçüm: uzman etiketli 453 gerçek logda bu grupta normal uçuşlar kırımlardan ~4 kat fazla (v1.1.12)."""
+        v = self.verdict
+        if v.get('kind') != 'incident' or v.get('severity') != 'serious' or self.info.get('crashed') in ('yes', 'hard'): return
+        ev = {e.get('k') for e in v.get('evidence', [])} - {'cr_landed'}
+        if not ev and (self.root or {}).get('cause') in ('unknown', 'compass', 'battery', None):
+            v['severity'] = 'minor'; v['refined'] = True
+
     # ----------------------------------------------------------- kök neden
     def _root_cause(self):
         L = self.L; P = L.params
@@ -877,8 +887,27 @@ class Analysis(ExtMixin):
                 tm = min(tm, self.flip[0]) if tm is not None else self.flip[0]
             if tm is not None:
                 cands.append(('motor', tm))
+        # Pilot/kullanım hatası (uzman tecrübesi, v1.1.12): havada elle gaz modlarına (Stabilize/Acro) gaz kolu aşağıdayken
+        # geçiş = "Rapid Return To Earth"; araç pilotun verdiği düşük gazla düşer. Arıza değil, kullanım hatası.
+        self.pilot_err = None
+        if self.vehicle == 'Copter':
+            c_ = L.s('CTUN')
+            if c_.has('ThI'):
+                for t_, num, _, rsn in L.modes:
+                    if not (max(win0, end - 60) <= t_ <= end - 1) or int(num) not in (0, 1): continue
+                    w_ = (c_['t'] >= t_ + 0.2) & (c_['t'] <= t_ + 1.5)
+                    if w_.sum() < 2 or not self.in_flight(np.array([t_]))[0]: continue
+                    alt_ = float(np.interp(t_, self.track['t'], self.track['rel'])) if self.track is not None else 99.0
+                    w3 = (c_['t'] >= t_) & (c_['t'] <= t_ + 3)
+                    alt2 = float(np.interp(min(t_ + 8, end), self.track['t'], self.track['rel'])) if self.track is not None else alt_
+                    if float(np.nanmedian(c_['ThI'][w_])) < 0.2 and float(np.nanmedian(c_['ThI'][w3])) < 0.25 and alt_ > 2 and alt_ - alt2 > 2:
+                        self.pilot_err = {'t': float(t_), 'mode': K.mode_name(self.vehicle, num), 'thr': round(float(np.nanmedian(c_['ThI'][w_])), 2),
+                                          'alt': round(alt_, 1)}
+                        cands.append(('pilot', float(t_))); break
         if not cands and getattr(self, 'yaw_loss', None) is not None:
             cands.append(('motor', self.yaw_loss))     # başka belirti yokken yön kaybı: çoğunlukla motor/ESC itki kaybı
+        if not cands and (self.profile in ('copter', 'heli') or self.vehicle == 'Copter') and self._poor_tune(end):
+            cands.append(('control', self.flights[-1][0] if self.flights else end))
         if not cands:
             self.root = {'cause': 'unknown', 'chain': [], 'prevent': 'unknown', 't': end}; return
         cands = [c for c in cands if c[1] <= end + 2]       # kırımdan sonraki uyarılar neden olamaz
@@ -899,6 +928,21 @@ class Analysis(ExtMixin):
             if tm is not None and tm >= end - 20 and (primary[0] in ('control', 'compass') or
                                                      (primary[0] == 'vibration' and primary[1] < end - 30)):
                 primary = ('motor', tm)   # tutum/yön hatası, kırımdan hemen önceki motor doygunluğunun sonucu
+        # Uzman tecrübesi (gerçek forum vakaları, v1.1.12):
+        # - gaz aşağıda elle moda geçiş, sonrasındaki her şeyin (düşüş, motor tabanı) başlangıcıdır
+        #   (ana neden yalnız zincirde ilk sıradaysa; değilse ikincil bulgu olarak gösterilir)
+        # - uçuş boyunca süren yüksek titreşim: "önce titreşimi düzeltin" — motor doygunluğu/EKF/GPS bunun sonucu sayılır
+        vz_all = self._vibe_p95(end)
+        if (self.vehicle == 'Copter' and self.profile != 'vtol') and vz_all is not None and vz_all >= 45 and primary[0] not in ('vibration', 'pilot'):
+            tv = next((c[1] for c in cands if c[0] == 'vibration'), primary[1])
+            if not any(c[0] == 'vibration' for c in cands): cands.append(('vibration', tv))
+            primary = ('vibration', tv)
+        # - uçuş başından beri kötü ayar (motor çıkışları sık sık tabana iniyor ya da tutum hatası büyük): sorun anlık arıza değil ayar
+        if (self.profile in ('copter', 'heli') or self.vehicle == 'Copter') and primary[0] in ('compass', 'gps', 'power'):
+            pt = self._poor_tune(end)
+            if pt:
+                if not any(c[0] == 'control' for c in cands): cands.append(('control', primary[1]))
+                primary = ('control', next(c[1] for c in cands if c[0] == 'control'))
         chain = []
         for name, t in cands:
             chain.append({'t': t, 'step': name})
@@ -914,6 +958,34 @@ class Analysis(ExtMixin):
             mf = None
         self.root = {'cause': primary[0], 't': primary[1], 'chain': chain, 'prevent': primary[0], 'motor': mf,
                      'others': [c[0] for c in cands if c[0] != primary[0]]}
+
+    def _vibe_p95(self, end):
+        """Uçuş boyunca (son 3 s hariç) en kötü eksen titreşiminin %95'liği (m/s²) ya da None."""
+        v = self.L.s('VIBE')
+        if not v.has('VibeZ'): return None
+        w = (v['t'] <= end - 3) & self.in_flight(v['t'])
+        if w.sum() < 10: return None
+        m = np.maximum(v['VibeZ'][w], v['VibeX'][w])
+        return float(np.nanpercentile(m, 95))
+
+    def _poor_tune(self, end):
+        """Son uçuşun başından kırımdan 10 s öncesine kadar: motorlardan biri zamanın %30'undan fazlasında tabanda ya da
+        tutum hatası (istenen–gerçek, RMS) 8°'den büyük → {'flo', 'aerr'} ya da None."""
+        if not self.flights: return None
+        t0 = self.flights[-1][0] + 5; out = {}
+        o = self.L.s('RCOU'); ch = [c for _, c in self.motor_channels()]
+        if len(ch) >= 3 and o.has(ch[0]):
+            w = (o['t'] >= t0) & (o['t'] <= end - 10)
+            if w.sum() > 50:
+                mx, mn = self._mot_limits(); M = np.vstack([o[c][w] for c in ch]).astype(float)
+                out['flo'] = float((M <= mn + 0.05 * (mx - mn)).any(axis=0).mean())
+        a = self.L.s('ATT')
+        if a.has('DesRoll'):
+            w = (a['t'] >= t0) & (a['t'] <= end - 10)
+            if w.sum() > 20:
+                e = a['DesRoll'][w] - a['Roll'][w]; e2 = a['DesPitch'][w] - a['Pitch'][w]
+                out['aerr'] = float(np.sqrt(np.mean(e ** 2 + e2 ** 2)))
+        return out if (out.get('flo', 0) > 0.3 or out.get('aerr', 0) > 8) else None
 
     def motor_channels(self):
         """[(motor_no, 'Cn')]: hangi RCOU kanalının hangi motor olduğu (SERVOn_FUNCTION 33–40 = motor 1–8, 82–85 = 9–12).

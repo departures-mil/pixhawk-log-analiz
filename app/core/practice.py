@@ -37,9 +37,9 @@ WN = {
     'st_ground': ('yerdeydi', 'on the ground', 'على الأرض'), 'st_air': ('havadaydı', 'airborne', 'في الجو'),
 }
 CAUSE_DOM = {'gps': 'gps', 'ekf': 'ekf', 'battery': 'power', 'radio': 'rc', 'stall': 'airspeed', 'vibration': 'vibration',
-             'compass': 'ekf', 'power': 'power', 'control': 'control', 'motor': 'motors'}
+             'compass': 'ekf', 'power': 'power', 'control': 'control', 'motor': 'motors', 'pilot': 'rc'}
 CAUSE_CHART = {'gps': 'c_gps', 'ekf': 'c_ekf', 'battery': 'c_bat', 'radio': 'c_sticks', 'stall': 'c_alt', 'vibration': 'c_vibe',
-               'compass': 'c_mag', 'power': 'c_bat', 'control': 'c_att', 'motor': 'c_motors'}
+               'compass': 'c_mag', 'power': 'c_bat', 'control': 'c_att', 'motor': 'c_motors', 'pilot': 'c_sticks'}
 DOM_CHART = {'gps': 'c_gps', 'vibration': 'c_vibe', 'power': 'c_bat', 'ekf': 'c_ekf', 'control': 'c_att', 'servo': 'c_rcou',
              'rc': 'c_sticks', 'airspeed': 'c_alt', 'cpu': 'c_timeline', 'motors': 'c_motors', 'vtol': 'c_alt'}
 

@@ -77,6 +77,18 @@ def build(A, lg):
         if y['notes']:
             h.append(f'<b style="color:#FBBF24">{E(y["ctx_h"])}</b><ul>' + ''.join(f'<li>{E(n)}</li>' for n in y['notes']) + '</ul>')
         if y['prevent']: h.append(f'<b style="color:#86EFAC">{E(y["todo_h"])}</b><br>{E(y["prevent"])}')
+        try:
+            from ..core import expert as EXP
+            from .i18n import t as _t
+            ks = EXP.for_cause((A.root or {}).get('cause'))[:2]
+            if ks:
+                h.append(f'<br><br><b style="color:#C4B5FD">🎓 {E(_t("ex_summary_h"))}</b><ul>')
+                for k in ks:
+                    h.append(f'<li><b>{EXP.L[k]["icon"]} {E(EXP.txt(k, "title", lg))}</b>: {E(EXP.txt(k, "rule", lg))}'
+                             f'<br><span style="color:#93C5FD">🔎 {E(EXP.txt(k, "look", lg))}</span></li>')
+                h.append(f'</ul><a href="go:crashlib" style="color:#C4B5FD">📚 {E(_t("ex_more"))}</a><br>')
+        except Exception:
+            pass
         h.append('<br><a href="ai:why" style="color:#60A5FA">🤖 ' + E(R('why_ai', lg)) + '</a> &nbsp; '
                  '<a href="go:solver" style="color:#60A5FA">🩺 ' + E(R('why_solver', lg)) + '</a> &nbsp; '
                  '<a href="fb:why" style="color:#86EFAC">' + E(_fbt(lg)) + '</a>')

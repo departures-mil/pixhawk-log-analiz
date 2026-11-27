@@ -52,6 +52,14 @@ ortak `reusable-release.yml` (latest.json, son 5 sürümden yamalar) ile yayın.
   çalışmayı sayılarla izler (içerik yok), çevrim dışı kurallar + kullanıcının kendi Gemini/Claude anahtarıyla öneri; bildirim + sağ altta ✦ panel;
   Ayarlar'da "Admin ile iletişim"in önünde kart. Aynı bilgisayardaki programlarla %APPDATA%/FalconCekirdek/agent üzerinden paylaşım.
 
+## v1.1.12 — Uzman tecrübeleri: gerçek kırımlardan dersler
+- `app/core/expert.py`: forumdaki gerçek kırım konularında uzmanların teşhis ve öğütlerinden 32 ders (kural · logda nereye bakılır · ne yapılır ·
+  parametreler, TR/EN/AR) ve 10 altın kural. `tools_data/expert_tags.py` (+ `expert_rx.py`) uzman yanıtlarını tarayıp her konuya ders atar →
+  `app/data/expert_cases.json`. Gerçek Kaza Logları sayfası iki sekmeli (Gerçek konular + Uzman tecrübeleri), analiz özetinde "Uzmanlar ne diyor?",
+  Soru Bankası'nda `experts` konusu (96 soru), eğitim kitabında `experts` bölümü.
+- 136 holdout logu etiketlendi (toplam 461 etiket); yeni kök neden `pilot`; `_poor_tune`, titreşim önceliği, `_refine_severity`.
+  Ölçüm (454 log): doğruluk %89, duyarlılık %90, özgüllük %85, kök neden %52 (ikincillerle %72). Ek tarama: `.github/workflows/more.yml`.
+
 ## v1.1.11 — Sınav sekmesi: görselli grafik soruları, kâğıt sınav, optik okuma, telefonla sınav
 - **Sınav** sekmesi (`app/ui/pages_x.py` + `pages_c.ExamPage`): Sınav hazırla (soru sayısı, kaynak/konu/seviye/tür/uçuş/ipucu süzgeci, elle ekleme ya da otomatik doldurma, açık logdan/senaryodan görselli soru üretimi) · Eğitimci (kâğıt sınav, optik okuma, telefonla okutma/sınav, yorum puanlama) · Öğrenci.
 - Görselli havuz `app/data/visq.json` + `app/data/visq/*.png` (`tools_data/build_visq.py`, `app/core/visq.py`): uzman etiketli gerçek kırım/normal loglar + sentetik senaryolar; ipuçsuz grafikler `charts.quiz(True)` ile (kırım çizgisi, karar kartı ve motor olay işaretleri gizli).

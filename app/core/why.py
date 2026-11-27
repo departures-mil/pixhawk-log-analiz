@@ -6,7 +6,7 @@ from . import texts
 
 LI = {'tr': 0, 'en': 1, 'ar': 2}
 CAUSE_DOM = {'gps': 'gps', 'ekf': 'ekf', 'battery': 'power', 'radio': 'rc', 'stall': 'airspeed', 'vibration': 'vibration',
-             'compass': 'ekf', 'power': 'power', 'control': 'control', 'motor': 'motors'}
+             'compass': 'ekf', 'power': 'power', 'control': 'control', 'motor': 'motors', 'pilot': 'rc'}
 HARD = ('cr_stat', 'cr_err', 'cr_msg', 'cr_flip')
 
 W = {

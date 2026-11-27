@@ -276,3 +276,5 @@ def set_lang(l):
 
 def lang():
     return LANG['v']
+from .i18n12 import U12 as _U12  # noqa: E402
+U.update(_U12)
