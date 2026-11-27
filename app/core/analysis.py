@@ -619,7 +619,10 @@ class Analysis(ExtMixin):
         for t, s, c in L.errors:
             if s == 12 and c != 0: score += 50; ev.append(F('cr_err', t=t)); break
         for t, txt in L.texts:
-            if 'crash' in txt.lower(): score += 30; ev.append(F('cr_msg', t=t, msg=txt)); break
+            lo = txt.lower()
+            # 'crash_dump.bin' = uçuş kartı yazılımının arıza dökümü dosyası; aracın kırımı değildir
+            if 'crash' in lo and 'crash_dump' not in lo and 'crashdump' not in lo:
+                score += 30; ev.append(F('cr_msg', t=t, msg=txt)); break
         tr = self.track
         end_t = L.duration
         if tr is not None and self.flights:
@@ -748,6 +751,23 @@ class Analysis(ExtMixin):
         ev = {e.get('k') for e in v.get('evidence', [])} - {'cr_landed'}
         if not ev and (self.root or {}).get('cause') in ('unknown', 'compass', 'battery', None):
             v['severity'] = 'minor'; v['refined'] = True
+        # Plane: hiçbir kırım kanıtı yokken toplam ≥400 s uçup inen uçak → bulgular (ayar/hava hızı/servo) yalnız uyarıdır.
+        # Ölçüm (v1.1.15, 147 uzman etiketli Plane logu): bu grupta 5 normal uçuş, 0 kırım; kırımlı kanıtsız loglar en çok 355 s.
+        elif not ev and self.vehicle == 'Plane' and self.flights and sum(b - a for a, b in self.flights) >= 400:
+            v['severity'] = 'minor'; v['refined'] = True
+        # Plane: kanıt yok, uçuş bittikten ≥5 s sonra yerde sakin disarm → normal iniş (kırımlarda disarm ya yok ya da ≤2 s içinde)
+        elif not ev and self.vehicle == 'Plane' and self.flights and self._calm_disarm(self.flights[-1][1]):
+            v['severity'] = 'minor'; v['refined'] = True
+
+    def _calm_disarm(self, end):
+        L = self.L
+        dis = [t for t, i in L.events if i == 11 and t >= end - 5]
+        if not dis or dis[0] - end < 5: return False
+        g = L.s('GPS')
+        if g.has('Spd'):
+            m = (g.t >= end) & (g.t <= dis[0])
+            if m.any() and float(np.nanmax(g['Spd'][m])) > 3: return False   # inişten sonra hâlâ hareket ediyorsa sayılmaz
+        return True
 
     # ----------------------------------------------------------- kök neden
     def _root_cause(self):

@@ -1,20 +1,20 @@
 {
  "score": {
-  "n": 660,
-  "errors": 51,
-  "tp": 442,
+  "n": 659,
+  "errors": 52,
+  "tp": 445,
   "fn": 68,
-  "fp": 30,
-  "tn": 120,
+  "fp": 16,
+  "tn": 130,
   "crash_verdict": 286,
-  "false_crash": 3,
-  "accuracy": 0.852,
+  "false_crash": 2,
+  "accuracy": 0.873,
   "recall_crash": 0.867,
-  "specificity": 0.8,
-  "cause_n": 408,
-  "cause_match": 194,
-  "cause_acc": 0.475,
-  "cause_any": 276,
+  "specificity": 0.89,
+  "cause_n": 411,
+  "cause_match": 196,
+  "cause_acc": 0.477,
+  "cause_any": 278,
   "cause_any_acc": 0.676,
   "labels": "expert"
  },
@@ -143,23 +143,23 @@
    "labels": "expert"
   },
   {
-   "date": "2026-11-27 20:02",
+   "date": "2026-11-27 20:23",
    "tag": "dev",
-   "n": 660,
-   "errors": 51,
-   "tp": 442,
+   "n": 659,
+   "errors": 52,
+   "tp": 445,
    "fn": 68,
-   "fp": 30,
-   "tn": 120,
+   "fp": 16,
+   "tn": 130,
    "crash_verdict": 286,
-   "false_crash": 3,
-   "accuracy": 0.852,
+   "false_crash": 2,
+   "accuracy": 0.873,
    "recall_crash": 0.867,
-   "specificity": 0.8,
-   "cause_n": 408,
-   "cause_match": 194,
-   "cause_acc": 0.475,
-   "cause_any": 276,
+   "specificity": 0.89,
+   "cause_n": 411,
+   "cause_match": 196,
+   "cause_acc": 0.477,
+   "cause_any": 278,
    "cause_any_acc": 0.676,
    "labels": "expert"
   }
@@ -187,7 +187,7 @@
    "others": [],
    "overall": 40,
    "dur": 257,
-   "sec": 2.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -349,7 +349,7 @@
    "others": null,
    "overall": 75,
    "dur": 274,
-   "sec": 2.8,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -1753,7 +1753,7 @@
    ],
    "overall": 78,
    "dur": 1127,
-   "sec": 0.5,
+   "sec": 0.9,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -2266,7 +2266,7 @@
    ],
    "overall": 34,
    "dur": 70,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -2589,7 +2589,7 @@
    "others": null,
    "overall": 83,
    "dur": 1142,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -2774,7 +2774,7 @@
    ],
    "overall": 81,
    "dur": 2621,
-   "sec": 0.6,
+   "sec": 1.3,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -3154,7 +3154,7 @@
    ],
    "overall": 44,
    "dur": 549,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 60,
@@ -3442,7 +3442,7 @@
    "others": null,
    "overall": 81,
    "dur": 487,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -4634,7 +4634,7 @@
    "others": null,
    "overall": 92,
    "dur": 879,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -4897,7 +4897,7 @@
    "others": [],
    "overall": 47,
    "dur": 460,
-   "sec": 0.9,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 60,
@@ -5810,7 +5810,7 @@
    "others": null,
    "overall": 43,
    "dur": 320,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -6535,7 +6535,7 @@
    "others": [],
    "overall": 49,
    "dur": 215,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -6737,7 +6737,7 @@
    "others": null,
    "overall": 69,
    "dur": 161,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -7756,7 +7756,7 @@
    "others": null,
    "overall": 69,
    "dur": 282,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -8016,7 +8016,7 @@
    ],
    "overall": 33,
    "dur": 489,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -9357,7 +9357,7 @@
    "others": [],
    "overall": 49,
    "dur": 349,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -10084,7 +10084,7 @@
    "others": null,
    "overall": 73,
    "dur": 118,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -10971,7 +10971,7 @@
    "others": null,
    "overall": 47,
    "dur": 232,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -11185,7 +11185,7 @@
    ],
    "overall": 51,
    "dur": 304,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -11837,7 +11837,7 @@
    "others": null,
    "overall": 88,
    "dur": 69,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -12047,7 +12047,7 @@
    "others": null,
    "overall": 99,
    "dur": 104,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -12228,7 +12228,7 @@
    "others": [],
    "overall": 51,
    "dur": 45,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -12524,7 +12524,7 @@
    "others": [],
    "overall": 39,
    "dur": 37,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -12801,7 +12801,7 @@
    "others": null,
    "overall": 43,
    "dur": 309,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -13090,7 +13090,7 @@
    ],
    "overall": 43,
    "dur": 1112,
-   "sec": 0.6,
+   "sec": 1.1,
    "verdict": {
     "kind": "crash",
     "score": 75,
@@ -13354,7 +13354,7 @@
    ],
    "overall": 31,
    "dur": 36,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -13715,7 +13715,7 @@
    "others": null,
    "overall": 84,
    "dur": 3164,
-   "sec": 0.5,
+   "sec": 0.9,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -14452,7 +14452,7 @@
    ],
    "overall": 48,
    "dur": 46,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -14722,7 +14722,7 @@
    ],
    "overall": 41,
    "dur": 465,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -14984,7 +14984,7 @@
    "others": null,
    "overall": 46,
    "dur": 27,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -15649,7 +15649,7 @@
    "others": [],
    "overall": 48,
    "dur": 36,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -15833,7 +15833,7 @@
    "title": "Issue in horizon level, control surface correction, in tailssiter",
    "url": "https://discuss.ardupilot.org/t/issue-in-horizon-level-control-surface-correction-in-tailssiter/108511",
    "log_url": "https://drive.google.com/file/d/1FWTIU6PGDJib5v6czD2Evk8Va368ta8w/view?usp=sharing",
-   "label": "normal",
+   "label": "unknown",
    "cause_hint": null,
    "mb": 11.0,
    "category_id": 144,
@@ -15842,15 +15842,15 @@
    "hint_forum": null,
    "cause_alt": [],
    "label_src": "expert",
-   "exclude": false,
-   "note": "tailsitter level/surface trim question",
+   "exclude": true,
+   "note": "no description/expert reply; outcome unknown",
    "vehicle": "Plane",
    "got": "crash",
    "got_cause": "control",
    "others": [],
    "overall": 37,
    "dur": 95,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 75,
@@ -16150,7 +16150,7 @@
    "others": [],
    "overall": 46,
    "dur": 341,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -16442,7 +16442,7 @@
    ],
    "overall": 37,
    "dur": 173,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -16754,7 +16754,7 @@
    ],
    "overall": 70,
    "dur": 1123,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -17048,7 +17048,7 @@
    ],
    "overall": 67,
    "dur": 318,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -17452,7 +17452,7 @@
    "others": null,
    "overall": 43,
    "dur": 256,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -17671,7 +17671,7 @@
    "others": null,
    "overall": 55,
    "dur": 28,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -18268,7 +18268,7 @@
    ],
    "overall": 42,
    "dur": 20,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -18499,7 +18499,7 @@
    "others": null,
    "overall": 83,
    "dur": 575,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -18745,7 +18745,7 @@
    "others": null,
    "overall": 49,
    "dur": 656,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -19168,25 +19168,17 @@
    "exclude": false,
    "note": "",
    "vehicle": "Copter",
-   "got": "incident",
-   "got_cause": "unknown",
+   "got": "normal",
+   "got_cause": null,
    "others": null,
    "overall": 91,
    "dur": 133,
    "sec": 0.5,
    "verdict": {
-    "kind": "incident",
-    "score": 30,
-    "evidence": [
-     {
-      "k": "cr_msg",
-      "a": {
-       "t": 5.507025,
-       "msg": "Logging @SYS/crash_dump.bin"
-      }
-     }
-    ],
-    "severity": "serious"
+    "kind": "normal",
+    "score": 0,
+    "evidence": [],
+    "severity": null
    },
    "facts": {
     "duration": 133.132359,
@@ -19388,7 +19380,7 @@
    "others": [],
    "overall": 44,
    "dur": 415,
-   "sec": 0.5,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -20281,7 +20273,7 @@
    "others": null,
    "overall": 91,
    "dur": 998,
-   "sec": 0.8,
+   "sec": 0.9,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -21223,7 +21215,7 @@
    "others": [],
    "overall": 49,
    "dur": 205,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 15,
@@ -21815,7 +21807,7 @@
    "others": null,
    "overall": 54,
    "dur": 134,
-   "sec": 0.6,
+   "sec": 1.1,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -22019,7 +22011,7 @@
    "others": null,
    "overall": 85,
    "dur": 587,
-   "sec": 0.5,
+   "sec": 1.0,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -22455,7 +22447,7 @@
    ],
    "overall": 42,
    "dur": 3320,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 45,
@@ -22692,7 +22684,7 @@
    "others": null,
    "overall": 94,
    "dur": 155,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 5,
@@ -22920,7 +22912,7 @@
    "others": [],
    "overall": 45,
    "dur": 424,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 25,
@@ -23693,7 +23685,7 @@
    "others": null,
    "overall": 46,
    "dur": 729,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -24012,7 +24004,7 @@
    ],
    "overall": 49,
    "dur": 67,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -24681,7 +24673,7 @@
    "others": [],
    "overall": 97,
    "dur": 596,
-   "sec": 1.0,
+   "sec": 1.1,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -25073,7 +25065,7 @@
    "others": null,
    "overall": 49,
    "dur": 155,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -25294,7 +25286,7 @@
    ],
    "overall": 48,
    "dur": 524,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -26013,7 +26005,7 @@
    "others": null,
    "overall": 93,
    "dur": 511,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -26432,7 +26424,7 @@
    "others": null,
    "overall": 78,
    "dur": 379,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -26816,7 +26808,7 @@
    "others": null,
    "overall": 96,
    "dur": 450,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -27213,7 +27205,7 @@
    ],
    "overall": 62,
    "dur": 123,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -27851,7 +27843,7 @@
    ],
    "overall": 40,
    "dur": 269,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -28294,7 +28286,7 @@
    "others": null,
    "overall": 94,
    "dur": 1397,
-   "sec": 0.5,
+   "sec": 0.8,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -28491,7 +28483,7 @@
    ],
    "overall": 50,
    "dur": 694,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -28715,7 +28707,7 @@
    ],
    "overall": 36,
    "dur": 1658,
-   "sec": 0.6,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -29302,7 +29294,7 @@
    "others": null,
    "overall": 91,
    "dur": 207,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -29777,8 +29769,8 @@
    "title": "Autotune makes plane far less responsive",
    "url": "https://discuss.ardupilot.org/t/autotune-makes-plane-far-less-responsive/122215",
    "log_url": "https://drive.google.com/file/d/1ZZ9fDwAlHFrSKCXkPgbc11jlDm92wqC1/view?usp=sharing",
-   "label": "normal",
-   "cause_hint": null,
+   "label": "crash",
+   "cause_hint": "stall",
    "mb": 3.2,
    "category_id": 7,
    "created": "2024-08-12",
@@ -29787,7 +29779,7 @@
    "cause_alt": [],
    "label_src": "expert",
    "exclude": false,
-   "note": "",
+   "note": "OP: accident flight; Allister: steep throw, stalled after launch",
    "vehicle": "Plane",
    "got": "incident",
    "got_cause": "control",
@@ -30376,7 +30368,7 @@
    ],
    "overall": 38,
    "dur": 56,
-   "sec": 0.6,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 75,
@@ -30636,7 +30628,7 @@
    "others": null,
    "overall": 44,
    "dur": 92,
-   "sec": 0.9,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -31485,7 +31477,7 @@
    "others": null,
    "overall": 51,
    "dur": 1588,
-   "sec": 0.6,
+   "sec": 1.0,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -31762,7 +31754,7 @@
    "others": null,
    "overall": 47,
    "dur": 103,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -31985,7 +31977,7 @@
    "others": null,
    "overall": 93,
    "dur": 173,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -32434,7 +32426,7 @@
    "others": null,
    "overall": 81,
    "dur": 286,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -32677,7 +32669,7 @@
    "others": null,
    "overall": 97,
    "dur": 210,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -33755,7 +33747,7 @@
    "others": null,
    "overall": 55,
    "dur": 163,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -33944,7 +33936,7 @@
    "others": null,
    "overall": 54,
    "dur": 1455,
-   "sec": 1.0,
+   "sec": 1.1,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -34315,7 +34307,7 @@
    ],
    "overall": 71,
    "dur": 449,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -34631,7 +34623,7 @@
    ],
    "overall": 75,
    "dur": 185,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -34883,7 +34875,7 @@
    "others": null,
    "overall": 49,
    "dur": 2488,
-   "sec": 1.1,
+   "sec": 1.4,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -35796,7 +35788,7 @@
    ],
    "overall": 43,
    "dur": 1008,
-   "sec": 0.6,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -36481,7 +36473,7 @@
    ],
    "overall": 42,
    "dur": 223,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -37033,7 +37025,7 @@
    ],
    "overall": 65,
    "dur": 155,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -37473,7 +37465,7 @@
    "others": null,
    "overall": 91,
    "dur": 341,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -38250,7 +38242,7 @@
    "others": null,
    "overall": 81,
    "dur": 1431,
-   "sec": 0.5,
+   "sec": 0.9,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -38712,7 +38704,7 @@
    "others": null,
    "overall": 91,
    "dur": 173,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -39243,7 +39235,7 @@
    "others": null,
    "overall": 84,
    "dur": 71,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -41122,7 +41114,7 @@
    "others": null,
    "overall": 52,
    "dur": 350,
-   "sec": 0.4,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -41332,7 +41324,7 @@
    "others": null,
    "overall": 77,
    "dur": 200,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -41598,7 +41590,7 @@
    ],
    "overall": 36,
    "dur": 39,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 90,
@@ -41951,7 +41943,7 @@
    "others": null,
    "overall": 42,
    "dur": 393,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -42811,7 +42803,7 @@
    "others": null,
    "overall": 52,
    "dur": 458,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -43350,7 +43342,7 @@
    "others": null,
    "overall": 96,
    "dur": 228,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -43510,7 +43502,7 @@
    ],
    "overall": 49,
    "dur": 391,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -43794,12 +43786,13 @@
    "others": [],
    "overall": 49,
    "dur": 2545,
-   "sec": 1.1,
+   "sec": 1.3,
    "verdict": {
     "kind": "incident",
     "score": 0,
     "evidence": [],
-    "severity": "serious"
+    "severity": "minor",
+    "refined": true
    },
    "facts": {
     "duration": 2545.481781,
@@ -44019,7 +44012,7 @@
    "others": null,
    "overall": 100,
    "dur": 92,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -44215,7 +44208,7 @@
    ],
    "overall": 46,
    "dur": 82,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -45110,7 +45103,7 @@
    "others": null,
    "overall": 83,
    "dur": 2100,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -45280,7 +45273,7 @@
    "others": [],
    "overall": 60,
    "dur": 201,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -46670,12 +46663,13 @@
    "others": [],
    "overall": 47,
    "dur": 1221,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
     "evidence": [],
-    "severity": "serious"
+    "severity": "minor",
+    "refined": true
    },
    "facts": {
     "duration": 1220.582903,
@@ -46885,12 +46879,13 @@
    "others": [],
    "overall": 48,
    "dur": 305,
-   "sec": 0.5,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 0,
     "evidence": [],
-    "severity": "serious"
+    "severity": "minor",
+    "refined": true
    },
    "facts": {
     "duration": 304.542084,
@@ -47108,7 +47103,7 @@
    "others": [],
    "overall": 50,
    "dur": 151,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -48347,7 +48342,7 @@
    "others": null,
    "overall": 96,
    "dur": 71,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -48537,7 +48532,7 @@
    ],
    "overall": 41,
    "dur": 428,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 55,
@@ -48741,7 +48736,7 @@
    ],
    "overall": 40,
    "dur": 143,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 90,
@@ -49067,7 +49062,7 @@
    "others": null,
    "overall": 52,
    "dur": 134,
-   "sec": 0.6,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -50679,7 +50674,7 @@
    ],
    "overall": 38,
    "dur": 808,
-   "sec": 0.7,
+   "sec": 0.9,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -51189,7 +51184,7 @@
    ],
    "overall": 66,
    "dur": 774,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 95,
@@ -52389,7 +52384,7 @@
    ],
    "overall": 43,
    "dur": 1175,
-   "sec": 0.5,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -52642,7 +52637,7 @@
    "others": null,
    "overall": 51,
    "dur": 134,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -53367,7 +53362,7 @@
    "others": null,
    "overall": 63,
    "dur": 206,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -54073,7 +54068,7 @@
    ],
    "overall": 41,
    "dur": 1164,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 90,
@@ -54394,7 +54389,7 @@
    ],
    "overall": 51,
    "dur": 414,
-   "sec": 0.5,
+   "sec": 1.0,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -54684,7 +54679,7 @@
    ],
    "overall": 58,
    "dur": 1336,
-   "sec": 0.9,
+   "sec": 1.0,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -55435,7 +55430,7 @@
    "others": [],
    "overall": 51,
    "dur": 170,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -55846,7 +55841,7 @@
    ],
    "overall": 61,
    "dur": 484,
-   "sec": 0.7,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -56353,7 +56348,7 @@
    "others": [],
    "overall": 45,
    "dur": 108,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -56602,7 +56597,7 @@
    ],
    "overall": 47,
    "dur": 95,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -56937,7 +56932,7 @@
    "others": [],
    "overall": 44,
    "dur": 354,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -57565,8 +57560,8 @@
    "title": "About PID Tuning, QuickTune, and QAUTOTUNE for Large (13–19 kg) VTOL Aircraft",
    "url": "https://discuss.ardupilot.org/t/about-pid-tuning-quicktune-and-qautotune-for-large-13-19-kg-vtol-aircraft/138733",
    "log_url": "https://drive.google.com/file/d/1gqTd6VOenu_iJBOP2X6llZlN7X-Xw-Hb/view?usp=drive_link",
-   "label": "normal",
-   "cause_hint": null,
+   "label": "crash",
+   "cause_hint": "control",
    "mb": 26.1,
    "category_id": 144,
    "created": "2025-09-05",
@@ -57575,7 +57570,7 @@
    "cause_alt": [],
    "label_src": "expert",
    "exclude": false,
-   "note": "",
+   "note": "same log as 138573 (Q_A_ANG P=9 hover crash)",
    "vehicle": "Plane",
    "got": "incident",
    "got_cause": "control",
@@ -58026,7 +58021,7 @@
    ],
    "overall": 69,
    "dur": 806,
-   "sec": 0.7,
+   "sec": 0.9,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -59179,7 +59174,7 @@
    ],
    "overall": 69,
    "dur": 460,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -59751,7 +59746,7 @@
    "others": null,
    "overall": 77,
    "dur": 1374,
-   "sec": 0.8,
+   "sec": 0.9,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -60483,7 +60478,7 @@
    "others": [],
    "overall": 48,
    "dur": 76,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 75,
@@ -60769,7 +60764,7 @@
    ],
    "overall": 39,
    "dur": 29,
-   "sec": 0.4,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -62323,7 +62318,7 @@
    "others": null,
    "overall": 51,
    "dur": 161,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -62525,7 +62520,7 @@
    "others": [],
    "overall": 45,
    "dur": 694,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -63020,7 +63015,7 @@
    ],
    "overall": 69,
    "dur": 177,
-   "sec": 0.7,
+   "sec": 0.9,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -63265,7 +63260,7 @@
    ],
    "overall": 80,
    "dur": 198,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -63526,7 +63521,7 @@
    "others": null,
    "overall": 94,
    "dur": 292,
-   "sec": 0.7,
+   "sec": 0.9,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -63720,7 +63715,7 @@
    "others": null,
    "overall": 80,
    "dur": 185,
-   "sec": 0.6,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -63987,7 +63982,7 @@
    ],
    "overall": 37,
    "dur": 28,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -64330,7 +64325,7 @@
    ],
    "overall": 73,
    "dur": 813,
-   "sec": 0.7,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -65082,7 +65077,7 @@
    "others": null,
    "overall": 99,
    "dur": 1777,
-   "sec": 0.8,
+   "sec": 0.9,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -65304,7 +65299,7 @@
    ],
    "overall": 64,
    "dur": 59,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 55,
@@ -65894,7 +65889,7 @@
    ],
    "overall": 62,
    "dur": 2284,
-   "sec": 1.2,
+   "sec": 1.3,
    "verdict": {
     "kind": "crash",
     "score": 75,
@@ -66226,7 +66221,7 @@
    "others": [],
    "overall": 36,
    "dur": 63,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -66552,7 +66547,7 @@
    ],
    "overall": 34,
    "dur": 536,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -66897,7 +66892,7 @@
    ],
    "overall": 50,
    "dur": 998,
-   "sec": 0.8,
+   "sec": 0.9,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -67215,7 +67210,7 @@
    ],
    "overall": 79,
    "dur": 1618,
-   "sec": 0.8,
+   "sec": 1.0,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -67954,7 +67949,7 @@
    ],
    "overall": 43,
    "dur": 101,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -68412,7 +68407,7 @@
    "others": [],
    "overall": 35,
    "dur": 92,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -68660,7 +68655,7 @@
    "others": [],
    "overall": 51,
    "dur": 235,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -68952,7 +68947,7 @@
    "others": null,
    "overall": 66,
    "dur": 143,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -69122,7 +69117,7 @@
    ],
    "overall": 41,
    "dur": 830,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -69469,7 +69464,7 @@
    "others": [],
    "overall": 52,
    "dur": 18,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -69959,12 +69954,13 @@
    ],
    "overall": 56,
    "dur": 1299,
-   "sec": 1.5,
+   "sec": 1.3,
    "verdict": {
     "kind": "incident",
     "score": 0,
     "evidence": [],
-    "severity": "serious"
+    "severity": "minor",
+    "refined": true
    },
    "facts": {
     "duration": 1299.068733,
@@ -70260,7 +70256,7 @@
    "others": null,
    "overall": 66,
    "dur": 1419,
-   "sec": 0.9,
+   "sec": 1.0,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -70473,7 +70469,7 @@
    ],
    "overall": 43,
    "dur": 621,
-   "sec": 0.7,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 50,
@@ -71163,7 +71159,7 @@
    ],
    "overall": 46,
    "dur": 482,
-   "sec": 0.4,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -71641,7 +71637,7 @@
    ],
    "overall": 39,
    "dur": 502,
-   "sec": 0.9,
+   "sec": 1.1,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -72116,7 +72112,7 @@
    "others": null,
    "overall": 54,
    "dur": 197,
-   "sec": 1.2,
+   "sec": 1.3,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -72321,7 +72317,7 @@
    ],
    "overall": 51,
    "dur": 40,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -72547,7 +72543,7 @@
    ],
    "overall": 41,
    "dur": 46,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -72803,7 +72799,7 @@
    ],
    "overall": 49,
    "dur": 72,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -73000,7 +72996,7 @@
    "others": [],
    "overall": 83,
    "dur": 660,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -73202,8 +73198,8 @@
    "title": "Plane enters spiral/toilet-bowl loop during roll in AutoTune (Factory PIDs)",
    "url": "https://discuss.ardupilot.org/t/plane-enters-spiral-toilet-bowl-loop-during-roll-in-autotune-factory-pids/144973",
    "log_url": "https://drive.google.com/file/d/1vv30dRS_bemJAMzsmpvzKj8HTJCAGXsl/view?usp=sharing",
-   "label": "normal",
-   "cause_hint": null,
+   "label": "crash",
+   "cause_hint": "control",
    "mb": 28.8,
    "category_id": 166,
    "created": "2026-07-31",
@@ -73212,7 +73208,7 @@
    "cause_alt": [],
    "label_src": "expert",
    "exclude": false,
-   "note": "",
+   "note": "near crash/incident; Allister: roll authority too small, uncontrolled toilet-bowl roll",
    "vehicle": "Plane",
    "got": "incident",
    "got_cause": "control",
@@ -73739,25 +73735,17 @@
    "exclude": false,
    "note": "filter review question",
    "vehicle": "Plane",
-   "got": "incident",
-   "got_cause": "unknown",
+   "got": "normal",
+   "got_cause": null,
    "others": null,
    "overall": 52,
    "dur": 147,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
-    "kind": "incident",
-    "score": 30,
-    "evidence": [
-     {
-      "k": "cr_msg",
-      "a": {
-       "t": 11.334321,
-       "msg": "Logging @SYS/crash_dump.bin"
-      }
-     }
-    ],
-    "severity": "serious"
+    "kind": "normal",
+    "score": 0,
+    "evidence": [],
+    "severity": null
    },
    "facts": {
     "duration": 146.829987,
@@ -73992,7 +73980,7 @@
    ],
    "overall": 49,
    "dur": 520,
-   "sec": 0.7,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -74518,7 +74506,7 @@
    "others": null,
    "overall": 53,
    "dur": 276,
-   "sec": 0.6,
+   "sec": 0.8,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -74739,7 +74727,7 @@
    "others": null,
    "overall": 100,
    "dur": 111,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -74889,7 +74877,7 @@
    ],
    "overall": 36,
    "dur": 1994,
-   "sec": 1.3,
+   "sec": 1.5,
    "verdict": {
     "kind": "crash",
     "score": 85,
@@ -75475,7 +75463,7 @@
    "others": [],
    "overall": 55,
    "dur": 216,
-   "sec": 0.9,
+   "sec": 1.0,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -76963,7 +76951,7 @@
    ],
    "overall": 63,
    "dur": 1213,
-   "sec": 1.6,
+   "sec": 1.9,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -77343,7 +77331,7 @@
    "others": [],
    "overall": 43,
    "dur": 1719,
-   "sec": 1.2,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -77663,7 +77651,7 @@
    ],
    "overall": 28,
    "dur": 31,
-   "sec": 0.4,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -78375,7 +78363,7 @@
    "others": [],
    "overall": 92,
    "dur": 295,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -78604,7 +78592,7 @@
    "others": null,
    "overall": 90,
    "dur": 124,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -78760,7 +78748,7 @@
    "others": null,
    "overall": 59,
    "dur": 118784,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -79683,7 +79671,7 @@
    ],
    "overall": 39,
    "dur": 489,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -79938,7 +79926,7 @@
    ],
    "overall": 33,
    "dur": 77,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 85,
@@ -80720,7 +80708,7 @@
    ],
    "overall": 43,
    "dur": 15,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -81184,7 +81172,7 @@
    ],
    "overall": 75,
    "dur": 138,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -81800,7 +81788,7 @@
    "others": [],
    "overall": 80,
    "dur": 122,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -82861,7 +82849,7 @@
    "others": [],
    "overall": 48,
    "dur": 314,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -83302,7 +83290,7 @@
    "others": null,
    "overall": 94,
    "dur": 111,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -83481,7 +83469,7 @@
    "others": [],
    "overall": 60,
    "dur": 1606,
-   "sec": 1.0,
+   "sec": 1.1,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -83888,7 +83876,7 @@
    ],
    "overall": 45,
    "dur": 29,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -86228,7 +86216,7 @@
    "others": null,
    "overall": 53,
    "dur": 383,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -86588,7 +86576,7 @@
    ],
    "overall": 24,
    "dur": 28,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -88030,7 +88018,7 @@
    ],
    "overall": 60,
    "dur": 132,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -88571,7 +88559,7 @@
    ],
    "overall": 34,
    "dur": 109,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -88808,7 +88796,7 @@
    "others": null,
    "overall": 93,
    "dur": 13,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -88984,7 +88972,7 @@
    "others": null,
    "overall": 48,
    "dur": 157,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -89194,7 +89182,7 @@
    ],
    "overall": 43,
    "dur": 23,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -89441,7 +89429,7 @@
    "others": [],
    "overall": 41,
    "dur": 478,
-   "sec": 0.7,
+   "sec": 0.9,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -89685,7 +89673,7 @@
    ],
    "overall": 40,
    "dur": 654,
-   "sec": 0.9,
+   "sec": 1.0,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -90217,7 +90205,7 @@
    "others": [],
    "overall": 31,
    "dur": 201932,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -90417,7 +90405,7 @@
    "others": null,
    "overall": 45,
    "dur": 34,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -90632,7 +90620,7 @@
    "others": null,
    "overall": 53,
    "dur": 76,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -91112,7 +91100,7 @@
    ],
    "overall": 40,
    "dur": 243,
-   "sec": 0.4,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -91355,7 +91343,7 @@
    "others": [],
    "overall": 98,
    "dur": 2023,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -91538,7 +91526,7 @@
    ],
    "overall": 82,
    "dur": 431,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -91743,7 +91731,7 @@
    "others": [],
    "overall": 51,
    "dur": 35,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -92383,7 +92371,7 @@
    ],
    "overall": 44,
    "dur": 112,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -92700,7 +92688,7 @@
    ],
    "overall": 34,
    "dur": 139,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -93209,7 +93197,7 @@
    "others": [],
    "overall": 45,
    "dur": 596,
-   "sec": 0.4,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -93410,7 +93398,7 @@
    "others": null,
    "overall": 52,
    "dur": 122,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -93590,7 +93578,7 @@
    ],
    "overall": 42,
    "dur": 183,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -94193,7 +94181,7 @@
    "others": null,
    "overall": 95,
    "dur": 843,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -94342,7 +94330,7 @@
    ],
    "overall": 69,
    "dur": 219,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -94547,7 +94535,7 @@
    ],
    "overall": 64,
    "dur": 760,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -94915,7 +94903,7 @@
    ],
    "overall": 37,
    "dur": 256,
-   "sec": 0.4,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -95224,7 +95212,7 @@
    ],
    "overall": 47,
    "dur": 179,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -95544,7 +95532,7 @@
    "others": [],
    "overall": 43,
    "dur": 3027,
-   "sec": 1.4,
+   "sec": 1.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -96798,7 +96786,7 @@
    "others": null,
    "overall": 81,
    "dur": 122,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -97067,7 +97055,7 @@
    ],
    "overall": 82,
    "dur": 918,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -97346,7 +97334,7 @@
    "others": null,
    "overall": 68,
    "dur": 586,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -98199,7 +98187,7 @@
    ],
    "overall": 48,
    "dur": 662,
-   "sec": 0.9,
+   "sec": 1.1,
    "verdict": {
     "kind": "incident",
     "score": 50,
@@ -98444,7 +98432,7 @@
    ],
    "overall": 47,
    "dur": 51,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 85,
@@ -98910,7 +98898,7 @@
    "others": null,
    "overall": 40,
    "dur": 16,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -99121,7 +99109,7 @@
    ],
    "overall": 43,
    "dur": 105,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -99435,7 +99423,7 @@
    ],
    "overall": 50,
    "dur": 60,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -99686,7 +99674,7 @@
    "others": null,
    "overall": 34,
    "dur": 59038,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -100293,7 +100281,7 @@
    ],
    "overall": 37,
    "dur": 56,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 75,
@@ -100541,7 +100529,7 @@
    "others": [],
    "overall": 51,
    "dur": 293,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -100784,7 +100772,7 @@
    ],
    "overall": 90,
    "dur": 260,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -101826,7 +101814,7 @@
    "others": [],
    "overall": 50,
    "dur": 1331,
-   "sec": 0.9,
+   "sec": 1.0,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -102062,7 +102050,7 @@
    ],
    "overall": 35,
    "dur": 481,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -102407,7 +102395,7 @@
    "others": [],
    "overall": 49,
    "dur": 4928,
-   "sec": 1.2,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 60,
@@ -102673,7 +102661,7 @@
    "others": null,
    "overall": 49,
    "dur": 2792,
-   "sec": 1.0,
+   "sec": 1.1,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -103315,7 +103303,7 @@
    "others": [],
    "overall": 75,
    "dur": 78,
-   "sec": 0.6,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 55,
@@ -103783,7 +103771,7 @@
    ],
    "overall": 38,
    "dur": 956,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -104165,7 +104153,7 @@
    ],
    "overall": 42,
    "dur": 2018,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -104678,7 +104666,7 @@
    ],
    "overall": 46,
    "dur": 28,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -104871,7 +104859,7 @@
    ],
    "overall": 40,
    "dur": 40,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -105153,7 +105141,7 @@
    ],
    "overall": 42,
    "dur": 66,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 45,
@@ -105412,7 +105400,7 @@
    ],
    "overall": 40,
    "dur": 436,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -105996,7 +105984,7 @@
    ],
    "overall": 36,
    "dur": 41,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -106600,7 +106588,7 @@
    ],
    "overall": 46,
    "dur": 81,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -106864,7 +106852,7 @@
    "others": [],
    "overall": 68,
    "dur": 213,
-   "sec": 0.5,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -107106,7 +107094,7 @@
    "others": [],
    "overall": 42,
    "dur": 50,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -107329,7 +107317,7 @@
    "others": [],
    "overall": 51,
    "dur": 199,
-   "sec": 0.4,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -107918,7 +107906,7 @@
    ],
    "overall": 51,
    "dur": 2009,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -108178,7 +108166,7 @@
    ],
    "overall": 41,
    "dur": 586,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 85,
@@ -108773,7 +108761,7 @@
    "others": [],
    "overall": 46,
    "dur": 757,
-   "sec": 1.1,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -109055,7 +109043,7 @@
    "others": null,
    "overall": 93,
    "dur": 1195,
-   "sec": 0.9,
+   "sec": 0.8,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -109247,7 +109235,7 @@
    ],
    "overall": 67,
    "dur": 975,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -109525,7 +109513,7 @@
    ],
    "overall": 47,
    "dur": 667,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -110543,7 +110531,7 @@
    "others": null,
    "overall": 89,
    "dur": 701,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -111064,7 +111052,7 @@
    ],
    "overall": 35,
    "dur": 42,
-   "sec": 0.5,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -111585,7 +111573,7 @@
    "others": [],
    "overall": 42,
    "dur": 1146,
-   "sec": 1.0,
+   "sec": 0.9,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -112050,7 +112038,7 @@
    ],
    "overall": 84,
    "dur": 170,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -112300,7 +112288,7 @@
    ],
    "overall": 40,
    "dur": 75,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -112940,7 +112928,7 @@
    "others": [],
    "overall": 85,
    "dur": 129,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -113600,7 +113588,7 @@
    "others": [],
    "overall": 43,
    "dur": 793,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 85,
@@ -114521,7 +114509,7 @@
    ],
    "overall": 70,
    "dur": 369,
-   "sec": 0.8,
+   "sec": 0.9,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -115593,7 +115581,7 @@
    "others": [],
    "overall": 66,
    "dur": 45,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -116537,7 +116525,7 @@
    "others": [],
    "overall": 44,
    "dur": 1341,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -117127,7 +117115,7 @@
    ],
    "overall": 58,
    "dur": 18,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -117586,7 +117574,7 @@
    ],
    "overall": 46,
    "dur": 735,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -119002,7 +118990,7 @@
    "others": [],
    "overall": 37,
    "dur": 760,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -119240,7 +119228,7 @@
    ],
    "overall": 62,
    "dur": 26,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -119485,12 +119473,13 @@
    ],
    "overall": 45,
    "dur": 1854,
-   "sec": 1.2,
+   "sec": 1.1,
    "verdict": {
     "kind": "incident",
     "score": 0,
     "evidence": [],
-    "severity": "serious"
+    "severity": "minor",
+    "refined": true
    },
    "facts": {
     "duration": 1854.026395,
@@ -119686,7 +119675,7 @@
    ],
    "overall": 68,
    "dur": 297,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -120846,7 +120835,7 @@
    ],
    "overall": 46,
    "dur": 353,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -121495,7 +121484,7 @@
    ],
    "overall": 39,
    "dur": 1332,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -123316,7 +123305,7 @@
    ],
    "overall": 37,
    "dur": 89,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 50,
@@ -123652,7 +123641,7 @@
    "others": null,
    "overall": 92,
    "dur": 431,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -124103,7 +124092,7 @@
    ],
    "overall": 30,
    "dur": 690,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 50,
@@ -124670,7 +124659,7 @@
    "others": null,
    "overall": 78,
    "dur": 296,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -124925,7 +124914,7 @@
    ],
    "overall": 64,
    "dur": 1304,
-   "sec": 0.9,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -126376,7 +126365,7 @@
    "others": null,
    "overall": 84,
    "dur": 407,
-   "sec": 0.6,
+   "sec": 0.8,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -126580,7 +126569,7 @@
    "others": null,
    "overall": 65,
    "dur": 359,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -127127,7 +127116,7 @@
    "others": [],
    "overall": 70,
    "dur": 251,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -127904,7 +127893,7 @@
    "others": null,
    "overall": 91,
    "dur": 198,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -128282,7 +128271,7 @@
    ],
    "overall": 42,
    "dur": 266,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -129206,7 +129195,7 @@
    ],
    "overall": 34,
    "dur": 107,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -129632,7 +129621,7 @@
    ],
    "overall": 78,
    "dur": 255,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -129934,7 +129923,7 @@
    ],
    "overall": 43,
    "dur": 1857,
-   "sec": 0.9,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -130415,7 +130404,7 @@
    ],
    "overall": 37,
    "dur": 2601,
-   "sec": 1.0,
+   "sec": 0.9,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -131997,7 +131986,7 @@
    "others": [],
    "overall": 89,
    "dur": 111,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -132561,7 +132550,7 @@
    ],
    "overall": 35,
    "dur": 480,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -133242,7 +133231,7 @@
    "others": null,
    "overall": 52,
    "dur": 34,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -133791,7 +133780,7 @@
    "others": [],
    "overall": 45,
    "dur": 114,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -133995,12 +133984,13 @@
    ],
    "overall": 64,
    "dur": 1289,
-   "sec": 1.0,
+   "sec": 0.9,
    "verdict": {
     "kind": "incident",
     "score": 0,
     "evidence": [],
-    "severity": "serious"
+    "severity": "minor",
+    "refined": true
    },
    "facts": {
     "duration": 1289.230851,
@@ -134535,7 +134525,7 @@
    ],
    "overall": 77,
    "dur": 691,
-   "sec": 0.9,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -134783,7 +134773,7 @@
    ],
    "overall": 39,
    "dur": 161,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -135115,7 +135105,7 @@
    ],
    "overall": 44,
    "dur": 824,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -135642,7 +135632,7 @@
    ],
    "overall": 35,
    "dur": 2840,
-   "sec": 1.5,
+   "sec": 1.3,
    "verdict": {
     "kind": "crash",
     "score": 90,
@@ -136288,7 +136278,7 @@
    ],
    "overall": 64,
    "dur": 1062,
-   "sec": 1.3,
+   "sec": 0.9,
    "verdict": {
     "kind": "crash",
     "score": 95,
@@ -136590,7 +136580,7 @@
    ],
    "overall": 42,
    "dur": 20,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -136925,7 +136915,7 @@
    "others": [],
    "overall": 46,
    "dur": 55,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -137165,7 +137155,7 @@
    ],
    "overall": 46,
    "dur": 84,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -137473,7 +137463,7 @@
    "others": [],
    "overall": 91,
    "dur": 15,
-   "sec": 0.5,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -137678,7 +137668,7 @@
    "others": null,
    "overall": 80,
    "dur": 954,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -137891,7 +137881,7 @@
    ],
    "overall": 89,
    "dur": 704,
-   "sec": 0.6,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -138125,7 +138115,7 @@
    "others": null,
    "overall": 46,
    "dur": 47,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -138323,7 +138313,7 @@
    "others": null,
    "overall": 46,
    "dur": 118,
-   "sec": 1.0,
+   "sec": 0.9,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -138772,7 +138762,7 @@
    ],
    "overall": 84,
    "dur": 70,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -138978,7 +138968,7 @@
    "others": null,
    "overall": 29,
    "dur": 78,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -139173,7 +139163,7 @@
    "others": [],
    "overall": 57,
    "dur": 1184,
-   "sec": 0.6,
+   "sec": 1.0,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -139691,7 +139681,7 @@
    ],
    "overall": 47,
    "dur": 473,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -139930,7 +139920,7 @@
    ],
    "overall": 39,
    "dur": 37,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -140786,7 +140776,7 @@
    ],
    "overall": 69,
    "dur": 801,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 90,
@@ -141057,7 +141047,7 @@
    "others": null,
    "overall": 84,
    "dur": 189,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -141254,7 +141244,7 @@
    "others": [],
    "overall": 42,
    "dur": 975,
-   "sec": 0.9,
+   "sec": 0.8,
    "verdict": {
     "kind": "incident",
     "score": 45,
@@ -142450,7 +142440,7 @@
    ],
    "overall": 66,
    "dur": 911,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -144196,7 +144186,7 @@
    "others": null,
    "overall": 82,
    "dur": 649,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -144437,7 +144427,7 @@
    "others": null,
    "overall": 78,
    "dur": 106,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -144656,7 +144646,7 @@
    ],
    "overall": 40,
    "dur": 33,
-   "sec": 0.4,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -144969,7 +144959,7 @@
    ],
    "overall": 43,
    "dur": 100,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -145364,12 +145354,13 @@
    ],
    "overall": 37,
    "dur": 555,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
     "evidence": [],
-    "severity": "serious"
+    "severity": "minor",
+    "refined": true
    },
    "facts": {
     "duration": 555.036769,
@@ -145608,7 +145599,7 @@
    "others": [],
    "overall": 36,
    "dur": 247,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -146873,7 +146864,7 @@
    "others": [],
    "overall": 48,
    "dur": 537,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -147099,7 +147090,7 @@
    ],
    "overall": 82,
    "dur": 566,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 95,
@@ -147592,7 +147583,7 @@
    "others": [],
    "overall": 43,
    "dur": 1368,
-   "sec": 1.3,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 90,
@@ -148136,7 +148127,7 @@
    ],
    "overall": 64,
    "dur": 301,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 90,
@@ -148843,7 +148834,7 @@
    "others": null,
    "overall": 36,
    "dur": 77,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -149567,7 +149558,7 @@
    ],
    "overall": 44,
    "dur": 109,
-   "sec": 0.9,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -149869,7 +149860,7 @@
    "others": [],
    "overall": 72,
    "dur": 374,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -150999,7 +150990,7 @@
    ],
    "overall": 46,
    "dur": 1438,
-   "sec": 1.3,
+   "sec": 1.0,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -151232,7 +151223,8 @@
     "kind": "incident",
     "score": 0,
     "evidence": [],
-    "severity": "serious"
+    "severity": "minor",
+    "refined": true
    },
    "facts": {
     "duration": 1789.471229,
@@ -151462,7 +151454,7 @@
    ],
    "overall": 37,
    "dur": 98,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 75,
@@ -151751,7 +151743,7 @@
    ],
    "overall": 47,
    "dur": 98,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -152290,7 +152282,7 @@
    ],
    "overall": 61,
    "dur": 320,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -152636,7 +152628,7 @@
    "others": [],
    "overall": 40,
    "dur": 906,
-   "sec": 1.0,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -152838,7 +152830,7 @@
    ],
    "overall": 49,
    "dur": 552,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -153137,7 +153129,7 @@
    "others": null,
    "overall": 81,
    "dur": 657,
-   "sec": 1.0,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -153364,7 +153356,7 @@
    ],
    "overall": 48,
    "dur": 97,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -153607,7 +153599,7 @@
    ],
    "overall": 51,
    "dur": 398,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -154141,7 +154133,7 @@
    ],
    "overall": 41,
    "dur": 73,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 50,
@@ -154668,7 +154660,7 @@
    ],
    "overall": 81,
    "dur": 1096,
-   "sec": 0.9,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 25,
@@ -154927,7 +154919,7 @@
    "others": null,
    "overall": 49,
    "dur": 1876,
-   "sec": 1.0,
+   "sec": 0.9,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -155128,7 +155120,7 @@
    "others": null,
    "overall": 89,
    "dur": 87,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -155295,7 +155287,7 @@
    "others": null,
    "overall": 81,
    "dur": 167,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -155513,7 +155505,7 @@
    ],
    "overall": 39,
    "dur": 45,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -156816,7 +156808,7 @@
    ],
    "overall": 34,
    "dur": 703,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -157653,7 +157645,7 @@
    "others": null,
    "overall": 65,
    "dur": 1296,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -158526,7 +158518,7 @@
    "others": null,
    "overall": 74,
    "dur": 51,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -160163,7 +160155,7 @@
    "others": null,
    "overall": 53,
    "dur": 285,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -160844,7 +160836,7 @@
    "others": [],
    "overall": 45,
    "dur": 485,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -161086,7 +161078,7 @@
    ],
    "overall": 55,
    "dur": 339,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 65,
@@ -162835,7 +162827,7 @@
    ],
    "overall": 38,
    "dur": 452,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -163313,7 +163305,7 @@
    ],
    "overall": 44,
    "dur": 1604,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -164149,7 +164141,7 @@
    "others": null,
    "overall": 89,
    "dur": 702,
-   "sec": 0.9,
+   "sec": 0.8,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -164414,7 +164406,7 @@
    "others": null,
    "overall": 82,
    "dur": 390,
-   "sec": 0.7,
+   "sec": 0.8,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -165718,7 +165710,7 @@
    ],
    "overall": 31,
    "dur": 34,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "crash",
     "score": 85,
@@ -166086,7 +166078,7 @@
    ],
    "overall": 33,
    "dur": 64,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 45,
@@ -166373,7 +166365,7 @@
    ],
    "overall": 46,
    "dur": 1262,
-   "sec": 2.7,
+   "sec": 0.9,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -166926,7 +166918,7 @@
    "others": null,
    "overall": 53,
    "dur": 167,
-   "sec": 0.9,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 25,
@@ -167715,7 +167707,7 @@
    "others": [],
    "overall": 41,
    "dur": 449,
-   "sec": 1.3,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -168239,7 +168231,7 @@
    ],
    "overall": 43,
    "dur": 16,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -168756,7 +168748,7 @@
    ],
    "overall": 39,
    "dur": 1082,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 85,
@@ -169451,7 +169443,7 @@
    "others": [],
    "overall": 44,
    "dur": 560,
-   "sec": 2.0,
+   "sec": 1.0,
    "verdict": {
     "kind": "incident",
     "score": 45,
@@ -169717,7 +169709,7 @@
    ],
    "overall": 38,
    "dur": 138,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -169996,7 +169988,7 @@
    ],
    "overall": 48,
    "dur": 33,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -170527,7 +170519,7 @@
    "others": [],
    "overall": 43,
    "dur": 75,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 45,
@@ -171068,7 +171060,7 @@
    ],
    "overall": 38,
    "dur": 463,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -171375,7 +171367,7 @@
    "others": null,
    "overall": 91,
    "dur": 725,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -171578,7 +171570,7 @@
    "others": null,
    "overall": 52,
    "dur": 171,
-   "sec": 0.9,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -172017,7 +172009,7 @@
    "others": null,
    "overall": 84,
    "dur": 670,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -172233,7 +172225,7 @@
    "others": null,
    "overall": 93,
    "dur": 668,
-   "sec": 0.9,
+   "sec": 1.0,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -172954,7 +172946,7 @@
    "others": null,
    "overall": 96,
    "dur": 153,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -173158,7 +173150,7 @@
    ],
    "overall": 56,
    "dur": 451,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 25,
@@ -173524,7 +173516,7 @@
    "others": null,
    "overall": 91,
    "dur": 329868,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -173653,7 +173645,7 @@
    "others": [],
    "overall": 79,
    "dur": 1034,
-   "sec": 0.9,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 55,
@@ -173919,7 +173911,7 @@
    "others": null,
    "overall": 49,
    "dur": 113,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -174119,7 +174111,7 @@
    ],
    "overall": 49,
    "dur": 1484,
-   "sec": 0.8,
+   "sec": 0.9,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -174496,7 +174488,7 @@
    "others": null,
    "overall": 94,
    "dur": 1123,
-   "sec": 1.0,
+   "sec": 0.9,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -175243,7 +175235,7 @@
    "others": null,
    "overall": 95,
    "dur": 213,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -176290,7 +176282,7 @@
    "others": null,
    "overall": 53,
    "dur": 15,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -176658,7 +176650,7 @@
    "others": null,
    "overall": 92,
    "dur": 218,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,
@@ -177034,7 +177026,7 @@
    ],
    "overall": 48,
    "dur": 117,
-   "sec": 0.9,
+   "sec": 1.0,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -177304,7 +177296,7 @@
    ],
    "overall": 45,
    "dur": 85,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -177972,7 +177964,7 @@
    "others": null,
    "overall": 100,
    "dur": 56,
-   "sec": 0.4,
+   "sec": 0.5,
    "verdict": {
     "kind": "noflight",
     "score": 0,
@@ -178029,7 +178021,7 @@
    ],
    "overall": 53,
    "dur": 1252,
-   "sec": 1.2,
+   "sec": 1.3,
    "verdict": {
     "kind": "incident",
     "score": 40,
@@ -178806,7 +178798,7 @@
    "others": [],
    "overall": 44,
    "dur": 65,
-   "sec": 0.5,
+   "sec": 0.6,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -179055,7 +179047,7 @@
    "others": [],
    "overall": 42,
    "dur": 379486,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 55,
@@ -179891,7 +179883,7 @@
    ],
    "overall": 39,
    "dur": 208,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -180317,7 +180309,7 @@
    ],
    "overall": 38,
    "dur": 2534,
-   "sec": 2.5,
+   "sec": 1.5,
    "verdict": {
     "kind": "crash",
     "score": 80,
@@ -181201,7 +181193,7 @@
    ],
    "overall": 39,
    "dur": 303,
-   "sec": 0.7,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -181974,7 +181966,7 @@
    ],
    "overall": 42,
    "dur": 336,
-   "sec": 1.3,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 85,
@@ -182284,7 +182276,7 @@
    "others": [],
    "overall": 82,
    "dur": 455,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -182768,7 +182760,7 @@
    ],
    "overall": 47,
    "dur": 1220,
-   "sec": 1.3,
+   "sec": 0.9,
    "verdict": {
     "kind": "crash",
     "score": 60,
@@ -183106,7 +183098,7 @@
    ],
    "overall": 30,
    "dur": 17,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 60,
@@ -183375,7 +183367,7 @@
    ],
    "overall": 76,
    "dur": 175,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -183666,7 +183658,7 @@
    "others": [],
    "overall": 93,
    "dur": 170,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 30,
@@ -185142,7 +185134,7 @@
    ],
    "overall": 40,
    "dur": 647,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 20,
@@ -186039,7 +186031,7 @@
    ],
    "overall": 65,
    "dur": 165,
-   "sec": 0.6,
+   "sec": 0.9,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -186507,7 +186499,7 @@
    ],
    "overall": 70,
    "dur": 654,
-   "sec": 0.9,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -186891,7 +186883,7 @@
    ],
    "overall": 70,
    "dur": 157,
-   "sec": 0.7,
+   "sec": 0.8,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -187286,7 +187278,7 @@
    ],
    "overall": 69,
    "dur": 234,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -187732,7 +187724,7 @@
    ],
    "overall": 91,
    "dur": 21,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 55,
@@ -187995,7 +187987,7 @@
    ],
    "overall": 38,
    "dur": 509,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -188814,7 +188806,7 @@
    ],
    "overall": 42,
    "dur": 96,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -189248,7 +189240,7 @@
    "others": [],
    "overall": 62,
    "dur": 77,
-   "sec": 0.5,
+   "sec": 0.4,
    "verdict": {
     "kind": "incident",
     "score": 55,
@@ -189514,7 +189506,7 @@
    ],
    "overall": 61,
    "dur": 96,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -189840,7 +189832,7 @@
    ],
    "overall": 62,
    "dur": 97,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -190831,7 +190823,7 @@
    ],
    "overall": 49,
    "dur": 153,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -191073,7 +191065,7 @@
    ],
    "overall": 49,
    "dur": 275,
-   "sec": 0.7,
+   "sec": 0.6,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -191379,7 +191371,7 @@
    ],
    "overall": 66,
    "dur": 255,
-   "sec": 0.6,
+   "sec": 0.7,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -191775,7 +191767,7 @@
    ],
    "overall": 69,
    "dur": 254,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "crash",
     "score": 100,
@@ -192581,7 +192573,7 @@
    ],
    "overall": 71,
    "dur": 94,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 55,
@@ -193447,7 +193439,7 @@
    ],
    "overall": 56,
    "dur": 138,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "incident",
     "score": 0,
@@ -193833,7 +193825,7 @@
    ],
    "overall": 76,
    "dur": 245,
-   "sec": 0.8,
+   "sec": 0.7,
    "verdict": {
     "kind": "incident",
     "score": 35,
@@ -194044,7 +194036,7 @@
    "others": null,
    "overall": 81,
    "dur": 54,
-   "sec": 0.6,
+   "sec": 0.5,
    "verdict": {
     "kind": "normal",
     "score": 0,

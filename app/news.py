@@ -1,6 +1,19 @@
 """Sürüm notları ("Neler yeni" + release-notes.json). Yeni sürümde EN ÜSTE eklenir; tr/en/ar zorunlu."""
 
 NEWS = [
+    {'v': '1.1.15',
+     'tr': 'Plane (VTOL dahil) teşhisi: normal uçuşların yanlışlıkla "ciddi olay" diye işaretlenmesi büyük ölçüde giderildi. 147 uzman etiketli gerçek Plane logunda normal uçuşu tanıma %70 → %82, kırım yakalama değişmedi (%90)\n'
+           'Yeni kurallar: hiçbir kırım kanıtı yokken toplam 400 saniyeden uzun uçup inen uçakta ayar/hava hızı/servo bulguları artık "küçük uyarı" sayılır; uçuş bittikten en az 5 saniye sonra yerde sakin disarm edilmesi normal iniş kabul edilir\n'
+           'Uçuş kartının "crash_dump.bin" arıza dökümü mesajı artık araç kırımı sanılmıyor\n'
+           'Forum yazışmaları yeniden okunarak 4 log etiketi düzeltildi (aynı logun iki konuda paylaşılması dahil). Toplam 659 gerçek logda doğruluk %87, normal uçuşu tanıma %89',
+     'en': 'Plane (incl. VTOL) diagnosis: normal flights wrongly flagged as a "serious incident" are largely fixed. On 147 expert-labelled real Plane logs, recognising normal flights 70% → 82%, crash detection unchanged (90%)\n'
+           'New rules: with no crash evidence, a plane that flew more than 400 seconds in total and landed now gets its tuning/airspeed/servo findings as a "minor warning"; a calm disarm on the ground at least 5 seconds after the flight ended counts as a normal landing\n'
+           'The flight controller\'s "crash_dump.bin" fault-dump message is no longer mistaken for a vehicle crash\n'
+           'Forum threads were re-read and 4 log labels corrected (including one log shared in two threads). On all 659 real logs: accuracy 87%, recognising normal flights 89%',
+     'ar': 'تشخيص Plane (بما في ذلك VTOL): عولج إلى حد كبير وسم الرحلات الطبيعية خطأً بأنها "حادثة خطيرة". في 147 سجل Plane حقيقي موسوم من الخبراء، ارتفع التعرف على الرحلات الطبيعية من 70% إلى 82%، ولم يتغير اكتشاف الحوادث (90%)\n'
+           'قواعد جديدة: عند عدم وجود أي دليل على حادث، تُعدّ نتائج الضبط/سرعة الهواء/المؤازرات لطائرة طارت أكثر من 400 ثانية إجمالًا ثم هبطت "تحذيرًا بسيطًا"؛ ونزع التسليح الهادئ على الأرض بعد 5 ثوانٍ على الأقل من انتهاء الطيران يُعدّ هبوطًا طبيعيًا\n'
+           'لم تعد رسالة ملف تفريغ الأعطال "crash_dump.bin" الخاص بوحدة التحكم تُعدّ حادثًا للمركبة\n'
+           'أُعيدت قراءة مواضيع المنتدى وصُحّحت 4 وسوم سجلات (منها سجل واحد نُشر في موضوعين). على جميع السجلات الحقيقية الـ659: الدقة 87%، والتعرف على الرحلات الطبيعية 89%'},
     {'v': '1.1.14',
      'tr': 'Yeni "Log Gezgini" sayfası (Mission Planner\'daki "Review a Log" gibi): sağda logdaki bütün mesajlar ve alt alanları ağaç halinde (ATT ▸ Roll…, IMU[0]/[1], BAT[0], ESC[n]); işaretlediğiniz alan grafiğe eklenir, sol ya da sağ eksen seçilebilir, her alanın açıklaması ve birimi görünür\n'
            'Grafikte uçuş modu renk şeritleri, hatalar, MSG mesajları, olaylar ve parametre sınır çizgileri (hız, yatış, THR_MAX, batarya, servo/RC); veri tablosu, harita ve parametreler sekmeleri\n'

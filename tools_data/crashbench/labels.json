@@ -291,9 +291,9 @@
    "alt": []
   },
   "144973": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
+   "label": "crash",
+   "cause": "control",
+   "note": "near crash/incident; Allister: roll authority too small, uncontrolled toilet-bowl roll"
   },
   "145555": {
    "exclude": true,
@@ -849,9 +849,9 @@
    ]
   },
   "122215": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
+   "label": "crash",
+   "cause": "stall",
+   "note": "OP: accident flight; Allister: steep throw, stalled after launch"
   },
   "123223": {
    "label": "crash",
@@ -1035,9 +1035,9 @@
    "alt": []
   },
   "138733": {
-   "label": "normal",
-   "cause": null,
-   "alt": []
+   "label": "crash",
+   "cause": "control",
+   "note": "same log as 138573 (Q_A_ANG P=9 hover crash)"
   },
   "139094": {
    "label": "normal",
@@ -3577,8 +3577,8 @@
    "note": "underpowered quadplane test"
   },
   "108511": {
-   "label": "normal",
-   "note": "tailsitter level/surface trim question"
+   "exclude": true,
+   "note": "no description/expert reply; outcome unknown"
   },
   "108827": {
    "label": "crash",
