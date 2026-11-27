@@ -3545,6 +3545,445 @@
   "99829": {
    "label": "crash",
    "cause": null
+  },
+  "101115": {
+   "label": "normal",
+   "note": "copter tuning, no crash; no battery monitor"
+  },
+  "102616": {
+   "label": "crash",
+   "cause": "gps",
+   "note": "near crash/incident; Yuri_Rage: sat count drops when maneuvering"
+  },
+  "104226": {
+   "label": "normal",
+   "note": "fence loiter radius limited by LIM_ROLL_CD"
+  },
+  "105908": {
+   "label": "crash",
+   "cause": "control",
+   "note": "near crash/incident; big octaquad VTOL unstable in pitch/roll"
+  },
+  "107914": {
+   "label": "normal",
+   "note": "TECS reduced throttle after transition; no crash"
+  },
+  "108252": {
+   "label": "normal",
+   "note": "rudder trim at flare; autoland quality"
+  },
+  "108427": {
+   "label": "normal",
+   "note": "underpowered quadplane test"
+  },
+  "108511": {
+   "label": "normal",
+   "note": "tailsitter level/surface trim question"
+  },
+  "108827": {
+   "label": "crash",
+   "cause": "radio",
+   "note": "near crash/incident; RC signal interruption -> throttle failsafe"
+  },
+  "110823": {
+   "label": "normal",
+   "note": "ground engine vibration test",
+   "exclude": true
+  },
+  "11101": {
+   "label": "crash",
+   "cause": null,
+   "alt": [
+    "compass"
+   ],
+   "note": "rmackay9: eeprom slot bug likely"
+  },
+  "112177": {
+   "label": "normal",
+   "note": "log field question"
+  },
+  "114819": {
+   "label": "crash",
+   "cause": "motor",
+   "note": "bad ESC connection, motor2 high"
+  },
+  "118790": {
+   "label": "normal",
+   "note": "transition throttle question"
+  },
+  "124955": {
+   "label": "normal",
+   "note": "slow transition"
+  },
+  "125817": {
+   "label": "normal",
+   "note": "log viewer issue",
+   "exclude": true
+  },
+  "128690": {
+   "label": "normal",
+   "note": "servo centre question"
+  },
+  "131237": {
+   "label": "normal",
+   "note": "Q_ASSIST settings fixed transition"
+  },
+  "133655": {
+   "label": "normal",
+   "note": "meandering auto; autotune level too high"
+  },
+  "136234": {
+   "label": "normal",
+   "note": "QLOITER drift, no diagnosis"
+  },
+  "136346": {
+   "label": "normal",
+   "note": "hover margin; yaw tune"
+  },
+  "138573": {
+   "label": "crash",
+   "cause": "control",
+   "note": "Q_A_ANG P=9 too high"
+  },
+  "143682": {
+   "label": "normal",
+   "note": "turbine TECS/nav tuning"
+  },
+  "143694": {
+   "label": "normal",
+   "note": "rangefinder flare spikes"
+  },
+  "143710": {
+   "label": "crash",
+   "cause": null,
+   "note": "catapult crash; CG/reversed elevator/PID guessed"
+  },
+  "144037": {
+   "label": "crash",
+   "cause": "control",
+   "note": "near crash/incident; VTOL attitude problem after 4.7 beta"
+  },
+  "145027": {
+   "label": "normal",
+   "note": "filter review question"
+  },
+  "145628": {
+   "label": "normal",
+   "note": "baro fault bench",
+   "exclude": true
+  },
+  "15991": {
+   "label": "normal",
+   "note": "pixracer bench",
+   "exclude": true
+  },
+  "20896": {
+   "label": "crash",
+   "cause": "control",
+   "note": "near crash/incident; frame type X vs H yaw in hover"
+  },
+  "21768": {
+   "label": "crash",
+   "cause": "battery",
+   "alt": [
+    "motor"
+   ],
+   "note": "voltage drop 18.8->10V; ESC LVC"
+  },
+  "27783": {
+   "label": "normal",
+   "note": "SITL simulation",
+   "exclude": true
+  },
+  "33064": {
+   "label": "normal",
+   "note": "RC2_MIN/MAX bench",
+   "exclude": true
+  },
+  "37006": {
+   "label": "crash",
+   "cause": null,
+   "note": "near crash/incident; alt/pos control poor, motors cut in QLAND"
+  },
+  "41894": {
+   "label": "crash",
+   "cause": "compass",
+   "note": "near crash/incident; compass error, airspeed issues"
+  },
+  "43183": {
+   "label": "normal",
+   "note": "bad log file",
+   "exclude": true
+  },
+  "44241": {
+   "label": "crash",
+   "cause": "power",
+   "alt": [
+    "stall"
+   ],
+   "note": "peterbarker: servo voltage drop at min-speed test"
+  },
+  "48063": {
+   "label": "normal",
+   "note": "bench motor test, bad timestamps",
+   "exclude": true
+  },
+  "48931": {
+   "label": "crash",
+   "cause": null,
+   "note": "hand-launch roll and nosedive"
+  },
+  "50427": {
+   "label": "normal",
+   "note": "heading during flare"
+  },
+  "65290": {
+   "label": "crash",
+   "cause": "control",
+   "note": "near crash/incident; bicopter tilt yaw saturation"
+  },
+  "65521": {
+   "label": "normal",
+   "note": "indoor arming EKF",
+   "exclude": true
+  },
+  "70227": {
+   "label": "crash",
+   "cause": "radio",
+   "alt": [
+    "control"
+   ],
+   "note": "Allister: RC trims ~1600 fed input in AUTO"
+  },
+  "72341": {
+   "label": "normal",
+   "note": "NMEA output bench",
+   "exclude": true
+  },
+  "74142": {
+   "label": "crash",
+   "cause": null,
+   "note": "big plane crash, no diagnosis"
+  },
+  "7535": {
+   "label": "normal",
+   "note": "auto/loiter altitude loss, TECS"
+  },
+  "77884": {
+   "label": "crash",
+   "cause": "stall",
+   "note": "Allister: airspeed <10 m/s, stalled"
+  },
+  "78322": {
+   "label": "normal",
+   "note": "large Y3 tuning"
+  },
+  "82854": {
+   "label": "normal",
+   "note": "SITL RealFlight",
+   "exclude": true
+  },
+  "85070": {
+   "label": "normal",
+   "note": "X8 autotune failing, no crash"
+  },
+  "88454": {
+   "label": "crash",
+   "cause": "motor",
+   "note": "near crash/incident; ESC grounding stutter"
+  },
+  "89354": {
+   "label": "normal",
+   "note": "log parsing / corrupt",
+   "exclude": true
+  },
+  "97340": {
+   "label": "crash",
+   "cause": "pilot",
+   "alt": [
+    "radio"
+   ],
+   "note": "dkemxr: RC7 disarm switch glitch"
+  },
+  "gh11642": {
+   "label": "crash",
+   "cause": null,
+   "note": "Solo firmware lockup, motors stop"
+  },
+  "gh13739": {
+   "label": "crash",
+   "cause": "control",
+   "note": "MOT_SLEW_UP_TIME without retune"
+  },
+  "gh15519": {
+   "label": "crash",
+   "cause": null,
+   "note": "motor shutdown after RTL cancel"
+  },
+  "gh15615": {
+   "label": "crash",
+   "cause": null,
+   "note": "near crash/incident; rangefinder spikes on IR-LOCK"
+  },
+  "gh15777": {
+   "label": "crash",
+   "cause": "control",
+   "note": "Q_TRIM integral accumulation flip"
+  },
+  "gh25356": {
+   "label": "crash",
+   "cause": "control",
+   "note": "RTL->QRTL spin"
+  },
+  "gh7039": {
+   "label": "crash",
+   "cause": null,
+   "note": "false crash detection disarm while landing"
+  },
+  "gh8203": {
+   "label": "crash",
+   "cause": "gps",
+   "note": "GPS glitch in althold hex"
+  },
+  "gh13811": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh14446": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh16021": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh18932": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh24262": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh24362": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh24371": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh24372": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh24373": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh24374": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh24383": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh24384": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh24387": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh24388": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh24389": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh24390": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh24391": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh24392": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh24393": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh24441": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh24442": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh24443": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh24445": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh28720": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh29914": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh33789": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh4344": {
+   "label": "normal",
+   "note": "SITL fault injection / simulation",
+   "exclude": true
+  },
+  "gh4888": {
+   "label": "normal",
+   "note": "FC software crash on bench",
+   "exclude": true
   }
  },
  "_holdout": [
@@ -3686,5 +4125,6 @@
   "99924"
  ],
  "_holdout_doc": "Ayrı test seti (bench-holdout): ilk ölçüm 2026-11-27, kurallar görmeden: doğruluk 0.855, duyarlılık 0.916, özgüllük 0.583, kök neden 0.443 (ikincil dahil 0.682). Sonra geliştirme setine katıldı.",
- "_more_doc": "Ek tarama (bench-more, 160 forum konusu, 2026-11-27): uzman yanıtlarından etiketlendi; kurallar görmeden ilk ölçüm (157 log, hepsi kırım/olay): duyarlılık 0.803, kök neden 0.268 (ikincil dahil 0.545). Sonra geliştirme setine katıldı."
+ "_more_doc": "Ek tarama (bench-more, 160 forum konusu, 2026-11-27): uzman yanıtlarından etiketlendi; kurallar görmeden ilk ölçüm (157 log, hepsi kırım/olay): duyarlılık 0.803, kök neden 0.268 (ikincil dahil 0.545). Sonra geliştirme setine katıldı.",
+ "_plane_doc": "Uçak taraması (bench-plane, 130 log: forumun Plane/QuadPlane kategorileri + ArduPilot GitHub issue ekleri, 2026-11-27): 41'i önceden etiketliydi; 89 yeni konu uzman yanıtlarından etiketlendi (SITL/simülasyon ve tezgâh logları hariç tutuldu). Kurallar görmeden ilk ölçüm (49 log): doğruluk 0.694, duyarlılık 0.786, özgüllük 0.571, kök neden 4/19 (ikincil dahil 8/19). Sonra geliştirme setine katıldı."
 }

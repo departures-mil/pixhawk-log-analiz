@@ -1,6 +1,28 @@
 """Sürüm notları ("Neler yeni" + release-notes.json). Yeni sürümde EN ÜSTE eklenir; tr/en/ar zorunlu."""
 
 NEWS = [
+    {'v': '1.1.14',
+     'tr': 'Yeni "Log Gezgini" sayfası (Mission Planner\'daki "Review a Log" gibi): sağda logdaki bütün mesajlar ve alt alanları ağaç halinde (ATT ▸ Roll…, IMU[0]/[1], BAT[0], ESC[n]); işaretlediğiniz alan grafiğe eklenir, sol ya da sağ eksen seçilebilir, her alanın açıklaması ve birimi görünür\n'
+           'Grafikte uçuş modu renk şeritleri, hatalar, MSG mesajları, olaylar ve parametre sınır çizgileri (hız, yatış, THR_MAX, batarya, servo/RC); veri tablosu, harita ve parametreler sekmeleri\n'
+           'Hazır grafikler (genel, stall, TECS, servolar, geçiş, VTOL motorları, titreşim, batarya, GPS, RC) ve "Kırım anına git"\n'
+           'Programın bulduğu sorunlu bölgeler grafikte işaretlenir; tıklayınca ne olduğu ve logda nereye bakılacağı yazar. "Uzman adımları" kök nedene göre logun nasıl okunacağını adım adım gösterir; "Alıştırma" kipinde teşhisi önce siz koyarsınız\n'
+           '249 yeni gerçek log uzman yorumlarına göre etiketlendi (forumun Plane/QuadPlane kategorileri ve ArduPilot GitHub kayıtları dahil); toplam 659 ölçülebilir gerçek log, bunların 147\'si Plane\n'
+           'Yeni teşhis kuralları: uçarken disarm düğmesiyle motorların kesilmesi pilot hatası olarak bulunur; Plane\'de log çarpmayla kesildiyse yanlışlıkla "güç kaybı" denmez\n'
+           'Gerçek Kaza Logları kütüphanesi ve uzman dersleri yeni loglarla genişledi',
+     'en': 'New "Log Browser" page (like "Review a Log" in Mission Planner): every message in the log and its fields as a tree on the right (ATT ▸ Roll…, IMU[0]/[1], BAT[0], ESC[n]); tick a field to add it to the chart, choose the left or right axis, and see each field\'s description and unit\n'
+           'Flight mode colour bands, errors, MSG messages, events and parameter limit lines (speed, bank, THR_MAX, battery, servo/RC) on the chart; data table, map and parameters tabs\n'
+           'Ready-made charts (overview, stall, TECS, servos, transition, VTOL motors, vibration, battery, GPS, RC) and "Go to crash"\n'
+           'Problem regions found by the program are marked on the chart; click one to see what happened and where to look in the log. "Expert steps" walks you through reading the log for the root cause; in "Practice" mode you make the diagnosis first\n'
+           '249 new real logs labelled from expert comments (including the forum\'s Plane/QuadPlane categories and ArduPilot GitHub issues); 659 measurable real logs in total, 147 of them Plane\n'
+           'New diagnosis rules: cutting the motors with the disarm switch in flight is found as pilot error; on Plane, a log cut by impact is no longer mistaken for "power loss"\n'
+           'The Real Crash Logs library and expert lessons grew with the new logs',
+     'ar': 'صفحة جديدة "متصفح السجل" (مثل "Review a Log" في Mission Planner): جميع رسائل السجل وحقولها على شكل شجرة في اليمين (ATT ▸ Roll…، IMU[0]/[1]، BAT[0]، ESC[n])؛ حدّد حقلًا لإضافته إلى الرسم، واختر المحور الأيسر أو الأيمن، وشاهد وصف كل حقل ووحدته\n'
+           'أشرطة ألوان أوضاع الطيران والأخطاء ورسائل MSG والأحداث وخطوط حدود المعاملات (السرعة، الميل، THR_MAX، البطارية، المؤازرات/RC) على الرسم؛ وتبويبات جدول البيانات والخريطة والمعاملات\n'
+           'رسوم جاهزة (عام، انهيار السرعة، TECS، المؤازرات، الانتقال، محركات VTOL، الاهتزاز، البطارية، GPS، RC) و"اذهب إلى لحظة الحادث"\n'
+           'تُعلَّم المناطق المشكلة التي وجدها البرنامج على الرسم؛ انقر عليها لترى ما حدث وأين تنظر في السجل. "خطوات الخبير" ترشدك خطوة بخطوة لقراءة السجل حسب السبب الجذري؛ وفي وضع "التمرين" تضع التشخيص أولًا\n'
+           'وُسم 249 سجلًا حقيقيًا جديدًا حسب تعليقات الخبراء (بما في ذلك فئات Plane/QuadPlane في المنتدى وسجلات ArduPilot على GitHub)؛ 659 سجلًا حقيقيًا قابلًا للقياس إجمالًا، منها 147 لطائرات Plane\n'
+           'قواعد تشخيص جديدة: قطع المحركات بمفتاح نزع التسليح أثناء الطيران يُكتشف كخطأ طيار؛ وفي Plane لم يعد انقطاع السجل بسبب الاصطدام يُعدّ خطأً "فقدان طاقة"\n'
+           'توسعت مكتبة سجلات الحوادث الحقيقية ودروس الخبراء بالسجلات الجديدة'},
     {'v': '1.1.13',
      'tr': 'Gerçek Kaza Logları: sütun başlığına tıklayınca tablo o sütuna göre sıralanır, tekrar tıklayınca sıra tersine döner (MB sayısal sıralanır, boşlar sonda)\n'
            'Yeni süzgeçler, birlikte kullanılabilir: araç (yalnız Plane, yalnız Copter…), yalnız kırım ya da yalnız normal uçuş, kök neden (uzman teşhisine, program teşhisine, ikisinden birine ya da ikisinin aynı olduğuna göre), programın doğru bildiği ya da yanıldığı konular\n'
