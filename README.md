@@ -52,6 +52,11 @@ ortak `reusable-release.yml` (latest.json, son 5 sürümden yamalar) ile yayın.
   çalışmayı sayılarla izler (içerik yok), çevrim dışı kurallar + kullanıcının kendi Gemini/Claude anahtarıyla öneri; bildirim + sağ altta ✦ panel;
   Ayarlar'da "Admin ile iletişim"in önünde kart. Aynı bilgisayardaki programlarla %APPDATA%/FalconCekirdek/agent üzerinden paylaşım.
 
+## v1.1.16 — Plane kök neden teşhisi
+- `Analysis.airspeed_src()`: ARSP → CTUN.Aspd/As → TECS.sp → CTUN.SAs (uçuş medyanı ≥3 m/s); sağlık, stall, özet, diag2, solver, grafik bunu kullanır. Stall için kaynak yoksa GPS.Spd.
+- `_vtol_sat` (QTUN akarken ≥1,2 s motor tavanda + tutum hatası ≥90°, sapma doygunluktan ≤2 s önce), `upset` (≥100° yatış → olay), Plane RC kaybı (failsafe metni, RSSI→0), öncelikler: pusula geri, RC kaybı (>5 s sonra) ve stall (`stall_t`, −3,5…+8 s) kontrolün önüne.
+- Plane 146 log: kök neden 47/86 → 54/86, duyarlılık .903, özgüllük .818 değişmedi. Testler `tests/test_plane_rules.py`. Tarama: `.github/workflows/planenormal.yml` (`crashbench.py planenormal`, sürüm/beta konuları + ayar konuları → `pn_threads.json.gz`).
+
 ## v1.1.15 — Plane yanlış alarmları
 - `analysis._refine_severity`: Plane'de kanıtsız 'ciddi olay' → toplam uçuş ≥400 s ise ya da `_calm_disarm` (uçuş sonundan ≥5 s sonra, GPS hızı ≤3 m/s iken disarm) varsa 'minor'. `cr_msg` artık `crash_dump` dosya mesajını saymaz.
 - Etiket düzeltmeleri: 138733 (= 138573 aynı log), 144973, 122215 kırım; 108511 hariç. Ölçüm 659 log: doğruluk .873, duyarlılık .867, özgüllük .89; Plane 147: özgüllük .70 → .82, duyarlılık .90.

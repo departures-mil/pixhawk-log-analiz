@@ -247,9 +247,8 @@ def chart_alt(A: Analysis, lang):
     ax2 = ax.twinx(); ax2.tick_params(labelsize=7)
     g = L.s('GPS')
     if g.has('Spd'): ax2.plot(*_g(g['t'], g['Spd']), color=C['orange'], lw=0.8, alpha=0.9, label=rt('l_gs', lang) + ' · GPS.Spd')
-    a = L.s('ARSP') if L.s('ARSP').has('Airspeed') else L.s('CTUN')
-    f = 'Airspeed' if a.has('Airspeed') else ('As' if a.has('As') else None)
-    if f and A.vehicle == 'Plane': ax2.plot(*_g(a['t'], a[f]), color=C['green'], lw=0.8, alpha=0.9, label=rt('l_as', lang) + f" · {'ARSP' if f == 'Airspeed' else 'CTUN'}.{f}")
+    a, f = A.airspeed_src() if A.vehicle == 'Plane' else (None, None)
+    if f: ax2.plot(*_g(a['t'], a[f]), color=C['green'], lw=0.8, alpha=0.9, label=rt('l_as', lang) + f" · {'ARSP' if f == 'Airspeed' else ('TECS' if f == 'sp' else 'CTUN')}.{f}")
     amin = L.params.get('AIRSPEED_MIN', L.params.get('ARSPD_FBW_MIN'))
     if amin and A.vehicle == 'Plane':
         ax2.axhline(amin, color=C['green'], lw=0.6, ls=':')

@@ -92,8 +92,7 @@ def surfaces(A):
 def airspeed(A):
     L = A.L
     if A.vehicle != 'Plane': return []
-    s = L.s('ARSP') if L.s('ARSP').has('Airspeed') else L.s('CTUN')
-    f = 'Airspeed' if s.has('Airspeed') else ('As' if s.has('As') else None)
+    s, f = A.airspeed_src()
     g = L.s('GPS')
     if f is None or not g.has('Spd'): return []
     m = _fw_mask(A, s['t'])

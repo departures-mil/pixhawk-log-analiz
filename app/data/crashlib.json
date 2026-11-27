@@ -12,13 +12,13 @@
 "recall_crash": 0.867,
 "specificity": 0.89,
 "cause_n": 411,
-"cause_match": 196,
-"cause_acc": 0.477,
-"cause_any": 278,
-"cause_any_acc": 0.676,
+"cause_match": 203,
+"cause_acc": 0.494,
+"cause_any": 282,
+"cause_any_acc": 0.686,
 "labels": "expert"
 },
-"date": "2026-11-27 20:23",
+"date": "2026-11-27 20:46",
 "cases": [
 {
 "id": "10008",
@@ -86,7 +86,7 @@
 "mb": 28.2,
 "vehicle": "Plane",
 "got": "incident",
-"got_cause": "compass",
+"got_cause": "control",
 "dur": 639,
 "created": "2023-05-08"
 },
@@ -282,7 +282,7 @@
 "mb": 44.2,
 "vehicle": "Plane",
 "got": "crash",
-"got_cause": "control",
+"got_cause": "radio",
 "dur": 460,
 "created": "2023-06-12"
 },
@@ -842,7 +842,7 @@
 "mb": 13.2,
 "vehicle": "Plane",
 "got": "incident",
-"got_cause": "control",
+"got_cause": "radio",
 "dur": 341,
 "created": "2023-11-06"
 },
@@ -1359,8 +1359,8 @@
 "cause_hint": null,
 "mb": 10.1,
 "vehicle": "Plane",
-"got": "incident",
-"got_cause": "unknown",
+"got": "normal",
+"got_cause": null,
 "dur": 155,
 "created": "2024-06-03"
 },
@@ -1500,7 +1500,7 @@
 "mb": 2.3,
 "vehicle": "Plane",
 "got": "crash",
-"got_cause": "control",
+"got_cause": "stall",
 "dur": 43,
 "created": "2024-07-23"
 },
@@ -1640,7 +1640,7 @@
 "mb": 2.3,
 "vehicle": "Plane",
 "got": "crash",
-"got_cause": "compass",
+"got_cause": "control",
 "dur": 56,
 "created": "2024-08-15"
 },
@@ -2493,8 +2493,8 @@
 "cause_hint": null,
 "mb": 34.2,
 "vehicle": "Plane",
-"got": "incident",
-"got_cause": "control",
+"got": "normal",
+"got_cause": null,
 "dur": 305,
 "created": "2025-04-30"
 },
@@ -2900,7 +2900,7 @@
 "mb": 8.0,
 "vehicle": "Plane",
 "got": "incident",
-"got_cause": "control",
+"got_cause": "motor",
 "dur": 258,
 "created": "2025-08-14"
 },
@@ -3124,7 +3124,7 @@
 "mb": 6.5,
 "vehicle": "Plane",
 "got": "crash",
-"got_cause": "compass",
+"got_cause": "motor",
 "dur": 53,
 "created": "2025-10-19"
 },
@@ -3166,7 +3166,7 @@
 "mb": 11.3,
 "vehicle": "Plane",
 "got": "crash",
-"got_cause": "control",
+"got_cause": "motor",
 "dur": 76,
 "created": "2025-11-15"
 },
@@ -3361,8 +3361,8 @@
 "cause_hint": "motor",
 "mb": 40.9,
 "vehicle": "Plane",
-"got": "incident",
-"got_cause": "unknown",
+"got": "normal",
+"got_cause": null,
 "dur": 554,
 "created": "2026-01-31"
 },
@@ -4412,7 +4412,7 @@
 "mb": 6.9,
 "vehicle": "Plane",
 "got": "incident",
-"got_cause": "stall",
+"got_cause": "control",
 "dur": 379,
 "created": "2017-05-28"
 },
@@ -4649,8 +4649,8 @@
 "cause_hint": "control",
 "mb": 0.4,
 "vehicle": "Plane",
-"got": "incident",
-"got_cause": "unknown",
+"got": "normal",
+"got_cause": null,
 "dur": 157,
 "created": "2017-09-06"
 },
@@ -6904,7 +6904,7 @@
 "mb": 44.9,
 "vehicle": "Plane",
 "got": "crash",
-"got_cause": "control",
+"got_cause": "stall",
 "dur": 653,
 "created": "2020-06-11"
 },
@@ -7030,7 +7030,7 @@
 "mb": 66.4,
 "vehicle": "Plane",
 "got": "crash",
-"got_cause": "control",
+"got_cause": "stall",
 "dur": 2840,
 "created": "2020-08-31"
 },
@@ -7198,7 +7198,7 @@
 "mb": 5.2,
 "vehicle": "Plane",
 "got": "incident",
-"got_cause": "stall",
+"got_cause": "control",
 "dur": 361,
 "created": "2020-12-19"
 },
@@ -7660,7 +7660,7 @@
 "mb": 30.6,
 "vehicle": "Plane",
 "got": "crash",
-"got_cause": "control",
+"got_cause": "radio",
 "dur": 1368,
 "created": "2021-05-03"
 },
@@ -7828,7 +7828,7 @@
 "mb": 74.4,
 "vehicle": "Plane",
 "got": "incident",
-"got_cause": "stall",
+"got_cause": "control",
 "dur": 1789,
 "created": "2021-07-07"
 },
@@ -7982,7 +7982,7 @@
 "mb": 1.8,
 "vehicle": "Plane",
 "got": "incident",
-"got_cause": "stall",
+"got_cause": "control",
 "dur": 73,
 "created": "2021-10-25"
 },
@@ -7996,7 +7996,7 @@
 "mb": 1.1,
 "vehicle": "Plane",
 "got": "incident",
-"got_cause": "control",
+"got_cause": "stall",
 "dur": 42,
 "created": "2021-11-01"
 },
@@ -8304,7 +8304,7 @@
 "mb": 12.6,
 "vehicle": "Plane",
 "got": "incident",
-"got_cause": "control",
+"got_cause": "radio",
 "dur": 332,
 "created": "2022-03-17"
 },
@@ -8500,7 +8500,7 @@
 "mb": 3.2,
 "vehicle": "Plane",
 "got": "incident",
-"got_cause": "compass",
+"got_cause": "control",
 "dur": 104,
 "created": "2022-05-23"
 },
@@ -8626,7 +8626,7 @@
 "mb": 28.2,
 "vehicle": "Plane",
 "got": "incident",
-"got_cause": "control",
+"got_cause": "radio",
 "dur": 449,
 "created": "2022-07-30"
 },
@@ -8724,7 +8724,7 @@
 "mb": 67.2,
 "vehicle": "Plane",
 "got": "incident",
-"got_cause": "control",
+"got_cause": "motor",
 "dur": 560,
 "created": "2022-08-28"
 },
@@ -9228,7 +9228,7 @@
 "mb": 24.9,
 "vehicle": "Plane",
 "got": "incident",
-"got_cause": "control",
+"got_cause": "motor",
 "dur": 220,
 "created": "2023-03-08"
 },
@@ -9452,7 +9452,7 @@
 "mb": 1.2,
 "vehicle": "Plane",
 "got": "crash",
-"got_cause": "compass",
+"got_cause": "control",
 "dur": 17,
 "created": "2023-04-22"
 },
