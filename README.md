@@ -52,6 +52,10 @@ ortak `reusable-release.yml` (latest.json, son 5 sürümden yamalar) ile yayın.
   çalışmayı sayılarla izler (içerik yok), çevrim dışı kurallar + kullanıcının kendi Gemini/Claude anahtarıyla öneri; bildirim + sağ altta ✦ panel;
   Ayarlar'da "Admin ile iletişim"in önünde kart. Aynı bilgisayardaki programlarla %APPDATA%/FalconCekirdek/agent üzerinden paylaşım.
 
+## v1.1.15 — Plane yanlış alarmları
+- `analysis._refine_severity`: Plane'de kanıtsız 'ciddi olay' → toplam uçuş ≥400 s ise ya da `_calm_disarm` (uçuş sonundan ≥5 s sonra, GPS hızı ≤3 m/s iken disarm) varsa 'minor'. `cr_msg` artık `crash_dump` dosya mesajını saymaz.
+- Etiket düzeltmeleri: 138733 (= 138573 aynı log), 144973, 122215 kırım; 108511 hariç. Ölçüm 659 log: doğruluk .873, duyarlılık .867, özgüllük .89; Plane 147: özgüllük .70 → .82, duyarlılık .90.
+
 ## v1.1.14 — Log Gezgini ve Plane ağırlıklı yeni gerçek loglar
 - **Log Gezgini** (`app/ui/pages_g.py` `LogBrowserPage`, `app/core/logbrowse.py`): MP "Review a Log" benzeri; logdaki tüm mesaj/alan ağacı (çok örnekli `NAME[k]`, FMTU/UNIT/MULT birimleri, logmsgs.json açıklamaları), sol/sağ eksen, mod şeritleri, ERR/MSG/EV, parametre sınır çizgileri, hazır grafikler (`PRESETS`), sorunlu bölgeler (`problems`), uzman adımları, alıştırma (`check_guess`), veri tablosu/harita/parametre sekmeleri. Metinler `i18n13.py`.
 - Yeni kurallar: `analysis._switch_disarm` (ARM.Method=2 / disarm anahtarı → `pilot`), `_impact_end` (Plane: çarpmayla kesilen logda `power` yerine `control`). `LOADER_VER=8`.
