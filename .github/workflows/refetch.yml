@@ -1,0 +1,37 @@
+name: crashbench-refetch
+
+# Bir tarama manifestindeki logları yeniden indirip iş akışı eseri (artifact) olarak saklar (release yüklemesi reddedilirse).
+# Tetik: tools_data/request_refetch.txt (ilk satır: manifest yolu)
+on:
+  push:
+    branches-ignore: [main]
+    paths: ['tools_data/request_refetch.txt']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  refetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Refetch logs
+        env:
+          BENCH_DIR: /tmp/rf
+          BENCH_MAX_MB: '100'
+        run: |
+          export BENCH_MANIFEST=$(head -1 tools_data/request_refetch.txt)
+          python tools_data/crashbench.py refetch
+          cd /tmp/rf && tar czf /tmp/rf.tgz *.bin manifest.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: refetch-logs
+          path: /tmp/rf.tgz
+          retention-days: 5
+          compression-level: 0
