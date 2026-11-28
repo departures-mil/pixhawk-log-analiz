@@ -559,7 +559,7 @@ def _tm():
 def translate_text(text, src, tgt, settings=None, usage=None, on_progress=None, cancel=None, translator=None):
     """Serbest metin: satır/paragraf yapısı korunur. (çeviri, rapor)"""
     src = src if src in LANGS else detect(text)
-    lines = (text or '').split('\n')
+    lines = (text or '').replace('\r\n', '\n').replace('\r', '\n').split('\n')
     # madde imi / numara önekleri ayrı tutulur
     pre = []; body = []
     for ln in lines:
