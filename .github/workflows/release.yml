@@ -87,9 +87,21 @@ jobs:
 
       - name: Smoke test (silent install + upgrade + win-app base + uninstall)
         shell: pwsh
+        timeout-minutes: 20
         run: |
+          # her süreç süre sınırıyla: takılırsa hangi adımda takıldığı yazılır, iş saatlerce asılı kalmaz
+          function Run-Timed($exe, $argv, $sec, $name) {
+            Write-Host "== $name"
+            $p = Start-Process $exe -ArgumentList $argv -PassThru
+            if (-not $p.WaitForExit($sec * 1000)) {
+              Get-Process | Where-Object { $_.Path -like '*Pixhawk*' -or $_.Name -like '*unins*' -or $_.Name -like '*Setup*' } | Format-Table Id, Name, Path
+              Get-Process | Where-Object { $_.Path -like '*Pixhawk*' -or $_.Name -like '*unins*' -or $_.Name -like '*Setup*' } | Stop-Process -Force -ErrorAction SilentlyContinue
+              Write-Error "TIMEOUT ($sec s): $name"; exit 1
+            }
+            Write-Host "   exit $($p.ExitCode)"
+          }
           $s = "dist\PixhawkLogAnaliz_Setup_${{ steps.ver.outputs.version }}.exe"
-          Start-Process $s -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/SP-' -Wait
+          Run-Timed $s @('/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/SP-') 300 'install'
           $d = "$env:LOCALAPPDATA\Programs\Pixhawk Log Analiz"
           if (-not (Test-Path "$d\PixhawkLogAnaliz.exe")) { Write-Error 'install failed'; exit 1 }
           if (-not (Test-Path "$d\_internal\app\data\letterheads\mod_fixed_wing.jpg")) { Write-Error 'letterhead missing'; exit 1 }
@@ -103,14 +115,14 @@ jobs:
           if ($a -ne $b) { Write-Error "win-app zip not reproducible from install dir ($a vs $b)"; exit 1 }
           # çeviri / OCR / belge kütüphaneleri kurulu exe'de çalışıyor mu (CTranslate2, sentencepiece, PyMuPDF + Arapça yazı)
           $mj = "$env:TEMP\px-modules.json"
-          Start-Process "$d\PixhawkLogAnaliz.exe" -ArgumentList '--check-modules', $mj -Wait
+          Run-Timed "$d\PixhawkLogAnaliz.exe" @('--check-modules', $mj) 180 'check-modules'
           Get-Content $mj
           $m = Get-Content $mj -Raw | ConvertFrom-Json
           foreach ($k in 'ctranslate2','sentencepiece','pymupdf','docx','ceviri') { if ("$($m.$k)" -like 'ERROR*' -or -not $m.$k) { Get-ChildItem "$d\_internal" -Filter '*sentencepiece*' -Recurse | Format-Table FullName; Write-Error "module check failed: $k"; exit 1 } }
           # program yazılabilir mi (win-app takası için)
           New-Item -ItemType File "$d\.fc-w-test" | Out-Null; Remove-Item "$d\.fc-w-test"
-          Start-Process $s -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/SP-' -Wait
-          Start-Process "$d-uninstall\unins000.exe" -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART' -Wait
+          Run-Timed $s @('/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/SP-') 300 'upgrade'
+          Run-Timed "$d-uninstall\unins000.exe" @('/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART') 300 'uninstall'
           Start-Sleep 3
           if (Test-Path "$d\PixhawkLogAnaliz.exe") { Write-Error 'uninstall left files'; exit 1 }
           Write-Host "install/upgrade/win-app base/uninstall OK"
