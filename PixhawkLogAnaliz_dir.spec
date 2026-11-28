@@ -14,6 +14,13 @@ hidden += ['fccore.' + f[:-3] for f in _os.listdir('fccore') if f.endswith('.py'
 # çeviri / OCR / belge: CTranslate2 (NLLB çevrimdışı), sentencepiece, PyMuPDF
 hidden += ['ctranslate2', 'sentencepiece', 'pymupdf', 'fitz'] + collect_submodules('pymupdf')
 bins = collect_dynamic_libs('ctranslate2') + collect_dynamic_libs('pymupdf')
+# sentencepiece: _sentencepiece.pyd'nin DLL'leri (delvewheel *.libs / paket içi) hem kendi klasörüne hem köke
+from PyInstaller.utils.hooks import collect_all as _ca
+import glob as _glob, importlib.util as _iu
+_d, _b, _h = _ca('sentencepiece'); datas += _d; bins += _b; hidden += _h
+_spd = _os.path.dirname(_iu.find_spec('sentencepiece').origin)
+for _f in _glob.glob(_os.path.join(_spd, '*.dll')) + _glob.glob(_os.path.join(_os.path.dirname(_spd), 'sentencepiece*.libs', '*.dll')):
+    bins += [(_f, '.'), (_f, 'sentencepiece'), (_f, 'sentencepiece.libs')]
 hidden += collect_submodules('reportlab.pdfbase') + collect_submodules('edge_tts') + ['imageio_ffmpeg', 'aiohttp', 'certifi']
 excl = ['tkinter', 'PySide6.QtWebEngineCore', 'PySide6.QtWebEngineWidgets', 'PySide6.QtQuick', 'PySide6.QtQml',
         'PySide6.Qt3DCore', 'PySide6.QtMultimedia', 'PySide6.QtPdf', 'PyQt5', 'PyQt6', 'IPython', 'scipy', 'pandas', 'pytest']

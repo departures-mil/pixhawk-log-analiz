@@ -106,7 +106,7 @@ jobs:
           Start-Process "$d\PixhawkLogAnaliz.exe" -ArgumentList '--check-modules', $mj -Wait
           Get-Content $mj
           $m = Get-Content $mj -Raw | ConvertFrom-Json
-          foreach ($k in 'ctranslate2','sentencepiece','pymupdf','docx','ceviri') { if ("$($m.$k)" -like 'ERROR*' -or -not $m.$k) { Write-Error "module check failed: $k"; exit 1 } }
+          foreach ($k in 'ctranslate2','sentencepiece','pymupdf','docx','ceviri') { if ("$($m.$k)" -like 'ERROR*' -or -not $m.$k) { Get-ChildItem "$d\_internal" -Filter '*sentencepiece*' -Recurse | Format-Table FullName; Write-Error "module check failed: $k"; exit 1 } }
           # program yazılabilir mi (win-app takası için)
           New-Item -ItemType File "$d\.fc-w-test" | Out-Null; Remove-Item "$d\.fc-w-test"
           Start-Process $s -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/SP-' -Wait
