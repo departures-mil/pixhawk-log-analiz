@@ -572,13 +572,19 @@ class TranslatePage(Page):
         h.addWidget(QLabel(tx('pk_use'))); self.c_nllb = _combo()
         for pid in PK.MT_ORDER: self.c_nllb.addItem(PK.PACKS[pid]['name'], pid)
         self.c_nllb.setCurrentIndex(max(0, self.c_nllb.findData(self.s.get('tx_nllb') or 'nllb-3.3b')))
-        self.c_nllb.currentIndexChanged.connect(lambda *_: (self.s.__setitem__('tx_nllb', self.c_nllb.currentData()), self._status()))
+        self.c_nllb.currentIndexChanged.connect(self._set_nllb)
         h.addWidget(self.c_nllb)
         v.addLayout(h)
         self.pbox = ProgressBox(); self.pbox.setVisible(False); v.addWidget(self.pbox)
         v.addStretch(1)
         self._fill_pk()
         return w
+
+    def _set_nllb(self, *_):
+        self.s['tx_nllb'] = self.c_nllb.currentData()
+        try: self.s.save()
+        except Exception: pass
+        self._status()
 
     def _fill_pk(self):
         ids = list(PK.PACKS)

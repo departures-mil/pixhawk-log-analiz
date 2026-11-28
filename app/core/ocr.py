@@ -16,6 +16,11 @@ PROMPT = ('Transcribe ALL text in this image exactly as written, in its original
 TESS_LANG = {'tr': 'tur+eng', 'en': 'eng', 'ar': 'ara+eng'}
 
 
+# görü desteklemeyen model "göremiyorum" derse OCR sonucu sayılmaz (sıradaki motora geçilir)
+_REFUSAL = re.compile(r"\b(?:I(?:'m| am) (?:unable|not able)|I can(?:no|')t (?:see|view|read|access)|unable to (?:view|see|read) (?:the )?image|"
+                      r"no image (?:was )?(?:provided|attached))", re.I)
+
+
 class NoOCR(RuntimeError):
     pass
 
@@ -174,7 +179,7 @@ def ocr(image, lang='auto', settings=None, usage=None):
             try:
                 png = png or _png(_img(image))
                 t = _online(p, s, usage, png)
-                if t and t.strip():
+                if t and t.strip() and not _REFUSAL.search(t[:300]):
                     return _clean(t), {'gemini': 'Google Gemini', 'anthropic': 'Anthropic Claude', 'free': 'Pollinations'}[p]
             except Exception as e:
                 last = e
