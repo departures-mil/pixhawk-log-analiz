@@ -1,5 +1,6 @@
 """v1.1.18 arayüz metinleri (TR/EN/AR): Log kesme (yalnız çalışılacak aralık)."""
 U14 = {
+    'nav_motors': ('Motor Yönleri Bankası', 'Motor Order Bank', 'بنك ترتيب المحركات'),
     'fi_other': ('Diğer (yazın)…', 'Other (type)…', 'أخرى (اكتب)…'),
     'cut_btn': ('✂ Kes', '✂ Cut', '✂ قص'),
     'cut_title': ('Logu kes: yalnız çalışılacak aralığı incele', 'Cut the log: examine only the part you need',

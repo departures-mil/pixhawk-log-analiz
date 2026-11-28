@@ -52,6 +52,10 @@ ortak `reusable-release.yml` (latest.json, son 5 sürümden yamalar) ile yayın.
   çalışmayı sayılarla izler (içerik yok), çevrim dışı kurallar + kullanıcının kendi Gemini/Claude anahtarıyla öneri; bildirim + sağ altta ✦ panel;
   Ayarlar'da "Admin ile iletişim"in önünde kart. Aynı bilgisayardaki programlarla %APPDATA%/FalconCekirdek/agent üzerinden paylaşım.
 
+## v1.1.19 — Motor Yönleri Bankası
+- `tools_data/build_motororder.py`: ArduPilot `AP_MotorsMatrix.cpp` (master) ayrıştırılır → `app/data/motororder.json` + `app/data/motororder/*.png` (61 kart). Konum: MotorDef açısı (0 ön, + sağ), MotorDefRaw/`add_motor` roll/pitch katsayıları; aynı konumdaki ikinci motor ALT. V/A kuyruk arka motorlarına konum elle verildi.
+- `app/core/motororder.py` (kartlar, çizim, `find_for_params`), `app/ui/pages_m.py` (Eğitim → Motor Yönleri Bankası: galeri, ayrıntı tablosu, açık logdaki çerçeve). Testler `tests/test_motororder.py`.
+
 ## v1.1.18 — Log kesme ve liste görünümlü uçuş bilgileri formu
 - `app/core/logcut.py`: `records(L)` (kurulu dönemler, 20 s'den yakınlar birleşir; yoksa veri boşlukları), `crop(L, t0, t1)` (zaman aralık başından; `t0_us`/`gps_time0` kaydırılır, PARM tam; asıl log `L.cut['full']`), `restore`. Kesim `settings['log_cuts'][uid]`, log yeniden açılınca uygulanır. `logbrowse.ensure_all` kesilmiş logda yalnız aralığı okur.
 - Arayüz: `app/ui/logcut_dlg.py` (tam log grafiği, numaralı kayıtlar, SpanSelector), Analiz sayfasında ✂ Kes + mavi kesim şeridi (Aralığı değiştir / Tamamını geri getir), üst çubukta ✂. Metinler `i18n14.py`.
