@@ -1,0 +1,3775 @@
+{
+ "source": "ArduPilot libraries/AP_Motors/AP_MotorsMatrix.cpp (master)",
+ "frames": [
+  {
+   "cls": 1,
+   "cls_name": "QUAD",
+   "type": 1,
+   "type_name": "X",
+   "ap_string": "X",
+   "motors": [
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 1,
+     "n": 1
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 3,
+     "n": 2
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 4,
+     "n": 3
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 2,
+     "n": 4
+    }
+   ],
+   "id": "qp_quad_x",
+   "group": "qp",
+   "kind": "matrix",
+   "body": "plane",
+   "params": "Q_ENABLE=1 · Q_FRAME_CLASS=1 · Q_FRAME_TYPE=1"
+  },
+  {
+   "cls": 1,
+   "cls_name": "QUAD",
+   "type": 0,
+   "type_name": "PLUS",
+   "ap_string": "PLUS",
+   "motors": [
+    {
+     "x": 1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": 1,
+     "order": 2,
+     "n": 1
+    },
+    {
+     "x": -1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": 1,
+     "order": 4,
+     "n": 2
+    },
+    {
+     "x": 0.0,
+     "y": 1.0,
+     "yaw": -1,
+     "order": 1,
+     "n": 3
+    },
+    {
+     "x": 1.2246467991473532e-16,
+     "y": -1.0,
+     "yaw": -1,
+     "order": 3,
+     "n": 4
+    }
+   ],
+   "id": "qp_quad_plus",
+   "group": "qp",
+   "kind": "matrix",
+   "body": "plane",
+   "params": "Q_ENABLE=1 · Q_FRAME_CLASS=1 · Q_FRAME_TYPE=0"
+  },
+  {
+   "cls": 1,
+   "cls_name": "QUAD",
+   "type": 3,
+   "type_name": "H",
+   "ap_string": "H",
+   "motors": [
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 1,
+     "n": 1
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 3,
+     "n": 2
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 4,
+     "n": 3
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 2,
+     "n": 4
+    }
+   ],
+   "id": "qp_quad_h",
+   "group": "qp",
+   "kind": "matrix",
+   "body": "plane",
+   "params": "Q_ENABLE=1 · Q_FRAME_CLASS=1 · Q_FRAME_TYPE=3"
+  },
+  {
+   "cls": 1,
+   "cls_name": "QUAD",
+   "type": 17,
+   "type_name": "NYT_X",
+   "ap_string": "NYT_X",
+   "motors": [
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 0,
+     "order": 1,
+     "n": 1
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 0,
+     "order": 3,
+     "n": 2
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 0,
+     "order": 4,
+     "n": 3
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 0,
+     "order": 2,
+     "n": 4
+    }
+   ],
+   "id": "qp_quad_nyt_x",
+   "group": "qp",
+   "kind": "matrix",
+   "body": "plane",
+   "note": [
+    "Yaw torku yok: motorların yaw katsayısı 0, yön kontrolü uçağın yüzeyleri/eğimiyle yapılır; pervane yönleri yazılımda sabit değildir.",
+    "No yaw torque: the motors have zero yaw factor, yaw comes from the aircraft surfaces/tilt; prop directions are not fixed by the firmware.",
+    "بلا عزم انعراج: معامل الانعراج للمحركات صفر، ويأتي الانعراج من أسطح الطائرة/الإمالة؛ اتجاهات المراوح غير محددة في البرنامج."
+   ],
+   "params": "Q_ENABLE=1 · Q_FRAME_CLASS=1 · Q_FRAME_TYPE=17"
+  },
+  {
+   "cls": 1,
+   "cls_name": "QUAD",
+   "type": 16,
+   "type_name": "NYT_PLUS",
+   "ap_string": "NYT_PLUS",
+   "motors": [
+    {
+     "x": 1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": 0,
+     "order": 2,
+     "n": 1
+    },
+    {
+     "x": -1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": 0,
+     "order": 4,
+     "n": 2
+    },
+    {
+     "x": 0.0,
+     "y": 1.0,
+     "yaw": 0,
+     "order": 1,
+     "n": 3
+    },
+    {
+     "x": 1.2246467991473532e-16,
+     "y": -1.0,
+     "yaw": 0,
+     "order": 3,
+     "n": 4
+    }
+   ],
+   "id": "qp_quad_nyt_plus",
+   "group": "qp",
+   "kind": "matrix",
+   "body": "plane",
+   "note": [
+    "Yaw torku yok: motorların yaw katsayısı 0, yön kontrolü uçağın yüzeyleri/eğimiyle yapılır; pervane yönleri yazılımda sabit değildir.",
+    "No yaw torque: the motors have zero yaw factor, yaw comes from the aircraft surfaces/tilt; prop directions are not fixed by the firmware.",
+    "بلا عزم انعراج: معامل الانعراج للمحركات صفر، ويأتي الانعراج من أسطح الطائرة/الإمالة؛ اتجاهات المراوح غير محددة في البرنامج."
+   ],
+   "params": "Q_ENABLE=1 · Q_FRAME_CLASS=1 · Q_FRAME_TYPE=16"
+  },
+  {
+   "cls": 1,
+   "cls_name": "QUAD",
+   "type": 2,
+   "type_name": "V",
+   "ap_string": "H",
+   "motors": [
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 1,
+     "n": 1
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 3,
+     "n": 2
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 4,
+     "n": 3
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 2,
+     "n": 4
+    }
+   ],
+   "id": "qp_quad_v",
+   "group": "qp",
+   "kind": "matrix",
+   "body": "plane",
+   "params": "Q_ENABLE=1 · Q_FRAME_CLASS=1 · Q_FRAME_TYPE=2"
+  },
+  {
+   "cls": 2,
+   "cls_name": "HEXA",
+   "type": 1,
+   "type_name": "X",
+   "ap_string": "X",
+   "motors": [
+    {
+     "x": 1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": -1,
+     "order": 2,
+     "n": 1
+    },
+    {
+     "x": -1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": 1,
+     "order": 5,
+     "n": 2
+    },
+    {
+     "x": -0.49999999999999994,
+     "y": 0.8660254037844387,
+     "yaw": -1,
+     "order": 6,
+     "n": 3
+    },
+    {
+     "x": 0.49999999999999994,
+     "y": -0.8660254037844387,
+     "yaw": 1,
+     "order": 3,
+     "n": 4
+    },
+    {
+     "x": 0.49999999999999994,
+     "y": 0.8660254037844387,
+     "yaw": 1,
+     "order": 1,
+     "n": 5
+    },
+    {
+     "x": -0.49999999999999994,
+     "y": -0.8660254037844387,
+     "yaw": -1,
+     "order": 4,
+     "n": 6
+    }
+   ],
+   "id": "qp_hexa_x",
+   "group": "qp",
+   "kind": "matrix",
+   "body": "plane",
+   "params": "Q_ENABLE=1 · Q_FRAME_CLASS=2 · Q_FRAME_TYPE=1"
+  },
+  {
+   "cls": 2,
+   "cls_name": "HEXA",
+   "type": 0,
+   "type_name": "PLUS",
+   "ap_string": "PLUS",
+   "motors": [
+    {
+     "x": 0.0,
+     "y": 1.0,
+     "yaw": -1,
+     "order": 1,
+     "n": 1
+    },
+    {
+     "x": 1.2246467991473532e-16,
+     "y": -1.0,
+     "yaw": 1,
+     "order": 4,
+     "n": 2
+    },
+    {
+     "x": -0.8660254037844387,
+     "y": -0.4999999999999998,
+     "yaw": -1,
+     "order": 5,
+     "n": 3
+    },
+    {
+     "x": 0.8660254037844386,
+     "y": 0.5000000000000001,
+     "yaw": 1,
+     "order": 2,
+     "n": 4
+    },
+    {
+     "x": -0.8660254037844386,
+     "y": 0.5000000000000001,
+     "yaw": 1,
+     "order": 6,
+     "n": 5
+    },
+    {
+     "x": 0.8660254037844387,
+     "y": -0.4999999999999998,
+     "yaw": -1,
+     "order": 3,
+     "n": 6
+    }
+   ],
+   "id": "qp_hexa_plus",
+   "group": "qp",
+   "kind": "matrix",
+   "body": "plane",
+   "params": "Q_ENABLE=1 · Q_FRAME_CLASS=2 · Q_FRAME_TYPE=0"
+  },
+  {
+   "cls": 3,
+   "cls_name": "OCTA",
+   "type": 1,
+   "type_name": "X",
+   "ap_string": "X",
+   "motors": [
+    {
+     "x": 0.3826834323650898,
+     "y": 0.9238795325112867,
+     "yaw": -1,
+     "order": 1,
+     "n": 1
+    },
+    {
+     "x": -0.3826834323650899,
+     "y": -0.9238795325112867,
+     "yaw": -1,
+     "order": 5,
+     "n": 2
+    },
+    {
+     "x": 0.9238795325112867,
+     "y": 0.38268343236508984,
+     "yaw": 1,
+     "order": 2,
+     "n": 3
+    },
+    {
+     "x": 0.3826834323650899,
+     "y": -0.9238795325112867,
+     "yaw": 1,
+     "order": 4,
+     "n": 4
+    },
+    {
+     "x": -0.3826834323650898,
+     "y": 0.9238795325112867,
+     "yaw": 1,
+     "order": 8,
+     "n": 5
+    },
+    {
+     "x": -0.9238795325112867,
+     "y": -0.3826834323650897,
+     "yaw": 1,
+     "order": 6,
+     "n": 6
+    },
+    {
+     "x": -0.9238795325112867,
+     "y": 0.38268343236508984,
+     "yaw": -1,
+     "order": 7,
+     "n": 7
+    },
+    {
+     "x": 0.9238795325112867,
+     "y": -0.3826834323650897,
+     "yaw": -1,
+     "order": 3,
+     "n": 8
+    }
+   ],
+   "id": "qp_octa_x",
+   "group": "qp",
+   "kind": "matrix",
+   "body": "plane",
+   "params": "Q_ENABLE=1 · Q_FRAME_CLASS=3 · Q_FRAME_TYPE=1"
+  },
+  {
+   "cls": 3,
+   "cls_name": "OCTA",
+   "type": 0,
+   "type_name": "PLUS",
+   "ap_string": "PLUS",
+   "motors": [
+    {
+     "x": 0.0,
+     "y": 1.0,
+     "yaw": -1,
+     "order": 1,
+     "n": 1
+    },
+    {
+     "x": 1.2246467991473532e-16,
+     "y": -1.0,
+     "yaw": -1,
+     "order": 5,
+     "n": 2
+    },
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 2,
+     "n": 3
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 4,
+     "n": 4
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 8,
+     "n": 5
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 6,
+     "n": 6
+    },
+    {
+     "x": -1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": -1,
+     "order": 7,
+     "n": 7
+    },
+    {
+     "x": 1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": -1,
+     "order": 3,
+     "n": 8
+    }
+   ],
+   "id": "qp_octa_plus",
+   "group": "qp",
+   "kind": "matrix",
+   "body": "plane",
+   "params": "Q_ENABLE=1 · Q_FRAME_CLASS=3 · Q_FRAME_TYPE=0"
+  },
+  {
+   "cls": 4,
+   "cls_name": "OCTAQUAD",
+   "type": 1,
+   "type_name": "X",
+   "ap_string": "X",
+   "motors": [
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 1,
+     "n": 1,
+     "level": "top"
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 7,
+     "n": 2,
+     "level": "top"
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 5,
+     "n": 3,
+     "level": "top"
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 3,
+     "n": 4,
+     "level": "top"
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 8,
+     "n": 5,
+     "level": "bottom"
+    },
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 2,
+     "n": 6,
+     "level": "bottom"
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 4,
+     "n": 7,
+     "level": "bottom"
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 6,
+     "n": 8,
+     "level": "bottom"
+    }
+   ],
+   "id": "qp_octaquad_x",
+   "group": "qp",
+   "kind": "matrix",
+   "body": "plane",
+   "note": [
+    "Aynı koldaki iki motor üst üstedir: düz çizgili disk ÜST, kesik çizgili disk ALT motordur.",
+    "Two motors share each arm: the solid disc is the TOP motor, the dashed disc is the BOTTOM motor.",
+    "محركان على كل ذراع: القرص المتصل هو العلوي، والقرص المتقطع هو السفلي."
+   ],
+   "params": "Q_ENABLE=1 · Q_FRAME_CLASS=4 · Q_FRAME_TYPE=1"
+  },
+  {
+   "cls": 4,
+   "cls_name": "OCTAQUAD",
+   "type": 0,
+   "type_name": "PLUS",
+   "ap_string": "PLUS",
+   "motors": [
+    {
+     "x": 0.0,
+     "y": 1.0,
+     "yaw": 1,
+     "order": 1,
+     "n": 1,
+     "level": "top"
+    },
+    {
+     "x": -1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": -1,
+     "order": 7,
+     "n": 2,
+     "level": "top"
+    },
+    {
+     "x": 1.2246467991473532e-16,
+     "y": -1.0,
+     "yaw": 1,
+     "order": 5,
+     "n": 3,
+     "level": "top"
+    },
+    {
+     "x": 1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": -1,
+     "order": 3,
+     "n": 4,
+     "level": "top"
+    },
+    {
+     "x": -1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": 1,
+     "order": 8,
+     "n": 5,
+     "level": "bottom"
+    },
+    {
+     "x": 0.0,
+     "y": 1.0,
+     "yaw": -1,
+     "order": 2,
+     "n": 6,
+     "level": "bottom"
+    },
+    {
+     "x": 1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": 1,
+     "order": 4,
+     "n": 7,
+     "level": "bottom"
+    },
+    {
+     "x": 1.2246467991473532e-16,
+     "y": -1.0,
+     "yaw": -1,
+     "order": 6,
+     "n": 8,
+     "level": "bottom"
+    }
+   ],
+   "id": "qp_octaquad_plus",
+   "group": "qp",
+   "kind": "matrix",
+   "body": "plane",
+   "note": [
+    "Aynı koldaki iki motor üst üstedir: düz çizgili disk ÜST, kesik çizgili disk ALT motordur.",
+    "Two motors share each arm: the solid disc is the TOP motor, the dashed disc is the BOTTOM motor.",
+    "محركان على كل ذراع: القرص المتصل هو العلوي، والقرص المتقطع هو السفلي."
+   ],
+   "params": "Q_ENABLE=1 · Q_FRAME_CLASS=4 · Q_FRAME_TYPE=0"
+  },
+  {
+   "cls": 5,
+   "cls_name": "Y6",
+   "type": 10,
+   "type_name": "Y6B",
+   "ap_string": "Y6B",
+   "motors": [
+    {
+     "x": 1.0,
+     "y": 0.5,
+     "yaw": -1,
+     "order": 1,
+     "n": 1,
+     "level": "top"
+    },
+    {
+     "x": 1.0,
+     "y": 0.5,
+     "yaw": 1,
+     "order": 2,
+     "n": 2,
+     "level": "bottom"
+    },
+    {
+     "x": -0.0,
+     "y": -1.0,
+     "yaw": -1,
+     "order": 3,
+     "n": 3,
+     "level": "top"
+    },
+    {
+     "x": -0.0,
+     "y": -1.0,
+     "yaw": 1,
+     "order": 4,
+     "n": 4,
+     "level": "bottom"
+    },
+    {
+     "x": -1.0,
+     "y": 0.5,
+     "yaw": -1,
+     "order": 5,
+     "n": 5,
+     "level": "top"
+    },
+    {
+     "x": -1.0,
+     "y": 0.5,
+     "yaw": 1,
+     "order": 6,
+     "n": 6,
+     "level": "bottom"
+    }
+   ],
+   "id": "qp_y6_y6b",
+   "group": "qp",
+   "kind": "matrix",
+   "body": "plane",
+   "note": [
+    "Aynı koldaki iki motor üst üstedir: düz çizgili disk ÜST, kesik çizgili disk ALT motordur.",
+    "Two motors share each arm: the solid disc is the TOP motor, the dashed disc is the BOTTOM motor.",
+    "محركان على كل ذراع: القرص المتصل هو العلوي، والقرص المتقطع هو السفلي."
+   ],
+   "params": "Q_ENABLE=1 · Q_FRAME_CLASS=5 · Q_FRAME_TYPE=10"
+  },
+  {
+   "cls": 5,
+   "cls_name": "Y6",
+   "type": 11,
+   "type_name": "Y6F",
+   "ap_string": "Y6F",
+   "motors": [
+    {
+     "x": -0.0,
+     "y": -1.0,
+     "yaw": 1,
+     "order": 3,
+     "n": 1,
+     "level": "top"
+    },
+    {
+     "x": 1.0,
+     "y": 0.5,
+     "yaw": 1,
+     "order": 1,
+     "n": 2,
+     "level": "top"
+    },
+    {
+     "x": -1.0,
+     "y": 0.5,
+     "yaw": 1,
+     "order": 5,
+     "n": 3,
+     "level": "top"
+    },
+    {
+     "x": -0.0,
+     "y": -1.0,
+     "yaw": -1,
+     "order": 4,
+     "n": 4,
+     "level": "bottom"
+    },
+    {
+     "x": 1.0,
+     "y": 0.5,
+     "yaw": -1,
+     "order": 2,
+     "n": 5,
+     "level": "bottom"
+    },
+    {
+     "x": -1.0,
+     "y": 0.5,
+     "yaw": -1,
+     "order": 6,
+     "n": 6,
+     "level": "bottom"
+    }
+   ],
+   "id": "qp_y6_y6f",
+   "group": "qp",
+   "kind": "matrix",
+   "body": "plane",
+   "note": [
+    "Aynı koldaki iki motor üst üstedir: düz çizgili disk ÜST, kesik çizgili disk ALT motordur.",
+    "Two motors share each arm: the solid disc is the TOP motor, the dashed disc is the BOTTOM motor.",
+    "محركان على كل ذراع: القرص المتصل هو العلوي، والقرص المتقطع هو السفلي."
+   ],
+   "params": "Q_ENABLE=1 · Q_FRAME_CLASS=5 · Q_FRAME_TYPE=11"
+  },
+  {
+   "id": "qp_tri",
+   "group": "qp",
+   "kind": "tri",
+   "body": "plane",
+   "cls": 7,
+   "cls_name": "TRI",
+   "type": -1,
+   "type_name": "STD",
+   "ap_string": "TRI",
+   "motors": [
+    {
+     "n": 1,
+     "x": 0.87,
+     "y": 0.5,
+     "yaw": 0,
+     "order": 1
+    },
+    {
+     "n": 2,
+     "x": -0.87,
+     "y": 0.5,
+     "yaw": 0,
+     "order": 3
+    },
+    {
+     "n": 4,
+     "x": 0.0,
+     "y": -1.0,
+     "yaw": 0,
+     "order": 2
+    }
+   ],
+   "servo": {
+    "x": 0.0,
+    "y": -1.0
+   },
+   "params": "Q_FRAME_CLASS=7 · Q_TILT_MASK",
+   "note": [
+    "Yaw kuyruk motorunu yatıran servoyla (Motor7) yapılır; dönüş yönleri ArduPilot'ta sabit değildir, çerçeve/pervane üreticisinin şemasına uyun.",
+    "Yaw comes from the servo that tilts the tail motor (Motor7); rotation directions are not fixed by ArduPilot, follow the frame/prop maker's diagram.",
+    "الانعراج عبر المؤازر الذي يميل المحرك الخلفي (Motor7)؛ اتجاهات الدوران غير محددة في ArduPilot، اتبع مخطط مصنع الهيكل/المراوح."
+   ]
+  },
+  {
+   "id": "qp_tailsitter",
+   "group": "qp",
+   "kind": "tailsitter",
+   "body": "wing",
+   "cls": 10,
+   "cls_name": "TAILSITTER",
+   "type": -1,
+   "type_name": "DUAL",
+   "ap_string": "TAILSITTER",
+   "motors": [
+    {
+     "n": "L",
+     "x": -0.7,
+     "y": 0.15,
+     "yaw": 0,
+     "order": 2,
+     "fn": 73
+    },
+    {
+     "n": "R",
+     "x": 0.7,
+     "y": 0.15,
+     "yaw": 0,
+     "order": 1,
+     "fn": 74
+    }
+   ],
+   "params": "Q_ENABLE=1 · Q_FRAME_CLASS=10 · Q_TAILSIT_ENABLE=1 · SERVOx_FUNCTION=73 (ThrottleLeft) / 74 (ThrottleRight)",
+   "note": [
+    "Sol motor ThrottleLeft (73), sağ motor ThrottleRight (74). Pervaneler çoğunlukla zıt yönde döner; yaw/roll kontrolü elevon ve motor farkıyla yapılır.",
+    "Left motor ThrottleLeft (73), right motor ThrottleRight (74). Props usually counter-rotate; yaw/roll control comes from elevons and differential thrust.",
+    "المحرك الأيسر ThrottleLeft (73) والأيمن ThrottleRight (74). المراوح عادة تدور بعكس بعضها؛ التحكم بالانعراج/الدحرجة عبر الإيلفونات وفرق الدفع."
+   ]
+  },
+  {
+   "cls": 1,
+   "cls_name": "QUAD",
+   "type": 0,
+   "type_name": "PLUS",
+   "ap_string": "PLUS",
+   "motors": [
+    {
+     "x": 1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": 1,
+     "order": 2,
+     "n": 1
+    },
+    {
+     "x": -1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": 1,
+     "order": 4,
+     "n": 2
+    },
+    {
+     "x": 0.0,
+     "y": 1.0,
+     "yaw": -1,
+     "order": 1,
+     "n": 3
+    },
+    {
+     "x": 1.2246467991473532e-16,
+     "y": -1.0,
+     "yaw": -1,
+     "order": 3,
+     "n": 4
+    }
+   ],
+   "id": "mc_quad_plus",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "params": "FRAME_CLASS=1 · FRAME_TYPE=0"
+  },
+  {
+   "cls": 1,
+   "cls_name": "QUAD",
+   "type": 1,
+   "type_name": "X",
+   "ap_string": "X",
+   "motors": [
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 1,
+     "n": 1
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 3,
+     "n": 2
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 4,
+     "n": 3
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 2,
+     "n": 4
+    }
+   ],
+   "id": "mc_quad_x",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "params": "FRAME_CLASS=1 · FRAME_TYPE=1"
+  },
+  {
+   "cls": 1,
+   "cls_name": "QUAD",
+   "type": 12,
+   "type_name": "BF_X",
+   "ap_string": "BF_X",
+   "motors": [
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 2,
+     "n": 1
+    },
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 1,
+     "n": 2
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 3,
+     "n": 3
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 4,
+     "n": 4
+    }
+   ],
+   "id": "mc_quad_bf_x",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "params": "FRAME_CLASS=1 · FRAME_TYPE=12"
+  },
+  {
+   "cls": 1,
+   "cls_name": "QUAD",
+   "type": 18,
+   "type_name": "BF_X_REV",
+   "ap_string": "X_REV",
+   "motors": [
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 2,
+     "n": 1
+    },
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 1,
+     "n": 2
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 3,
+     "n": 3
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 4,
+     "n": 4
+    }
+   ],
+   "id": "mc_quad_bf_x_rev",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "params": "FRAME_CLASS=1 · FRAME_TYPE=18"
+  },
+  {
+   "cls": 1,
+   "cls_name": "QUAD",
+   "type": 13,
+   "type_name": "DJI_X",
+   "ap_string": "DJI_X",
+   "motors": [
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 1,
+     "n": 1
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 4,
+     "n": 2
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 3,
+     "n": 3
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 2,
+     "n": 4
+    }
+   ],
+   "id": "mc_quad_dji_x",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "params": "FRAME_CLASS=1 · FRAME_TYPE=13"
+  },
+  {
+   "cls": 1,
+   "cls_name": "QUAD",
+   "type": 14,
+   "type_name": "CW_X",
+   "ap_string": "CW_X",
+   "motors": [
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 1,
+     "n": 1
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 2,
+     "n": 2
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 3,
+     "n": 3
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 4,
+     "n": 4
+    }
+   ],
+   "id": "mc_quad_cw_x",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "params": "FRAME_CLASS=1 · FRAME_TYPE=14"
+  },
+  {
+   "cls": 1,
+   "cls_name": "QUAD",
+   "type": 2,
+   "type_name": "V",
+   "ap_string": "H",
+   "motors": [
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 1,
+     "n": 1
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 3,
+     "n": 2
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 4,
+     "n": 3
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 2,
+     "n": 4
+    }
+   ],
+   "id": "mc_quad_v",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "params": "FRAME_CLASS=1 · FRAME_TYPE=2"
+  },
+  {
+   "cls": 1,
+   "cls_name": "QUAD",
+   "type": 3,
+   "type_name": "H",
+   "ap_string": "H",
+   "motors": [
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 1,
+     "n": 1
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 3,
+     "n": 2
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 4,
+     "n": 3
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 2,
+     "n": 4
+    }
+   ],
+   "id": "mc_quad_h",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "params": "FRAME_CLASS=1 · FRAME_TYPE=3"
+  },
+  {
+   "cls": 1,
+   "cls_name": "QUAD",
+   "type": 4,
+   "type_name": "VTAIL",
+   "ap_string": "VTAIL",
+   "motors": [
+    {
+     "n": 1,
+     "x": 0.8660254037844387,
+     "y": 0.5000000000000001,
+     "yaw": 0,
+     "order": 1
+    },
+    {
+     "n": 2,
+     "x": -0.45,
+     "y": -0.94,
+     "yaw": -1,
+     "order": 3
+    },
+    {
+     "n": 3,
+     "x": -0.8660254037844387,
+     "y": 0.5000000000000001,
+     "yaw": 0,
+     "order": 4
+    },
+    {
+     "n": 4,
+     "x": 0.45,
+     "y": -0.94,
+     "yaw": 1,
+     "order": 2
+    }
+   ],
+   "id": "mc_quad_vtail",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "note": [
+    "Ön motorlar (gri) yaw üretmez, yalnız roll/pitch; yaw yalnız arka motorlardan gelir. Gri diskin dönüş yönü yazılımda sabit değildir.",
+    "Front motors (grey) produce no yaw, only roll/pitch; yaw comes only from the rear motors. Grey discs have no firmware-defined direction.",
+    "المحركات الأمامية (الرمادية) لا تنتج انعراجاً، فقط دحرجة/ميل؛ الانعراج من الخلفية فقط. لا اتجاه محدداً للأقراص الرمادية."
+   ],
+   "params": "FRAME_CLASS=1 · FRAME_TYPE=4"
+  },
+  {
+   "cls": 1,
+   "cls_name": "QUAD",
+   "type": 5,
+   "type_name": "ATAIL",
+   "ap_string": "ATAIL",
+   "motors": [
+    {
+     "n": 1,
+     "x": 0.8660254037844387,
+     "y": 0.5000000000000001,
+     "yaw": 0,
+     "order": 1
+    },
+    {
+     "n": 2,
+     "x": -0.45,
+     "y": -0.94,
+     "yaw": 1,
+     "order": 3
+    },
+    {
+     "n": 3,
+     "x": -0.8660254037844387,
+     "y": 0.5000000000000001,
+     "yaw": 0,
+     "order": 4
+    },
+    {
+     "n": 4,
+     "x": 0.45,
+     "y": -0.94,
+     "yaw": -1,
+     "order": 2
+    }
+   ],
+   "id": "mc_quad_atail",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "note": [
+    "Ön motorlar (gri) yaw üretmez, yalnız roll/pitch; yaw yalnız arka motorlardan gelir. Gri diskin dönüş yönü yazılımda sabit değildir.",
+    "Front motors (grey) produce no yaw, only roll/pitch; yaw comes only from the rear motors. Grey discs have no firmware-defined direction.",
+    "المحركات الأمامية (الرمادية) لا تنتج انعراجاً، فقط دحرجة/ميل؛ الانعراج من الخلفية فقط. لا اتجاه محدداً للأقراص الرمادية."
+   ],
+   "params": "FRAME_CLASS=1 · FRAME_TYPE=5"
+  },
+  {
+   "cls": 1,
+   "cls_name": "QUAD",
+   "type": 6,
+   "type_name": "PLUSREV",
+   "ap_string": "PLUSREV",
+   "motors": [
+    {
+     "x": 1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": -1,
+     "order": 2,
+     "n": 1
+    },
+    {
+     "x": -1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": -1,
+     "order": 4,
+     "n": 2
+    },
+    {
+     "x": 0.0,
+     "y": 1.0,
+     "yaw": 1,
+     "order": 1,
+     "n": 3
+    },
+    {
+     "x": 1.2246467991473532e-16,
+     "y": -1.0,
+     "yaw": 1,
+     "order": 3,
+     "n": 4
+    }
+   ],
+   "id": "mc_quad_plusrev",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "params": "FRAME_CLASS=1 · FRAME_TYPE=6"
+  },
+  {
+   "cls": 1,
+   "cls_name": "QUAD",
+   "type": 19,
+   "type_name": "Y4",
+   "ap_string": "Y4",
+   "motors": [
+    {
+     "x": 1.0,
+     "y": 1.0,
+     "yaw": 1,
+     "order": 1,
+     "n": 1
+    },
+    {
+     "x": -0.0,
+     "y": -1.0,
+     "yaw": -1,
+     "order": 2,
+     "n": 2,
+     "level": "top"
+    },
+    {
+     "x": -0.0,
+     "y": -1.0,
+     "yaw": 1,
+     "order": 3,
+     "n": 3,
+     "level": "bottom"
+    },
+    {
+     "x": -1.0,
+     "y": 1.0,
+     "yaw": -1,
+     "order": 4,
+     "n": 4
+    }
+   ],
+   "id": "mc_quad_y4",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "note": [
+    "Aynı koldaki iki motor üst üstedir: düz çizgili disk ÜST, kesik çizgili disk ALT motordur.",
+    "Two motors share each arm: the solid disc is the TOP motor, the dashed disc is the BOTTOM motor.",
+    "محركان على كل ذراع: القرص المتصل هو العلوي، والقرص المتقطع هو السفلي."
+   ],
+   "params": "FRAME_CLASS=1 · FRAME_TYPE=19"
+  },
+  {
+   "cls": 2,
+   "cls_name": "HEXA",
+   "type": 0,
+   "type_name": "PLUS",
+   "ap_string": "PLUS",
+   "motors": [
+    {
+     "x": 0.0,
+     "y": 1.0,
+     "yaw": -1,
+     "order": 1,
+     "n": 1
+    },
+    {
+     "x": 1.2246467991473532e-16,
+     "y": -1.0,
+     "yaw": 1,
+     "order": 4,
+     "n": 2
+    },
+    {
+     "x": -0.8660254037844387,
+     "y": -0.4999999999999998,
+     "yaw": -1,
+     "order": 5,
+     "n": 3
+    },
+    {
+     "x": 0.8660254037844386,
+     "y": 0.5000000000000001,
+     "yaw": 1,
+     "order": 2,
+     "n": 4
+    },
+    {
+     "x": -0.8660254037844386,
+     "y": 0.5000000000000001,
+     "yaw": 1,
+     "order": 6,
+     "n": 5
+    },
+    {
+     "x": 0.8660254037844387,
+     "y": -0.4999999999999998,
+     "yaw": -1,
+     "order": 3,
+     "n": 6
+    }
+   ],
+   "id": "mc_hexa_plus",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "params": "FRAME_CLASS=2 · FRAME_TYPE=0"
+  },
+  {
+   "cls": 2,
+   "cls_name": "HEXA",
+   "type": 1,
+   "type_name": "X",
+   "ap_string": "X",
+   "motors": [
+    {
+     "x": 1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": -1,
+     "order": 2,
+     "n": 1
+    },
+    {
+     "x": -1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": 1,
+     "order": 5,
+     "n": 2
+    },
+    {
+     "x": -0.49999999999999994,
+     "y": 0.8660254037844387,
+     "yaw": -1,
+     "order": 6,
+     "n": 3
+    },
+    {
+     "x": 0.49999999999999994,
+     "y": -0.8660254037844387,
+     "yaw": 1,
+     "order": 3,
+     "n": 4
+    },
+    {
+     "x": 0.49999999999999994,
+     "y": 0.8660254037844387,
+     "yaw": 1,
+     "order": 1,
+     "n": 5
+    },
+    {
+     "x": -0.49999999999999994,
+     "y": -0.8660254037844387,
+     "yaw": -1,
+     "order": 4,
+     "n": 6
+    }
+   ],
+   "id": "mc_hexa_x",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "params": "FRAME_CLASS=2 · FRAME_TYPE=1"
+  },
+  {
+   "cls": 2,
+   "cls_name": "HEXA",
+   "type": 3,
+   "type_name": "H",
+   "ap_string": "H",
+   "motors": [
+    {
+     "x": 1.0,
+     "y": 0.0,
+     "yaw": -1,
+     "order": 2,
+     "n": 1
+    },
+    {
+     "x": -1.0,
+     "y": 0.0,
+     "yaw": 1,
+     "order": 5,
+     "n": 2
+    },
+    {
+     "x": -1.0,
+     "y": 1.0,
+     "yaw": -1,
+     "order": 6,
+     "n": 3
+    },
+    {
+     "x": 1.0,
+     "y": -1.0,
+     "yaw": 1,
+     "order": 3,
+     "n": 4
+    },
+    {
+     "x": 1.0,
+     "y": 1.0,
+     "yaw": 1,
+     "order": 1,
+     "n": 5
+    },
+    {
+     "x": -1.0,
+     "y": -1.0,
+     "yaw": -1,
+     "order": 4,
+     "n": 6
+    }
+   ],
+   "id": "mc_hexa_h",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "params": "FRAME_CLASS=2 · FRAME_TYPE=3"
+  },
+  {
+   "cls": 2,
+   "cls_name": "HEXA",
+   "type": 13,
+   "type_name": "DJI_X",
+   "ap_string": "DJI_X",
+   "motors": [
+    {
+     "x": 0.49999999999999994,
+     "y": 0.8660254037844387,
+     "yaw": 1,
+     "order": 1,
+     "n": 1
+    },
+    {
+     "x": -0.49999999999999994,
+     "y": 0.8660254037844387,
+     "yaw": -1,
+     "order": 6,
+     "n": 2
+    },
+    {
+     "x": -1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": 1,
+     "order": 5,
+     "n": 3
+    },
+    {
+     "x": -0.49999999999999994,
+     "y": -0.8660254037844387,
+     "yaw": -1,
+     "order": 4,
+     "n": 4
+    },
+    {
+     "x": 0.49999999999999994,
+     "y": -0.8660254037844387,
+     "yaw": 1,
+     "order": 3,
+     "n": 5
+    },
+    {
+     "x": 1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": -1,
+     "order": 2,
+     "n": 6
+    }
+   ],
+   "id": "mc_hexa_dji_x",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "params": "FRAME_CLASS=2 · FRAME_TYPE=13"
+  },
+  {
+   "cls": 2,
+   "cls_name": "HEXA",
+   "type": 14,
+   "type_name": "CW_X",
+   "ap_string": "CW_X",
+   "motors": [
+    {
+     "x": 0.49999999999999994,
+     "y": 0.8660254037844387,
+     "yaw": 1,
+     "order": 1,
+     "n": 1
+    },
+    {
+     "x": 1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": -1,
+     "order": 2,
+     "n": 2
+    },
+    {
+     "x": 0.49999999999999994,
+     "y": -0.8660254037844387,
+     "yaw": 1,
+     "order": 3,
+     "n": 3
+    },
+    {
+     "x": -0.49999999999999994,
+     "y": -0.8660254037844387,
+     "yaw": -1,
+     "order": 4,
+     "n": 4
+    },
+    {
+     "x": -1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": 1,
+     "order": 5,
+     "n": 5
+    },
+    {
+     "x": -0.49999999999999994,
+     "y": 0.8660254037844387,
+     "yaw": -1,
+     "order": 6,
+     "n": 6
+    }
+   ],
+   "id": "mc_hexa_cw_x",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "params": "FRAME_CLASS=2 · FRAME_TYPE=14"
+  },
+  {
+   "cls": 3,
+   "cls_name": "OCTA",
+   "type": 0,
+   "type_name": "PLUS",
+   "ap_string": "PLUS",
+   "motors": [
+    {
+     "x": 0.0,
+     "y": 1.0,
+     "yaw": -1,
+     "order": 1,
+     "n": 1
+    },
+    {
+     "x": 1.2246467991473532e-16,
+     "y": -1.0,
+     "yaw": -1,
+     "order": 5,
+     "n": 2
+    },
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 2,
+     "n": 3
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 4,
+     "n": 4
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 8,
+     "n": 5
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 6,
+     "n": 6
+    },
+    {
+     "x": -1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": -1,
+     "order": 7,
+     "n": 7
+    },
+    {
+     "x": 1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": -1,
+     "order": 3,
+     "n": 8
+    }
+   ],
+   "id": "mc_octa_plus",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "params": "FRAME_CLASS=3 · FRAME_TYPE=0"
+  },
+  {
+   "cls": 3,
+   "cls_name": "OCTA",
+   "type": 1,
+   "type_name": "X",
+   "ap_string": "X",
+   "motors": [
+    {
+     "x": 0.3826834323650898,
+     "y": 0.9238795325112867,
+     "yaw": -1,
+     "order": 1,
+     "n": 1
+    },
+    {
+     "x": -0.3826834323650899,
+     "y": -0.9238795325112867,
+     "yaw": -1,
+     "order": 5,
+     "n": 2
+    },
+    {
+     "x": 0.9238795325112867,
+     "y": 0.38268343236508984,
+     "yaw": 1,
+     "order": 2,
+     "n": 3
+    },
+    {
+     "x": 0.3826834323650899,
+     "y": -0.9238795325112867,
+     "yaw": 1,
+     "order": 4,
+     "n": 4
+    },
+    {
+     "x": -0.3826834323650898,
+     "y": 0.9238795325112867,
+     "yaw": 1,
+     "order": 8,
+     "n": 5
+    },
+    {
+     "x": -0.9238795325112867,
+     "y": -0.3826834323650897,
+     "yaw": 1,
+     "order": 6,
+     "n": 6
+    },
+    {
+     "x": -0.9238795325112867,
+     "y": 0.38268343236508984,
+     "yaw": -1,
+     "order": 7,
+     "n": 7
+    },
+    {
+     "x": 0.9238795325112867,
+     "y": -0.3826834323650897,
+     "yaw": -1,
+     "order": 3,
+     "n": 8
+    }
+   ],
+   "id": "mc_octa_x",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "params": "FRAME_CLASS=3 · FRAME_TYPE=1"
+  },
+  {
+   "cls": 3,
+   "cls_name": "OCTA",
+   "type": 2,
+   "type_name": "V",
+   "ap_string": "V",
+   "motors": [
+    {
+     "x": -0.83,
+     "y": 0.34,
+     "yaw": -1,
+     "order": 7,
+     "n": 1
+    },
+    {
+     "x": 0.67,
+     "y": -0.32,
+     "yaw": -1,
+     "order": 3,
+     "n": 2
+    },
+    {
+     "x": -0.67,
+     "y": -0.32,
+     "yaw": 1,
+     "order": 6,
+     "n": 3
+    },
+    {
+     "x": 0.5,
+     "y": -1.0,
+     "yaw": 1,
+     "order": 4,
+     "n": 4
+    },
+    {
+     "x": -1.0,
+     "y": 1.0,
+     "yaw": 1,
+     "order": 8,
+     "n": 5
+    },
+    {
+     "x": 0.83,
+     "y": 0.34,
+     "yaw": 1,
+     "order": 2,
+     "n": 6
+    },
+    {
+     "x": 1.0,
+     "y": 1.0,
+     "yaw": -1,
+     "order": 1,
+     "n": 7
+    },
+    {
+     "x": -0.5,
+     "y": -1.0,
+     "yaw": -1,
+     "order": 5,
+     "n": 8
+    }
+   ],
+   "id": "mc_octa_v",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "params": "FRAME_CLASS=3 · FRAME_TYPE=2"
+  },
+  {
+   "cls": 3,
+   "cls_name": "OCTA",
+   "type": 3,
+   "type_name": "H",
+   "ap_string": "H",
+   "motors": [
+    {
+     "x": 1.0,
+     "y": 1.0,
+     "yaw": -1,
+     "order": 1,
+     "n": 1
+    },
+    {
+     "x": -1.0,
+     "y": -1.0,
+     "yaw": -1,
+     "order": 5,
+     "n": 2
+    },
+    {
+     "x": 1.0,
+     "y": 0.333,
+     "yaw": 1,
+     "order": 2,
+     "n": 3
+    },
+    {
+     "x": 1.0,
+     "y": -1.0,
+     "yaw": 1,
+     "order": 4,
+     "n": 4
+    },
+    {
+     "x": -1.0,
+     "y": 1.0,
+     "yaw": 1,
+     "order": 8,
+     "n": 5
+    },
+    {
+     "x": -1.0,
+     "y": -0.333,
+     "yaw": 1,
+     "order": 6,
+     "n": 6
+    },
+    {
+     "x": -1.0,
+     "y": 0.333,
+     "yaw": -1,
+     "order": 7,
+     "n": 7
+    },
+    {
+     "x": 1.0,
+     "y": -0.333,
+     "yaw": -1,
+     "order": 3,
+     "n": 8
+    }
+   ],
+   "id": "mc_octa_h",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "params": "FRAME_CLASS=3 · FRAME_TYPE=3"
+  },
+  {
+   "cls": 3,
+   "cls_name": "OCTA",
+   "type": 15,
+   "type_name": "I",
+   "ap_string": "I",
+   "motors": [
+    {
+     "x": -0.333,
+     "y": -1.0,
+     "yaw": -1,
+     "order": 5,
+     "n": 1
+    },
+    {
+     "x": 0.333,
+     "y": 1.0,
+     "yaw": -1,
+     "order": 1,
+     "n": 2
+    },
+    {
+     "x": -1.0,
+     "y": -1.0,
+     "yaw": 1,
+     "order": 6,
+     "n": 3
+    },
+    {
+     "x": -0.333,
+     "y": 1.0,
+     "yaw": 1,
+     "order": 8,
+     "n": 4
+    },
+    {
+     "x": 0.333,
+     "y": -1.0,
+     "yaw": 1,
+     "order": 4,
+     "n": 5
+    },
+    {
+     "x": 1.0,
+     "y": 1.0,
+     "yaw": 1,
+     "order": 2,
+     "n": 6
+    },
+    {
+     "x": 1.0,
+     "y": -1.0,
+     "yaw": -1,
+     "order": 3,
+     "n": 7
+    },
+    {
+     "x": -1.0,
+     "y": 1.0,
+     "yaw": -1,
+     "order": 7,
+     "n": 8
+    }
+   ],
+   "id": "mc_octa_i",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "params": "FRAME_CLASS=3 · FRAME_TYPE=15"
+  },
+  {
+   "cls": 3,
+   "cls_name": "OCTA",
+   "type": 13,
+   "type_name": "DJI_X",
+   "ap_string": "DJI_X",
+   "motors": [
+    {
+     "x": 0.3826834323650898,
+     "y": 0.9238795325112867,
+     "yaw": 1,
+     "order": 1,
+     "n": 1
+    },
+    {
+     "x": -0.3826834323650898,
+     "y": 0.9238795325112867,
+     "yaw": -1,
+     "order": 8,
+     "n": 2
+    },
+    {
+     "x": -0.9238795325112867,
+     "y": 0.38268343236508984,
+     "yaw": 1,
+     "order": 7,
+     "n": 3
+    },
+    {
+     "x": -0.9238795325112867,
+     "y": -0.3826834323650897,
+     "yaw": -1,
+     "order": 6,
+     "n": 4
+    },
+    {
+     "x": -0.3826834323650899,
+     "y": -0.9238795325112867,
+     "yaw": 1,
+     "order": 5,
+     "n": 5
+    },
+    {
+     "x": 0.3826834323650899,
+     "y": -0.9238795325112867,
+     "yaw": -1,
+     "order": 4,
+     "n": 6
+    },
+    {
+     "x": 0.9238795325112867,
+     "y": -0.3826834323650897,
+     "yaw": 1,
+     "order": 3,
+     "n": 7
+    },
+    {
+     "x": 0.9238795325112867,
+     "y": 0.38268343236508984,
+     "yaw": -1,
+     "order": 2,
+     "n": 8
+    }
+   ],
+   "id": "mc_octa_dji_x",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "params": "FRAME_CLASS=3 · FRAME_TYPE=13"
+  },
+  {
+   "cls": 3,
+   "cls_name": "OCTA",
+   "type": 14,
+   "type_name": "CW_X",
+   "ap_string": "CW_X",
+   "motors": [
+    {
+     "x": 0.3826834323650898,
+     "y": 0.9238795325112867,
+     "yaw": 1,
+     "order": 1,
+     "n": 1
+    },
+    {
+     "x": 0.9238795325112867,
+     "y": 0.38268343236508984,
+     "yaw": -1,
+     "order": 2,
+     "n": 2
+    },
+    {
+     "x": 0.9238795325112867,
+     "y": -0.3826834323650897,
+     "yaw": 1,
+     "order": 3,
+     "n": 3
+    },
+    {
+     "x": 0.3826834323650899,
+     "y": -0.9238795325112867,
+     "yaw": -1,
+     "order": 4,
+     "n": 4
+    },
+    {
+     "x": -0.3826834323650899,
+     "y": -0.9238795325112867,
+     "yaw": 1,
+     "order": 5,
+     "n": 5
+    },
+    {
+     "x": -0.9238795325112867,
+     "y": -0.3826834323650897,
+     "yaw": -1,
+     "order": 6,
+     "n": 6
+    },
+    {
+     "x": -0.9238795325112867,
+     "y": 0.38268343236508984,
+     "yaw": 1,
+     "order": 7,
+     "n": 7
+    },
+    {
+     "x": -0.3826834323650898,
+     "y": 0.9238795325112867,
+     "yaw": -1,
+     "order": 8,
+     "n": 8
+    }
+   ],
+   "id": "mc_octa_cw_x",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "params": "FRAME_CLASS=3 · FRAME_TYPE=14"
+  },
+  {
+   "cls": 4,
+   "cls_name": "OCTAQUAD",
+   "type": 0,
+   "type_name": "PLUS",
+   "ap_string": "PLUS",
+   "motors": [
+    {
+     "x": 0.0,
+     "y": 1.0,
+     "yaw": 1,
+     "order": 1,
+     "n": 1,
+     "level": "top"
+    },
+    {
+     "x": -1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": -1,
+     "order": 7,
+     "n": 2,
+     "level": "top"
+    },
+    {
+     "x": 1.2246467991473532e-16,
+     "y": -1.0,
+     "yaw": 1,
+     "order": 5,
+     "n": 3,
+     "level": "top"
+    },
+    {
+     "x": 1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": -1,
+     "order": 3,
+     "n": 4,
+     "level": "top"
+    },
+    {
+     "x": -1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": 1,
+     "order": 8,
+     "n": 5,
+     "level": "bottom"
+    },
+    {
+     "x": 0.0,
+     "y": 1.0,
+     "yaw": -1,
+     "order": 2,
+     "n": 6,
+     "level": "bottom"
+    },
+    {
+     "x": 1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": 1,
+     "order": 4,
+     "n": 7,
+     "level": "bottom"
+    },
+    {
+     "x": 1.2246467991473532e-16,
+     "y": -1.0,
+     "yaw": -1,
+     "order": 6,
+     "n": 8,
+     "level": "bottom"
+    }
+   ],
+   "id": "mc_octaquad_plus",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "note": [
+    "Aynı koldaki iki motor üst üstedir: düz çizgili disk ÜST, kesik çizgili disk ALT motordur.",
+    "Two motors share each arm: the solid disc is the TOP motor, the dashed disc is the BOTTOM motor.",
+    "محركان على كل ذراع: القرص المتصل هو العلوي، والقرص المتقطع هو السفلي."
+   ],
+   "params": "FRAME_CLASS=4 · FRAME_TYPE=0"
+  },
+  {
+   "cls": 4,
+   "cls_name": "OCTAQUAD",
+   "type": 1,
+   "type_name": "X",
+   "ap_string": "X",
+   "motors": [
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 1,
+     "n": 1,
+     "level": "top"
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 7,
+     "n": 2,
+     "level": "top"
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 5,
+     "n": 3,
+     "level": "top"
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 3,
+     "n": 4,
+     "level": "top"
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 8,
+     "n": 5,
+     "level": "bottom"
+    },
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 2,
+     "n": 6,
+     "level": "bottom"
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 4,
+     "n": 7,
+     "level": "bottom"
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 6,
+     "n": 8,
+     "level": "bottom"
+    }
+   ],
+   "id": "mc_octaquad_x",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "note": [
+    "Aynı koldaki iki motor üst üstedir: düz çizgili disk ÜST, kesik çizgili disk ALT motordur.",
+    "Two motors share each arm: the solid disc is the TOP motor, the dashed disc is the BOTTOM motor.",
+    "محركان على كل ذراع: القرص المتصل هو العلوي، والقرص المتقطع هو السفلي."
+   ],
+   "params": "FRAME_CLASS=4 · FRAME_TYPE=1"
+  },
+  {
+   "cls": 4,
+   "cls_name": "OCTAQUAD",
+   "type": 2,
+   "type_name": "V",
+   "ap_string": "H",
+   "motors": [
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 1,
+     "n": 1,
+     "level": "top"
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 7,
+     "n": 2,
+     "level": "top"
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 5,
+     "n": 3,
+     "level": "top"
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 3,
+     "n": 4,
+     "level": "top"
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 8,
+     "n": 5,
+     "level": "bottom"
+    },
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 2,
+     "n": 6,
+     "level": "bottom"
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 4,
+     "n": 7,
+     "level": "bottom"
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 6,
+     "n": 8,
+     "level": "bottom"
+    }
+   ],
+   "id": "mc_octaquad_v",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "note": [
+    "Aynı koldaki iki motor üst üstedir: düz çizgili disk ÜST, kesik çizgili disk ALT motordur.",
+    "Two motors share each arm: the solid disc is the TOP motor, the dashed disc is the BOTTOM motor.",
+    "محركان على كل ذراع: القرص المتصل هو العلوي، والقرص المتقطع هو السفلي."
+   ],
+   "params": "FRAME_CLASS=4 · FRAME_TYPE=2"
+  },
+  {
+   "cls": 4,
+   "cls_name": "OCTAQUAD",
+   "type": 3,
+   "type_name": "H",
+   "ap_string": "H",
+   "motors": [
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 1,
+     "n": 1,
+     "level": "top"
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 7,
+     "n": 2,
+     "level": "top"
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 5,
+     "n": 3,
+     "level": "top"
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 3,
+     "n": 4,
+     "level": "top"
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 8,
+     "n": 5,
+     "level": "bottom"
+    },
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 2,
+     "n": 6,
+     "level": "bottom"
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 4,
+     "n": 7,
+     "level": "bottom"
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 6,
+     "n": 8,
+     "level": "bottom"
+    }
+   ],
+   "id": "mc_octaquad_h",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "note": [
+    "Aynı koldaki iki motor üst üstedir: düz çizgili disk ÜST, kesik çizgili disk ALT motordur.",
+    "Two motors share each arm: the solid disc is the TOP motor, the dashed disc is the BOTTOM motor.",
+    "محركان على كل ذراع: القرص المتصل هو العلوي، والقرص المتقطع هو السفلي."
+   ],
+   "params": "FRAME_CLASS=4 · FRAME_TYPE=3"
+  },
+  {
+   "cls": 4,
+   "cls_name": "OCTAQUAD",
+   "type": 14,
+   "type_name": "CW_X",
+   "ap_string": "CW_X",
+   "motors": [
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 1,
+     "n": 1,
+     "level": "top"
+    },
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 2,
+     "n": 2,
+     "level": "bottom"
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 3,
+     "n": 3,
+     "level": "top"
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 4,
+     "n": 4,
+     "level": "bottom"
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 5,
+     "n": 5,
+     "level": "top"
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 6,
+     "n": 6,
+     "level": "bottom"
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 7,
+     "n": 7,
+     "level": "top"
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 8,
+     "n": 8,
+     "level": "bottom"
+    }
+   ],
+   "id": "mc_octaquad_cw_x",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "note": [
+    "Aynı koldaki iki motor üst üstedir: düz çizgili disk ÜST, kesik çizgili disk ALT motordur.",
+    "Two motors share each arm: the solid disc is the TOP motor, the dashed disc is the BOTTOM motor.",
+    "محركان على كل ذراع: القرص المتصل هو العلوي، والقرص المتقطع هو السفلي."
+   ],
+   "params": "FRAME_CLASS=4 · FRAME_TYPE=14"
+  },
+  {
+   "cls": 4,
+   "cls_name": "OCTAQUAD",
+   "type": 12,
+   "type_name": "BF_X",
+   "ap_string": "BF_X",
+   "motors": [
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 3,
+     "n": 1,
+     "level": "top"
+    },
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 1,
+     "n": 2,
+     "level": "top"
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 5,
+     "n": 3,
+     "level": "top"
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 7,
+     "n": 4,
+     "level": "top"
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 4,
+     "n": 5,
+     "level": "bottom"
+    },
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 2,
+     "n": 6,
+     "level": "bottom"
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 6,
+     "n": 7,
+     "level": "bottom"
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 8,
+     "n": 8,
+     "level": "bottom"
+    }
+   ],
+   "id": "mc_octaquad_bf_x",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "note": [
+    "Aynı koldaki iki motor üst üstedir: düz çizgili disk ÜST, kesik çizgili disk ALT motordur.",
+    "Two motors share each arm: the solid disc is the TOP motor, the dashed disc is the BOTTOM motor.",
+    "محركان على كل ذراع: القرص المتصل هو العلوي، والقرص المتقطع هو السفلي."
+   ],
+   "params": "FRAME_CLASS=4 · FRAME_TYPE=12"
+  },
+  {
+   "cls": 4,
+   "cls_name": "OCTAQUAD",
+   "type": 18,
+   "type_name": "BF_X_REV",
+   "ap_string": "X_REV",
+   "motors": [
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 3,
+     "n": 1,
+     "level": "top"
+    },
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 1,
+     "n": 2,
+     "level": "top"
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 5,
+     "n": 3,
+     "level": "top"
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 7,
+     "n": 4,
+     "level": "top"
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 4,
+     "n": 5,
+     "level": "bottom"
+    },
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 2,
+     "n": 6,
+     "level": "bottom"
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 6,
+     "n": 7,
+     "level": "bottom"
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 8,
+     "n": 8,
+     "level": "bottom"
+    }
+   ],
+   "id": "mc_octaquad_bf_x_rev",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "note": [
+    "Aynı koldaki iki motor üst üstedir: düz çizgili disk ÜST, kesik çizgili disk ALT motordur.",
+    "Two motors share each arm: the solid disc is the TOP motor, the dashed disc is the BOTTOM motor.",
+    "محركان على كل ذراع: القرص المتصل هو العلوي، والقرص المتقطع هو السفلي."
+   ],
+   "params": "FRAME_CLASS=4 · FRAME_TYPE=18"
+  },
+  {
+   "cls": 4,
+   "cls_name": "OCTAQUAD",
+   "type": 20,
+   "type_name": "X_COR",
+   "ap_string": "X_COR",
+   "motors": [
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 1,
+     "n": 1,
+     "level": "top"
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 7,
+     "n": 2,
+     "level": "top"
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 5,
+     "n": 3,
+     "level": "top"
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 3,
+     "n": 4,
+     "level": "top"
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 8,
+     "n": 5,
+     "level": "bottom"
+    },
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 2,
+     "n": 6,
+     "level": "bottom"
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 4,
+     "n": 7,
+     "level": "bottom"
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 6,
+     "n": 8,
+     "level": "bottom"
+    }
+   ],
+   "id": "mc_octaquad_x_cor",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "note": [
+    "Aynı koldaki iki motor üst üstedir: düz çizgili disk ÜST, kesik çizgili disk ALT motordur.",
+    "Two motors share each arm: the solid disc is the TOP motor, the dashed disc is the BOTTOM motor.",
+    "محركان على كل ذراع: القرص المتصل هو العلوي، والقرص المتقطع هو السفلي."
+   ],
+   "params": "FRAME_CLASS=4 · FRAME_TYPE=20"
+  },
+  {
+   "cls": 4,
+   "cls_name": "OCTAQUAD",
+   "type": 21,
+   "type_name": "CW_X_COR",
+   "ap_string": "CW_X_COR",
+   "motors": [
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 1,
+     "n": 1,
+     "level": "top"
+    },
+    {
+     "x": 0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": 1,
+     "order": 2,
+     "n": 2,
+     "level": "bottom"
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 3,
+     "n": 3,
+     "level": "top"
+    },
+    {
+     "x": 0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": -1,
+     "order": 4,
+     "n": 4,
+     "level": "bottom"
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 5,
+     "n": 5,
+     "level": "top"
+    },
+    {
+     "x": -0.7071067811865476,
+     "y": -0.7071067811865475,
+     "yaw": 1,
+     "order": 6,
+     "n": 6,
+     "level": "bottom"
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 7,
+     "n": 7,
+     "level": "top"
+    },
+    {
+     "x": -0.7071067811865475,
+     "y": 0.7071067811865476,
+     "yaw": -1,
+     "order": 8,
+     "n": 8,
+     "level": "bottom"
+    }
+   ],
+   "id": "mc_octaquad_cw_x_cor",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "note": [
+    "Aynı koldaki iki motor üst üstedir: düz çizgili disk ÜST, kesik çizgili disk ALT motordur.",
+    "Two motors share each arm: the solid disc is the TOP motor, the dashed disc is the BOTTOM motor.",
+    "محركان على كل ذراع: القرص المتصل هو العلوي، والقرص المتقطع هو السفلي."
+   ],
+   "params": "FRAME_CLASS=4 · FRAME_TYPE=21"
+  },
+  {
+   "cls": 5,
+   "cls_name": "Y6",
+   "type": 10,
+   "type_name": "Y6B",
+   "ap_string": "Y6B",
+   "motors": [
+    {
+     "x": 1.0,
+     "y": 0.5,
+     "yaw": -1,
+     "order": 1,
+     "n": 1,
+     "level": "top"
+    },
+    {
+     "x": 1.0,
+     "y": 0.5,
+     "yaw": 1,
+     "order": 2,
+     "n": 2,
+     "level": "bottom"
+    },
+    {
+     "x": -0.0,
+     "y": -1.0,
+     "yaw": -1,
+     "order": 3,
+     "n": 3,
+     "level": "top"
+    },
+    {
+     "x": -0.0,
+     "y": -1.0,
+     "yaw": 1,
+     "order": 4,
+     "n": 4,
+     "level": "bottom"
+    },
+    {
+     "x": -1.0,
+     "y": 0.5,
+     "yaw": -1,
+     "order": 5,
+     "n": 5,
+     "level": "top"
+    },
+    {
+     "x": -1.0,
+     "y": 0.5,
+     "yaw": 1,
+     "order": 6,
+     "n": 6,
+     "level": "bottom"
+    }
+   ],
+   "id": "mc_y6_y6b",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "note": [
+    "Aynı koldaki iki motor üst üstedir: düz çizgili disk ÜST, kesik çizgili disk ALT motordur.",
+    "Two motors share each arm: the solid disc is the TOP motor, the dashed disc is the BOTTOM motor.",
+    "محركان على كل ذراع: القرص المتصل هو العلوي، والقرص المتقطع هو السفلي."
+   ],
+   "params": "FRAME_CLASS=5 · FRAME_TYPE=10"
+  },
+  {
+   "cls": 5,
+   "cls_name": "Y6",
+   "type": 11,
+   "type_name": "Y6F",
+   "ap_string": "Y6F",
+   "motors": [
+    {
+     "x": -0.0,
+     "y": -1.0,
+     "yaw": 1,
+     "order": 3,
+     "n": 1,
+     "level": "top"
+    },
+    {
+     "x": 1.0,
+     "y": 0.5,
+     "yaw": 1,
+     "order": 1,
+     "n": 2,
+     "level": "top"
+    },
+    {
+     "x": -1.0,
+     "y": 0.5,
+     "yaw": 1,
+     "order": 5,
+     "n": 3,
+     "level": "top"
+    },
+    {
+     "x": -0.0,
+     "y": -1.0,
+     "yaw": -1,
+     "order": 4,
+     "n": 4,
+     "level": "bottom"
+    },
+    {
+     "x": 1.0,
+     "y": 0.5,
+     "yaw": -1,
+     "order": 2,
+     "n": 5,
+     "level": "bottom"
+    },
+    {
+     "x": -1.0,
+     "y": 0.5,
+     "yaw": -1,
+     "order": 6,
+     "n": 6,
+     "level": "bottom"
+    }
+   ],
+   "id": "mc_y6_y6f",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "note": [
+    "Aynı koldaki iki motor üst üstedir: düz çizgili disk ÜST, kesik çizgili disk ALT motordur.",
+    "Two motors share each arm: the solid disc is the TOP motor, the dashed disc is the BOTTOM motor.",
+    "محركان على كل ذراع: القرص المتصل هو العلوي، والقرص المتقطع هو السفلي."
+   ],
+   "params": "FRAME_CLASS=5 · FRAME_TYPE=11"
+  },
+  {
+   "cls": 5,
+   "cls_name": "Y6",
+   "type": -1,
+   "type_name": "Y6A (default)",
+   "ap_string": "default",
+   "motors": [
+    {
+     "x": 1.0,
+     "y": 0.666,
+     "yaw": 1,
+     "order": 2,
+     "n": 1,
+     "level": "top"
+    },
+    {
+     "x": -1.0,
+     "y": 0.666,
+     "yaw": -1,
+     "order": 5,
+     "n": 2,
+     "level": "top"
+    },
+    {
+     "x": -1.0,
+     "y": 0.666,
+     "yaw": 1,
+     "order": 6,
+     "n": 3,
+     "level": "bottom"
+    },
+    {
+     "x": -0.0,
+     "y": -1.333,
+     "yaw": -1,
+     "order": 4,
+     "n": 4,
+     "level": "top"
+    },
+    {
+     "x": 1.0,
+     "y": 0.666,
+     "yaw": -1,
+     "order": 1,
+     "n": 5,
+     "level": "bottom"
+    },
+    {
+     "x": -0.0,
+     "y": -1.333,
+     "yaw": 1,
+     "order": 3,
+     "n": 6,
+     "level": "bottom"
+    }
+   ],
+   "id": "mc_y6_y6adefault",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "note": [
+    "Aynı koldaki iki motor üst üstedir: düz çizgili disk ÜST, kesik çizgili disk ALT motordur.",
+    "Two motors share each arm: the solid disc is the TOP motor, the dashed disc is the BOTTOM motor.",
+    "محركان على كل ذراع: القرص المتصل هو العلوي، والقرص المتقطع هو السفلي."
+   ],
+   "params": "FRAME_CLASS=5 · FRAME_TYPE (Y6 dışı değer)"
+  },
+  {
+   "cls": 14,
+   "cls_name": "DECA",
+   "type": 0,
+   "type_name": "PLUS",
+   "ap_string": "PLUS",
+   "motors": [
+    {
+     "x": 0.0,
+     "y": 1.0,
+     "yaw": 1,
+     "order": 1,
+     "n": 1
+    },
+    {
+     "x": 0.5877852522924731,
+     "y": 0.8090169943749475,
+     "yaw": -1,
+     "order": 2,
+     "n": 2
+    },
+    {
+     "x": 0.9510565162951535,
+     "y": 0.30901699437494745,
+     "yaw": 1,
+     "order": 3,
+     "n": 3
+    },
+    {
+     "x": 0.9510565162951536,
+     "y": -0.30901699437494734,
+     "yaw": -1,
+     "order": 4,
+     "n": 4
+    },
+    {
+     "x": 0.5877852522924732,
+     "y": -0.8090169943749473,
+     "yaw": 1,
+     "order": 5,
+     "n": 5
+    },
+    {
+     "x": 1.2246467991473532e-16,
+     "y": -1.0,
+     "yaw": -1,
+     "order": 6,
+     "n": 6
+    },
+    {
+     "x": -0.5877852522924732,
+     "y": -0.8090169943749473,
+     "yaw": 1,
+     "order": 7,
+     "n": 7
+    },
+    {
+     "x": -0.9510565162951536,
+     "y": -0.30901699437494734,
+     "yaw": -1,
+     "order": 8,
+     "n": 8
+    },
+    {
+     "x": -0.9510565162951535,
+     "y": 0.30901699437494745,
+     "yaw": 1,
+     "order": 9,
+     "n": 9
+    },
+    {
+     "x": -0.5877852522924731,
+     "y": 0.8090169943749475,
+     "yaw": -1,
+     "order": 10,
+     "n": 10
+    }
+   ],
+   "id": "mc_deca_plus",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "params": "FRAME_CLASS=14 · FRAME_TYPE=0"
+  },
+  {
+   "cls": 14,
+   "cls_name": "DECA",
+   "type": 1,
+   "type_name": "X",
+   "ap_string": "X/CW_X",
+   "motors": [
+    {
+     "x": 0.3090169943749474,
+     "y": 0.9510565162951535,
+     "yaw": 1,
+     "order": 1,
+     "n": 1
+    },
+    {
+     "x": 0.8090169943749475,
+     "y": 0.5877852522924731,
+     "yaw": -1,
+     "order": 2,
+     "n": 2
+    },
+    {
+     "x": 1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": 1,
+     "order": 3,
+     "n": 3
+    },
+    {
+     "x": 0.8090169943749475,
+     "y": -0.587785252292473,
+     "yaw": -1,
+     "order": 4,
+     "n": 4
+    },
+    {
+     "x": 0.3090169943749475,
+     "y": -0.9510565162951535,
+     "yaw": 1,
+     "order": 5,
+     "n": 5
+    },
+    {
+     "x": -0.3090169943749475,
+     "y": -0.9510565162951535,
+     "yaw": -1,
+     "order": 6,
+     "n": 6
+    },
+    {
+     "x": -0.8090169943749475,
+     "y": -0.587785252292473,
+     "yaw": 1,
+     "order": 7,
+     "n": 7
+    },
+    {
+     "x": -1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": -1,
+     "order": 8,
+     "n": 8
+    },
+    {
+     "x": -0.8090169943749475,
+     "y": 0.5877852522924731,
+     "yaw": 1,
+     "order": 9,
+     "n": 9
+    },
+    {
+     "x": -0.3090169943749474,
+     "y": 0.9510565162951535,
+     "yaw": -1,
+     "order": 10,
+     "n": 10
+    }
+   ],
+   "id": "mc_deca_x",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "params": "FRAME_CLASS=14 · FRAME_TYPE=1"
+  },
+  {
+   "cls": 14,
+   "cls_name": "DECA",
+   "type": 14,
+   "type_name": "CW_X",
+   "ap_string": "X/CW_X",
+   "motors": [
+    {
+     "x": 0.3090169943749474,
+     "y": 0.9510565162951535,
+     "yaw": 1,
+     "order": 1,
+     "n": 1
+    },
+    {
+     "x": 0.8090169943749475,
+     "y": 0.5877852522924731,
+     "yaw": -1,
+     "order": 2,
+     "n": 2
+    },
+    {
+     "x": 1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": 1,
+     "order": 3,
+     "n": 3
+    },
+    {
+     "x": 0.8090169943749475,
+     "y": -0.587785252292473,
+     "yaw": -1,
+     "order": 4,
+     "n": 4
+    },
+    {
+     "x": 0.3090169943749475,
+     "y": -0.9510565162951535,
+     "yaw": 1,
+     "order": 5,
+     "n": 5
+    },
+    {
+     "x": -0.3090169943749475,
+     "y": -0.9510565162951535,
+     "yaw": -1,
+     "order": 6,
+     "n": 6
+    },
+    {
+     "x": -0.8090169943749475,
+     "y": -0.587785252292473,
+     "yaw": 1,
+     "order": 7,
+     "n": 7
+    },
+    {
+     "x": -1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": -1,
+     "order": 8,
+     "n": 8
+    },
+    {
+     "x": -0.8090169943749475,
+     "y": 0.5877852522924731,
+     "yaw": 1,
+     "order": 9,
+     "n": 9
+    },
+    {
+     "x": -0.3090169943749474,
+     "y": 0.9510565162951535,
+     "yaw": -1,
+     "order": 10,
+     "n": 10
+    }
+   ],
+   "id": "mc_deca_cw_x",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "params": "FRAME_CLASS=14 · FRAME_TYPE=14"
+  },
+  {
+   "cls": 12,
+   "cls_name": "DODECAHEXA",
+   "type": 0,
+   "type_name": "PLUS",
+   "ap_string": "PLUS",
+   "motors": [
+    {
+     "x": 0.0,
+     "y": 1.0,
+     "yaw": 1,
+     "order": 1,
+     "n": 1,
+     "level": "top"
+    },
+    {
+     "x": 0.0,
+     "y": 1.0,
+     "yaw": -1,
+     "order": 2,
+     "n": 2,
+     "level": "bottom"
+    },
+    {
+     "x": 0.8660254037844386,
+     "y": 0.5000000000000001,
+     "yaw": -1,
+     "order": 3,
+     "n": 3,
+     "level": "top"
+    },
+    {
+     "x": 0.8660254037844386,
+     "y": 0.5000000000000001,
+     "yaw": 1,
+     "order": 4,
+     "n": 4,
+     "level": "bottom"
+    },
+    {
+     "x": 0.8660254037844387,
+     "y": -0.4999999999999998,
+     "yaw": 1,
+     "order": 5,
+     "n": 5,
+     "level": "top"
+    },
+    {
+     "x": 0.8660254037844387,
+     "y": -0.4999999999999998,
+     "yaw": -1,
+     "order": 6,
+     "n": 6,
+     "level": "bottom"
+    },
+    {
+     "x": 1.2246467991473532e-16,
+     "y": -1.0,
+     "yaw": -1,
+     "order": 7,
+     "n": 7,
+     "level": "top"
+    },
+    {
+     "x": 1.2246467991473532e-16,
+     "y": -1.0,
+     "yaw": 1,
+     "order": 8,
+     "n": 8,
+     "level": "bottom"
+    },
+    {
+     "x": -0.8660254037844387,
+     "y": -0.4999999999999998,
+     "yaw": 1,
+     "order": 9,
+     "n": 9,
+     "level": "top"
+    },
+    {
+     "x": -0.8660254037844387,
+     "y": -0.4999999999999998,
+     "yaw": -1,
+     "order": 10,
+     "n": 10,
+     "level": "bottom"
+    },
+    {
+     "x": -0.8660254037844386,
+     "y": 0.5000000000000001,
+     "yaw": -1,
+     "order": 11,
+     "n": 11,
+     "level": "top"
+    },
+    {
+     "x": -0.8660254037844386,
+     "y": 0.5000000000000001,
+     "yaw": 1,
+     "order": 12,
+     "n": 12,
+     "level": "bottom"
+    }
+   ],
+   "id": "mc_dodecahexa_plus",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "note": [
+    "Aynı koldaki iki motor üst üstedir: düz çizgili disk ÜST, kesik çizgili disk ALT motordur.",
+    "Two motors share each arm: the solid disc is the TOP motor, the dashed disc is the BOTTOM motor.",
+    "محركان على كل ذراع: القرص المتصل هو العلوي، والقرص المتقطع هو السفلي."
+   ],
+   "params": "FRAME_CLASS=12 · FRAME_TYPE=0"
+  },
+  {
+   "cls": 12,
+   "cls_name": "DODECAHEXA",
+   "type": 1,
+   "type_name": "X",
+   "ap_string": "X",
+   "motors": [
+    {
+     "x": 0.49999999999999994,
+     "y": 0.8660254037844387,
+     "yaw": 1,
+     "order": 1,
+     "n": 1,
+     "level": "top"
+    },
+    {
+     "x": 0.49999999999999994,
+     "y": 0.8660254037844387,
+     "yaw": -1,
+     "order": 2,
+     "n": 2,
+     "level": "bottom"
+    },
+    {
+     "x": 1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": -1,
+     "order": 3,
+     "n": 3,
+     "level": "top"
+    },
+    {
+     "x": 1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": 1,
+     "order": 4,
+     "n": 4,
+     "level": "bottom"
+    },
+    {
+     "x": 0.49999999999999994,
+     "y": -0.8660254037844387,
+     "yaw": 1,
+     "order": 5,
+     "n": 5,
+     "level": "top"
+    },
+    {
+     "x": 0.49999999999999994,
+     "y": -0.8660254037844387,
+     "yaw": -1,
+     "order": 6,
+     "n": 6,
+     "level": "bottom"
+    },
+    {
+     "x": -0.49999999999999994,
+     "y": -0.8660254037844387,
+     "yaw": -1,
+     "order": 7,
+     "n": 7,
+     "level": "top"
+    },
+    {
+     "x": -0.49999999999999994,
+     "y": -0.8660254037844387,
+     "yaw": 1,
+     "order": 8,
+     "n": 8,
+     "level": "bottom"
+    },
+    {
+     "x": -1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": 1,
+     "order": 9,
+     "n": 9,
+     "level": "top"
+    },
+    {
+     "x": -1.0,
+     "y": 6.123233995736766e-17,
+     "yaw": -1,
+     "order": 10,
+     "n": 10,
+     "level": "bottom"
+    },
+    {
+     "x": -0.49999999999999994,
+     "y": 0.8660254037844387,
+     "yaw": -1,
+     "order": 11,
+     "n": 11,
+     "level": "top"
+    },
+    {
+     "x": -0.49999999999999994,
+     "y": 0.8660254037844387,
+     "yaw": 1,
+     "order": 12,
+     "n": 12,
+     "level": "bottom"
+    }
+   ],
+   "id": "mc_dodecahexa_x",
+   "group": "mc",
+   "kind": "matrix",
+   "body": "copter",
+   "note": [
+    "Aynı koldaki iki motor üst üstedir: düz çizgili disk ÜST, kesik çizgili disk ALT motordur.",
+    "Two motors share each arm: the solid disc is the TOP motor, the dashed disc is the BOTTOM motor.",
+    "محركان على كل ذراع: القرص المتصل هو العلوي، والقرص المتقطع هو السفلي."
+   ],
+   "params": "FRAME_CLASS=12 · FRAME_TYPE=1"
+  },
+  {
+   "id": "mc_tri",
+   "group": "mc",
+   "kind": "tri",
+   "body": "copter",
+   "cls": 7,
+   "cls_name": "TRI",
+   "type": -1,
+   "type_name": "STD",
+   "ap_string": "TRI",
+   "motors": [
+    {
+     "n": 1,
+     "x": 0.87,
+     "y": 0.5,
+     "yaw": 0,
+     "order": 1
+    },
+    {
+     "n": 2,
+     "x": -0.87,
+     "y": 0.5,
+     "yaw": 0,
+     "order": 3
+    },
+    {
+     "n": 4,
+     "x": 0.0,
+     "y": -1.0,
+     "yaw": 0,
+     "order": 2
+    }
+   ],
+   "servo": {
+    "x": 0.0,
+    "y": -1.0
+   },
+   "params": "FRAME_CLASS=7 · SERVOx_FUNCTION=39 (Motor7 = kuyruk servosu)",
+   "note": [
+    "Yaw kuyruk motorunu yatıran servoyla (Motor7) yapılır; dönüş yönleri ArduPilot'ta sabit değildir, çerçeve/pervane üreticisinin şemasına uyun.",
+    "Yaw comes from the servo that tilts the tail motor (Motor7); rotation directions are not fixed by ArduPilot, follow the frame/prop maker's diagram.",
+    "الانعراج عبر المؤازر الذي يميل المحرك الخلفي (Motor7)؛ اتجاهات الدوران غير محددة في ArduPilot، اتبع مخطط مصنع الهيكل/المراوح."
+   ]
+  },
+  {
+   "id": "pl_single",
+   "group": "other",
+   "kind": "plane1",
+   "body": "plane",
+   "cls": -1,
+   "cls_name": "PLANE",
+   "type": -1,
+   "type_name": "STD",
+   "ap_string": "Plane",
+   "motors": [
+    {
+     "n": "T",
+     "x": 0.0,
+     "y": 1.25,
+     "yaw": 0,
+     "order": 1,
+     "fn": 70
+    }
+   ],
+   "params": "SERVO3_FUNCTION=70 (Throttle)",
+   "title": [
+    "Uçak – tek motor",
+    "Plane – single motor",
+    "طائرة – محرك واحد"
+   ],
+   "note": [
+    "İtki motoru Throttle (70). Dönüş yönü motor/pervaneye göre seçilir; QuadPlane'de bu motor kaldırma motorlarından ayrıdır.",
+    "The thrust motor is Throttle (70). Direction follows the motor/prop; on a QuadPlane it is separate from the lift motors.",
+    "محرك الدفع Throttle (70). الاتجاه حسب المحرك/المروحة؛ وفي QuadPlane منفصل عن محركات الرفع."
+   ]
+  },
+  {
+   "id": "pl_twin",
+   "group": "other",
+   "kind": "plane2",
+   "body": "plane",
+   "cls": -1,
+   "cls_name": "PLANE",
+   "type": -1,
+   "type_name": "DUAL",
+   "ap_string": "Plane",
+   "motors": [
+    {
+     "n": "L",
+     "x": -0.55,
+     "y": 0.35,
+     "yaw": 0,
+     "order": 2,
+     "fn": 73
+    },
+    {
+     "n": "R",
+     "x": 0.55,
+     "y": 0.35,
+     "yaw": 0,
+     "order": 1,
+     "fn": 74
+    }
+   ],
+   "params": "SERVOx_FUNCTION=73 (ThrottleLeft) / 74 (ThrottleRight) · RUDD_DT_GAIN",
+   "title": [
+    "Uçak – çift motor (diferansiyel itki)",
+    "Plane – twin motor (differential thrust)",
+    "طائرة – محركان (دفع تفاضلي)"
+   ],
+   "note": [
+    "Sol ThrottleLeft (73), sağ ThrottleRight (74); RUDD_DT_GAIN ile dümen motor farkına karışır. Pervaneler çoğunlukla zıt yönde döner.",
+    "Left ThrottleLeft (73), right ThrottleRight (74); RUDD_DT_GAIN mixes rudder into the motor difference. Props usually counter-rotate.",
+    "الأيسر ThrottleLeft (73) والأيمن ThrottleRight (74)؛ RUDD_DT_GAIN يمزج الدفة في فرق المحركين. المراوح عادة متعاكسة."
+   ]
+  },
+  {
+   "id": "rv_skid",
+   "group": "other",
+   "kind": "rover",
+   "body": "rover",
+   "cls": -1,
+   "cls_name": "ROVER",
+   "type": -1,
+   "type_name": "DUAL",
+   "ap_string": "Rover",
+   "motors": [
+    {
+     "n": "L",
+     "x": -0.6,
+     "y": 0.0,
+     "yaw": 0,
+     "order": 2,
+     "fn": 73
+    },
+    {
+     "n": "R",
+     "x": 0.6,
+     "y": 0.0,
+     "yaw": 0,
+     "order": 1,
+     "fn": 74
+    }
+   ],
+   "params": "SERVO1_FUNCTION=73 (ThrottleLeft) · SERVO3_FUNCTION=74 (ThrottleRight)",
+   "title": [
+    "Kara aracı / tekne – paletli (skid steering)",
+    "Rover / boat – skid steering",
+    "مركبة أرضية / قارب – توجيه انزلاقي"
+   ],
+   "note": [
+    "Sol taraf ThrottleLeft (73), sağ taraf ThrottleRight (74). İleri komutta iki taraf da ileri dönmeli; ters dönen tarafı SERVOx_REVERSED ile düzeltin.",
+    "Left side ThrottleLeft (73), right side ThrottleRight (74). Both sides must drive forward on a forward command; fix a reversed side with SERVOx_REVERSED.",
+    "الجانب الأيسر ThrottleLeft (73) والأيمن ThrottleRight (74). يجب أن يدفع الجانبان للأمام عند أمر الأمام؛ صحّح الجانب المعكوس بـ SERVOx_REVERSED."
+   ]
+  }
+ ]
+}

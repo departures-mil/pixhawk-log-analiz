@@ -1,6 +1,19 @@
 """Sürüm notları ("Neler yeni" + release-notes.json). Yeni sürümde EN ÜSTE eklenir; tr/en/ar zorunlu."""
 
 NEWS = [
+    {'v': '1.1.19',
+     'tr': 'Eğitim bölümünde yeni "Motor Yönleri Bankası": ArduPilot\'un desteklediği bütün çerçevelerin motor numarası, dönüş yönü ve motor testi sırası resimli olarak (61 çerçeve)\n'
+           'QuadPlane/VTOL (quad X/+/H, yaw torku olmayan NYT, hexa, octa, X8, Y6B/Y6F, tri/tilt-rotor, tailsitter), bütün multikopter çerçeveleri (Betaflight/DJI/saat yönü sıralı X, V kuyruk, A kuyruk, Y4, X8, Y6, deca, dodecahexa, tri) ile tek ve çift motorlu uçak ve paletli kara aracı\n'
+           'Veriler ArduPilot\'un kendi kaynak kodundaki motor tanımlarından üretildi. Mavi = saat yönünün tersi, yeşil = saat yönü; büyük rakam motor numarası, harf Mission Planner motor testi sırası; üst-alt motorlar ayrı gösterilir\n'
+           'Her çerçevede Q_FRAME_CLASS/TYPE ya da FRAME_CLASS/TYPE değerleri, SERVOx_FUNCTION numaraları ve motor testi kontrol listesi. "Açık logdaki çerçeve" düğmesi logun parametrelerinden doğru resmi açar',
+     'en': 'New "Motor Order Bank" in the Training section: motor number, rotation direction and motor-test order for every frame ArduPilot supports, with pictures (61 frames)\n'
+           'QuadPlane/VTOL (quad X/+/H, no-yaw-torque NYT, hexa, octa, X8, Y6B/Y6F, tri/tilt-rotor, tailsitter), every multicopter frame (Betaflight/DJI/clockwise-ordered X, V-tail, A-tail, Y4, X8, Y6, deca, dodecahexa, tri), plus single and twin-motor plane and skid-steer rover\n'
+           'Generated from the motor definitions in ArduPilot\'s own source code. Blue = counter-clockwise, green = clockwise; big number = motor number, letter = Mission Planner motor-test order; top and bottom motors shown separately\n'
+           'Each frame lists its Q_FRAME_CLASS/TYPE or FRAME_CLASS/TYPE values, SERVOx_FUNCTION numbers and a motor-test checklist. The "Frame of the open log" button opens the right picture from the log\'s parameters',
+     'ar': 'جديد في قسم التدريب "بنك ترتيب المحركات": رقم المحرك واتجاه الدوران وترتيب اختبار المحركات لكل الهياكل التي يدعمها ArduPilot مع الصور (61 هيكلاً)\n'
+           'QuadPlane/VTOL (رباعي X/+/H، وNYT بلا عزم انعراج، وسداسي وثماني وX8 وY6B/Y6F وثلاثي/مراوح مائلة وtailsitter)، وكل هياكل متعدد المراوح (X بترتيب Betaflight/DJI/عقارب الساعة، ذيل V، ذيل A، Y4، X8، Y6، عشاري، dodecahexa، ثلاثي)، إضافة إلى طائرة بمحرك واحد أو اثنين ومركبة أرضية بتوجيه انزلاقي\n'
+           'مولَّدة من تعريفات المحركات في الشيفرة المصدرية لـ ArduPilot. الأزرق = عكس عقارب الساعة، الأخضر = مع عقارب الساعة؛ الرقم الكبير رقم المحرك والحرف ترتيب اختبار المحركات في Mission Planner؛ المحركات العلوية والسفلية معروضة منفصلة\n'
+           'لكل هيكل قيم Q_FRAME_CLASS/TYPE أو FRAME_CLASS/TYPE وأرقام SERVOx_FUNCTION وقائمة تحقق لاختبار المحركات. زر "هيكل السجل المفتوح" يفتح الصورة الصحيحة من معاملات السجل'},
     {'v': '1.1.18',
      'tr': 'Yeni "✂ Kes": içinde birden fazla kayıt olan logda yalnız çalışmak istediğiniz kısmı (ör. kırımın yaşandığı ikinci kayıt) seçin. Kayıtlar numaralı gösterilir; tek tıkla ya da grafikte fareyle sürükleyerek aralık seçilir\n'
            'Kesilen kısım silinmez: saklanır, analizden ve bütün grafiklerden (Grafikler, Log Gezgini, harita, 3B tekrar…) çıkarılır; çalışılan aralık grafiği baştan sona kaplar. "↺ Tamamını geri getir" ile her an geri gelir\n'
