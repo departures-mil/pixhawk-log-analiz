@@ -83,7 +83,7 @@ def ensure_all(L, progress=None, cancel=None):
         if 'TimeUS' in a.dtype.names: t = (a['TimeUS'].astype(np.float64) - t0) / 1e6
         elif 'TimeMS' in a.dtype.names: t = (a['TimeMS'].astype(np.float64) * 1000 - t0) / 1e6
         else: continue
-        okt = (t > -5) & (t < (L.duration or 1e9) + 60)
+        okt = ((t >= 0) & (t <= L.duration)) if getattr(L, 'cut', None) else ((t > -5) & (t < (L.duration or 1e9) + 60))   # kesilmiş log: yalnız aralık
         cols = [c for c in a.dtype.names if c not in ('TimeUS', 'TimeMS')]
         kf = None if n in NONE_KEY else next((k for k in ('I', 'C', 'Instance') if k in a.dtype.names and a.dtype[k].kind in 'iu'), None)
         keys = np.unique(a[kf][okt]) if kf else [None]
@@ -716,7 +716,7 @@ def build(A, sel, opts=None, lg='tr'):
         try: B._modes(ax, A, lg, label=True)
         finally:
             if o['quiz']: B.quiz(False)
-    elif not o['quiz']:
+    elif not o['quiz'] and o['problems']:
         B._crash(ax, A)
     ax.set_xlim(0, max(1.0, float(L.duration or 1)))
     if o['clock'] and viz.clock(A, 0.0):

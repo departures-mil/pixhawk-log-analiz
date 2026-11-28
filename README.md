@@ -52,6 +52,11 @@ ortak `reusable-release.yml` (latest.json, son 5 sürümden yamalar) ile yayın.
   çalışmayı sayılarla izler (içerik yok), çevrim dışı kurallar + kullanıcının kendi Gemini/Claude anahtarıyla öneri; bildirim + sağ altta ✦ panel;
   Ayarlar'da "Admin ile iletişim"in önünde kart. Aynı bilgisayardaki programlarla %APPDATA%/FalconCekirdek/agent üzerinden paylaşım.
 
+## v1.1.18 — Log kesme ve liste görünümlü uçuş bilgileri formu
+- `app/core/logcut.py`: `records(L)` (kurulu dönemler, 20 s'den yakınlar birleşir; yoksa veri boşlukları), `crop(L, t0, t1)` (zaman aralık başından; `t0_us`/`gps_time0` kaydırılır, PARM tam; asıl log `L.cut['full']`), `restore`. Kesim `settings['log_cuts'][uid]`, log yeniden açılınca uygulanır. `logbrowse.ensure_all` kesilmiş logda yalnız aralığı okur.
+- Arayüz: `app/ui/logcut_dlg.py` (tam log grafiği, numaralı kayıtlar, SpanSelector), Analiz sayfasında ✂ Kes + mavi kesim şeridi (Aralığı değiştir / Tamamını geri getir), üst çubukta ✂. Metinler `i18n14.py`.
+- `flightform.OptionList` + `FlowLayout`: seçmeli/yazılabilir bütün sorular satır kaydıran seçenek listesi; yazılabilirlerde "Diğer" kutusu; seçiliye tekrar tıklamak seçimi kaldırır. Testler `tests/test_logcut.py`.
+
 ## v1.1.17 — Plane normal uçuşları ve kör test
 - 160 yeni Plane konusu (`planenormal`, sürüm/beta + normal uçuş aramaları; loglar `refetch.yml` ile `bench-plane` taslak sürümüne). Etiketler `labels._pn_doc`; program Copter okursa hariç.
 - Kör ölçüm (v1.1.16 kodu, 125 Plane logu): doğruluk .704, duyarlılık .333 (12 kırım), özgüllük .743.

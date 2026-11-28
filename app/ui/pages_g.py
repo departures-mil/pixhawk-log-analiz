@@ -352,8 +352,14 @@ class LogBrowserPage(Page):
         self._set_side_text(key, side); self.redraw()
 
     def clear_graph(self):
+        """Seçili alanları VE bütün arka planı (mod renkleri, hata/olay çizgileri, MSG yazıları, sorunlu bölgeler,
+        parametre çizgileri) temizler; arka plan katmanları üstteki kutucuklarla tek tek geri açılır."""
         for s in list(self.sel): self._set_side_text(s['key'], None)
-        self.sel = []; self.extra_params = []; self.redraw()
+        self.sel = []; self.extra_params = []
+        for k, c in self.opt.items():
+            if k == 'clock': continue
+            c.blockSignals(True); c.setChecked(False); c.blockSignals(False)
+        self.redraw()
 
     def set_selection(self, sel):
         for s in list(self.sel): self._set_side_text(s['key'], None)

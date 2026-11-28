@@ -181,7 +181,10 @@ class MainWindow(FcWindow):
         self.q_info = fbutton('✈', 'icon-btn', slot=lambda: self.edit_flight_info())
         self.q_solve = fbutton('🩺', 'icon-btn', slot=lambda: self.goto('solver'))
         self.q_rep = fbutton('📄', 'icon-btn', slot=lambda: self.export_report())
-        quick = [self.q_open, self.q_info, self.q_solve, self.q_rep]
+        self.q_cut = fbutton('✂', 'icon-btn', slot=lambda: self.cut_log())
+        try: self.q_cut.setToolTip(t('cut_tip'))
+        except Exception: pass
+        quick = [self.q_open, self.q_info, self.q_cut, self.q_solve, self.q_rep]
         upd = self.core.updates if self.core is not None else None
         self.topbar.mount(sync={'on_click': lambda st: self.do_sync()}, lan={'on_click': lambda st: self.do_lan()},
                           update=upd, before=quick)
@@ -283,6 +286,10 @@ class MainWindow(FcWindow):
             icon = {'crash': '💥', 'incident': '⚠', 'incident_minor': 'ℹ', 'normal': '✅', 'noflight': '⏸'}.get(v, '')
             mark = '  ·  💥 ' + t('fi_crash_mark') if crash_mark == 'yes' and v != 'crash' else ''
             self._loginfo = f"{os.path.basename(A.L.path)}  ·  {A.vehicle}  ·  {icon} {texts.T('v_' + v, lang())}  ·  {A.overall}/100{mark}"
+            c = getattr(A.L, 'cut', None)
+            if c:
+                from ..core import logcut
+                self._loginfo += f"  ·  ✂ {logcut.fmt(c['t0'])}–{logcut.fmt(c['t1'])}"
         if self._row >= 0: self.topbar.set_title(t(NAV[self._row][2]), self._loginfo)
 
     # ----------------------------------------------------- pencere düğmeleri
@@ -334,6 +341,13 @@ class MainWindow(FcWindow):
                 dl = FlightInfoDialog(self, ans, srcs, L=L)
                 if dl.exec() and not dl.skipped: ans = dl.values()
             s['fi_last'] = {k: v for k, v in ans.items() if k in FI.STICKY}; s.save()
+            cut = (s.get('log_cuts') or {}).get(uid)
+            if cut:                                   # bu log daha önce kesildi: aynı aralıkla aç (✂ Geri getir ile tamamı)
+                try:
+                    from ..core import logcut
+                    L = logcut.crop(L, float(cut[0]), float(cut[1]))
+                except Exception as e:
+                    print('cut', e)
             self._analyze(L, real, uid, ans, path, archive)
 
         def fail(e):
@@ -386,6 +400,34 @@ class MainWindow(FcWindow):
         dl = FlightInfoDialog(self, dict(self.A.info or {}), {}, L=self.A.L)
         if not dl.exec() or dl.skipped: return
         self._analyze(self.A.L, self.A.L.path, self.uid, dl.values(), self.A.L.path, archive=True)
+
+    # ------------------------------------------------------------- ✂ kes
+    def cut_log(self):
+        """Logun yalnız çalışılacak aralığını incele; kesilen kısım saklanır, analizden ve grafiklerden çıkar."""
+        if not self.A: return error(self, t('no_log'))
+        from ..core import logcut
+        from .logcut_dlg import LogCutDialog
+        L = self.A.L; full = logcut.restore(L)
+        cur = (L.cut['t0'], L.cut['t1']) if logcut.is_cut(L) else None
+        dl = LogCutDialog(self, full, cur=cur)
+        if not dl.exec() or dl.result_range is None: return
+        s = self.settings; cuts = dict(s.get('log_cuts') or {})
+        if dl.result_range == 'restore':
+            cuts.pop(self.uid, None); newL = full
+        else:
+            a, b = dl.result_range; newL = logcut.crop(full, a, b)
+            if dl.rem.isChecked() and self.uid: cuts[self.uid] = [round(a, 2), round(b, 2)]
+            else: cuts.pop(self.uid, None)
+        s['log_cuts'] = cuts; s.save()
+        self._analyze(newL, full.path, self.uid, dict(self.A.info or {}), full.path, archive=True)
+
+    def restore_log(self):
+        if not self.A: return
+        from ..core import logcut
+        if not logcut.is_cut(self.A.L): return
+        s = self.settings; cuts = dict(s.get('log_cuts') or {}); cuts.pop(self.uid, None); s['log_cuts'] = cuts; s.save()
+        full = logcut.restore(self.A.L)
+        self._analyze(full, full.path, self.uid, dict(self.A.info or {}), full.path, archive=True)
 
     # ------------------------------------------------------------- rapor
     def export_report(self):
