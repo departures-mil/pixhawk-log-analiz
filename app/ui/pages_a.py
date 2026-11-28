@@ -39,8 +39,16 @@ class AnalysisPage(Page):
         self.lbl = label('', 'muted'); self.lbl.setMinimumWidth(50)
         from PySide6.QtWidgets import QSizePolicy
         self.lbl.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Preferred)
-        top.addWidget(self.b_open); top.addWidget(self.b_rep); top.addWidget(self.lbl, 1)
+        self.b_cut = button(t('cut_btn'), win.cut_log); self.b_cut.setToolTip(t('cut_tip')); self.b_cut.setEnabled(False)
+        top.addWidget(self.b_open); top.addWidget(self.b_cut); top.addWidget(self.b_rep); top.addWidget(self.lbl, 1)
         v.addLayout(top)
+        # ✂ kesim şeridi: yalnız aralık inceleniyorsa görünür
+        self.cutbar = QWidget(); self.cutbar.setObjectName('cutbar'); self.cutbar.setAttribute(Qt.WA_StyledBackground, True)
+        self.cutbar.setStyleSheet('#cutbar{background:rgba(37,99,235,0.12);border:1px solid rgba(37,99,235,0.55);border-radius:8px;}')
+        cb = QHBoxLayout(self.cutbar); cb.setContentsMargins(10, 6, 10, 6)
+        self.cut_lbl = QLabel(''); self.cut_lbl.setWordWrap(True); cb.addWidget(self.cut_lbl, 1)
+        cb.addWidget(button(t('cut_change'), win.cut_log)); cb.addWidget(button(t('cut_restore'), win.restore_log, primary=True))
+        self.cutbar.setVisible(False); v.addWidget(self.cutbar)
         pr = QHBoxLayout()
         self.prog = QProgressBar(); self.prog.setVisible(False)
         self.b_cancel = button(t('cancel'), win.cancel_load); self.b_cancel.setVisible(False)
@@ -154,6 +162,12 @@ class AnalysisPage(Page):
         L = A.L
         self.lbl.setText(f'{os.path.basename(L.path)}  ·  {L.size / 1e6:.1f} MB  ·  {A.vehicle} {L.version or ""}')
         self.view.setHtml(summary_html.build(A, lang()))
+        self.b_cut.setEnabled(True)
+        c = getattr(L, 'cut', None)
+        if c:
+            from ..core import logcut as LC
+            self.cut_lbl.setText(t('cut_banner', a=LC.fmt(c['t0']), b=LC.fmt(c['t1']), d=LC.fmt(c['t1'] - c['t0']), o=LC.fmt(c['t0'])))
+        self.cutbar.setVisible(bool(c))
 
 
 # ------------------------------------------------------------------ Grafikler

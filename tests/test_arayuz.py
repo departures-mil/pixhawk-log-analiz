@@ -12,9 +12,9 @@ def test_topbar_order(win):
     tb = win.topbar
     al = tb.al
     ws = [al.itemAt(i).widget() for i in range(al.count()) if al.itemAt(i).widget() is not None]
-    quick = [win.q_open, win.q_info, win.q_solve, win.q_rep]
-    assert ws[:4] == quick
-    rest = ws[4:]
+    quick = [win.q_open, win.q_info, win.q_cut, win.q_solve, win.q_rep]
+    assert ws[:5] == quick
+    rest = ws[5:]
     assert rest[0] is tb.sync_btn and rest[1] is tb.lan_btn and rest[2] is tb.upd_btn and rest[3] is tb.theme_btn
     assert rest[4].property('fc') == 'lang-switch'
     wc = rest[-1]

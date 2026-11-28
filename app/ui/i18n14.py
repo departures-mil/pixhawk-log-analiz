@@ -1,0 +1,36 @@
+"""v1.1.18 arayüz metinleri (TR/EN/AR): Log kesme (yalnız çalışılacak aralık)."""
+U14 = {
+    'fi_other': ('Diğer (yazın)…', 'Other (type)…', 'أخرى (اكتب)…'),
+    'cut_btn': ('✂ Kes', '✂ Cut', '✂ قص'),
+    'cut_title': ('Logu kes: yalnız çalışılacak aralığı incele', 'Cut the log: examine only the part you need',
+                  'قص السجل: افحص الجزء المطلوب فقط'),
+    'cut_intro': ('Grafikte fareyle sürükleyerek aralık seçin ya da aşağıdan bir kaydı seçin. Kesilen kısım silinmez: saklanır, '
+                  'analizden ve bütün grafiklerden çıkarılır; istediğiniz zaman "Tamamını geri getir" ile geri gelir.',
+                  'Drag on the chart to select a range, or pick a record below. The cut part is not deleted: it is kept aside, '
+                  'removed from the analysis and from every chart, and comes back any time with "Restore the whole log".',
+                  'اسحب بالفأرة على الرسم لاختيار نطاق، أو اختر تسجيلاً من الأسفل. الجزء المقصوص لا يُحذف: يُحفظ جانباً '
+                  'ويُزال من التحليل ومن جميع الرسوم، ويعود متى شئت عبر "استعادة السجل كاملاً".'),
+    'cut_records': ('Logdaki kayıtlar', 'Records in the log', 'التسجيلات في السجل'),
+    'cut_rec': ('Kayıt {i}', 'Record {i}', 'التسجيل {i}'),
+    'cut_flew': ('uçtu', 'flew', 'طار'),
+    'cut_ground': ('yerde', 'on ground', 'على الأرض'),
+    'cut_alt': ('en yüksek {a} m', 'max {a} m', 'أقصى ارتفاع {a} م'),
+    'cut_start': ('Başlangıç', 'Start', 'البداية'),
+    'cut_end': ('Bitiş', 'End', 'النهاية'),
+    'cut_len': ('Seçilen: {a} – {b}  ({d})', 'Selected: {a} – {b}  ({d})', 'المحدد: {a} – {b}  ({d})'),
+    'cut_do': ('✂ Kes ve yalnız bunu incele', '✂ Cut and examine only this', '✂ قص وافحص هذا فقط'),
+    'cut_restore': ('↺ Tamamını geri getir', '↺ Restore the whole log', '↺ استعادة السجل كاملاً'),
+    'cut_change': ('✂ Aralığı değiştir', '✂ Change range', '✂ تغيير النطاق'),
+    'cut_banner': ('✂ Yalnız {a} – {b} inceleniyor ({d}). Kesilen kısım saklı, grafiklerde yok. Zamanlar bu aralığın başından sayılır (asıl logda +{o}).',
+                   '✂ Examining only {a} – {b} ({d}). The cut part is kept aside, not in the charts. Times count from the start of this range (+{o} in the original log).',
+                   '✂ يُفحص فقط {a} – {b} ({d}). الجزء المقصوص محفوظ وغير ظاهر في الرسوم. تُحسب الأوقات من بداية هذا النطاق (+{o} في السجل الأصلي).'),
+    'cut_alt_axis': ('İrtifa (m)', 'Altitude (m)', 'الارتفاع (م)'),
+    'cut_spd_axis': ('Yer hızı (m/s)', 'Ground speed (m/s)', 'السرعة الأرضية (م/ث)'),
+    'cut_time_axis': ('Zaman (dk:sn, asıl log)', 'Time (min:s, original log)', 'الزمن (د:ث، السجل الأصلي)'),
+    'cut_too_short': ('Seçilen aralık çok kısa (en az 5 saniye).', 'The selected range is too short (at least 5 seconds).',
+                      'النطاق المحدد قصير جداً (5 ثوانٍ على الأقل).'),
+    'cut_remember': ('Bu log yeniden açıldığında aynı kesimi uygula', 'Apply the same cut when this log is opened again',
+                     'طبّق القص نفسه عند فتح هذا السجل مرة أخرى'),
+    'cut_tip': ('Logun yalnız bir kısmını incele (kes / geri getir)', 'Examine only part of the log (cut / restore)',
+                'افحص جزءاً من السجل فقط (قص / استعادة)'),
+}

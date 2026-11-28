@@ -1,6 +1,19 @@
 """Sürüm notları ("Neler yeni" + release-notes.json). Yeni sürümde EN ÜSTE eklenir; tr/en/ar zorunlu."""
 
 NEWS = [
+    {'v': '1.1.18',
+     'tr': 'Yeni "✂ Kes": içinde birden fazla kayıt olan logda yalnız çalışmak istediğiniz kısmı (ör. kırımın yaşandığı ikinci kayıt) seçin. Kayıtlar numaralı gösterilir; tek tıkla ya da grafikte fareyle sürükleyerek aralık seçilir\n'
+           'Kesilen kısım silinmez: saklanır, analizden ve bütün grafiklerden (Grafikler, Log Gezgini, harita, 3B tekrar…) çıkarılır; çalışılan aralık grafiği baştan sona kaplar. "↺ Tamamını geri getir" ile her an geri gelir\n'
+           'Aynı log yeniden açıldığında kesim kendiliğinden uygulanır (isterseniz kapatabilirsiniz). Saat ve Mission Planner zaman eşlemesi kesimden sonra da doğru kalır\n'
+           'Uçuş bilgileri formu: gövde tipi, otopilot, GPS/pusula modülü, motor hacmi, hücre sayısı gibi sorularda bütün seçenekler açılır liste yerine aynı anda görünür; listede olmayanı "Diğer" kutusuna yazabilirsiniz. Seçenekler artık sağdan taşıp kesilmiyor',
+     'en': 'New "✂ Cut": in a log that holds several records, select only the part you want to work on (e.g. the second record where the crash happened). Records are shown numbered; pick a range with one click or by dragging on the chart\n'
+           'The cut part is not deleted: it is kept aside and removed from the analysis and from every chart (Charts, Log Browser, map, 3D replay…); the range you work on fills the chart from edge to edge. "↺ Restore the whole log" brings it back any time\n'
+           'When the same log is opened again the cut is applied automatically (you can turn this off). Clock time and Mission Planner time mapping stay correct after cutting\n'
+           'Flight information form: for questions such as airframe type, autopilot, GPS/compass module, engine size and cell count all options are now visible at once instead of a drop-down; type anything not listed into the "Other" box. Options no longer overflow and get cut off on the right',
+     'ar': 'جديد "✂ قص": في سجل يحوي عدة تسجيلات اختر الجزء الذي تريد العمل عليه فقط (مثل التسجيل الثاني الذي وقع فيه الحادث). تُعرض التسجيلات مرقّمة؛ يُختار النطاق بنقرة واحدة أو بالسحب على الرسم\n'
+           'الجزء المقصوص لا يُحذف: يُحفظ جانباً ويُزال من التحليل ومن جميع الرسوم (الرسوم، مستعرض السجل، الخريطة، الإعادة ثلاثية الأبعاد…)؛ ويملأ النطاق المختار الرسم من طرفه إلى طرفه. يعود في أي وقت عبر "↺ استعادة السجل كاملاً"\n'
+           'عند فتح السجل نفسه مرة أخرى يُطبَّق القص تلقائياً (يمكن إيقاف ذلك). يبقى وقت الساعة ومطابقة زمن Mission Planner صحيحين بعد القص\n'
+           'نموذج معلومات الرحلة: في أسئلة مثل نوع الهيكل والطيار الآلي ووحدة GPS/البوصلة وسعة المحرك وعدد الخلايا تظهر جميع الخيارات معاً بدل القائمة المنسدلة؛ واكتب ما ليس في القائمة في خانة "أخرى". لم تعد الخيارات تتجاوز الحافة اليمنى وتُقطع'},
     {'v': '1.1.17',
      'tr': '160 yeni gerçek Plane (VTOL dahil) logu toplandı; çoğu sorunsuz normal uçuş (sürüm/beta test konuları dahil). Artık 271 ölçülebilir Plane logu var: 125 kırım/olay, 146 normal uçuş\n'
            'Kör test: program bu logları hiç görmeden ölçüldü; normal uçuşu tanıma %74 çıktı (yanlış alarm fazlaydı)\n'
