@@ -1,0 +1,157 @@
+name: packs
+
+# Çevrimdışı paketleri üretir ve 'packs' ön sürümüne (prerelease: releases/latest'i etkilemez) yükler:
+#   nllb-3.3b  Meta NLLB-200 3.3B → CTranslate2 int8 (+ sentencepiece), model.bin 1,9 GB parçalara bölünür (GitHub 2 GB sınırı)
+#   nllb-1.3b  Meta NLLB-200 distilled 1.3B → CTranslate2 int8
+#   ocr        Tesseract 5 (UB Mannheim Windows derlemesi) + tessdata_best eng/tur/ara/osd
+# Her paket programın kendi koduyla (tools_ci/pack_test.py) GERÇEK çeviri / OCR yapılarak doğrulanır; geçmezse yüklenmez.
+# Program packs.json'u okur, parçaları indirip SHA-256 ile doğrular (app/core/paketler.py).
+# Tetik: tools_data/request_packs.txt değişince ya da elle.
+on:
+  push:
+    paths: ['tools_data/request_packs.txt']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: packs
+  cancel-in-progress: false
+
+env:
+  GH_TOKEN: ${{ github.token }}
+  PYTHONUTF8: '1'
+  PYTHONIOENCODING: utf-8
+
+jobs:
+  prep:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Release 'packs' (prerelease)
+        run: |
+          gh release view packs -R "$GITHUB_REPOSITORY" >/dev/null 2>&1 || \
+          gh release create packs -R "$GITHUB_REPOSITORY" --prerelease --latest=false --title "Offline packs (translation + OCR)" \
+            --notes "Pixhawk Log Analiz çevrimdışı paketleri: NLLB-200 çeviri modelleri (CTranslate2 int8) ve Tesseract OCR (tessdata_best). Program içinden indirilir (Çeviri Merkezi > Çevrimdışı paketler). Lisanslar: NLLB-200 CC-BY-NC 4.0 (Meta), Tesseract Apache-2.0."
+
+  nllb:
+    needs: prep
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - id: nllb-3.3b
+            hf: facebook/nllb-200-3.3B
+          - id: nllb-1.3b
+            hf: facebook/nllb-200-distilled-1.3B
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Free disk
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost || true
+          df -h /
+      - id: cache
+        uses: actions/cache@v4
+        with:
+          path: model
+          key: pack-${{ matrix.id }}-ct2int8-v1
+      - name: Convert to CTranslate2 int8
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          pip install -q --index-url https://download.pytorch.org/whl/cpu torch
+          pip install -q ctranslate2 transformers sentencepiece protobuf
+          ct2-transformers-converter --model ${{ matrix.hf }} --output_dir model --quantization int8 --low_cpu_mem_usage --copy_files sentencepiece.bpe.model
+          rm -rf ~/.cache/huggingface || true
+          ls -la model; du -sh model
+      - name: Real translation test (program code)
+        run: |
+          pip install -q ctranslate2 sentencepiece
+          python tools_ci/pack_test.py nllb model
+      - name: Split + manifest piece
+        run: |
+          mkdir -p stage up pieces
+          cp model/*.json model/*.model stage/ 2>/dev/null || true
+          cp model/*.txt stage/ 2>/dev/null || true
+          export WHOLE_SHA_model_bin=$(sha256sum model/model.bin | cut -d' ' -f1)
+          split -b 1900M -d -a 2 model/model.bin stage/model.bin.p
+          ls -la stage
+          python tools_ci/pack_manifest.py piece ${{ matrix.id }} stage pieces/${{ matrix.id }}.json
+          for f in stage/*; do mv "$f" "up/${{ matrix.id }}--$(basename "$f")"; done
+      - name: Upload assets
+        run: |
+          for f in up/*; do
+            for i in 1 2 3 4; do gh release upload packs "$f" --clobber -R "$GITHUB_REPOSITORY" && break; sleep $((i*15)); done
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: piece-${{ matrix.id }}
+          path: pieces/
+
+  ocr:
+    needs: prep
+    runs-on: windows-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Tesseract (UB Mannheim) + tessdata_best
+        shell: pwsh
+        run: |
+          choco install tesseract -y --no-progress | Out-Null
+          $src = "$env:ProgramFiles\Tesseract-OCR"
+          if (-not (Test-Path "$src\tesseract.exe")) { Write-Error 'tesseract install failed'; exit 1 }
+          New-Item -ItemType Directory pk\Tesseract-OCR -Force | Out-Null
+          Copy-Item "$src\*" pk\Tesseract-OCR -Recurse
+          Remove-Item pk\Tesseract-OCR\tessdata\*.traineddata -Force
+          Remove-Item pk\Tesseract-OCR\unins*.exe -Force -ErrorAction SilentlyContinue
+          foreach ($l in 'eng','tur','ara','osd') {
+            Invoke-WebRequest "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/main/$l.traineddata" -OutFile "pk\Tesseract-OCR\tessdata\$l.traineddata"
+          }
+          & pk\Tesseract-OCR\tesseract.exe --version
+          & pk\Tesseract-OCR\tesseract.exe --list-langs --tessdata-dir pk\Tesseract-OCR\tessdata
+      - name: Real OCR test (program code, installed-pack layout)
+        shell: pwsh
+        run: |
+          pip install -q pillow pymupdf numpy
+          $env:PX_PACKS_DIR = "$PWD\packs-test"
+          New-Item -ItemType Directory "$env:PX_PACKS_DIR\ocr" -Force | Out-Null
+          Copy-Item pk\Tesseract-OCR "$env:PX_PACKS_DIR\ocr\" -Recurse
+          Set-Content "$env:PX_PACKS_DIR\ocr\.ok" '{}'
+          python tools_ci/pack_test.py ocr
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Zip + manifest piece + upload
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory stage, pieces, up -Force | Out-Null
+          python -c "import os,zipfile; z=zipfile.ZipFile('stage/ocr-tesseract.zip','w',zipfile.ZIP_DEFLATED,compresslevel=9); [z.write(os.path.join(r,f), os.path.relpath(os.path.join(r,f),'pk')) for r,_,fs in os.walk('pk') for f in fs]; z.close()"
+          python tools_ci/pack_manifest.py piece ocr stage pieces/ocr.json --unzip
+          Move-Item stage\ocr-tesseract.zip up\ocr--ocr-tesseract.zip
+          gh release upload packs up\ocr--ocr-tesseract.zip --clobber -R $env:GITHUB_REPOSITORY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: piece-ocr
+          path: pieces/
+
+  manifest:
+    needs: [prep, nllb, ocr]
+    if: always() && needs.prep.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: piece-*
+          path: pieces
+      - name: Merge + upload packs.json
+        run: |
+          gh release download packs -p packs.json -R "$GITHUB_REPOSITORY" -O old.json 2>/dev/null || echo '{"packs":{}}' > old.json
+          python tools_ci/pack_manifest.py merge old.json pieces packs.json
+          cat packs.json | head -60
+          gh release upload packs packs.json --clobber -R "$GITHUB_REPOSITORY"

@@ -325,11 +325,11 @@ class ParamCenterPage(Page):
         if not k or lg == 'en': return
         from ..core import ai as AI
         s = self.win.settings
-        if not AI.available(s): return error(self, t('pc_need_ai'))
         m = self.db.meta(k, self.vehicle()) or {}
 
         def job():
-            return AI.translate(s, self.win.usage, f"{m.get('dn', '')}\n|||\n{m.get('d', '')}", lg)
+            from ..core import ceviri as CV
+            return CV.translate_text(f"{m.get('dn', '')}\n|||\n{m.get('d', '')}", 'en', lg, s, self.win.usage)[0]
 
         def ok(out):
             parts = out.split('|||')
