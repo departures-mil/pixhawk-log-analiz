@@ -338,8 +338,10 @@ class GoogleEngine(Engine):
             return list(ex.map(one, segs))
 
 
-def protect(text, src):
-    """Yer tutucu: parametre adları, uçuş modları, kısaltmalar (her dilde) + İngilizce kaynakta sözlük terimleri."""
+def protect(text, src, to_en=False):
+    """Yer tutucu: parametre adları, uçuş modları, kısaltmalar (her dilde) + İngilizce kaynakta sözlük terimleri.
+    to_en: Türkçe/Arapça kaynaktaki sözlük terimleri de yer tutucuya alınır ve İngilizce pivotta sözlükteki İngilizce adıyla geri
+    konur (ör. 'المروحة' → 'propeller'; makine 'fan' demesin). İkinci adımda bu ad hedef dildeki sözlük karşılığına çevrilir."""
     if src == 'en': return GL.protect(text)
     out = []; n = [0]
 
@@ -347,6 +349,15 @@ def protect(text, src):
         t = GL._tok(n[0]); n[0] += 1; out.append((t, 'keep', m.group(0))); return t
     text = GL._IDENT.sub(sub, text)
     text = GL._KEEP.sub(sub, text)
+    if to_en and src in ('tr', 'ar'):
+        ents = sorted(builtin_entries(), key=lambda e: -len(_base(e.get(src))))
+        for e in ents:
+            rx = e.rx.get(src)
+            if rx is None or len(_base(e.get(src))) < 3 or (e.soft and src == 'tr'): continue   # Türkçede genel kelimeler akıcılık için serbest
+
+            def sub_t(m, e=e):
+                t = GL._tok(n[0]); n[0] += 1; out.append((t, 'keep', e.en)); return t
+            text = rx.sub(sub_t, text)
     return text, out
 
 
@@ -386,7 +397,7 @@ class NLLBEngine(Engine):
 
     def _pair(self, segs, src, tgt):
         """Paragrafları cümlelere böl, yer tutucuyla çevir, birleştir."""
-        prot = [protect(s, src) for s in segs]
+        prot = [protect(s, src, to_en=tgt == 'en') for s in segs]
         sents = []; idx = []
         for j, (p, _) in enumerate(prot):
             lines = p.split('\n')
