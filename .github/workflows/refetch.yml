@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   actions: write
 
 jobs:
@@ -29,6 +29,13 @@ jobs:
           export BENCH_MANIFEST=$(head -1 tools_data/request_refetch.txt)
           python tools_data/crashbench.py refetch
           cd /tmp/rf && tar czf /tmp/rf.tgz *.bin manifest.json
+      - name: Upload to existing draft release bench-plane
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd /tmp && split -b 1900m -d rf.tgz pn.tgz.part
+          gh release upload bench-plane /tmp/pn.tgz.part* --clobber --repo "${{ github.repository }}"
       - uses: actions/upload-artifact@v4
         with:
           name: refetch-logs
