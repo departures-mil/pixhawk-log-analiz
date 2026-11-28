@@ -44,3 +44,18 @@ def test_normal_plane_flight_not_serious(plane):
     v = A.verdict
     assert not (v.get('kind') == 'incident' and v.get('severity') == 'serious' and not
                 ({e['k'] for e in v.get('evidence', [])} - {'cr_landed'}))
+
+
+def test_still_on_ground_only_after_landing(plane):
+    """v1.1.17: 'log kesildi' tek kanıtsa ve uçak yerde duruyorsa ciddi sayılmaz; havadayken sayılır."""
+    analysis, L = plane
+    A = analysis.Analysis(L)
+    assert A.flights
+    a, b = A.flights[-1]
+    assert not A._still_on_ground((a + b) / 2)     # uçuşun ortası: havada ve hızlı
+    g = L.s('GPS'); m = g.t >= b - 5; saved = g['Spd'][m].copy()
+    try:
+        g['Spd'][m] = 0.0                            # inişten sonra yerde duruyor
+        assert A._still_on_ground(b)
+    finally:
+        g['Spd'][m] = saved

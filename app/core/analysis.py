@@ -778,6 +778,23 @@ class Analysis(ExtMixin):
         # Plane: kanıt yok, uçuş bittikten ≥5 s sonra yerde sakin disarm → normal iniş (kırımlarda disarm ya yok ya da ≤2 s içinde)
         elif not ev and self.vehicle == 'Plane' and self.flights and self._calm_disarm(self.flights[-1][1]):
             v['severity'] = 'minor'; v['refined'] = True
+        # v1.1.17: Plane, kanıt yok, inişten sonra log ≥40 s daha sürüyor (uçak yerde, pilot yanına gidip kapatıyor).
+        # Ölçüm (262 uzman etiketli Plane logu, 103'ü kör): bu grupta 8 normal uçuş, 2 kırım.
+        elif not ev and self.vehicle == 'Plane' and self.flights and self.L.duration - self.flights[-1][1] >= 40:
+            v['severity'] = 'minor'; v['refined'] = True
+        # v1.1.17: Plane, tek kanıt 'log kesildi' ama kesilme anında uçak yerde ve duruyor (inişten sonra batarya söküldü)
+        # Ölçüm: bu grupta 5 normal uçuş, 1 kırım; havada kesilen loglar (hız >10 m/s) bu kurala girmez.
+        elif ev and ev <= {'cr_log_cut', 'cr_log_end'} and self.vehicle == 'Plane' and self._still_on_ground(self.flights[-1][1] if self.flights else self.L.duration):
+            v['severity'] = 'minor'; v['refined'] = True
+
+    def _still_on_ground(self, end):
+        """Uçuş sonunda (son 3 s) yer hızı ≤2 m/s ve kalkış noktasına göre irtifa ≤5 m."""
+        g = self.L.s('GPS'); tr = self.track
+        if not g.has('Spd') or tr is None: return False
+        m = (g.t >= end - 3) & (g.t <= end + 1)
+        if not m.any() or float(np.nanmean(g['Spd'][m])) > 2: return False
+        k = tr['t'] <= end + 1
+        return bool(k.any()) and abs(float(tr['rel'][k][-1])) <= 5
 
     def _calm_disarm(self, end):
         L = self.L

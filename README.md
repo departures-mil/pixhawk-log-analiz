@@ -52,6 +52,12 @@ ortak `reusable-release.yml` (latest.json, son 5 sürümden yamalar) ile yayın.
   çalışmayı sayılarla izler (içerik yok), çevrim dışı kurallar + kullanıcının kendi Gemini/Claude anahtarıyla öneri; bildirim + sağ altta ✦ panel;
   Ayarlar'da "Admin ile iletişim"in önünde kart. Aynı bilgisayardaki programlarla %APPDATA%/FalconCekirdek/agent üzerinden paylaşım.
 
+## v1.1.17 — Plane normal uçuşları ve kör test
+- 160 yeni Plane konusu (`planenormal`, sürüm/beta + normal uçuş aramaları; loglar `refetch.yml` ile `bench-plane` taslak sürümüne). Etiketler `labels._pn_doc`; program Copter okursa hariç.
+- Kör ölçüm (v1.1.16 kodu, 125 Plane logu): doğruluk .704, duyarlılık .333 (12 kırım), özgüllük .743.
+- `_refine_severity`: Plane kanıtsız olay + inişten sonra log ≥40 s → minor; tek kanıt log kesildi/bitti ve `_still_on_ground` (son 3 s GPS hızı ≤2, irtifa ≤5 m) → minor.
+- 271 Plane logu (125/146): doğruluk .838, duyarlılık .824, özgüllük .849, kök neden .596. Tüm 783 log: doğruluk .854.
+
 ## v1.1.16 — Plane kök neden teşhisi
 - `Analysis.airspeed_src()`: ARSP → CTUN.Aspd/As → TECS.sp → CTUN.SAs (uçuş medyanı ≥3 m/s); sağlık, stall, özet, diag2, solver, grafik bunu kullanır. Stall için kaynak yoksa GPS.Spd.
 - `_vtol_sat` (QTUN akarken ≥1,2 s motor tavanda + tutum hatası ≥90°, sapma doygunluktan ≤2 s önce), `upset` (≥100° yatış → olay), Plane RC kaybı (failsafe metni, RSSI→0), öncelikler: pusula geri, RC kaybı (>5 s sonra) ve stall (`stall_t`, −3,5…+8 s) kontrolün önüne.

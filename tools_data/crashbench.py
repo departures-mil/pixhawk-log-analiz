@@ -428,6 +428,27 @@ def harvest_planenormal():
     print('logs:', len(man), 'MB', round(total))
 
 
+def refetch():
+    """Bir tarama manifestindeki logları (log_url) yeniden indirir: BENCH_MANIFEST=tools_data/crashbench/pn_manifest.json."""
+    os.makedirs(BENCH, exist_ok=True)
+    src = os.path.join(ROOT, os.environ.get('BENCH_MANIFEST', 'tools_data/crashbench/pn_manifest.json'))
+    man = json.load(open(src)); ok = {}
+    for k, m in man.items():
+        p = os.path.join(BENCH, f'{k}.bin')
+        if os.path.exists(p): ok[k] = m; continue
+        try:
+            b, _ = get(direct(m['log_url']), binary=True, timeout=180)
+            d = to_bin(b)
+        except Exception as e:
+            print('  dl fail', k, e); continue
+        if not d: print('  not bin', k); continue
+        open(p, 'wb').write(d); ok[k] = m
+        print(f'+ {k} {len(d) / 1e6:.1f} MB', flush=True)
+        time.sleep(0.5)
+    json.dump(ok, open(os.path.join(BENCH, 'manifest.json'), 'w'), indent=1)
+    print('refetched', len(ok), 'of', len(man))
+
+
 def harvest_gh():
     """ArduPilot GitHub hata kayıtları: gövdesinde .bin/.zip log bağlantısı olan kırım/uçuş sorunları + geliştirici yorumları.
     Kimlik 'gh<numara>'. Uzman yanıtları doğrudan plane_threads dosyasına eklenir (BENCH_THREADS_OUT)."""
@@ -664,4 +685,4 @@ def write(res):
 
 
 if __name__ == '__main__':
-    {'harvest': harvest, 'run': run, 'threads': threads, 'plane': harvest_plane, 'github': harvest_gh, 'planenormal': harvest_planenormal}[sys.argv[1]]()
+    {'harvest': harvest, 'run': run, 'threads': threads, 'plane': harvest_plane, 'github': harvest_gh, 'planenormal': harvest_planenormal, 'refetch': refetch}[sys.argv[1]]()

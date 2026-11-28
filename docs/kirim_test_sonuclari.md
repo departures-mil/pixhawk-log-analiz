@@ -1,18 +1,18 @@
 # Gerçek kırım logları ile teşhis doğruluğu
 
-Kaynak: discuss.ardupilot.org kamuya açık konular · Tarih: 2026-11-27 20:46 · Log sayısı: 659 (+52 okunamayan)
+Kaynak: discuss.ardupilot.org kamuya açık konular · Tarih: 2026-11-28 02:14 · Log sayısı: 784 (+77 okunamayan)
 
 Etiket kaynağı: **uzman etiketleri** — her konudaki deneyimli/ekip üyelerinin yanıtları elle okunarak kırım/normal ve kök neden belirlendi (tools_data/crashbench/labels.json). Kök neden puanı yalnız uzmanların bir nedende birleştiği kırımlar üzerinden hesaplanır.
 
 | Ölçüt | Değer |
 |---|---|
-| Genel doğruluk (kırım/olay ↔ normal) | %87 |
-| Kırımı yakalama oranı (duyarlılık) | %87 (445/513) |
-| Normal uçuşu doğru tanıma (özgüllük) | %89 (130/146) |
-| Kesin 'kırım' kararı verilen kırım logları | 286/513 |
-| Normal logda yanlış 'kırım' kararı | 2 |
-| Kök neden uyumu (ana neden) | %49 (203/411) |
-| Kök neden uyumu (ana veya ikincil nedenlerde) | %69 (282/411) |
+| Genel doğruluk (kırım/olay ↔ normal) | %86 |
+| Kırımı yakalama oranı (duyarlılık) | %85 (446/525) |
+| Normal uçuşu doğru tanıma (özgüllük) | %88 (227/259) |
+| Kesin 'kırım' kararı verilen kırım logları | 287/525 |
+| Normal logda yanlış 'kırım' kararı | 7 |
+| Kök neden uyumu (ana neden) | %49 (205/419) |
+| Kök neden uyumu (ana veya ikincil nedenlerde) | %68 (285/419) |
 
 ## Sürüm geçmişi
 
@@ -24,7 +24,7 @@ Etiket kaynağı: **uzman etiketleri** — her konudaki deneyimli/ekip üyelerin
 | 2026-11-24 14:19 | v1.1.1 · uzman | 323 | %81 | %89 | %66 | %52 |
 | 2026-11-24 21:20 | v1.1.2 · uzman · yalnız kurallar | 323 | %86 | %92 | %74 | %55 |
 | 2026-11-27 14:10 | v1.1.12 | 454 | %89 | %90 | %85 | %52 |
-| 2026-11-27 20:46 | dev | 659 | %87 | %87 | %89 | %49 |
+| 2026-11-28 02:14 | dev | 784 | %86 | %85 | %88 | %49 |
 
 ## Öğrenen ikinci görüş (ML)
 
@@ -46,6 +46,7 @@ Aynı uzman etiketli 323 log üzerinde, her log dışarıda bırakılarak (leave
 | [*SOLVED* Agricultural Quad Crash Analysis](https://discuss.ardupilot.org/t/solved-agricultural-quad-crash-analysis/101517) | Copter | crash | ✅ crash | motor | motor | 417 sn |
 | [MFE Fighter VTOL crash - suspected IO MCU failure](https://discuss.ardupilot.org/t/mfe-fighter-vtol-crash-suspected-io-mcu-failure/102276) | Plane | crash | ✅ crash | radio | - | 460 sn |
 | [Arducopter initial tuning and setup - Oscillation issue](https://discuss.ardupilot.org/t/arducopter-initial-tuning-and-setup-oscillation-issue/103213) | Copter | crash | ✅ crash | unknown | control | 332 sn |
+| [Odd Pitch up during transition followed by loss of pitch control](https://discuss.ardupilot.org/t/odd-pitch-up-during-transition-followed-by-loss-of-pitch-control/103447) | Plane | crash | ✅ crash | motor | control | 393 sn |
 | [Crash when switching from RTL to Loiter](https://discuss.ardupilot.org/t/crash-when-switching-from-rtl-to-loiter/103732) | Copter | crash | ✅ crash | motor | battery | 862 sn |
 | [Copter held full throttle after radio failsafe and crashed into tree a](https://discuss.ardupilot.org/t/copter-held-full-throttle-after-radio-failsafe-and-crashed-into-tree-after-several-errors/104106) | Copter | crash | ✅ crash | control | - | 489 sn |
 | [Flight Crash Root Cause](https://discuss.ardupilot.org/t/flight-crash-root-cause/104199) | Copter | crash | ✅ crash | compass | ekf | 108 sn |
@@ -379,11 +380,13 @@ Aynı uzman etiketli 323 log üzerinde, her log dışarıda bırakılarak (leave
 | [Which made the mini heli crash](https://discuss.ardupilot.org/t/which-made-the-mini-heli-crash/13479) | Copter | crash | ✅ incident | control | pilot | 428 sn |
 | [Arduplane 4.5.7 TAKEOFF crash investigation](https://discuss.ardupilot.org/t/arduplane-4-5-7-takeoff-crash-investigation/135053) | Plane | crash | ✅ incident | compass | - | 188 sn |
 | [Crash during auto takeoff v4.6.0 with video](https://discuss.ardupilot.org/t/crash-during-auto-takeoff-v4-6-0-with-video/136852) | Plane | crash | ✅ incident | control | control | 152 sn |
+| [Arduplane 4.6.2 on TBS MOJITO : upside down flight after takeoff](https://discuss.ardupilot.org/t/arduplane-4-6-2-on-tbs-mojito-upside-down-flight-after-takeoff/137589) | Plane | crash | ❌ incident | radio | compass | 830 sn |
 | [Clarify need to rectify Drone Crash](https://discuss.ardupilot.org/t/clarify-need-to-rectify-drone-crash/137712) | Copter | crash | ✅ incident | vibration | control | 1336 sn |
 | [Newbie trying Crash Analysis on Vtol Project](https://discuss.ardupilot.org/t/newbie-trying-crash-analysis-on-vtol-project/137901) | Plane | crash | ✅ incident | motor | compass | 258 sn |
 | [VTOL crash after transition to FBWA](https://discuss.ardupilot.org/t/vtol-crash-after-transition-to-fbwa/138484) | Plane | crash | ✅ incident | control | - | 108 sn |
 | [QLOITER hover instability/crash after high Q_A_ANG_PIT_P/RLL_P=9 (15 k](https://discuss.ardupilot.org/t/qloiter-hover-instability-crash-after-high-q-a-ang-pit-p-rll-p-9-15-kg-vtol-22x7-4-rate-r-170-rdes-90/138573) | Plane | crash | ✅ incident | control | control | 354 sn |
 | [About PID Tuning, QuickTune, and QAUTOTUNE for Large (13–19 kg) VTOL A](https://discuss.ardupilot.org/t/about-pid-tuning-quicktune-and-qautotune-for-large-13-19-kg-vtol-aircraft/138733) | Plane | crash | ✅ incident | control | control | 354 sn |
+| [Severe pitch oscillation after FBWA → QLOITER reverse transition (25 k](https://discuss.ardupilot.org/t/severe-pitch-oscillation-after-fbwa-qloiter-reverse-transition-25-kg-mtow-class/140099) | Plane | crash | ✅ incident | control | motor | 352 sn |
 | [Copter 4.6.2 Crashed after Takeoff](https://discuss.ardupilot.org/t/copter-4-6-2-crashed-after-takeoff/141037) | Copter | crash | ✅ incident | control | control | 64 sn |
 | [After EKF failsafe, the drone just fell from 80 m](https://discuss.ardupilot.org/t/after-ekf-failsafe-the-drone-just-fell-from-80-m/141345) | Copter | crash | ✅ incident | power | gps | 342 sn |
 | [Drone Crashed After Switching to LOITER Mode (Stable in AUTO Mode)](https://discuss.ardupilot.org/t/drone-crashed-after-switching-to-loiter-mode-stable-in-auto-mode/141421) | Copter | crash | ❌ incident | unknown | gps | 161 sn |
@@ -415,7 +418,7 @@ Aynı uzman etiketli 323 log üzerinde, her log dışarıda bırakılarak (leave
 | [Help w/ log analysis - copter flip/crash](https://discuss.ardupilot.org/t/help-w-log-analysis-copter-flip-crash/15940) | Copter | crash | ✅ incident | power | motor | 360 sn |
 | [Quad constantly flips during takeoff, motors not spinning the same spe](https://discuss.ardupilot.org/t/quad-constantly-flips-during-takeoff-motors-not-spinning-the-same-speed/16617) | Copter | crash | ✅ incident | control | motor | 138 sn |
 | [Pixracer accelerometer EKF_CHECK-2. Crash in POSHOLD autotune mode](https://discuss.ardupilot.org/t/pixracer-accelerometer-ekf-check-2-crash-in-poshold-autotune-mode/17875) | Copter | crash | ❌ incident | unknown | vibration | 95 sn |
-| [Lost control and almost crash when return to Normal mode](https://discuss.ardupilot.org/t/lost-control-and-almost-crash-when-return-to-normal-mode/17906) | Plane | crash | ✅ incident | control | - | 379 sn |
+| [Lost control and almost crash when return to Normal mode](https://discuss.ardupilot.org/t/lost-control-and-almost-crash-when-return-to-normal-mode/17906) | Plane | crash | ❌ incident | control | - | 379 sn |
 | [Quad Crashes after thrusting vertically up](https://discuss.ardupilot.org/t/quad-crashes-after-thrusting-vertically-up/18031) | Copter | crash | ✅ incident | vibration | vibration | 113 sn |
 | [Testing RF Immunity - Crash Log - What fails?](https://discuss.ardupilot.org/t/testing-rf-immunity-crash-log-what-fails/18540) | Copter | crash | ✅ incident | power | motor | 273810 sn |
 | [Hexa copter crash](https://discuss.ardupilot.org/t/hexa-copter-crash/20162) | Copter | crash | ✅ incident | vibration | battery | 109 sn |
@@ -431,13 +434,14 @@ Aynı uzman etiketli 323 log üzerinde, her log dışarıda bırakılarak (leave
 | [Inconsistent compass error leads to crash when internal compasses swit](https://discuss.ardupilot.org/t/inconsistent-compass-error-leads-to-crash-when-internal-compasses-switched-off/32040) | Copter | crash | ✅ incident | vibration | compass | 32 sn |
 | [Crashed mid flight in PosHold (just dropped)](https://discuss.ardupilot.org/t/crashed-mid-flight-in-poshold-just-dropped/32115) | Copter | crash | ✅ incident | motor | battery | 544 sn |
 | [Qplane crash in Auto VTOL maneuvering](https://discuss.ardupilot.org/t/qplane-crash-in-auto-vtol-maneuvering/32183) | Plane | crash | ✅ incident | compass | control | 662 sn |
+| [Airspeed sensor noise problems on Large Quadplane](https://discuss.ardupilot.org/t/airspeed-sensor-noise-problems-on-large-quadplane/32941) | Plane | crash | ❌ incident | power | - | 703 sn |
 | [Rtl crash after converting to ppm and new power module](https://discuss.ardupilot.org/t/rtl-crash-after-converting-to-ppm-and-new-power-module/33361) | Copter | crash | ❌ incident | unknown | - | 59038 sn |
 | [Log Crash Analysis Help](https://discuss.ardupilot.org/t/log-crash-analysis-help/37003) | Copter | crash | ✅ incident | power | motor | 424325 sn |
 | [Uncontrolled position Problem in Auto mode and Cut motors in Qland](https://discuss.ardupilot.org/t/uncontrolled-position-problem-in-auto-mode-and-cut-motors-in-qland/37006) | Plane | crash | ✅ incident | control | - | 78 sn |
 | [AC-copter 3.7-dev fell from the sky crash log](https://discuss.ardupilot.org/t/ac-copter-3-7-dev-fell-from-the-sky-crash-log/37800) | Copter | crash | ✅ incident | control | power | 175 sn |
 | [Drone Drops After Hovering Fine for a Few Seconds (Log Analysis Help)](https://discuss.ardupilot.org/t/drone-drops-after-hovering-fine-for-a-few-seconds-log-analysis-help/39146) | Copter | crash | ✅ incident | compass | - | 28 sn |
 | [Crash when change mode STABILIZE -> ALTHOLD](https://discuss.ardupilot.org/t/crash-when-change-mode-stabilize-althold/39428) | Copter | crash | ✅ incident | battery | motor | 66 sn |
-| [Altitude snapped from baro to GPS alt - tried to crash](https://discuss.ardupilot.org/t/altitude-snapped-from-baro-to-gps-alt-tried-to-crash/39447) | Plane | crash | ✅ incident | stall | gps | 436 sn |
+| [Altitude snapped from baro to GPS alt - tried to crash](https://discuss.ardupilot.org/t/altitude-snapped-from-baro-to-gps-alt-tried-to-crash/39447) | Plane | crash | ❌ incident | stall | gps | 436 sn |
 | [Terrible Crash - Strange Behavior in Copter 3.6.6](https://discuss.ardupilot.org/t/terrible-crash-strange-behavior-in-copter-3-6-6/39486) | Copter | crash | ✅ incident | vibration | vibration | 78 sn |
 | [Help diagnosing errant behavior / crash for octocopter](https://discuss.ardupilot.org/t/help-diagnosing-errant-behavior-crash-for-octocopter/39580) | Copter | crash | ✅ incident | compass | battery | 41 sn |
 | [In-flight yaw realignments causing large yaw errors and crashes](https://discuss.ardupilot.org/t/in-flight-yaw-realignments-causing-large-yaw-errors-and-crashes/39803) | Copter | crash | ❌ incident | compass | compass | 213 sn |
@@ -449,6 +453,7 @@ Aynı uzman etiketli 323 log üzerinde, her log dışarıda bırakılarak (leave
 | [Advice on log with crash on takeoff](https://discuss.ardupilot.org/t/advice-on-log-with-crash-on-takeoff/42843) | Plane | crash | ✅ incident | power | control | 1146 sn |
 | [Fell/landed to a tree caused by unknown reason](https://discuss.ardupilot.org/t/fell-landed-to-a-tree-caused-by-unknown-reason/43318) | Copter | crash | ✅ incident | power | - | 367690 sn |
 | [Unwanted yaw drift, caused crash, failed EKF velocity [ RESOLVED ]](https://discuss.ardupilot.org/t/unwanted-yaw-drift-caused-crash-failed-ekf-velocity-resolved/47471) | Copter | crash | ✅ incident | motor | vibration | 18 sn |
+| [Wild 7 HZ oscillation with quad motors (solved)](https://discuss.ardupilot.org/t/wild-7-hz-oscillation-with-quad-motors-solved/48108) | Plane | crash | ✅ incident | control | control | 218 sn |
 | [Crash after initial throw w/Autotune, Compass Learn](https://discuss.ardupilot.org/t/crash-after-initial-throw-w-autotune-compass-learn/48931) | Plane | crash | ✅ incident | control | - | 198 sn |
 | [Crash with 4.0.0 RC3](https://discuss.ardupilot.org/t/crash-with-4-0-0-rc3/50267) | Copter | crash | ✅ incident | motor | battery | 59 sn |
 | [Plane roll and crash at takeoff (auto)](https://discuss.ardupilot.org/t/plane-roll-and-crash-at-takeoff-auto/50364) | Plane | crash | ✅ incident | control | control | 760 sn |
@@ -509,10 +514,12 @@ Aynı uzman etiketli 323 log üzerinde, her log dışarıda bırakılarak (leave
 | [Quadplane crashed after EKF3 Lane Switched 2!](https://discuss.ardupilot.org/t/quadplane-crashed-after-ekf3-lane-switched-2/97848) | Plane | crash | ✅ incident | motor | motor | 220 sn |
 | [VTOL plane crash during hover tuning](https://discuss.ardupilot.org/t/vtol-plane-crash-during-hover-tuning/97877) | Plane | crash | ✅ incident | control | motor | 65 sn |
 | [APM mid flight crash](https://discuss.ardupilot.org/t/apm-mid-flight-crash/9801) | Copter | crash | ✅ incident | power | - | 379486 sn |
+| [Quadplane is taking off in 50% throttle in Qloiter mode](https://discuss.ardupilot.org/t/quadplane-is-taking-off-in-50-throttle-in-qloiter-mode/98737) | Plane | crash | ❌ incident | unknown | - | 503 sn |
 | [Pixhawk Crash complete shut down](https://discuss.ardupilot.org/t/pixhawk-crash-complete-shut-down/9984) | Copter | crash | ✅ incident | power | battery | 455 sn |
 | [Copter locks up in flight, motors stop, crashes vehicle w/ Pixhawk 2](https://github.com/ArduPilot/ardupilot/issues/11642) | Copter | crash | ✅ incident | power | - | 170 sn |
 | [Lightware I2C Range Spikes with IR-LOCK (can cause crash)](https://github.com/ArduPilot/ardupilot/issues/15615) | Copter | crash | ❌ incident | unknown | - | 223 sn |
 | [Quadplane/Tailsitter: Q_TRIM it creates integral accumulation problems](https://github.com/ArduPilot/ardupilot/issues/15777) | Plane | crash | ✅ incident | control | control | 647 sn |
+| [Plane 4.4 release #91](https://discuss.ardupilot.org/t/plane-4-4-release/99954/91) | Plane | crash | ❌ incident | unknown | gps | 329 sn |
 | [OctaQuad VTOL massive pitch, roll, and yawing problems](https://discuss.ardupilot.org/t/octaquad-vtol-massive-pitch-roll-and-yawing-problems/105908) | Plane | crash | ❌ noflight | - | control | 232 sn |
 | [Near Crash in QHover after GPS Loss](https://discuss.ardupilot.org/t/near-crash-in-qhover-after-gps-loss/107723) | Plane | crash | ❌ noflight | - | gps | 309 sn |
 | [Fly Away Abnormal: MagX, MAgY, MagZ](https://discuss.ardupilot.org/t/fly-away-abnormal-magx-magy-magz/131585) | Copter | crash | ❌ noflight | - | compass | 458 sn |
@@ -534,8 +541,10 @@ Aynı uzman etiketli 323 log üzerinde, her log dışarıda bırakılarak (leave
 | [Crash / Quadcopter Turned Upside Down](https://discuss.ardupilot.org/t/crash-quadcopter-turned-upside-down/124154) | Copter | crash | ❌ normal | - | motor | 173 sn |
 | [Crash logs analysis](https://discuss.ardupilot.org/t/crash-logs-analysis/12892) | Copter | crash | ❌ normal | - | - | 173 sn |
 | [X Quad Tends to Flip During Takeoff in Stabilize Mode](https://discuss.ardupilot.org/t/x-quad-tends-to-flip-during-takeoff-in-stabilize-mode/131797) | Copter | crash | ❌ normal | - | - | 228 sn |
+| [Adele X10 pitching up at start of transition to FBWB](https://discuss.ardupilot.org/t/adele-x10-pitching-up-at-start-of-transition-to-fbwb/134179) | Plane | crash | ❌ normal | - | control | 189 sn |
 | [VTOL crash during RTL - ? power loss](https://discuss.ardupilot.org/t/vtol-crash-during-rtl-power-loss/137162) | Plane | crash | ❌ normal | - | power | 206 sn |
 | [Quad crash (second time) 3.4.4-rc1](https://discuss.ardupilot.org/t/quad-crash-second-time-3-4-4-rc1/13745) | Copter | crash | ❌ normal | - | - | 147 sn |
+| [Pitch vibration of a small VTOL plane](https://discuss.ardupilot.org/t/pitch-vibration-of-a-small-vtol-plane/140393) | Plane | crash | ❌ normal | - | control | 208 sn |
 | [4+1 VTOL Crash analysis in Q mode (VTOL motors quit)](https://discuss.ardupilot.org/t/4-1-vtol-crash-analysis-in-q-mode-vtol-motors-quit/142142) | Plane | crash | ❌ normal | - | motor | 554 sn |
 | [Copter fall during Autotune](https://discuss.ardupilot.org/t/copter-fall-during-autotune/142220) | Copter | crash | ❌ normal | - | power | 1777 sn |
 | [VTOL tiltrotor crash in QLOITER – sudden yaw spin, backward movement, ](https://discuss.ardupilot.org/t/vtol-tiltrotor-crash-in-qloiter-sudden-yaw-spin-backward-movement-and-nose-down-rotation/145787) | Plane | crash | ❌ normal | - | - | 946 sn |
@@ -559,14 +568,22 @@ Aynı uzman etiketli 323 log üzerinde, her log dışarıda bırakılarak (leave
 | [Crash multirotor in land mission!](https://discuss.ardupilot.org/t/crash-multirotor-in-land-mission/68887) | Copter | crash | ❌ normal | - | vibration | 649 sn |
 | [Quad Flyaway - need analysis](https://discuss.ardupilot.org/t/quad-flyaway-need-analysis/69210) | Copter | crash | ❌ normal | - | control | 106 sn |
 | [Drone crashed - sudden rise in YAW during flying and crash landed](https://discuss.ardupilot.org/t/drone-crashed-sudden-rise-in-yaw-during-flying-and-crash-landed/76391) | Copter | crash | ❌ normal | - | motor | 657 sn |
+| [Thrust loss in dual motor tailsitter](https://discuss.ardupilot.org/t/thrust-loss-in-dual-motor-tailsitter/80746) | Plane | crash | ❌ normal | - | motor | 85 sn |
 | [Flyaway (indoor !) need help to analyze log](https://discuss.ardupilot.org/t/flyaway-indoor-need-help-to-analyze-log/81234) | Copter | crash | ❌ normal | - | ekf | 51 sn |
 | [VTOL Unstable & crashed in Qstablized mode](https://discuss.ardupilot.org/t/vtol-unstable-crashed-in-qstablized-mode/82934) | Plane | crash | ❌ normal | - | control | 285 sn |
 | [Arducopter Crash, motor suddenly stop when tuning PID](https://discuss.ardupilot.org/t/arducopter-crash-motor-suddenly-stop-when-tuning-pid/91325) | Copter | crash | ❌ normal | - | motor | 670 sn |
 | [3DR Iris + Crashed after 3 successful waypoints mission](https://discuss.ardupilot.org/t/3dr-iris-crashed-after-3-successful-waypoints-mission/9269) | Copter | crash | ❌ normal | - | motor | 329868 sn |
 | [Quadcopter Fly Away on second flight of the day](https://discuss.ardupilot.org/t/quadcopter-fly-away-on-second-flight-of-the-day/94668) | Copter | crash | ❌ normal | - | vibration | 531 sn |
 | [ Use of "MOT_SLEW_UP_TIME" leads to bad attitude and crash.](https://github.com/ArduPilot/ardupilot/issues/13739) | Copter | crash | ❌ normal | - | control | 204 sn |
+| [Plane 4.1.0 beta #58](https://discuss.ardupilot.org/t/plane-4-1-0-beta/72434/58) | Plane | crash | ❌ normal | - | - | 251 sn |
+| [Plane 4.1.0 beta #78](https://discuss.ardupilot.org/t/plane-4-1-0-beta/72434/78) | Plane | crash | ❌ normal | - | - | 385 sn |
+| [Dual motor Tail-sitter VTOL trying to test fixed wing part](https://discuss.ardupilot.org/t/dual-motor-tail-sitter-vtol-trying-to-test-fixed-wing-part/117183) | Plane | normal | ❌ crash | control | - | 154 sn |
+| [Help with Pitch Oscillations](https://discuss.ardupilot.org/t/help-with-pitch-oscillations/134825) | Plane | normal | ❌ crash | control | - | 203 sn |
+| [Tailsitter (mode = 2) "surfaceless" roll authority (and q_assit behavi](https://discuss.ardupilot.org/t/tailsitter-mode-2-surfaceless-roll-authority-and-q-assit-behavior/144466) | Plane | normal | ❌ crash | motor | - | 61 sn |
+| [Baro altitude problem](https://discuss.ardupilot.org/t/baro-altitude-problem/42468) | Plane | normal | ❌ crash | control | - | 682 sn |
 | [Auto & Loiter Mode always Losing Altitude - Log Attached](https://discuss.ardupilot.org/t/auto-loiter-mode-always-losing-altitude-log-attached/7535) | Plane | normal | ❌ crash | control | - | 906 sn |
 | [Help with Log Analysis, Copter "stumbling"](https://discuss.ardupilot.org/t/help-with-log-analysis-copter-stumbling/82334) | Copter | normal | ❌ crash | motor | - | 250 sn |
+| [Roll oscillations during automatic takeoff](https://discuss.ardupilot.org/t/roll-oscillations-during-automatic-takeoff/84691) | Plane | normal | ❌ crash | stall | - | 1396 sn |
 | [Accelerometer Loss During Takeoff Causes Crash](https://github.com/ArduPilot/ardupilot/issues/16021) | Copter | normal | ❌ crash | control | - | 46 sn |
 | [EKF failsafe untriggered resulting in crash #1](https://github.com/ArduPilot/ardupilot/issues/24262) | Copter | normal | ❌ crash | control | - | 165 sn |
 | [EKF failsafe untriggered on high errors, resulting in a crash #2](https://github.com/ArduPilot/ardupilot/issues/24362) | Copter | normal | ❌ crash | gps | - | 654 sn |
@@ -586,16 +603,23 @@ Aynı uzman etiketli 323 log üzerinde, her log dışarıda bırakılarak (leave
 | [Updating from 4.0.7 to 4.3.3 requires new PID tuning?](https://discuss.ardupilot.org/t/updating-from-4-0-7-to-4-3-3-requires-new-pid-tuning/101399) | Copter | normal | ✅ incident | unknown | - | 487 sn |
 | [RC Input issues, log review, and questions](https://discuss.ardupilot.org/t/rc-input-issues-log-review-and-questions/101553) | Plane | normal | ❌ incident | power | - | 567 sn |
 | [Seeking Feedback on Tuning 7-Inch Copter for Improved Stability](https://discuss.ardupilot.org/t/seeking-feedback-on-tuning-7-inch-copter-for-improved-stability/103076) | Copter | normal | ❌ incident | control | - | 215 sn |
-| [Geo-fence problem - model not loitering in 15m radius circle](https://discuss.ardupilot.org/t/geo-fence-problem-model-not-loitering-in-15m-radius-circle/104226) | Plane | normal | ❌ incident | control | - | 349 sn |
+| [Is quadplane oscillation overheat the motors and ESC?](https://discuss.ardupilot.org/t/is-quadplane-oscillation-overheat-the-motors-and-esc/103740) | Plane | normal | ✅ incident | unknown | - | 109 sn |
+| [Geo-fence problem - model not loitering in 15m radius circle](https://discuss.ardupilot.org/t/geo-fence-problem-model-not-loitering-in-15m-radius-circle/104226) | Plane | normal | ✅ incident | control | - | 349 sn |
+| [Plane feels twitchy, also logging full](https://discuss.ardupilot.org/t/plane-feels-twitchy-also-logging-full/105809) | Plane | normal | ❌ incident | power | - | 575 sn |
+| [QuadPlane too many notches (solved sort of)](https://discuss.ardupilot.org/t/quadplane-too-many-notches-solved-sort-of/106024) | Plane | normal | ✅ incident | unknown | - | 1042 sn |
 | [Auto takeoff is not fully reliable & Autoland is problematic](https://discuss.ardupilot.org/t/auto-takeoff-is-not-fully-reliable-autoland-is-problematic/108252) | Plane | normal | ✅ incident | compass | - | 465 sn |
 | [Jitter in auto modes, help with log review](https://discuss.ardupilot.org/t/jitter-in-auto-modes-help-with-log-review/108349) | Copter | normal | ✅ incident | unknown | - | 27 sn |
+| [Aerobatics: Strange phenomena. Teach me why](https://discuss.ardupilot.org/t/aerobatics-strange-phenomena-teach-me-why/109650) | Plane | normal | ✅ incident | control | - | 518 sn |
 | [Weird hovering issue - requires 3A to hover then jumps to 6A after a f](https://discuss.ardupilot.org/t/weird-hovering-issue-requires-3a-to-hover-then-jumps-to-6a-after-a-few-and-back-to-3a-and-so-on/110871) | Copter | normal | ✅ incident | compass | - | 1271 sn |
 | [Performance review of Quadcopter](https://discuss.ardupilot.org/t/performance-review-of-quadcopter/112001) | Copter | normal | ✅ incident | unknown | - | 575 sn |
+| [Where is the bottleneck for current in my system?](https://discuss.ardupilot.org/t/where-is-the-bottleneck-for-current-in-my-system/115609) | Plane | normal | ✅ incident | unknown | - | 98 sn |
 | [“AutoTune: failing to level, please tune manually”](https://discuss.ardupilot.org/t/autotune-failing-to-level-please-tune-manually/117575) | Copter | normal | ✅ incident | unknown | - | 729 sn |
+| [Tailsitter VTOL Take-off horizontal error](https://discuss.ardupilot.org/t/tailsitter-vtol-take-off-horizontal-error/117943) | Plane | normal | ❌ incident | control | - | 17 sn |
 | [Review log for Yaw 1Hz oscillation](https://discuss.ardupilot.org/t/review-log-for-yaw-1hz-oscillation/122473) | Plane | normal | ✅ incident | unknown | - | 92 sn |
 | [Stabilizing the copter's hover](https://discuss.ardupilot.org/t/stabilizing-the-copters-hover/123701) | Copter | normal | ✅ incident | battery | - | 429 sn |
 | [Racer pitch tuning on fast speeds](https://discuss.ardupilot.org/t/racer-pitch-tuning-on-fast-speeds/123961) | Copter | normal | ✅ incident | unknown | - | 103 sn |
 | [Auto tune on yaw not so great?](https://discuss.ardupilot.org/t/auto-tune-on-yaw-not-so-great/124552) | Copter | normal | ✅ incident | unknown | - | 286 sn |
+| [Plane Extreme Position / Velocity Glitches (HDOP ~ 99)](https://discuss.ardupilot.org/t/plane-extreme-position-velocity-glitches-hdop-99/126185) | Plane | normal | ✅ incident | radio | - | 164 sn |
 | [Autotune too low ATC_ACCEL_R_MAX value](https://discuss.ardupilot.org/t/autotune-too-low-atc-accel-r-max-value/126196) | Copter | normal | ❌ incident | vibration | - | 449 sn |
 | [Manual Tuning to auto tune](https://discuss.ardupilot.org/t/manual-tuning-to-auto-tune/126371) | Copter | normal | ✅ incident | unknown | - | 2488 sn |
 | [Servo center problem](https://discuss.ardupilot.org/t/servo-center-problem/128690) | Plane | normal | ❌ incident | control | - | 261 sn |
@@ -610,36 +634,69 @@ Aynı uzman etiketli 323 log üzerinde, her log dışarıda bırakılarak (leave
 | [Autotune doesnt complete, logs cut off](https://discuss.ardupilot.org/t/autotune-doesnt-complete-logs-cut-off/137946) | Copter | normal | ❌ incident | power | - | 170 sn |
 | [My logs (and only my logs) wont open in the PID Review Tool](https://discuss.ardupilot.org/t/my-logs-and-only-my-logs-wont-open-in-the-pid-review-tool/137978) | Copter | normal | ✅ incident | unknown | - | 46 sn |
 | [Tuning 4" Micro Long Range](https://discuss.ardupilot.org/t/tuning-4-micro-long-range/139094) | Copter | normal | ✅ incident | compass | - | 93 sn |
+| [CAN Airspeed sensors error](https://discuss.ardupilot.org/t/can-airspeed-sensors-error/139620) | Plane | normal | ✅ incident | compass | - | 964 sn |
+| [Quadplane fixed wing navigation problems](https://discuss.ardupilot.org/t/quadplane-fixed-wing-navigation-problems/141495) | Plane | normal | ✅ incident | control | - | 1882 sn |
 | [Hover Learn Results and INS Raw Log Review](https://discuss.ardupilot.org/t/hover-learn-results-and-ins-raw-log-review/141829) | Copter | normal | ✅ incident | unknown | - | 185 sn |
+| [Drone vibration](https://discuss.ardupilot.org/t/drone-vibration/143329) | Plane | normal | ✅ incident | motor | - | 195 sn |
 | [Large Quad tune](https://discuss.ardupilot.org/t/large-quad-tune/143560) | Copter | normal | ✅ incident | unknown | - | 143 sn |
 | [Turbine plane navigation tuning and throttle control](https://discuss.ardupilot.org/t/turbine-plane-navigation-tuning-and-throttle-control/143682) | Plane | normal | ✅ incident | vibration | - | 1299 sn |
 | [10inch copter tuning. Throttle notch](https://discuss.ardupilot.org/t/10inch-copter-tuning-throttle-notch/144690) | Copter | normal | ❌ incident | pilot | - | 72 sn |
 | [ArduCopter 4.7.1 7 inch build does not sit put in the air even after a](https://discuss.ardupilot.org/t/arducopter-4-7-1-7-inch-build-does-not-sit-put-in-the-air-even-after-auto-tuning/145679) | Copter | normal | ✅ incident | unknown | - | 77 sn |
+| [ArduPlane RTL failed once during flight, aircraft continued away from ](https://discuss.ardupilot.org/t/arduplane-rtl-failed-once-during-flight-aircraft-continued-away-from-home-while-descending-and-overspeeding/145711) | Plane | normal | ❌ incident | battery | - | 1735 sn |
+| [Quadplane Hybrid RTL confusion](https://discuss.ardupilot.org/t/quadplane-hybrid-rtl-confusion/14862) | Plane | normal | ✅ incident | stall | - | 1550 sn |
+| [Weavy navigation](https://discuss.ardupilot.org/t/weavy-navigation/15674) | Plane | normal | ✅ incident | control | - | 539 sn |
 | [First Flight & some issues with X8. Need help analysing logs!](https://discuss.ardupilot.org/t/first-flight-some-issues-with-x8-need-help-analysing-logs/17024) | Copter | normal | ❌ incident | vibration | - | 642 sn |
 | [Autotune RC5 - concerning observations](https://discuss.ardupilot.org/t/autotune-rc5-concerning-observations/17560) | Copter | normal | ✅ incident | battery | - | 1606 sn |
+| [Unstable RTL with Quadplane](https://discuss.ardupilot.org/t/unstable-rtl-with-quadplane/19197) | Plane | normal | ❌ incident | power | - | 272 sn |
 | [Autotune Copter 3.5](https://discuss.ardupilot.org/t/autotune-copter-3-5/19441) | Copter | normal | ✅ incident | unknown | - | 705 sn |
+| [Plane won't fly grid survey set up in Mission Planner](https://discuss.ardupilot.org/t/plane-wont-fly-grid-survey-set-up-in-mission-planner/20763) | Plane | normal | ✅ incident | power | - | 214 sn |
 | [NEED HELP: Couldn't get better tuning](https://discuss.ardupilot.org/t/need-help-couldnt-get-better-tuning/27349) | Copter | normal | ✅ incident | unknown | - | 93 sn |
+| [Too high auto-land attempt](https://discuss.ardupilot.org/t/too-high-auto-land-attempt/29449) | Plane | normal | ✅ incident | power | - | 1971 sn |
+| [Plane doesn't hold altitude in AUTO - Cannot change desired airspeed](https://discuss.ardupilot.org/t/plane-doesnt-hold-altitude-in-auto-cannot-change-desired-airspeed/30796) | Plane | normal | ✅ incident | power | - | 1159 sn |
 | [Indoor position controller tuning](https://discuss.ardupilot.org/t/indoor-position-controller-tuning/32542) | Copter | normal | ❌ incident | power | - | 214 sn |
+| [Yaw (and plane) out of control in auto modes (ATT.Yaw)](https://discuss.ardupilot.org/t/yaw-and-plane-out-of-control-in-auto-modes-att-yaw/35048) | Plane | normal | ✅ incident | radio | - | 584 sn |
 | [Pixracer Arduplane 3.9.8 bad log files](https://discuss.ardupilot.org/t/pixracer-arduplane-3-9-8-bad-log-files/43183) | Plane | normal | ❌ incident | control | - | 75 sn |
 | [Motor wobbling in stab-mode after autotune](https://discuss.ardupilot.org/t/motor-wobbling-in-stab-mode-after-autotune/45923) | Copter | normal | ✅ incident | compass | - | 45 sn |
+| [E-Flite mini-Convergence with ArduPilot](https://discuss.ardupilot.org/t/e-flite-mini-convergence-with-ardupilot/46015) | Plane | normal | ✅ incident | unknown | - | 125 sn |
 | [Not holding heading during flare? .bin logfiles provided](https://discuss.ardupilot.org/t/not-holding-heading-during-flare-bin-logfiles-provided/50427) | Plane | normal | ✅ incident | control | - | 1854 sn |
 | [Tuning an ultra slow rover](https://discuss.ardupilot.org/t/tuning-an-ultra-slow-rover/50732) | Rover | normal | ❌ incident | power | - | 1523 sn |
 | [Need help in optimizing the hovering performance](https://discuss.ardupilot.org/t/need-help-in-optimizing-the-hovering-performance/54031) | Copter | normal | ✅ incident | unknown | - | 431 sn |
 | [How to improve AutoTune results on big quad coaxial X8 [RESOLVED]](https://discuss.ardupilot.org/t/how-to-improve-autotune-results-on-big-quad-coaxial-x8-resolved/54450) | Copter | normal | ✅ incident | unknown | - | 296 sn |
+| [For Gliders/Soaring: How to prioritize airspeed over altitude control ](https://discuss.ardupilot.org/t/for-gliders-soaring-how-to-prioritize-airspeed-over-altitude-control-in-waypoint-missions/58747) | Plane | normal | ✅ incident | control | - | 938 sn |
 | [How to force pitch AUTOTUNE?](https://discuss.ardupilot.org/t/how-to-force-pitch-autotune/59957) | Plane | normal | ✅ incident | stall | - | 1289 sn |
+| [Quadplane Severe Vibration](https://discuss.ardupilot.org/t/quadplane-severe-vibration/61795) | Plane | normal | ✅ incident | unknown | - | 61 sn |
+| [Plane's throttle cuts to zero when I switch from FBWA to Auto](https://discuss.ardupilot.org/t/planes-throttle-cuts-to-zero-when-i-switch-from-fbwa-to-auto/64456) | Plane | normal | ✅ incident | control | - | 263 sn |
+| [Strange oscillation ONLY in Auto !Track dependent!](https://discuss.ardupilot.org/t/strange-oscillation-only-in-auto-track-dependent/69278) | Plane | normal | ✅ incident | radio | - | 2475 sn |
 | [Pitch Wobble - Autotune Didn't Fix](https://discuss.ardupilot.org/t/pitch-wobble-autotune-didnt-fix/69731) | Plane | normal | ✅ incident | control | - | 555 sn |
+| [Tilt rotor VTOL is losing altitude, when it is take off](https://discuss.ardupilot.org/t/tilt-rotor-vtol-is-losing-altitude-when-it-is-take-off/70442) | Plane | normal | ❌ incident | control | - | 1768 sn |
 | [4.1 beta autotune failsafe](https://discuss.ardupilot.org/t/4-1-beta-autotune-failsafe/70698) | Copter | normal | ✅ incident | radio | - | 235 sn |
+| [Mission autoLAND hard rudder near gnd](https://discuss.ardupilot.org/t/mission-autoland-hard-rudder-near-gnd/71030) | Plane | normal | ✅ incident | control | - | 1201 sn |
 | [Oscilations when switching to mission from hover](https://discuss.ardupilot.org/t/oscilations-when-switching-to-mission-from-hover/72523) | Copter | normal | ✅ incident | compass | - | 924 sn |
 | [Hovering current](https://discuss.ardupilot.org/t/hovering-current/72796) | Copter | normal | ✅ incident | battery | - | 374 sn |
-| [Autotune plane: need help > desired Roll and achieved Roll](https://discuss.ardupilot.org/t/autotune-plane-need-help-desired-roll-and-achieved-roll/73304) | Plane | normal | ❌ incident | power | - | 1438 sn |
+| [Autotune plane: need help > desired Roll and achieved Roll](https://discuss.ardupilot.org/t/autotune-plane-need-help-desired-roll-and-achieved-roll/73304) | Plane | normal | ✅ incident | power | - | 1438 sn |
 | [AUTOTUNE resulted in twitchy control surfaces](https://discuss.ardupilot.org/t/autotune-resulted-in-twitchy-control-surfaces/73403) | Plane | normal | ✅ incident | control | - | 1789 sn |
+| [Engine failure: bug , mechanical or other?](https://discuss.ardupilot.org/t/engine-failure-bug-mechanical-or-other/77323) | Plane | normal | ✅ incident | control | - | 344 sn |
 | [Trex600 with Pixhawk4 mini and Arducopter 4.1.2 Tuning help](https://discuss.ardupilot.org/t/trex600-with-pixhawk4-mini-and-arducopter-4-1-2-tuning-help/79396) | Copter | normal | ✅ incident | unknown | - | 1296 sn |
+| [PID analysis based on logs](https://discuss.ardupilot.org/t/pid-analysis-based-on-logs/79680) | Plane | normal | ❌ incident | control | - | 225 sn |
 | [AutoTune Copter 4.1.2 on 3" Quad [Squirtv2.1] : Roll tuning failed wit](https://discuss.ardupilot.org/t/autotune-copter-4-1-2-on-3-quad-squirtv2-1-roll-tuning-failed-with-autotune-reached-limit/79901) | Copter | normal | ✅ incident | battery | - | 469 sn |
+| [Airspeed readings reasonable?](https://discuss.ardupilot.org/t/airspeed-readings-reasonable/80380) | Plane | normal | ✅ incident | power | - | 392 sn |
+| [FBWA strange behaviour in quadplane](https://discuss.ardupilot.org/t/fbwa-strange-behaviour-in-quadplane/81731) | Plane | normal | ✅ incident | stall | - | 332 sn |
 | [Help connecting SITL to RealFlight 9.5S](https://discuss.ardupilot.org/t/help-connecting-sitl-to-realflight-9-5s/82854) | Plane | normal | ❌ incident | control | - | 170 sn |
 | [Twitching when hovering and hot motors after flight](https://discuss.ardupilot.org/t/twitching-when-hovering-and-hot-motors-after-flight/85068) | Copter | normal | ❌ incident | motor | - | 214 sn |
+| [Fixed Wing Crush (Log analyze help please)](https://discuss.ardupilot.org/t/fixed-wing-crush-log-analyze-help-please/88602) | Plane | normal | ❌ incident | stall | - | 435 sn |
+| [Horrible oscillations on pitch-axis](https://discuss.ardupilot.org/t/horrible-oscillations-on-pitch-axis/88816) | Plane | normal | ✅ incident | control | - | 771 sn |
+| [XUAV-Talon 1718 Wing span VTOL Conversion _Error](https://discuss.ardupilot.org/t/xuav-talon-1718-wing-span-vtol-conversion-error/88852) | Plane | normal | ✅ incident | radio | - | 434 sn |
 | [Wobbling in hover flight, strong oscillations in servo output](https://discuss.ardupilot.org/t/wobbling-in-hover-flight-strong-oscillations-in-servo-output/89816) | Copter | normal | ✅ incident | radio | - | 68 sn |
+| [SOLVED Can't throttle down! Did I set something wrong?](https://discuss.ardupilot.org/t/solved-cant-throttle-down-did-i-set-something-wrong/89891) | Plane | normal | ❌ incident | control | - | 759 sn |
+| [Geofence in the wrong place?](https://discuss.ardupilot.org/t/geofence-in-the-wrong-place/90819) | Plane | normal | ✅ incident | control | - | 1058 sn |
+| [ArduPIlot UAV Log Viewer breaks on Arduplane 4.3](https://discuss.ardupilot.org/t/ardupilot-uav-log-viewer-breaks-on-arduplane-4-3/92462) | Plane | normal | ✅ incident | control | - | 684 sn |
+| [Query - hard left turn on take off - first waypoint too close?](https://discuss.ardupilot.org/t/query-hard-left-turn-on-take-off-first-waypoint-too-close/93970) | Plane | normal | ❌ incident | stall | - | 281 sn |
+| [Altitude of quadplane keep on increasing in fixed wing mode](https://discuss.ardupilot.org/t/altitude-of-quadplane-keep-on-increasing-in-fixed-wing-mode/94698) | Plane | normal | ❌ incident | radio | - | 344 sn |
+| [Ground loops in FBWA, poor waypoint accuracy](https://discuss.ardupilot.org/t/ground-loops-in-fbwa-poor-waypoint-accuracy/96024) | Plane | normal | ✅ incident | control | - | 659 sn |
 | [Filtering Vibration to Get a Better Tune](https://discuss.ardupilot.org/t/filtering-vibration-to-get-a-better-tune/98578) | Copter | normal | ✅ incident | compass | - | 266 sn |
+| [Flight configuration in auto Aviao vtol](https://discuss.ardupilot.org/t/flight-configuration-in-auto-aviao-vtol/98704) | Plane | normal | ❌ incident | control | - | 358 sn |
 | [First Flight Analysis](https://discuss.ardupilot.org/t/first-flight-analysis/99121) | Copter | normal | ❌ incident | motor | - | 32 sn |
+| [Plane auto land into the side of a hill](https://discuss.ardupilot.org/t/plane-auto-land-into-the-side-of-a-hill/99973) | Plane | normal | ✅ incident | control | - | 265 sn |
 | [First Maiden Log File](https://discuss.ardupilot.org/t/first-maiden-log-file/99997) | Copter | normal | ✅ incident | motor | - | 175 sn |
 | [[VTOL] LOITER_TIME after a DO_TRANSITION_VTOL at 3 (MC) crashes the SI](https://github.com/ArduPilot/ardupilot/issues/18932) | Plane | normal | ❌ incident | power | - | 80 sn |
 | [EKF failsafe untriggered on high errors, resulting in a crash #5](https://github.com/ArduPilot/ardupilot/issues/24373) | Copter | normal | ❌ incident | gps | - | 21 sn |
@@ -648,12 +705,24 @@ Aynı uzman etiketli 323 log üzerinde, her log dışarıda bırakılarak (leave
 | [EKF failsafe untriggered on high errors - Resulting in crash ](https://github.com/ArduPilot/ardupilot/issues/24445) | Copter | normal | ❌ incident | control | - | 94 sn |
 | [Changing SIM_IMU_POS_X/Y causes the Copter to deviate from its origina](https://github.com/ArduPilot/ardupilot/issues/28720) | Copter | normal | ❌ incident | gps | - | 138 sn |
 | [Plane: Guided Fly To not safe in steep terrain and SITL doesn't detect](https://github.com/ArduPilot/ardupilot/issues/29914) | Plane | normal | ❌ incident | power | - | 245 sn |
+| [Plane 4.5.0-beta release #12](https://discuss.ardupilot.org/t/plane-4-5-0-beta-release/112518/12) | Plane | normal | ✅ incident | unknown | - | 399 sn |
+| [Plane 4.1.0 beta #249](https://discuss.ardupilot.org/t/plane-4-1-0-beta/72434/249) | Plane | normal | ✅ incident | unknown | - | 48 sn |
+| [Plane 4.1.0 beta #81](https://discuss.ardupilot.org/t/plane-4-1-0-beta/72434/81) | Plane | normal | ✅ incident | control | - | 782 sn |
+| [Plane 4.1 stable #157](https://discuss.ardupilot.org/t/plane-4-1-stable/76507/157) | Plane | normal | ✅ incident | control | - | 1035 sn |
+| [Plane 4.1 stable #229](https://discuss.ardupilot.org/t/plane-4-1-stable/76507/229) | Plane | normal | ❌ incident | radio | - | 303 sn |
+| [Plane 4.3 stable release #81](https://discuss.ardupilot.org/t/plane-4-3-stable-release/91727/81) | Plane | normal | ✅ incident | control | - | 258 sn |
+| [Plane 4.4 release #12](https://discuss.ardupilot.org/t/plane-4-4-release/99954/12) | Plane | normal | ✅ incident | control | - | 404 sn |
+| [Plane 4.4 release #144](https://discuss.ardupilot.org/t/plane-4-4-release/99954/144) | Plane | normal | ❌ incident | power | - | 2237 sn |
+| [Plane 4.4 release #8](https://discuss.ardupilot.org/t/plane-4-4-release/99954/8) | Plane | normal | ✅ incident | control | - | 444 sn |
 | [Autotune won't engage](https://discuss.ardupilot.org/t/autotune-wont-engage/101722) | Copter | normal | ✅ noflight | - | - | 310 sn |
 | [About INS_acc_fillter question! plz help](https://discuss.ardupilot.org/t/about-ins-acc-fillter-question-plz-help/110823) | Plane | normal | ✅ noflight | - | - | 256 sn |
+| [Mission Planner Altitude_Wait command](https://discuss.ardupilot.org/t/mission-planner-altitude-wait-command/111003) | Plane | normal | ✅ noflight | - | - | 123 sn |
 | [Recommended logging settings for HNTCH and ACRO PID tuning](https://discuss.ardupilot.org/t/recommended-logging-settings-for-hntch-and-acro-pid-tuning/118420) | Copter | normal | ✅ noflight | - | - | 76 sn |
 | [IMU mask causing log visualization issues](https://discuss.ardupilot.org/t/imu-mask-causing-log-visualization-issues/125817) | Plane | normal | ✅ noflight | - | - | 44 sn |
 | [Matek ASPD-AUAV baro problems](https://discuss.ardupilot.org/t/matek-aspd-auav-baro-problems/145628) | Plane | normal | ✅ noflight | - | - | 99 sn |
 | [Issues with Pixracer in 3.8.0beta3](https://discuss.ardupilot.org/t/issues-with-pixracer-in-3-8-0beta3/15991) | Plane | normal | ✅ noflight | - | - | 95 sn |
+| [Throttle cuts while switching to Auto mode in Pixhawk 2.4.8](https://discuss.ardupilot.org/t/throttle-cuts-while-switching-to-auto-mode-in-pixhawk-2-4-8/22760) | Plane | normal | ✅ noflight | - | - | 34 sn |
+| [MS5525 vs MS4525 airspeed sensor noise](https://discuss.ardupilot.org/t/ms5525-vs-ms4525-airspeed-sensor-noise/29935) | Plane | normal | ✅ noflight | - | - | 125 sn |
 | [Arduplan servo output problem/question [SOLVED]](https://discuss.ardupilot.org/t/arduplan-servo-output-problem-question-solved/33064) | Plane | normal | ✅ noflight | - | - | 16 sn |
 | [Issues with logs](https://discuss.ardupilot.org/t/issues-with-logs/48063) | Plane | normal | ✅ noflight | - | - | 15 sn |
 | [Maiden Tarot 650 rolls right (tips over) before take off when I increa](https://discuss.ardupilot.org/t/maiden-tarot-650-rolls-right-tips-over-before-take-off-when-i-increased-throttle-log/64684) | Copter | normal | ✅ noflight | - | - | 47 sn |
@@ -661,16 +730,30 @@ Aynı uzman etiketli 323 log üzerinde, her log dışarıda bırakılarak (leave
 | [Problem Getting NMEA Strings Out a Serial Port (Location Data Zero)](https://discuss.ardupilot.org/t/problem-getting-nmea-strings-out-a-serial-port-location-data-zero/72341) | Plane | normal | ✅ noflight | - | - | 77 sn |
 | [Error Parsing ArduPilot log file](https://discuss.ardupilot.org/t/error-parsing-ardupilot-log-file/89354) | Plane | normal | ✅ noflight | - | - | 6 sn |
 | [No throttle output in FBWA or Autotune mode](https://discuss.ardupilot.org/t/no-throttle-output-in-fbwa-or-autotune-mode/97236) | Plane | normal | ✅ noflight | - | - | 15 sn |
+| [Arduplane is not reacting to waypoint](https://discuss.ardupilot.org/t/arduplane-is-not-reacting-to-waypoint/98004) | Plane | normal | ✅ noflight | - | - | 15 sn |
+| [Plane 3.9.1beta release #7](https://discuss.ardupilot.org/t/plane-3-9-1beta-release/31965/7) | Plane | normal | ✅ noflight | - | - | 98 sn |
+| [Plane 4.1.0 beta #24](https://discuss.ardupilot.org/t/plane-4-1-0-beta/72434/24) | Plane | normal | ✅ noflight | - | - | 215 sn |
+| [Plane 4.1 stable #180](https://discuss.ardupilot.org/t/plane-4-1-stable/76507/180) | Plane | normal | ✅ noflight | - | - | 2 sn |
+| [Plane 4.4 release #107](https://discuss.ardupilot.org/t/plane-4-4-release/99954/107) | Plane | normal | ✅ noflight | - | - | 18 sn |
+| [Plane 4.4 release #47](https://discuss.ardupilot.org/t/plane-4-4-release/99954/47) | Plane | normal | ✅ noflight | - | - | 17 sn |
+| [Plane 4.4 release #83](https://discuss.ardupilot.org/t/plane-4-4-release/99954/83) | Plane | normal | ✅ noflight | - | - | 371 sn |
 | [New build, safe for autotune or need filter setup first?](https://discuss.ardupilot.org/t/new-build-safe-for-autotune-or-need-filter-setup-first/100104) | Copter | normal | ✅ normal | - | - | 274 sn |
+| [QuadPlane Loiter_to_altitude mode abnormal behaviour](https://discuss.ardupilot.org/t/quadplane-loiter-to-altitude-mode-abnormal-behaviour/100188) | Plane | normal | ✅ normal | - | - | 203 sn |
+| [Herelink - 'No RC Receiver' after radio loss, regained telemetry](https://discuss.ardupilot.org/t/herelink-no-rc-receiver-after-radio-loss-regained-telemetry/100500) | Plane | normal | ✅ normal | - | - | 1320 sn |
 | [Tune in auto is very aggressive compared to stabilise](https://discuss.ardupilot.org/t/tune-in-auto-is-very-aggressive-compared-to-stabilise/101115) | Copter | normal | ✅ normal | - | - | 1142 sn |
 | [New tuning needed when change from Lipo to Li-ion](https://discuss.ardupilot.org/t/new-tuning-needed-when-change-from-lipo-to-li-ion/101887) | Copter | normal | ✅ normal | - | - | 879 sn |
+| [Drone uses more elevator to maintain level flight over time](https://discuss.ardupilot.org/t/drone-uses-more-elevator-to-maintain-level-flight-over-time/103756) | Plane | normal | ✅ normal | - | - | 530 sn |
 | [FFT based harmonic notch filter for dynamic tuning](https://discuss.ardupilot.org/t/fft-based-harmonic-notch-filter-for-dynamic-tuning/104391) | Copter | normal | ✅ normal | - | - | 118 sn |
+| [Weird and inconsistent autoland behaviour + some key autoland paramete](https://discuss.ardupilot.org/t/weird-and-inconsistent-autoland-behaviour-some-key-autoland-parameters-missing-from-my-firmware-no-gcs-warning-but-they-just-arent-there/104947) | Plane | normal | ✅ normal | - | - | 1344 sn |
 | [MOT_THST_EXPO and autotune](https://discuss.ardupilot.org/t/mot-thst-expo-and-autotune/105480) | Copter | normal | ✅ normal | - | - | 262 sn |
 | [Some assistance needed for a New tune on a small hexa drone](https://discuss.ardupilot.org/t/some-assistance-needed-for-a-new-tune-on-a-small-hexa-drone/106850) | Copter | normal | ✅ normal | - | - | 116 sn |
 | [Need Help tuning large frame hex.](https://discuss.ardupilot.org/t/need-help-tuning-large-frame-hex/107280) | Copter | normal | ✅ normal | - | - | 104 sn |
 | [Quad-Plane Throttle Dropped Out During Transition](https://discuss.ardupilot.org/t/quad-plane-throttle-dropped-out-during-transition/107914) | Plane | normal | ✅ normal | - | - | 3164 sn |
 | [Need help getting quadplane off the ground](https://discuss.ardupilot.org/t/need-help-getting-quadplane-off-the-ground/108427) | Plane | normal | ✅ normal | - | - | 51 sn |
+| [SDP33 Airspeed Sensor Dropouts](https://discuss.ardupilot.org/t/sdp33-airspeed-sensor-dropouts/108844) | Plane | normal | ✅ normal | - | - | 790 sn |
+| [Which MagFit is the best? Why are they different?](https://discuss.ardupilot.org/t/which-magfit-is-the-best-why-are-they-different/110208) | Plane | normal | ✅ normal | - | - | 1039 sn |
 | [Log Review: AUTO mission stopped in flight](https://discuss.ardupilot.org/t/log-review-auto-mission-stopped-in-flight/110997) | Copter | normal | ✅ normal | - | - | 507 sn |
+| [Tri-Copter VTOL Unstable transition back to Quad](https://discuss.ardupilot.org/t/tri-copter-vtol-unstable-transition-back-to-quad/111368) | Plane | normal | ✅ normal | - | - | 832 sn |
 | [Flight log data](https://discuss.ardupilot.org/t/flight-log-data/112177) | Plane | normal | ✅ normal | - | - | 656 sn |
 | [Copter 4.4 Notch filter Tune for fast dynamic flight](https://discuss.ardupilot.org/t/copter-4-4-notch-filter-tune-for-fast-dynamic-flight/112561) | Copter | normal | ✅ normal | - | - | 286 sn |
 | [No tracking data available for Throttle notch when using Filter Review](https://discuss.ardupilot.org/t/no-tracking-data-available-for-throttle-notch-when-using-filter-review-tool/113009) | Copter | normal | ✅ normal | - | - | 133 sn |
@@ -683,36 +766,58 @@ Aynı uzman etiketli 323 log üzerinde, her log dışarıda bırakılarak (leave
 | [Hot motors, even in gentle hover](https://discuss.ardupilot.org/t/hot-motors-even-in-gentle-hover/122147) | Copter | normal | ✅ normal | - | - | 207 sn |
 | [VTOL Altitude Fluctuations Between Waypoints in AUTO Mode – PID Tuning](https://discuss.ardupilot.org/t/vtol-altitude-fluctuations-between-waypoints-in-auto-mode-pid-tuning-issue/124305) | Plane | normal | ✅ normal | - | - | 301 sn |
 | [VTOL Transition Issue: Unsmooth and Delayed](https://discuss.ardupilot.org/t/vtol-transition-issue-unsmooth-and-delayed/124955) | Plane | normal | ✅ normal | - | - | 210 sn |
+| [VTOL become unstable during Descend](https://discuss.ardupilot.org/t/vtol-become-unstable-during-descend/125071) | Plane | normal | ✅ normal | - | - | 194 sn |
 | [Quadcopter oscillation and tuning](https://discuss.ardupilot.org/t/quadcopter-oscillation-and-tuning/126151) | Copter | normal | ✅ normal | - | - | 163 sn |
 | [Quadcopter aggressive gains after autotune](https://discuss.ardupilot.org/t/quadcopter-aggressive-gains-after-autotune/126920) | Copter | normal | ✅ normal | - | - | 87 sn |
 | [Notch Filter & Pids Results Recommendation/Review](https://discuss.ardupilot.org/t/notch-filter-pids-results-recommendation-review/127834) | Copter | normal | ✅ normal | - | - | 341 sn |
 | [Tuning the slop and wobble out of an 18" quad](https://discuss.ardupilot.org/t/tuning-the-slop-and-wobble-out-of-an-18-quad/127898) | Copter | normal | ✅ normal | - | - | 117 sn |
 | [Autotune is not giving a proper gains for CUAV x7+ and taking long tim](https://discuss.ardupilot.org/t/autotune-is-not-giving-a-proper-gains-for-cuav-x7-and-taking-long-time-for-tuning/128353) | Copter | normal | ✅ normal | - | - | 1431 sn |
+| [Can't reach desired speed with Arduplane](https://discuss.ardupilot.org/t/cant-reach-desired-speed-with-arduplane/128485) | Plane | normal | ✅ normal | - | - | 99 sn |
 | [VTOL Quick Tune First Test Shoulder Button Not Triggering](https://discuss.ardupilot.org/t/vtol-quick-tune-first-test-shoulder-button-not-triggering/129502) | Copter | normal | ✅ normal | - | - | 71 sn |
 | [Help to analyse PID review](https://discuss.ardupilot.org/t/help-to-analyse-pid-review/130716) | Copter | normal | ✅ normal | - | - | 350 sn |
 | [In-Flight FFT filter tuning issues](https://discuss.ardupilot.org/t/in-flight-fft-filter-tuning-issues/132328) | Copter | normal | ✅ normal | - | - | 92 sn |
+| [QuadX Tilt Rotor, Motors work as vertical Motor1-4 but don't respond a](https://discuss.ardupilot.org/t/quadx-tilt-rotor-motors-work-as-vertical-motor1-4-but-dont-respond-as-throttle/132334) | Plane | normal | ✅ normal | - | - | 125 sn |
 | [Tuning Large drone - General Pixhawk & PID Help](https://discuss.ardupilot.org/t/tuning-large-drone-general-pixhawk-pid-help/133146) | Copter | normal | ✅ normal | - | - | 2100 sn |
 | [Quick tune produces poor results compared to basic pid params](https://discuss.ardupilot.org/t/quick-tune-produces-poor-results-compared-to-basic-pid-params/133410) | Copter | normal | ✅ normal | - | - | 227 sn |
 | [Tricopter VTOL Tilts Forward During Hover Test — Suspected Inverted Pi](https://discuss.ardupilot.org/t/tricopter-vtol-tilts-forward-during-hover-test-suspected-inverted-pitch/133808) | Plane | normal | ✅ normal | - | - | 305 sn |
+| [Motor Management during Transition](https://discuss.ardupilot.org/t/motor-management-during-transition/133864) | Plane | normal | ✅ normal | - | - | 411 sn |
 | [5 inch quad initial tuning](https://discuss.ardupilot.org/t/5-inch-quad-initial-tuning/134726) | Copter | normal | ✅ normal | - | - | 71 sn |
+| [Yaw Control Issue During VTOL Landing in Windy Conditions](https://discuss.ardupilot.org/t/yaw-control-issue-during-vtol-landing-in-windy-conditions/134977) | Plane | normal | ✅ normal | - | - | 5429 sn |
+| [VTOL slows down cruise speed early and triggers q assist](https://discuss.ardupilot.org/t/vtol-slows-down-cruise-speed-early-and-triggers-q-assist/135525) | Plane | normal | ✅ normal | - | - | 200 sn |
 | [Any 'workaround' to improve hover margin?](https://discuss.ardupilot.org/t/any-workaround-to-improve-hover-margin/136346) | Plane | normal | ✅ normal | - | - | 134 sn |
+| [Motor feedback vibration (probably?)](https://discuss.ardupilot.org/t/motor-feedback-vibration-probably/136459) | Plane | normal | ✅ normal | - | - | 293 sn |
+| [High airspeed in turns while in auto modes](https://discuss.ardupilot.org/t/high-airspeed-in-turns-while-in-auto-modes/137716) | Plane | normal | ✅ normal | - | - | 210 sn |
 | [Help with Harmonic Notch Suggestions - Filter Review Tool](https://discuss.ardupilot.org/t/help-with-harmonic-notch-suggestions-filter-review-tool/137873) | Copter | normal | ✅ normal | - | - | 191 sn |
 | [Plane - Yaw autotune not working](https://discuss.ardupilot.org/t/plane-yaw-autotune-not-working/138468) | Plane | normal | ✅ normal | - | - | 623 sn |
+| [Ship landing lua scripts bug](https://discuss.ardupilot.org/t/ship-landing-lua-scripts-bug/139163) | Plane | normal | ✅ normal | - | - | 449 sn |
+| [Compass Magnetic field interference](https://discuss.ardupilot.org/t/compass-magnetic-field-interference/139172) | Plane | normal | ✅ normal | - | - | 51 sn |
 | [Hex drifting in roll in Loiter after Autotune](https://discuss.ardupilot.org/t/hex-drifting-in-roll-in-loiter-after-autotune/140207) | Copter | normal | ✅ normal | - | - | 1374 sn |
+| [Saver vibrations/oscillations in tri-copter VTOL](https://discuss.ardupilot.org/t/saver-vibrations-oscillations-in-tri-copter-vtol/140466) | Plane | normal | ✅ normal | - | - | 332 sn |
 | [High-frequency vibration during hovering and trembles when descending](https://discuss.ardupilot.org/t/high-frequency-vibration-during-hovering-and-trembles-when-descending/141624) | Copter | normal | ✅ normal | - | - | 62 sn |
 | [Verifying stability & understanding MagFit / AutoTune](https://discuss.ardupilot.org/t/verifying-stability-understanding-magfit-autotune/141817) | Copter | normal | ✅ normal | - | - | 292 sn |
+| [Autoland mode : Loiter to alt sticks at a fixed altitude](https://discuss.ardupilot.org/t/autoland-mode-loiter-to-alt-sticks-at-a-fixed-altitude/142965) | Plane | normal | ✅ normal | - | - | 908 sn |
+| [Motor glider : Controlling descent when in an updraft](https://discuss.ardupilot.org/t/motor-glider-controlling-descent-when-in-an-updraft/143356) | Plane | normal | ✅ normal | - | - | 2035 sn |
 | [Problems with rangefinder assisted flare](https://discuss.ardupilot.org/t/problems-with-rangefinder-assisted-flare/143694) | Plane | normal | ✅ normal | - | - | 1419 sn |
 | [Oscillation after autotune of 6inch quadrotor](https://discuss.ardupilot.org/t/oscillation-after-autotune-of-6inch-quadrotor/143931) | Copter | normal | ✅ normal | - | - | 327 sn |
+| [During the transition, the motor control oscillates](https://discuss.ardupilot.org/t/during-the-transition-the-motor-control-oscillates/144005) | Plane | normal | ✅ normal | - | - | 307 sn |
 | [Filter Review - can't select "post" filter, can't turn off "estimated ](https://discuss.ardupilot.org/t/filter-review-cant-select-post-filter-cant-turn-off-estimated-post-filter/144164) | Copter | normal | ✅ normal | - | - | 197 sn |
 | [Filter review Tool for a Y6 frame](https://discuss.ardupilot.org/t/filter-review-tool-for-a-y6-frame/145027) | Plane | normal | ✅ normal | - | - | 147 sn |
 | [AutoTune unsuccessful](https://discuss.ardupilot.org/t/autotune-unsuccessful/145269) | Copter | normal | ✅ normal | - | - | 425 sn |
 | [AutoTune: Failed to level, please tune manually](https://discuss.ardupilot.org/t/autotune-failed-to-level-please-tune-manually/145291) | Copter | normal | ✅ normal | - | - | 276 sn |
 | [SpeedyBee Bee35 Copter Tuning](https://discuss.ardupilot.org/t/speedybee-bee35-copter-tuning/145362) | Copter | normal | ✅ normal | - | - | 111 sn |
+| [Plane TAKEOFF mode can reuse prior level-off height on later takeoffs](https://discuss.ardupilot.org/t/plane-takeoff-mode-can-reuse-prior-level-off-height-on-later-takeoffs/145499) | Plane | normal | ✅ normal | - | - | 2472 sn |
+| [ArduPlane 4.7.1 QuadPlane (OCTA-H Canard) possible canard sign issue i](https://discuss.ardupilot.org/t/arduplane-4-7-1-quadplane-octa-h-canard-possible-canard-sign-issue-in-qhover/146291) | Plane | normal | ✅ normal | - | - | 135 sn |
+| [Pitch drop when switching to AUTO](https://discuss.ardupilot.org/t/pitch-drop-when-switching-to-auto/16438) | Plane | normal | ✅ normal | - | - | 1169 sn |
+| [Stabilize and FBWA modes cause plane to dive](https://discuss.ardupilot.org/t/stabilize-and-fbwa-modes-cause-plane-to-dive/16805) | Plane | normal | ✅ normal | - | - | 282 sn |
 | [Autotune will no longer work](https://discuss.ardupilot.org/t/autotune-will-no-longer-work/17420) | Copter | normal | ✅ normal | - | - | 111 sn |
 | [Autotune fails on Y6 3.5RC7](https://discuss.ardupilot.org/t/autotune-fails-on-y6-3-5rc7/18457) | Copter | normal | ✅ normal | - | - | 383 sn |
+| [Arduplane fails calculating descent slope](https://discuss.ardupilot.org/t/arduplane-fails-calculating-descent-slope/26010) | Plane | normal | ✅ normal | - | - | 151 sn |
+| [Yaw on large aircraft steals lift](https://discuss.ardupilot.org/t/yaw-on-large-aircraft-steals-lift/27180) | Plane | normal | ✅ normal | - | - | 3484 sn |
 | [Why does quadplane experience a negative pitch during transition?](https://discuss.ardupilot.org/t/why-does-quadplane-experience-a-negative-pitch-during-transition/27783) | Plane | normal | ✅ normal | - | - | 122 sn |
 | [Auto tune complete, but quad flies "drunk"](https://discuss.ardupilot.org/t/auto-tune-complete-but-quad-flies-drunk/35405) | Copter | normal | ✅ normal | - | - | 2792 sn |
 | [Crash - help with bin analysis](https://discuss.ardupilot.org/t/crash-help-with-bin-analysis/42329) | Copter | normal | ✅ normal | - | - | 701 sn |
+| [Odd RTL during auto missions [ Solved - Sort Of ]](https://discuss.ardupilot.org/t/odd-rtl-during-auto-missions-solved-sort-of/42576) | Plane | normal | ✅ normal | - | - | 758 sn |
+| [Potential edge case in AP_ICEngine where starter will never be engaged](https://discuss.ardupilot.org/t/potential-edge-case-in-ap-icengine-where-starter-will-never-be-engaged/45498) | Plane | normal | ✅ normal | - | - | 46 sn |
 | [AutoTune not working at Copter 3.6.10](https://discuss.ardupilot.org/t/autotune-not-working-at-copter-3-6-10/46511) | Copter | normal | ✅ normal | - | - | 508 sn |
 | [Autotune failed to save new PID with Copter-4.0.0-rc2](https://discuss.ardupilot.org/t/autotune-failed-to-save-new-pid-with-copter-4-0-0-rc2/49885) | Copter | normal | ✅ normal | - | - | 685 sn |
 | [Autotune Roll result sluggish](https://discuss.ardupilot.org/t/autotune-roll-result-sluggish/50812) | Copter | normal | ✅ normal | - | - | 517 sn |
@@ -724,18 +829,24 @@ Aynı uzman etiketli 323 log üzerinde, her log dışarıda bırakılarak (leave
 | [Large PID's from Autotune](https://discuss.ardupilot.org/t/large-pids-from-autotune/63639) | Copter | normal | ✅ normal | - | - | 954 sn |
 | [Pitch commands cause some yaw.🤔 I did not tune the copter](https://discuss.ardupilot.org/t/pitch-commands-cause-some-yaw-i-did-not-tune-the-copter/66822) | Copter | normal | ✅ normal | - | - | 189 sn |
 | [Tuning a fleet of large quadrotors](https://discuss.ardupilot.org/t/tuning-a-fleet-of-large-quadrotors/67153) | Copter | normal | ✅ normal | - | - | 241 sn |
+| [VTOL slows down when it is flying in auto mode](https://discuss.ardupilot.org/t/vtol-slows-down-when-it-is-flying-in-auto-mode/73058) | Plane | normal | ✅ normal | - | - | 378 sn |
+| [What causes the high airspeed demand in AUTO mode?](https://discuss.ardupilot.org/t/what-causes-the-high-airspeed-demand-in-auto-mode/75726) | Plane | normal | ✅ normal | - | - | 583 sn |
 | [Large tricopter QuadPlane Project, tuning problems](https://discuss.ardupilot.org/t/large-tricopter-quadplane-project-tuning-problems/78322) | Plane | normal | ✅ normal | - | - | 1876 sn |
 | [Log review for big hex](https://discuss.ardupilot.org/t/log-review-for-big-hex/78394) | Copter | normal | ✅ normal | - | - | 87 sn |
 | [F450 log review](https://discuss.ardupilot.org/t/f450-log-review/78506) | Copter | normal | ✅ normal | - | - | 167 sn |
 | [HELP with a 690 Hex AutoTune 4.1](https://discuss.ardupilot.org/t/help-with-a-690-hex-autotune-4-1/78816) | Copter | normal | ✅ normal | - | - | 362 sn |
+| [QRTL Overshoots home position](https://discuss.ardupilot.org/t/qrtl-overshoots-home-position/79479) | Plane | normal | ✅ normal | - | - | 1817 sn |
 | [What data log params to track for PID tuning](https://discuss.ardupilot.org/t/what-data-log-params-to-track-for-pid-tuning/81170) | Plane | normal | ✅ normal | - | - | 74 sn |
 | [LOG analysis - sudden instability](https://discuss.ardupilot.org/t/log-analysis-sudden-instability/81354) | Copter | normal | ✅ normal | - | - | 2150 sn |
+| [Can't get RCx_Option=209 (forward thrust) to work](https://discuss.ardupilot.org/t/cant-get-rcx-option-209-forward-thrust-to-work/81537) | Plane | normal | ✅ normal | - | - | 47 sn |
 | [22", 18Kg, X8 Auto Tune: Failing](https://discuss.ardupilot.org/t/22-18kg-x8-auto-tune-failing/85070) | Copter | normal | ✅ normal | - | - | 702 sn |
 | [Help tuning large, overpowered quad](https://discuss.ardupilot.org/t/help-tuning-large-overpowered-quad/85103) | Copter | normal | ✅ normal | - | - | 390 sn |
 | [AutoTune PID Values didn't Save](https://discuss.ardupilot.org/t/autotune-pid-values-didnt-save/88939) | Copter | normal | ✅ normal | - | - | 416 sn |
 | [Low throttle hover, MAG issues, and DSHOT600](https://discuss.ardupilot.org/t/low-throttle-hover-mag-issues-and-dshot600/89501) | Copter | normal | ✅ normal | - | - | 249 sn |
 | [Manual Tuning Help for Large Quadcopter: Why does it overshoot?](https://discuss.ardupilot.org/t/manual-tuning-help-for-large-quadcopter-why-does-it-overshoot/90772) | Copter | normal | ✅ normal | - | - | 725 sn |
+| [Automatic Landing too short, which parameter to change](https://discuss.ardupilot.org/t/automatic-landing-too-short-which-parameter-to-change/90936) | Plane | normal | ✅ normal | - | - | 299 sn |
 | [Help tuning 14" quad](https://discuss.ardupilot.org/t/help-tuning-14-quad/90984) | Copter | normal | ✅ normal | - | - | 171 sn |
+| [Plane Oscillation in roll and overcontrol](https://discuss.ardupilot.org/t/plane-oscillation-in-roll-and-overcontrol/91093) | Plane | normal | ✅ normal | - | - | 647 sn |
 | [Internal error when using Quick Tuning Lua script](https://discuss.ardupilot.org/t/internal-error-when-using-quick-tuning-lua-script/91113) | Plane | normal | ✅ normal | - | - | 233 sn |
 | [How is my Autotune result? Seems off](https://discuss.ardupilot.org/t/how-is-my-autotune-result-seems-off/91359) | Copter | normal | ✅ normal | - | - | 668 sn |
 | [Failed autotune Rate P and D](https://discuss.ardupilot.org/t/failed-autotune-rate-p-and-d/91915) | Copter | normal | ✅ normal | - | - | 153 sn |
@@ -745,8 +856,47 @@ Aynı uzman etiketli 323 log üzerinde, her log dışarıda bırakılarak (leave
 | [Quadcopter not performing after Autotune](https://discuss.ardupilot.org/t/quadcopter-not-performing-after-autotune/95098) | Copter | normal | ✅ normal | - | - | 1067 sn |
 | [Tuning X8 Heavy Lift - Tuning for Payload](https://discuss.ardupilot.org/t/tuning-x8-heavy-lift-tuning-for-payload/95759) | Copter | normal | ✅ normal | - | - | 787 sn |
 | [AutoTune is failing. "Failing to level, please tune manually"](https://discuss.ardupilot.org/t/autotune-is-failing-failing-to-level-please-tune-manually/96277) | Copter | normal | ✅ normal | - | - | 218 sn |
+| [Vibrations on combustion-engine-based drone](https://discuss.ardupilot.org/t/vibrations-on-combustion-engine-based-drone/99179) | Plane | normal | ✅ normal | - | - | 253 sn |
 | [Oscillations in poshold and land mode after a successful autotune](https://discuss.ardupilot.org/t/oscillations-in-poshold-and-land-mode-after-a-successful-autotune/99685) | Copter | normal | ✅ normal | - | - | 233 sn |
 | [Copter crashes in AUTO mode after PSC_ACCZ_D accepts a negative out-of](https://github.com/ArduPilot/ardupilot/issues/33789) | Copter | normal | ✅ normal | - | - | 54 sn |
 | [Strange lost of altitude behavior resulting in crash](https://github.com/ArduPilot/ardupilot/issues/4344) | Copter | normal | ✅ normal | - | - | 100 sn |
 | [ PixHawk crashed while ground testing ](https://github.com/ArduPilot/ardupilot/issues/4888) | Copter | normal | ✅ normal | - | - | 155 sn |
+| [Plane 4.6.0 beta #17](https://discuss.ardupilot.org/t/plane-4-6-0-beta/126358/17) | Plane | normal | ✅ normal | - | - | 684 sn |
+| [Plane-4.7.0-beta2 available for beta testing! #5](https://discuss.ardupilot.org/t/plane-4-7-0-beta2-available-for-beta-testing/143068/5) | Plane | normal | ✅ normal | - | - | 1054 sn |
+| [Plane 4.1.0 beta #101](https://discuss.ardupilot.org/t/plane-4-1-0-beta/72434/101) | Plane | normal | ✅ normal | - | - | 234 sn |
+| [Plane 4.1.0 beta #129](https://discuss.ardupilot.org/t/plane-4-1-0-beta/72434/129) | Plane | normal | ✅ normal | - | - | 834 sn |
+| [Plane 4.1.0 beta #144](https://discuss.ardupilot.org/t/plane-4-1-0-beta/72434/144) | Plane | normal | ✅ normal | - | - | 796 sn |
+| [Plane 4.1 stable #111](https://discuss.ardupilot.org/t/plane-4-1-stable/76507/111) | Plane | normal | ✅ normal | - | - | 1876 sn |
+| [Plane 4.3.0beta Release #3](https://discuss.ardupilot.org/t/plane-4-3-0beta-release/90752/3) | Plane | normal | ✅ normal | - | - | 889 sn |
+| [Plane 4.3 stable release #101](https://discuss.ardupilot.org/t/plane-4-3-stable-release/91727/101) | Plane | normal | ✅ normal | - | - | 709 sn |
+| [Plane 4.3 stable release #117](https://discuss.ardupilot.org/t/plane-4-3-stable-release/91727/117) | Plane | normal | ✅ normal | - | - | 258 sn |
+| [Plane 4.3 stable release #130](https://discuss.ardupilot.org/t/plane-4-3-stable-release/91727/130) | Plane | normal | ✅ normal | - | - | 448 sn |
+| [Plane 4.4 release #154](https://discuss.ardupilot.org/t/plane-4-4-release/99954/154) | Plane | normal | ✅ normal | - | - | 261 sn |
+| [Plane 4.4 release #86](https://discuss.ardupilot.org/t/plane-4-4-release/99954/86) | Plane | normal | ✅ normal | - | - | 162 sn |
+| [Plane 4.4 release #90](https://discuss.ardupilot.org/t/plane-4-4-release/99954/90) | Plane | normal | ✅ normal | - | - | 124 sn |
 | [Issue in horizon level, control surface correction, in tailssiter](https://discuss.ardupilot.org/t/issue-in-horizon-level-control-surface-correction-in-tailssiter/108511) | Plane | unknown | ❌ crash | control | - | 95 sn |
+| [VTOL Transition not starting in AUTO (QTUN.Trn stays 0 despite airspee](https://discuss.ardupilot.org/t/vtol-transition-not-starting-in-auto-qtun-trn-stays-0-despite-airspeed-airspeed-min/144974) | Plane | unknown | ❌ crash | control | - | 52 sn |
+| [Way too big bounce back with pitch](https://discuss.ardupilot.org/t/way-too-big-bounce-back-with-pitch/34950) | Copter | unknown | ❌ crash | control | - | 19 sn |
+| [VTOL Tricopter transition thrust dropping prior to ARSPD_FBW_MIN](https://discuss.ardupilot.org/t/vtol-tricopter-transition-thrust-dropping-prior-to-arspd-fbw-min/86735) | Plane | unknown | ❌ crash | control | - | 464 sn |
+| [Commanding Altitude causes Momentary Low Altitude Command](https://discuss.ardupilot.org/t/commanding-altitude-causes-momentary-low-altitude-command/118405) | Plane | unknown | ❌ incident | power | - | 244 sn |
+| [R22 Heli SITL Waypoint Navigation Problem](https://discuss.ardupilot.org/t/r22-heli-sitl-waypoint-navigation-problem/119127) | Copter | unknown | ✅ incident | unknown | - | 446 sn |
+| [Flight controller stuck in an arming check pass-fail loop](https://discuss.ardupilot.org/t/flight-controller-stuck-in-an-arming-check-pass-fail-loop/25679) | Plane | unknown | ❌ incident | stall | - | 499 sn |
+| [NO RC Receiver (lockup between flight controller and receiver?)](https://discuss.ardupilot.org/t/no-rc-receiver-lockup-between-flight-controller-and-receiver/45811) | Plane | unknown | ✅ incident | radio | - | 292 sn |
+| [OmniBus Pro v2, Arduplane 4.0.3, help](https://discuss.ardupilot.org/t/omnibus-pro-v2-arduplane-4-0-3-help/53170) | Plane | unknown | ❌ incident | control | - | 219 sn |
+| [VTOL transitions on the ground, why?](https://discuss.ardupilot.org/t/vtol-transitions-on-the-ground-why/69229) | Plane | unknown | ❌ incident | control | - | 17 sn |
+| [Quadplane Sitl simulation does not fly](https://discuss.ardupilot.org/t/quadplane-sitl-simulation-does-not-fly/74715) | Plane | unknown | ✅ incident | power | - | 7 sn |
+| [Quadplane Altitude and Compass error Increasing in Loiter mode](https://discuss.ardupilot.org/t/quadplane-altitude-and-compass-error-increasing-in-loiter-mode/99660) | Plane | unknown | ✅ incident | control | - | 1166 sn |
+| [Plane 4.1 stable #121](https://discuss.ardupilot.org/t/plane-4-1-stable/76507/121) | Plane | unknown | ✅ incident | control | - | 1035 sn |
+| [Plane 4.4 release #11](https://discuss.ardupilot.org/t/plane-4-4-release/99954/11) | Plane | unknown | ✅ incident | control | - | 404 sn |
+| [Warning: BlackBox: disarming at 0.0 m/s](https://discuss.ardupilot.org/t/warning-blackbox-disarming-at-0-0-m-s/136569) | Plane | unknown | ✅ noflight | - | - | 44 sn |
+| [Motor will not arm!](https://discuss.ardupilot.org/t/motor-will-not-arm/25663) | Plane | unknown | ✅ noflight | - | - | 38 sn |
+| [DO_VTOL_TRANSITION not working as expected](https://discuss.ardupilot.org/t/do-vtol-transition-not-working-as-expected/103142) | Plane | unknown | ✅ normal | - | - | 748 sn |
+| [[SOLVED] Anemic Altitude control in Guided/Loiter/Takeoff](https://discuss.ardupilot.org/t/solved-anemic-altitude-control-in-guided-loiter-takeoff/133544) | Copter | unknown | ✅ normal | - | - | 176 sn |
+| [Can't get stable SITL quadplane in VTOL](https://discuss.ardupilot.org/t/cant-get-stable-sitl-quadplane-in-vtol/139519) | Plane | unknown | ✅ normal | - | - | 543 sn |
+| [Significant tail vibration during takeoff](https://discuss.ardupilot.org/t/significant-tail-vibration-during-takeoff/140334) | Copter | unknown | ✅ normal | - | - | 461 sn |
+| [Custom frame vibrations at high SoC.](https://discuss.ardupilot.org/t/custom-frame-vibrations-at-high-soc/142783) | Copter | unknown | ✅ normal | - | - | 37 sn |
+| [Octa_H_Plane strange throttle response](https://discuss.ardupilot.org/t/octa-h-plane-strange-throttle-response/145754) | Plane | unknown | ✅ normal | - | - | 88 sn |
+| [Preparing for Autonomous Takeoff and Landing with TradHeli](https://discuss.ardupilot.org/t/preparing-for-autonomous-takeoff-and-landing-with-tradheli/44664) | Copter | unknown | ✅ normal | - | - | 619 sn |
+| [Arduplane 4.0.9 dives in Auto modes](https://discuss.ardupilot.org/t/arduplane-4-0-9-dives-in-auto-modes/71140) | Plane | unknown | ✅ normal | - | - | 673 sn |
+| [Roll oscillation/overshoot and quicktuning](https://discuss.ardupilot.org/t/roll-oscillation-overshoot-and-quicktuning/92951) | Copter | unknown | ✅ normal | - | - | 370 sn |
+| [Plane 4.2 beta release #18](https://discuss.ardupilot.org/t/plane-4-2-beta-release/82502/18) | Plane | unknown | ✅ normal | - | - | 44 sn |
