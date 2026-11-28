@@ -3984,6 +3984,666 @@
    "label": "normal",
    "note": "FC software crash on bench",
    "exclude": true
+  },
+  "32941": {
+   "label": "crash",
+   "note": "OP: we crashed; no cause found"
+  },
+  "33387": {
+   "label": "crash",
+   "note": "OP: drone crashed at end of mission"
+  },
+  "34690": {
+   "label": "crash",
+   "note": "OP: plane crashed, mode switching after takeoff"
+  },
+  "80746": {
+   "label": "crash",
+   "cause": "motor",
+   "note": "OP: thrust loss in dual motor tailsitter, crash log"
+  },
+  "98737": {
+   "label": "crash",
+   "note": "near crash/incident; OP almost crashed"
+  },
+  "r72434_58": {
+   "label": "crash",
+   "note": "Plane 4.1 beta crash; tridge: log makes no sense"
+  },
+  "r72434_78": {
+   "label": "crash",
+   "note": "Plane 4.1 beta spectacular crash, loss of control"
+  },
+  "r99954_91": {
+   "label": "crash",
+   "cause": "gps",
+   "alt": [
+    "ekf"
+   ],
+   "note": "No GPS, NSats/HDOP to 0, EKF yaw reset then crash"
+  },
+  "134179": {
+   "label": "crash",
+   "cause": "control",
+   "note": "near crash/incident; pitch-up at transition, tumbled; reversed V-tail/CG suspected"
+  },
+  "140099": {
+   "label": "crash",
+   "cause": "motor",
+   "alt": [
+    "control"
+   ],
+   "note": "pitch oscillation after reverse transition, airframe damaged; OP: wrong (fixed-wing) ESCs"
+  },
+  "140393": {
+   "label": "crash",
+   "cause": "control",
+   "note": "pitch vibration; nwinston: overactive pitch integrator; plane destroyed"
+  },
+  "48108": {
+   "label": "crash",
+   "cause": "control",
+   "note": "near crash/incident; wild 7 Hz oscillation on quad motors, landed"
+  },
+  "103447": {
+   "label": "crash",
+   "cause": "control",
+   "alt": [
+    "power"
+   ],
+   "note": "near crash/incident; elevator hard over, loss of pitch control"
+  },
+  "137589": {
+   "label": "crash",
+   "cause": "compass",
+   "alt": [
+    "ekf"
+   ],
+   "note": "near crash/incident; upside down after takeoff; Lano: EKF wrong, compass error 306 mGauss"
+  },
+  "103142": {
+   "exclude": true,
+   "note": "SITL"
+  },
+  "118405": {
+   "exclude": true,
+   "note": "SITL"
+  },
+  "119127": {
+   "exclude": true,
+   "note": "heli SITL"
+  },
+  "139519": {
+   "exclude": true,
+   "note": "SITL"
+  },
+  "144974": {
+   "exclude": true,
+   "note": "SITL"
+  },
+  "74715": {
+   "exclude": true,
+   "note": "SITL"
+  },
+  "86735": {
+   "exclude": true,
+   "note": "SITL/RealFlight"
+  },
+  "69229": {
+   "exclude": true,
+   "note": "other user crash; SITL"
+  },
+  "133544": {
+   "exclude": true,
+   "note": "copter"
+  },
+  "140334": {
+   "exclude": true,
+   "note": "heli"
+  },
+  "142783": {
+   "exclude": true,
+   "note": "copter"
+  },
+  "44664": {
+   "exclude": true,
+   "note": "heli"
+  },
+  "92951": {
+   "exclude": true,
+   "note": "hexcopter"
+  },
+  "34950": {
+   "exclude": true,
+   "note": "copter"
+  },
+  "25663": {
+   "exclude": true,
+   "note": "bench"
+  },
+  "25679": {
+   "exclude": true,
+   "note": "arming loop bench"
+  },
+  "136569": {
+   "exclude": true,
+   "note": "bench"
+  },
+  "145754": {
+   "exclude": true,
+   "note": "bench motor test"
+  },
+  "45811": {
+   "exclude": true,
+   "note": "bench"
+  },
+  "r99954_11": {
+   "exclude": true,
+   "note": "bench"
+  },
+  "53170": {
+   "exclude": true,
+   "note": "several logs, crash log ambiguous"
+  },
+  "71140": {
+   "exclude": true,
+   "note": "crash belongs to another user"
+  },
+  "99660": {
+   "exclude": true,
+   "note": "crashed earlier; log flight unclear"
+  },
+  "r76507_121": {
+   "exclude": true,
+   "note": "FC failure claim unclear"
+  },
+  "r82502_11": {
+   "exclude": true,
+   "note": "crash and good log in same post"
+  },
+  "r82502_18": {
+   "exclude": true,
+   "note": "crash and good log in same post"
+  },
+  "r143068_5": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r126358_17": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r112518_12": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r99954_8": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r99954_12": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r99954_47": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r99954_83": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r99954_86": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r99954_90": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r99954_107": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r99954_144": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r99954_154": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r91727_81": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r91727_101": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r91727_117": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r91727_130": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r90752_3": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r76507_111": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r76507_157": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r76507_180": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r76507_229": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r72434_24": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r72434_81": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r72434_84": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r72434_101": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r72434_129": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r72434_144": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r72434_249": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "r31965_7": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "27180": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "96024": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "80380": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "77323": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "132334": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "109650": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "139172": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "100500": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "145765": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "146291": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "94698": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "90819": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "51011": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "98973": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "95644": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "81731": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "89891": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "141495": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "105809": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "16805": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "110208": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "79680": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "69278": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "91093": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "134825": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "106024": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "58747": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "90936": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "64456": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "137716": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "26010": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "79479": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "75726": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "134977": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "117183": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "88602": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "84691": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "139163": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "144005": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "133864": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "88852": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "111368": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "46015": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "73058": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "99179": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "33995": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "14862": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "144466": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "140466": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "139620": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "104947": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "29449": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "93970": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "20763": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "128485": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "135525": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "98004": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "15674": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "30796": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "45498": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "35048": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "71030": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "145499": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "143356": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "99973": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "108844": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "19197": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "143329": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "61795": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "29935": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "136459": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "103740": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "126185": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "125071": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "67304": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "88816": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "142965": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "145711": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "92462": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "42468": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "22760": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "16438": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "111003": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "70442": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "115609": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "100188": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "117943": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "103756": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "42576": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "81537": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
+  },
+  "98704": {
+   "label": "normal",
+   "note": "no crash in thread (tuning/log review/release test)"
   }
  },
  "_holdout": [
@@ -4126,5 +4786,6 @@
  ],
  "_holdout_doc": "Ayrı test seti (bench-holdout): ilk ölçüm 2026-11-27, kurallar görmeden: doğruluk 0.855, duyarlılık 0.916, özgüllük 0.583, kök neden 0.443 (ikincil dahil 0.682). Sonra geliştirme setine katıldı.",
  "_more_doc": "Ek tarama (bench-more, 160 forum konusu, 2026-11-27): uzman yanıtlarından etiketlendi; kurallar görmeden ilk ölçüm (157 log, hepsi kırım/olay): duyarlılık 0.803, kök neden 0.268 (ikincil dahil 0.545). Sonra geliştirme setine katıldı.",
- "_plane_doc": "Uçak taraması (bench-plane, 130 log: forumun Plane/QuadPlane kategorileri + ArduPilot GitHub issue ekleri, 2026-11-27): 41'i önceden etiketliydi; 89 yeni konu uzman yanıtlarından etiketlendi (SITL/simülasyon ve tezgâh logları hariç tutuldu). Kurallar görmeden ilk ölçüm (49 log): doğruluk 0.694, duyarlılık 0.786, özgüllük 0.571, kök neden 4/19 (ikincil dahil 8/19). Sonra geliştirme setine katıldı."
+ "_plane_doc": "Uçak taraması (bench-plane, 130 log: forumun Plane/QuadPlane kategorileri + ArduPilot GitHub issue ekleri, 2026-11-27): 41'i önceden etiketliydi; 89 yeni konu uzman yanıtlarından etiketlendi (SITL/simülasyon ve tezgâh logları hariç tutuldu). Kurallar görmeden ilk ölçüm (49 log): doğruluk 0.694, duyarlılık 0.786, özgüllük 0.571, kök neden 4/19 (ikincil dahil 8/19). Sonra geliştirme setine katıldı.",
+ "_pn_doc": "v1.1.17: Plane normal-flight harvest (planenormal.yml, pn_manifest.json; 160 threads: forum searches + Plane release/beta threads, one sample per post). Labelled from OP/expert replies; SITL/bench/heli/ambiguous excluded, logs the program reads as Copter excluded. BLIND measurement before any rule change (v1.1.16 code): 125 Plane logs (12 crash/incident, 113 normal): acc 0.704, recall 0.333, specificity 0.743, cause 2/8. After v1.1.17 rules (log continues >=40 s after landing; log cut while stopped on the ground): this set spec 0.841 (95/113), recall 0.25 (3/12); all 271 measurable Plane logs (125 crash/incident, 146 normal): acc 0.838, recall 0.824, specificity 0.849, cause 0.596."
 }

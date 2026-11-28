@@ -1,6 +1,19 @@
 """Sürüm notları ("Neler yeni" + release-notes.json). Yeni sürümde EN ÜSTE eklenir; tr/en/ar zorunlu."""
 
 NEWS = [
+    {'v': '1.1.17',
+     'tr': '160 yeni gerçek Plane (VTOL dahil) logu toplandı; çoğu sorunsuz normal uçuş (sürüm/beta test konuları dahil). Artık 271 ölçülebilir Plane logu var: 125 kırım/olay, 146 normal uçuş\n'
+           'Kör test: program bu logları hiç görmeden ölçüldü; normal uçuşu tanıma %74 çıktı (yanlış alarm fazlaydı)\n'
+           'Yeni kurallar: kırım kanıtı yokken inişten sonra log en az 40 saniye daha sürüyorsa (uçak yerde, pilot yanına gidip kapatıyor) olay "küçük uyarı" sayılır; log kesildiğinde uçak yerde duruyorsa (inişten sonra batarya söküldü) "güç kaybı" alarmı verilmez\n'
+           'Sonuç: 271 Plane logunda normal uçuşu tanıma %85, kırım yakalama %82, doğruluk %84. Havadayken kesilen loglar hâlâ kırımdan ayrılamıyor; bu durumda program uyarır ama kesin hüküm vermez',
+     'en': '160 new real Plane (incl. VTOL) logs collected, mostly trouble-free normal flights (including release/beta test threads). There are now 271 measurable Plane logs: 125 crash/incident, 146 normal flights\n'
+           'Blind test: the program was measured on these logs before seeing them; recognising normal flights came out at 74% (too many false alarms)\n'
+           'New rules: with no crash evidence, if the log continues at least 40 seconds after landing (aircraft on the ground, pilot walks over and disarms) the event counts as a "minor warning"; if the log is cut while the aircraft is stopped on the ground (battery unplugged after landing) no "power loss" alarm is raised\n'
+           'Result on 271 Plane logs: recognising normal flights 85%, crash detection 82%, accuracy 84%. Logs cut while airborne still cannot be told apart from crashes; the program warns but does not give a firm verdict',
+     'ar': 'جُمع 160 سجل Plane حقيقي جديد (بما في ذلك VTOL)، معظمها رحلات طبيعية بلا مشاكل (بما فيها مواضيع اختبار الإصدارات التجريبية). يوجد الآن 271 سجل Plane قابل للقياس: 125 حادث/واقعة و146 رحلة طبيعية\n'
+           'اختبار أعمى: قيس البرنامج على هذه السجلات قبل أن يراها؛ فكان التعرف على الرحلات الطبيعية 74% (إنذارات كاذبة كثيرة)\n'
+           'قواعد جديدة: عند عدم وجود دليل على حادث، إذا استمر السجل 40 ثانية على الأقل بعد الهبوط (الطائرة على الأرض والطيار يتوجه إليها لنزع التسليح) تُعدّ الواقعة "تحذيرًا بسيطًا"؛ وإذا انقطع السجل والطائرة متوقفة على الأرض (فُصلت البطارية بعد الهبوط) فلا يُطلق إنذار "فقدان الطاقة"\n'
+           'النتيجة على 271 سجل Plane: التعرف على الرحلات الطبيعية 85%، اكتشاف الحوادث 82%، الدقة 84%. لا تزال السجلات التي تنقطع أثناء الطيران غير قابلة للتمييز عن الحوادث؛ ينبّه البرنامج دون حكم قاطع'},
     {'v': '1.1.16',
      'tr': 'Plane (VTOL dahil) kök neden teşhisi güçlendi: 147 uzman etiketli gerçek Plane logunda doğru kök neden %55 → %63; kırım yakalama (%90) ve normal uçuşu tanıma (%82) korundu\n'
            'Hava hızı sensörü takılı olmayan ya da kullanılmayan uçaklarda program artık sıfır okuyan sensör yerine otopilotun kullandığı tahmini hava hızını (CTUN/TECS) kullanıyor; her uçuşta görülen sahte "düşük hava hızı / stall" uyarısı kalktı\n'
