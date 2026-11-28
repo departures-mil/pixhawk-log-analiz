@@ -525,13 +525,13 @@ class ParamLibPage(Page):
         from ..core import ai as AI
         s = self.win.settings
         if not p or lg == 'en': return
-        if not AI.available(s): return error(self, t('need_key').split('.')[0])
         en = p.get('en') or ['', '']
         txt = f'{en[0]}\n|||\n{en[1]}'
         self.b_tx.setEnabled(False)
 
         def job():
-            return AI.translate(s, self.win.usage, txt, lg)
+            from ..core import ceviri as CV
+            return CV.translate_text(txt, 'en', lg, s, self.win.usage)[0]
 
         def ok(out):
             self.b_tx.setEnabled(True)

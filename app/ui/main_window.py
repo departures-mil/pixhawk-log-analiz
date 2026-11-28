@@ -10,7 +10,7 @@ from fccore.window import FcWindow, TopBar
 from fccore.widgets import button as fbutton, label as flabel, toast
 from .i18n import t, lang, set_lang
 from .common import label, button, run_bg, error, info, open_path, app_icon
-from . import pages_a as PA, pages_b as PB, pages_c as PC, pages_p as PP, pages_s as PS, pages_v as PV, pages_q as PQ, pages_g as PG, pages_m as PM
+from . import pages_a as PA, pages_b as PB, pages_c as PC, pages_p as PP, pages_s as PS, pages_v as PV, pages_q as PQ, pages_g as PG, pages_m as PM, pages_t as PT
 from .settings_page import SettingsPage
 from ..core.settings import Settings
 from ..core.archive import Archive, file_uid
@@ -26,7 +26,8 @@ NAV = [('analysis', '🔎', 'nav_analysis', PA.AnalysisPage), ('solver', '🩺',
        ('batch', '🗂', 'nav_batch', PB.BatchPage),
        ('archive', '🗄', 'nav_archive', PB.ArchivePage), ('fleet', '🛩', 'nav_fleet', PC.FleetPage),
        ('pilots', '👨‍✈️', 'nav_pilots', PC.PilotsPage), ('msgs', '📘', 'nav_msgs', PB.MsgLibPage),
-       ('params', '🧩', 'nav_params', PP.ParamCenterPage), ('verify', '✅', 'nav_verify', PB.VerifyPage),
+       ('params', '🧩', 'nav_params', PP.ParamCenterPage), ('translate', '🌐', 'nav_translate', PT.TranslatePage),
+       ('verify', '✅', 'nav_verify', PB.VerifyPage),
        ('settings', '🛠', 'nav_settings', SettingsPage)]
 # kenar çubuğu grupları (ilk anahtar → grup başlığı)
 GROUPS = {'analysis': 'px.grp.analysis', 'practice': 'px.grp.learn', 'batch': 'px.grp.records', 'msgs': 'px.grp.library', 'verify': 'px.grp.system'}

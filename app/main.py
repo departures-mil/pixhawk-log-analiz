@@ -12,6 +12,8 @@ def main():
         if getattr(sys, n) is None: setattr(sys, n, open(os.devnull, 'w', encoding='utf-8'))
     if '--analyze' in sys.argv:
         return cli(sys.argv)
+    if '--check-modules' in sys.argv:
+        return check_modules(sys.argv)
     from PySide6.QtWidgets import QApplication
     from PySide6.QtCore import Qt
     from app.ui.common import app_icon
@@ -57,6 +59,37 @@ def main():
     rc = app.exec()
     crash.shutdown()
     sys.exit(rc)
+
+
+def check_modules(argv):
+    """Kurulu exe'de çeviri/OCR/belge kütüphaneleri çalışıyor mu (CI duman testi): --check-modules sonuç.json"""
+    import json, tempfile, traceback
+    out = argv[argv.index('--check-modules') + 1] if argv.index('--check-modules') + 1 < len(argv) else 'modules.json'
+    r = {}
+
+    def t(name, fn):
+        try: r[name] = str(fn() or 'ok')
+        except Exception: r[name] = 'ERROR ' + traceback.format_exc()[-400:]
+    t('ctranslate2', lambda: __import__('ctranslate2').__version__)
+    t('sentencepiece', lambda: __import__('sentencepiece').__version__)
+
+    def pdf():
+        from app.core import belge
+        M = belge._pdf(); d = M.open(); p = d.new_page()
+        p.insert_htmlbox(M.Rect(20, 20, 400, 100), belge._html('اختبار — Test ğüşİ', 12, 0, False, '', 'ar'), css=belge.CSS,
+                         archive=M.Archive(belge._fonts_dir()))
+        return M.VersionBind
+    t('pymupdf', pdf)
+
+    def docx_():
+        import docx
+        from app.core import belge, ceviri
+        d = docx.Document(); d.add_paragraph('x'); f = os.path.join(tempfile.mkdtemp(), 'a.docx'); d.save(f)
+        return 'ok'
+    t('docx', docx_)
+    t('ceviri', lambda: len(__import__('app.core.ceviri', fromlist=['x']).builtin_entries()))
+    with open(out, 'w', encoding='utf-8') as f: json.dump(r, f, ensure_ascii=False, indent=1)
+    return 0
 
 
 def cli(argv):
