@@ -1,6 +1,19 @@
 """Sürüm notları ("Neler yeni" + release-notes.json). Yeni sürümde EN ÜSTE eklenir; tr/en/ar zorunlu."""
 
 NEWS = [
+    {'v': '1.1.20',
+     'tr': 'Motor Yönleri Bankası artık öğretici: 61 çerçevenin her birinde her motorun çıkış parametresi (SERVOn_FUNCTION değeri ve hangi SERVOn çıkışı) ile logda sinyalinin okunacağı alan (RCOU.Cn, 15–18 için RCO2, 19+ için RCO3; ESC telemetrisi varsa ESC[n].RPM/Curr/Temp) yazıyor\n'
+           'Her araçla kurulum parametreleri birlikte geliyor: Q_ENABLE, Q_FRAME_CLASS/TYPE ya da FRAME_CLASS/TYPE, Q_M_/MOT_ PWM ve spin değerleri, kuyruk/eğim servoları, gaz kanalları; her biri ne işe yarar açıklamasıyla\n'
+           'Log açıksa motor çıkışları logun kendi SERVOn_FUNCTION değerlerinden okunur ve parametrenin logdaki değeri gösterilir; "Bu motorların sinyallerini Log Gezgini\'nde aç" bağlantısı ilgili RCOU/ESC alanlarını tek tıkla çizer\n'
+           'Adım adım "logda motor sinyali nasıl okunur" anlatımı (doyum, dengesizlik, motor durması belirtileri) ve uçuş öncesi kontrol listesi',
+     'en': 'The Motor Order Bank is now a tutorial: for each of the 61 frames every motor shows its output parameter (SERVOn_FUNCTION value and which SERVOn output) and the log field to read its signal from (RCOU.Cn, RCO2 for 15–18, RCO3 for 19+; ESC[n].RPM/Curr/Temp with ESC telemetry)\n'
+           'Setup parameters come with every vehicle: Q_ENABLE, Q_FRAME_CLASS/TYPE or FRAME_CLASS/TYPE, Q_M_/MOT_ PWM and spin values, tail/tilt servos, throttle channels, each with what it does\n'
+           'With a log open, motor outputs are read from the log\'s own SERVOn_FUNCTION values and each parameter\'s value in the log is shown; the "Open these motor signals in the Log Browser" link plots the matching RCOU/ESC fields in one click\n'
+           'Step-by-step "how to read motor signals in a log" (saturation, imbalance, motor-stop signs) and a pre-flight checklist',
+     'ar': 'أصبح بنك ترتيب المحركات تعليمياً: لكل هيكل من الهياكل الـ61 يظهر لكل محرك معامل مخرجه (قيمة SERVOn_FUNCTION وأي مخرج SERVOn) والحقل الذي تُقرأ منه إشارته في السجل (RCOU.Cn، وRCO2 للقنوات 15–18، وRCO3 لما بعد 19؛ وESC[n].RPM/Curr/Temp مع قياسات ESC)\n'
+           'تأتي معاملات الإعداد مع كل مركبة: Q_ENABLE وQ_FRAME_CLASS/TYPE أو FRAME_CLASS/TYPE وقيم PWM والدوران لـ Q_M_/MOT_ وسيرفوهات الذيل/الإمالة وقنوات الخانق، مع شرح وظيفة كل منها\n'
+           'عند فتح سجل تُقرأ مخارج المحركات من قيم SERVOn_FUNCTION في السجل نفسه وتُعرض قيمة كل معامل فيه؛ ورابط "افتح إشارات هذه المحركات في مستعرض السجل" يرسم حقول RCOU/ESC المطابقة بنقرة واحدة\n'
+           'شرح خطوة بخطوة لـ"كيف تُقرأ إشارات المحركات في السجل" (علامات التشبع وعدم التوازن وتوقف المحرك) وقائمة تحقق قبل الطيران'},
     {'v': '1.1.19',
      'tr': 'Eğitim bölümünde yeni "Motor Yönleri Bankası": ArduPilot\'un desteklediği bütün çerçevelerin motor numarası, dönüş yönü ve motor testi sırası resimli olarak (61 çerçeve)\n'
            'QuadPlane/VTOL (quad X/+/H, yaw torku olmayan NYT, hexa, octa, X8, Y6B/Y6F, tri/tilt-rotor, tailsitter), bütün multikopter çerçeveleri (Betaflight/DJI/saat yönü sıralı X, V kuyruk, A kuyruk, Y4, X8, Y6, deca, dodecahexa, tri) ile tek ve çift motorlu uçak ve paletli kara aracı\n'

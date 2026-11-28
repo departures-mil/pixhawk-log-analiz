@@ -52,6 +52,10 @@ ortak `reusable-release.yml` (latest.json, son 5 sürümden yamalar) ile yayın.
   çalışmayı sayılarla izler (içerik yok), çevrim dışı kurallar + kullanıcının kendi Gemini/Claude anahtarıyla öneri; bildirim + sağ altta ✦ panel;
   Ayarlar'da "Admin ile iletişim"in önünde kart. Aynı bilgisayardaki programlarla %APPDATA%/FalconCekirdek/agent üzerinden paylaşım.
 
+## v1.1.20 — Motor Yönleri Bankası: çıkışlar, log sinyalleri, kurulum parametreleri
+- `app/core/motorguide.py`: `html_for(fr, lg, P, has_log)` öğretici rehber (giriş, kurulum parametreleri tablosu + logdaki değer, motor tablosu: SERVOn_FUNCTION · çıkış · logdaki alan · ESC · konum · yön · test, adımlar, kontrol listesi). `outputs(fr, P)` açık logun SERVOn_FUNCTION değerlerinden gerçek eşleme (yoksa örnek). `log_field`: 1–14 RCOU, 15–18 RCO2, 19+ RCO3; `esc_field`: ESC[n−1].RPM.
+- `pages_m.py` `lb:` bağlantıları → `LogBrowserPage.show_keys(keys)` (okunmamış türler okununca yeniden çizilir). Testler `tests/test_motororder.py`.
+
 ## v1.1.19 — Motor Yönleri Bankası
 - `tools_data/build_motororder.py`: ArduPilot `AP_MotorsMatrix.cpp` (master) ayrıştırılır → `app/data/motororder.json` + `app/data/motororder/*.png` (61 kart). Konum: MotorDef açısı (0 ön, + sağ), MotorDefRaw/`add_motor` roll/pitch katsayıları; aynı konumdaki ikinci motor ALT. V/A kuyruk arka motorlarına konum elle verildi.
 - `app/core/motororder.py` (kartlar, çizim, `find_for_params`), `app/ui/pages_m.py` (Eğitim → Motor Yönleri Bankası: galeri, ayrıntı tablosu, açık logdaki çerçeve). Testler `tests/test_motororder.py`.
