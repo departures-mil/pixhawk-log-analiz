@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineE
 from .i18n import lang
 from .common import label, button, ImageView
 from .pages_a import Page
-from ..core import motororder as MO
+from ..core import motororder as MO, motorguide as MG
 
 E = html.escape
 TX = {
@@ -84,9 +84,9 @@ class MotorBankPage(Page):
         sp.addWidget(self.gal)
         right = QWidget(); rv = QVBoxLayout(right); rv.setContentsMargins(8, 0, 0, 0)
         self.d_title = label('', 'h2'); self.d_title.setWordWrap(True); rv.addWidget(self.d_title)
-        self.img = ImageView(); self.img.setMinimumHeight(300); rv.addWidget(self.img, 3)
-        self.det = QTextBrowser(); self.det.setOpenExternalLinks(True); rv.addWidget(self.det, 2)
-        sp.addWidget(right); sp.setStretchFactor(0, 3); sp.setStretchFactor(1, 2)
+        self.img = ImageView(); self.img.setMinimumHeight(220); rv.addWidget(self.img, 2)
+        self.det = QTextBrowser(); self.det.setOpenLinks(False); self.det.anchorClicked.connect(self._anchor); rv.addWidget(self.det, 3)
+        sp.addWidget(right); sp.setStretchFactor(0, 2); sp.setStretchFactor(1, 3)
         v.addWidget(sp, 1)
         self._icons = {}
         self._fill()
@@ -137,15 +137,28 @@ class MotorBankPage(Page):
             with open(MO.image(fid), 'rb') as fh: self.img.set_png(fh.read())
         except Exception:
             self.img.set_png(b'')
-        cols = TX['cols'][MO.L3.get(lg, 0)]
-        rows = ''.join('<tr>' + ''.join(f'<td style="padding:3px 8px">{E(str(c))}</td>' for c in r) + '</tr>' for r in MO.rows(f, lg))
-        h = (f'<p><b>{tx("params")}:</b> <code>{E(f.get("params", ""))}</code></p>'
-             + (f'<p>⚠ {E(MO.note(f, lg))}</p>' if MO.note(f, lg) else '')
-             + '<table border="1" cellspacing="0" style="border-collapse:collapse">'
-             + '<tr>' + ''.join(f'<th style="padding:3px 8px">{E(c)}</th>' for c in cols) + '</tr>' + rows + '</table>'
-             + f'<p>{E(tx("tips"))}</p><p style="color:#64748B">{E(tx("src"))}</p>')
+        A = getattr(self.win, 'A', None)
+        P = getattr(getattr(A, 'L', None), 'params', None) if A is not None else None
+        h = (MG.html_for(f, lg, P=P or None, has_log=A is not None)
+             + f'<p>{E(tx("legend"))}</p><p style="color:#64748B">{E(tx("src"))}</p>')
         if lg == 'ar': h = f'<div dir="rtl">{h}</div>'
         self.det.setHtml(h)
+
+    def _anchor(self, u):
+        s = u.toString()
+        if s.startswith('lb:'):
+            keys = [k for k in s[3:].split(',') if k]
+            from .common import info
+            if getattr(self.win, 'A', None) is None:
+                return info(self, MG._t(MG.T['need_log'], lang()).strip('()'))
+            pg = self.win.pages.get('logbrowser')
+            if pg is None: return
+            self.win.goto('logbrowser')
+            if not pg.show_keys(keys):
+                info(self, MG._t(MG.T['no_sig'], lang()))
+        elif s.startswith('http'):
+            from PySide6.QtGui import QDesktopServices
+            QDesktopServices.openUrl(u)
 
     # -------------------------------------------------- açık log
     def on_analysis(self, A):
@@ -153,6 +166,7 @@ class MotorBankPage(Page):
         try: self._mine_f = MO.find_for_params(A.L.params, A.vehicle)
         except Exception: pass
         self.b_mine.setEnabled(True)
+        if self.isVisible(): self._show()
 
     def _mine(self):
         f = getattr(self, '_mine_f', None)

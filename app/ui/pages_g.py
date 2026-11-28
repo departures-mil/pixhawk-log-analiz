@@ -218,6 +218,8 @@ class LogBrowserPage(Page):
             tick.stop(); self.prog.hide(); self._reading = False
             if A is not self.A: return
             self._build_tree()
+            if self.sel:
+                self.set_selection(self.sel); self.redraw()
             self.rd.setText(tx('read_ok').format(n=self.tree.topLevelItemCount()))
 
         def fail(e):
@@ -360,6 +362,17 @@ class LogBrowserPage(Page):
             if k == 'clock': continue
             c.blockSignals(True); c.setChecked(False); c.blockSignals(False)
         self.redraw()
+
+    def show_keys(self, keys):
+        """Dışarıdan (ör. Motor Yönleri Bankası) verilen alanları sol eksende çizer; henüz okunmamış türler okununca yeniden çizilir."""
+        if self.A is None: return 0
+        L = self.A.L; seen = set(L.types_seen or {})
+        ok = [k for k in keys if k.split('.', 1)[0] in L.msgs or k.split('[', 1)[0].split('.', 1)[0] in seen]
+        if not ok: return 0
+        self.on_show()
+        self.set_selection([{'key': k, 'side': 'L'} for k in ok])
+        self._keep_x = None; self.redraw(keep_x=False)
+        return len(ok)
 
     def set_selection(self, sel):
         for s in list(self.sel): self._set_side_text(s['key'], None)
